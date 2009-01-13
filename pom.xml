@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>pl.umk.mat.zawodyweb</groupId>
+    <artifactId>zawodyweb</artifactId>
+    <name>ZawodyWEB</name>
+    <version>3.0-SNAPSHOT</version>
+    <description>System for handling competitions.</description>
+    <packaging>pom</packaging>
+    <!-- -->
+    <developers>
+        <developer>
+            <id>faramir</id>
+            <name>Marek Nowicki</name>
+            <email>faramir@mat.umk.pl</email>
+            <timezone>CET</timezone>
+        </developer>
+        <developer>
+            <id>dalton</id>
+            <name>Sławomir Krysztowiak</name>
+            <email>dalton@mat.umk.pl</email>
+            <timezone>CET</timezone>
+        </developer>
+        <developer>
+            <id>lukash2k</id>
+            <name>Łukasz Siewierski</name>
+            <email>xed@mat.umk.pl</email>
+            <timezone>CET</timezone>
+        </developer>
+        <developer>
+            <id>jakub</id>
+            <name>Jakub Prabucki</name>
+            <email>jakub@mat.umk.pl</email>
+            <timezone>CET</timezone>
+        </developer>
+        <developer>
+            <id>xed</id>
+            <name>Bartosz Paprzycki</name>
+            <email>xed@mat.umk.pl</email>
+            <timezone>CET</timezone>
+        </developer>
+    </developers>
+    <!-- -->
+    <modules>
+        <module>www</module>
+        <module>database</module>
+        <module>judge-manager</module>
+        <module>judge</module>
+    </modules>
+</project>
