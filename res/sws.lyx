@@ -5,7 +5,7 @@
 \textclass mwbk
 \use_default_options false
 \language polish
-\inputencoding latin2
+\inputencoding utf8
 \font_roman default
 \font_sans default
 \font_typewriter default
@@ -37,6 +37,7 @@
 \tracking_changes false
 \output_changes false
 \author "" 
+\author "" 
 \end_header
 
 \begin_body
@@ -46,27 +47,50 @@ ZawodyWEB
 \begin_inset Newline newline
 \end_inset
 
- Specyfikacja Wymagań Systemu
+Specyfikacja Wymagań Systemu
+\end_layout
+
+\begin_layout Date
+Rok akademicki: 2008/2009
+\begin_inset Newline newline
+\end_inset
+
+Modelowanie i analiza systemów informatycznych
+\begin_inset Newline newline
+\end_inset
+
+Grupa: 1
+\begin_inset Newline newline
+\end_inset
+
+Zespół: 2
+\begin_inset Newline newline
+\end_inset
+
+Prowadzący: mgr Marta Burzańska
 \end_layout
 
 \begin_layout Author
+\begin_inset Newline newline
+\end_inset
+
 Sławomir Krysztowiak
 \begin_inset Newline newline
 \end_inset
 
- Marek Nowicki
+Marek Nowicki
 \begin_inset Newline newline
 \end_inset
 
- Bartosz Paprzycki
+Bartosz Paprzycki
 \begin_inset Newline newline
 \end_inset
 
- Jakub Prabucki
+Jakub Prabucki
 \begin_inset Newline newline
 \end_inset
 
- Łukasz Siewierski
+Łukasz Siewierski
 \end_layout
 
 \begin_layout Standard
@@ -79,7 +103,7 @@ LatexCommand tableofcontents
 \end_layout
 
 \begin_layout Chapter*
-Wstęp
+Opis produktu
 \end_layout
 
 \begin_layout Standard
@@ -87,10 +111,28 @@ ZawodyWEB jest rozbudowaną aplikacją, napisaną głównie w języku Java, słu
  do przeprowadzania różnego rodzaju zawodów wykorzystując jedną instancję
  aplikacji.
  Ponadto pozawala na jednoczesne przeprowadznie kilku zawodów, dzięki czemu
- cała infrastruktura komputerowo-sieciowa może być używana optymalnie.
+ infrastruktura komputerowo-sieciowa może być używana optymalnie.
 \end_layout
 
-\begin_layout Chapter*
+\begin_layout Standard
+Aplikacja składa się z dwóch części:
+\end_layout
+
+\begin_layout Itemize
+interfejsu WWW;
+\end_layout
+
+\begin_layout Itemize
+infrastruktury sprawdzającej rozwiązania.
+\end_layout
+
+\begin_layout Standard
+Dzięki przejrzystemu i funkcjonalnemu interfejsowi WWW aplikacja może poszczycić
+ się prostotą użytkowania, więc nawet przez niezbyt doświadczeni użytkownicy
+ komputera mogą z niej korzystać.
+\end_layout
+
+\begin_layout Section*
 Cel produktu
 \end_layout
 
@@ -128,7 +170,7 @@ Poza wymienionymi wyżej typami konkursów programistycznych, możliwe jest
  konkursów a nie na aspektach technicznych.
 \end_layout
 
-\begin_layout Chapter*
+\begin_layout Section*
 Grupa docelowa
 \end_layout
 
@@ -147,7 +189,11 @@ Koordynatorzy
 \emph on
 organizatorzy
 \emph default
- konkursów informatycznych oraz 
+ konkursów informatycznych, 
+\emph on
+sędziowie
+\emph default
+ sprawdzający rozwiązania zawodników oraz 
 \emph on
 trenerzy
 \emph default
@@ -170,25 +216,8 @@ Koordynatorów
  
 \end_layout
 
-\begin_layout Chapter*
-Definicje i konwencje nazewnictwa
-\end_layout
-
-\begin_layout Chapter*
-Ograniczenia
-\end_layout
-
 \begin_layout Section*
-Ograniczenia czasowe
-\end_layout
-
-\begin_layout Standard
-Projekt powinien zostać ukończony do 30.
- marca 2008.
-\end_layout
-
-\begin_layout Section*
-Ograniczenia sprzętowe i programowe
+Wymagania sprzętowe i programowe
 \end_layout
 
 \begin_layout Standard
@@ -210,19 +239,22 @@ Tomcat 6
 \end_layout
 
 \begin_layout Section*
-Ograniczenia dotyczące interfejsu
+Bezpieczeństwo
 \end_layout
 
-\begin_layout Itemize
-przejrzystość 
+\begin_layout Standard
+Dzięki systemowi kopii zapasowych oraz dobrze skonfigurowanym politykom
+ bezpieczeństwa, aplikacja zapewnia odpowiedni poziom zabezpieczeń w razie
+ awarii oraz przed włamaniami, co jest porządane przy organizacji konkursów
+ informatycznych.
 \end_layout
 
-\begin_layout Itemize
-funkcjonalność 
+\begin_layout Chapter*
+Baza
 \end_layout
 
-\begin_layout Itemize
-prostota obsługi 
+\begin_layout Standard
+Tutaj znajdzie się schemat bazy danych.
 \end_layout
 
 \begin_layout Chapter*
@@ -233,6 +265,10 @@ Cechy produktu
 W poniższej tabeli znajdują się prawie wszystkie cechy produktu przesortortowane
  według ważności, trudności i ryzyka.
  
+\end_layout
+
+\begin_layout Standard
+Może przydałoby się dopisać opis cech?
 \end_layout
 
 \begin_layout Standard
@@ -3761,23 +3797,68 @@ Obsługa zadań optymalizacyjnych
 \end_layout
 
 \begin_layout Chapter*
-Wymagania
+Przypadki użycia
+\end_layout
+
+\begin_layout Standard
+do przesortowania i ewentualnie dopisani/usunięcia zbędnych podsekcji..
+ ewentualnie cały rozdział do usunięcia
 \end_layout
 
 \begin_layout Section*
-Wymagania funkcjonalne
+Wysyłanie rozwiązania
+\end_layout
+
+\begin_layout Standard
+wraz z opisem tego, co dzieje się po stronie serwera?
 \end_layout
 
 \begin_layout Section*
-Wymagania niefunkcjonalne
+Dodawanie zawodów, serii, zadań i testów
 \end_layout
 
-\begin_layout Subsection*
-Wymagania wydajnościowe
+\begin_layout Section*
+Rejestracja użytkownika
 \end_layout
 
-\begin_layout Subsection*
-Wymagania bezpieczeństwa
+\begin_layout Section*
+Logowanie się użytkownika
+\end_layout
+
+\begin_layout Section*
+Zmiana profilu użytkownika
+\end_layout
+
+\begin_layout Section*
+Przypominanie hasła
+\end_layout
+
+\begin_layout Section*
+Zmiana profilu/hasła użytkownika przez administratora
+\end_layout
+
+\begin_layout Section*
+Dodawanie odpowiedzi na pytania
+\end_layout
+
+\begin_layout Section*
+Wysyłanie pytań do zadania
+\end_layout
+
+\begin_layout Section*
+Kopiowanie zadania do innej serii
+\end_layout
+
+\begin_layout Section*
+Ręczne ocenianie rozwiązania
+\end_layout
+
+\begin_layout Chapter*
+Prototyp graficzny
+\end_layout
+
+\begin_layout Standard
+przydałyby się ładne screenshoty
 \end_layout
 
 \end_body
