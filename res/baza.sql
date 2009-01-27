@@ -129,4 +129,4 @@ CREATE TABLE SUBMITS_RESULTS_TESTS ( 	id		int not null primary key,
 			   	resultsId	int REFERENCES RESULTS(id)
 			   	testsId		int REFERENCES TESTS(id)
 				);
--- trzeba sprawdzić, czy wszystko działa, bo były problemy z commitem
+
