@@ -6,11 +6,10 @@ CREATE TABLE USERS (    id                  int         not null    primary key,
                         eMail               varchar(40),
                         birthDate           date,
                         login               varchar(20),
-                        pass                varchar(10),
-                        address             varchar(40),
-                        school              varchar(40),
-                        tutor               varchar(40),
-                        gaduGadu            int,
+                        pass                varchar(32),
+                        address             varchar(80),
+                        school              varchar(80),
+                        tutor               text,
                         eMailNotification   int
                     );
 
@@ -30,37 +29,38 @@ CREATE TABLE SERIES (	id		int	not null	primary key,
 			startDate	date,
 			endDate		date,
 			freezeDate	date,
+			unfreezeDate	date,
 			penaltyTime	int
 			);
 
 CREATE TABLE CONTESTS (	id		int	not null	primary key,
-			name		varchar(40),
+			name		varchar(120),
 			type		int,
 			startDate	date,
-			about		varchar(8000),
-			rules		varchar(8000),
-			tech		varchar(8000),
+			about		text,
+			rules		text,
+			tech		text,
 			visibility	int
 			);
 
 CREATE TABLE SUBMITS (	id		int	not null	primary key,
 			sDate		date,
 			result		int,
-			code		varchar(8000),
-			filename	varchar(70)
+			code		bytea,
+			filename	varchar(255)
 			);
 
 CREATE TABLE TASKS (	id	int	not null	primary key,
-			name	varchar(40),
-			text	varchar(8000),
-			pdf	varchar(70),
-			abbrev	varchar(10),
+			name	varchar(80),
+			text	text,
+			pdf	bytea,
+			abbrev	varchar(5),
 			memlimit int
 			);
 
 CREATE TABLE QUESTIONS (	id		int	not null	primary key,
-				question	varchar(255),
-				answer		varchar(255),
+				question	text,
+				answer		text,
 				visibility	int
 				);
 
@@ -68,12 +68,12 @@ CREATE TABLE RESULTS (	id	int	not null	primary key,
 			points	int,
 			runTime	int,
 			memory	int,
-			notes	varchar(255)
+			notes	text
 			);
 
 CREATE TABLE TESTS (	id		int	not null	primary key,
-			input		varchar(8000),
-			output		varchar(8000),
+			input		text,
+			output		text,
 			timeLimit	int,
 			maxPoints	int,
 			visibility	int
@@ -81,13 +81,13 @@ CREATE TABLE TESTS (	id		int	not null	primary key,
 
 CREATE TABLE LANGUAGES (	id		int	not null	primary key,
 				name		varchar(40),
-				extension	varchar(5)
+				extension	varchar(8)
 				);
 
 CREATE TABLE CLASSES (		id		int	not null	primary key,
-				filename	varchar(70),
+				filename	varchar(255),
 				version		int,
-				description	varchar(80)
+				description	varchar(255)
 				);
 
 /* Powiazadania jeden do wielu */
@@ -123,4 +123,10 @@ CREATE TABLE LANGUAGES_TASKS ( 	id		int not null primary key,
 				tasksId 	int REFERENCES TASKS(id),
 			   	languagesId	int REFERENCES LANGUAGES(id)
 				);
-				
+
+CREATE TABLE SUBMITS_RESULTS_TESTS ( 	id		int not null primary key,
+				submitsId 	int REFERENCES SUBMITS(id),
+			   	resultsId	int REFERENCES RESULTS(id)
+			   	testsId		int REFERENCES TESTS(id)
+				);
+
