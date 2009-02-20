@@ -47,7 +47,8 @@ CREATE TABLE SUBMITS (	id		int	not null	primary key,
 			sDate		date,
 			result		int,
 			code		bytea,
-			filename	varchar(255)
+			filename	varchar(255),
+            notes       text
 			);
 
 CREATE TABLE TASKS (	id	int	not null	primary key,
