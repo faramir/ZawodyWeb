@@ -1,0 +1,5 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:define name="pageContent">
+       Herzlich wilkommen!
+   </ui:define>
+</ui:composition>

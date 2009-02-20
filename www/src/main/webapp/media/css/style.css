@@ -1,0 +1,342 @@
+body {
+	margin: 0; padding: 0;
+	font: 1em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
+	background: #efeaf7 url(../images/backgr3.png);
+    background-repeat: no-repeat;
+	color: #0000FF;	
+	text-align: left;		
+}
+
+a:link:hover, a:visited:hover {
+	color: #4b00ff;
+	text-decoration: none;
+}
+
+a:visited, a:link {
+	text-decoration: none;
+	color: #0000FF;
+}
+
+#clock {	
+    font-size: 0.8em;
+    color: #000000;
+	float: right;
+	padding: 0 20px 60px 0;
+}
+
+#home h1 {	
+    font-size: 1.2em;
+	color: #0000bb;
+	margin: 0 0 0 0;
+	padding: 20px 0 0 0;
+	text-align: center;
+}
+
+#home h2 {	
+    font-size: 0.8em;
+	margin: 0;
+	padding: 0;
+	color: #0000bb;
+	text-align: center;
+}
+
+#page h1 {
+	font-size: 1.5em;
+	color: #000000;
+	padding: 40px 0 40px 0;
+	text-align: center;
+}
+
+#content {
+	position: relative; 
+	color: #000000;
+	bottom: 4px;
+	margin: 20px 0 0 0; 
+	padding: 0;	
+	float: left;
+	width: 70%;
+	border: ridge #080808;
+	border-width: 0 0 1px 0;
+}
+
+#content h1 {
+	border: ridge #080808;
+	padding: 0 0 20px 0;
+	border-width: 0 0 1px 0;
+	text-align: center;
+}
+
+#content h2 {
+	text-align: left;
+	font-size: 1.3em;
+	padding: 10px 0 20px 0;
+}
+
+img { 	
+    float: left; 
+	margin: 10px 0 0 10px;
+	padding: 20px 0 0 40px;
+}
+
+/* MENU */
+#top_menu {
+	float: left;
+	width: 70%;
+}
+
+#top_menu ul {	
+	height: 1.4em;
+	bottom: 4px;
+	padding: 2px;	
+	font: bold 0.8em 'Trebuchet MS', Tahoma, Arial, Sans-serif;
+	border: 1px ridge #080808;
+	border-width: 1px;
+	list-style: none;
+}
+
+#top_menu ul li {
+	position: relative;
+	display: inline;
+	float: left;
+	padding: 0 20px 0 20px;
+	background: url(../images/divider.gif) repeat-y right top; 
+}
+
+#top_menu ul li.last {
+	background: none; 
+	float: right;
+}
+
+#top_menu ul li.spacer {
+	background: url(../images/divider.gif) repeat-y right top; 
+	float: right;
+}
+
+#top_menu ul li.prawa {
+	float: right;
+}
+
+#top_menu ul li a {
+	display: block;
+	text-decoration:none;
+}
+
+#left_menu ul {	
+	margin: 35px 20px 0 10px; 
+	padding: 0 10px 0 10px;	
+	float: left;
+	font: bold 0.8em 'Trebuchet MS', Tahoma, Arial, Sans-serif;
+	width: 140px;
+	border: ridge #080808;
+	border-width: 1px;
+	list-style: none;
+}
+
+#left_menu ul li{
+	background: url(../images/divider2.gif) repeat-x left bottom;
+}
+
+#left_menu ul li.last {
+	background: none;
+}
+
+#left_menu ul li a {
+	text-decoration:none;
+	display:block;
+	padding: 0.4em 1em;
+	margin: 0;
+	border: none;
+}
+
+/* LOGINFORM */
+#loginform {
+    width:300px;
+    margin:auto;
+}
+
+#loginform fieldset {
+	padding:10px;
+	border: none;
+}
+
+#loginform label {
+    display:block;
+    height:2em;
+    background-color:none;
+    padding:10px 10px 0;
+}
+
+#loginform input {
+    margin-right:20px;
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    background: #decff4;
+}
+
+#loginform input:focus,#loginform input:hover {
+    border:1px solid #333333;
+}
+
+/* PROFILFORM */
+#profilform {
+    width:70%;
+    margin:auto;
+}
+
+#profilform fieldset{
+	padding:10px;
+	border: none;
+}
+
+#profilform label{
+    display:block;
+    height:2em;
+    background-color:none;
+    padding:10px 10px 0;
+}
+
+#profilform input {
+margin-right:20px;
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    background: #decff4;
+}
+
+#profilform input:focus,#profilform input:hover {
+    border:1px solid #333333;
+}
+
+/* TABLES */
+table {
+	width: 80%;
+	font-style: bold;
+	margin-right:auto;
+	margin-left:auto;
+	text-align: center;
+}
+
+table td {
+	width: 50px;
+}
+
+table td#nazwa {
+	width: 90%;
+	text-align: left;
+}
+
+table tr#naglowek {
+	background: #d4abff;
+	text-align: center;
+	font-weight: bold;
+}
+
+table tr#linia1 {
+	background: #decff4;
+}
+
+/* QFORM */
+#qform {
+    width:70%;
+    margin:auto;
+    text-align: left;
+}
+
+#qform fieldset{
+	padding:10px;
+	border: none;
+}
+
+#qform label{
+    display:block;
+    height:2em;
+    background-color:none;
+    padding:10px 10px 0;
+}
+
+#qform input {
+    margin-right:20px;
+    margin: 10px 0 0 0;
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    background: #decff4;
+}
+
+#qform textarea {
+    margin-right:20px;
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    width: 90%;
+    height: 70px;
+    background: #decff4;
+}
+
+#qform input:focus,#qform input:hover {
+    border:1px solid #333333;
+}
+
+#qform textarea:focus,#qform textarea:hover {
+    border:1px solid #333333;
+}
+
+/* SENDFORM */
+#sendform {
+    width:70%;
+    margin:auto;
+}
+
+#sendform fieldset{
+	padding:10px;
+	border: none;
+}
+
+#sendform label{
+    display:block;
+    height:2em;
+    background-color:none;
+    padding:10px 10px 0;
+}
+
+#sendform input {
+    border:1px solid #999999;
+    width: 100px;
+    margin: 0 -50px 20px 0;
+    float:right;
+    clear:right;
+    background: #decff4;
+}
+
+#sendform input.file {
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    margin: 0;
+    width: 90%;
+    background: #decff4;
+}
+
+#sendform textarea {
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    width: 90%;
+    height: 150px;
+    margin: 20px 0 20px 0;
+    background: #decff4;
+}
+
+#sendform select {
+    border:1px solid #999999;
+    width: 30%;
+    float:right;
+    clear:right;
+    background: #decff4;
+}
+
+#sendform input:focus, #sendform input:hover, #sendform textarea:focus, #sendform textarea:hover, #sendform select:focus, #sendform select:hover, #sendform input#file:focus, #sendform input#file:hover {
+    border:1px solid #333333;
+}
+

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE facelet-taglib PUBLIC
+  "-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN"
+  "https://facelets.dev.java.net/source/browse/*checkout*/facelets/src/etc/facelet-taglib_1_0.dtd">
+<facelet-taglib>
+  <namespace>http://zawodyweb.org/</namespace>
+  <tag>
+    <tag-name>main</tag-name>
+    <source>../../templates/main.jspx</source>
+  </tag>
+</facelet-taglib>
