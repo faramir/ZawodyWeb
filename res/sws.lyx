@@ -83,7 +83,7 @@ LatexCommand tableofcontents
 
 \end_layout
 
-\begin_layout Chapter*
+\begin_layout Chapter
 Opis produktu
 \end_layout
 
@@ -113,7 +113,7 @@ Dzięki przejrzystemu i funkcjonalnemu interfejsowi WWW aplikacja może poszczyc
  mogą z niej korzystać.
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 Cel produktu
 \end_layout
 
@@ -150,7 +150,7 @@ Poza wymienionymi wyżej typami konkursów programistycznych, możliwe jest
  części konkursów a nie na aspektach technicznych.
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 Grupa docelowa
 \end_layout
 
@@ -196,7 +196,7 @@ Koordynatorów
  
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 Wymagania sprzętowe i programowe
 \end_layout
 
@@ -218,7 +218,7 @@ PostgreSQL
 Tomcat 6 
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 Bezpieczeństwo
 \end_layout
 
@@ -229,7 +229,7 @@ Dzięki systemowi kopii zapasowych oraz dobrze skonfigurowanym politykom
  informatycznych.
 \end_layout
 
-\begin_layout Chapter*
+\begin_layout Chapter
 Baza
 \end_layout
 
@@ -237,7 +237,7 @@ Baza
 [SCHEMAT BAZY DANYCH]
 \end_layout
 
-\begin_layout Chapter*
+\begin_layout Chapter
 Cechy produktu
 \end_layout
 
@@ -3770,7 +3770,7 @@ Obsługa zadań optymalizacyjnych
 
 \end_layout
 
-\begin_layout Chapter*
+\begin_layout Chapter
 Przypadki użycia
 \end_layout
 
@@ -3779,7 +3779,7 @@ do przesortowania i ewentualnie dopisani/usunięcia zbędnych podsekcji..
  ewentualnie cały rozdział do usunięcia
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 Wysyłanie rozwiązania
 \end_layout
 
@@ -3820,7 +3820,7 @@ Judge Manager informuje serwer WWW, że sprawdzanie zostało zakończone oraz
 Serwer WWW usuwa z kolejki rozwiązanie
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 Sprawdzanie rozwiązania przez Judge
 \end_layout
 
@@ -3844,7 +3844,7 @@ Judge kompiluje rozwiązanie użytkownika
 
 \begin_deeper
 \begin_layout Enumerate
-jeśli nie powiedzie się kompilacja Judge zwraca wynik i kończy działanie
+Jeśli nie powiedzie się kompilacja Judge zwraca wynik i kończy działanie
 \end_layout
 
 \end_deeper
@@ -3855,20 +3855,20 @@ Judge zaczyna sprawdzać poprawność rozwiązania.
 
 \begin_deeper
 \begin_layout Enumerate
-pobiera dane wejściowe
+Pobiera dane wejściowe
 \end_layout
 
 \begin_layout Enumerate
-uruchamia za pomocą klasy, pobranej z bazy, program na danych wejściowych
+Uruchamia za pomocą klasy, pobranej z bazy, program na danych wejściowych
  i zapamiętuje wynik
 \end_layout
 
 \begin_layout Enumerate
-porównuje wynik z prawidłową odpowiedzią używając specjalnej klasy
+Porównuje wynik z prawidłową odpowiedzią używając specjalnej klasy
 \end_layout
 
 \begin_layout Enumerate
-zapamiętuje wynik
+Zapamiętuje wynik
 \end_layout
 
 \end_deeper
@@ -3881,7 +3881,7 @@ e
 Judge zapisuje wynik do bazy danych
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 Rejestracja użytkownika
 \end_layout
 
@@ -3939,7 +3939,7 @@ Rejestruj
 
 \begin_deeper
 \begin_layout Enumerate
-jeśli dany login jest już zajęty proszony jest o ponowne wypełnienie tego
+Jeśli dany login jest już zajęty proszony jest o ponowne wypełnienie tego
  pola formularza
 \end_layout
 
@@ -3948,7 +3948,7 @@ jeśli dany login jest już zajęty proszony jest o ponowne wypełnienie tego
 Otrzymuje potwierdzenie rejestracji na podany adres e-mail
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 Logowanie użytkownika
 \end_layout
 
@@ -3974,11 +3974,11 @@ Zaloguj
 
 \begin_deeper
 \begin_layout Enumerate
-jeśli użytkownik podał nieprawidłowe dane, to zostanie o tym poinformowany
+Jeśli użytkownik podał nieprawidłowe dane, to zostanie o tym poinformowany
 \end_layout
 
 \end_deeper
-\begin_layout Section*
+\begin_layout Section
 Dodawanie zawodów, serii, zadań i testów
 \end_layout
 
@@ -4076,7 +4076,7 @@ Zadanie, do którego ma należeć dodawany test
 \end_layout
 
 \begin_layout Enumerate
-Dane wejściowe oraz wyjściowe
+Dane wejściowe oraz wyjściowe (także skompresowane)
 \end_layout
 
 \begin_layout Enumerate
@@ -4093,52 +4093,156 @@ Widoczność
 
 \end_deeper
 \end_deeper
-\begin_layout Section*
+\begin_layout Section
 Zmiana profilu/hasła użytkownika przez administratora
 \end_layout
 
 \begin_layout Standard
 Administrator posiada możliwość edycji dowolnych atrybutów użytkowników.
- Aby tego dokonać wskazuje użytkownika z listy.
+ Aby tego dokonać:
 \end_layout
 
-\begin_layout Section*
+\begin_layout Enumerate
+Wyszukuje użytkownika na liście (np.
+ za pomocą loginu, imienia lub nazwiska)
+\end_layout
+
+\begin_layout Enumerate
+Zmienia pola formularza
+\end_layout
+
+\begin_layout Enumerate
+Naciska przycisk 
+\emph on
+Zapisz
+\end_layout
+
+\begin_layout Section
 Wysyłanie pytań do treści zadania
 \end_layout
 
 \begin_layout Standard
-Użytkownik ma możliwość stawiania pytań dotyczących treści zadania lub pytań
- ogólnych.
- Aby wysłać pytanie wybiera z rozwijalnej listy nazwę zadania lub pozycję
- 
-\emph on
-Ogólne
-\emph default
- i wypełnia treść pytania.
+Uczestnik konkursu ma możliwość stawiania pytań dotyczących treści zadania
+ lub pytań ogólnych.
+ Aby wysłać pytanie uczestnik wykonuje następujące czynności:
 \end_layout
 
-\begin_layout Section*
+\begin_layout Enumerate
+Wybiera z rozwijalnej listy nazwę zadania lub pozycję 
+\emph on
+Ogólne
+\end_layout
+
+\begin_layout Enumerate
+Wypełnia treść pytania
+\end_layout
+
+\begin_layout Enumerate
+Naciska przycisk 
+\emph on
+Wyślij
+\end_layout
+
+\begin_layout Section
 Dodawanie odpowiedzi na pytania
 \end_layout
 
 \begin_layout Standard
-
+Użytkownicy uprawnieni do odpowiadania na pytania mogą to uczynić korzystając
+ z panelu administracyjnego.
+ Aby odpowiedzieć na pytanie użytkownik wykonuje następujące czynności:
 \end_layout
 
-\begin_layout Section*
-Kopiowanie zadania do innej serii
+\begin_layout Enumerate
+Wskazuje w tabeli pytanie, na które zamierza odpowiedzieć, lub tworzy nowe
+ puste pytanie i wybiera zadanie, którego ono dotyczy
 \end_layout
 
-\begin_layout Section*
+\begin_layout Enumerate
+W formularzu odpowiedzi
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Odpisuje na zadane pytanie
+\end_layout
+
+\begin_layout Enumerate
+Decyduje, czy odpowiedź ma być widoczna tylko dla zadającego pytanie, czy
+ dla wszystkich uczestników konkursu
+\end_layout
+
+\begin_layout Enumerate
+Naciska przycisk 
+\emph on
+Odpowiedz
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Kopiowanie zadania do innych zawodów/serii
+\end_layout
+
+\begin_layout Enumerate
+Użytkownik uprawniony wybiera zadanie do skopiowania oraz zawody i serię
+ docelową
+\end_layout
+
+\begin_layout Enumerate
+Po stronie serwera kopiowane są wszystkie dane o zadaniu (treść, limity,
+ testy, itp) oraz rozwiązania użytkowników; kopiowane jest rozwiązanie użytkowni
+ka, w którym otrzymal on największą liczbę punktów.
+ Jeśli użytkownik otrzymał zero punktów, jego rozwiązanie jest ignorowane.
+\end_layout
+
+\begin_layout Section
 Ręczne ocenianie rozwiązania
 \end_layout
 
-\begin_layout Chapter*
+\begin_layout Enumerate
+Użytkownik uprawniony wybiera z tabeli anonimowe rozwiązania.
+ Ma możliwość:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Przeglądania kodu źródłowego
+\end_layout
+
+\begin_layout Enumerate
+Pobierania kodu źródłowego
+\end_layout
+
+\begin_layout Enumerate
+Testowania rozwiązań na serwerze (w przypadku zadań wymagających interakcji)
+ 
+\end_layout
+
+\begin_layout Enumerate
+Testowania pobranych rozwiązań na własnym koputerze
+\end_layout
+
+\begin_layout Enumerate
+Przeglądania i pobierania (także wersji skompresowanej) testów powiązanych
+ z zadaniem
+\end_layout
+
+\begin_layout Enumerate
+Oceniania rozwiązań poszczególnych testów (punkty, czas działania, komentarz)
+ 
+\end_layout
+
+\begin_layout Enumerate
+Komentowania całego rozwiązania
+\end_layout
+
+\end_deeper
+\begin_layout Chapter
 Prototyp graficzny
 \end_layout
 
 \begin_layout Standard
-przydałyby się ładne screenshoty
+[SCREENSHOTS]
 \end_layout
 
 \end_body
