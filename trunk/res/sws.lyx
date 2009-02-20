@@ -109,8 +109,8 @@ infrastruktury sprawdzającej rozwiązania.
 
 \begin_layout Standard
 Dzięki przejrzystemu i funkcjonalnemu interfejsowi WWW aplikacja może poszczycić
- się prostotą użytkowania, więc nawet przez niezbyt doświadczeni użytkownicy
- komputera mogą z niej korzystać.
+ się prostotą użytkowania, więc nawet niezbyt doświadczeni użytkownicy komputera
+ mogą z niej korzystać.
 \end_layout
 
 \begin_layout Section*
@@ -118,22 +118,21 @@ Cel produktu
 \end_layout
 
 \begin_layout Standard
-ZawodyWEB służy do przeprowadzania głównie konkursów programistycznych typu:
- 
+ZawodyWEB służy do przeprowadzania konkursów programistycznych następujących
+ typów: 
 \end_layout
 
 \begin_layout Itemize
 ACM, gdzie główny nacisk kładzie się na szybkie i bezbłędne rozwiązanie
- jak największej liczby zadań, a wynik działania programu niemal natychmiast
- jest widoczny dla zawodników; 
+ jak największej liczby zadań, a wynik działania programu jest widoczny
+ dla zawodników niemal natychmiast; 
 \end_layout
 
 \begin_layout Itemize
 PA, gdzie każde zadanie ma różne testy, sprawdzające poprawność rozwiązania
- i czas jego działania, a wynik działania programu dla różnych testów dostępny
- jest dopiero po zakończeniu możliwości przesyłania rozwiązań (przy czym
- ilość zgłoszeń nadesłanych przez zawodnika, na każde zadanie, może być
- ograniczona); 
+ i czas działania, a wynik działania programu dla różnych testów dostępny
+ jest dopiero po zakończeniu przesyłania rozwiązań (przy czym ilość zgłoszeń
+ nadesłanych przez zawodnika na każde zadanie może być ograniczona); 
 \end_layout
 
 \begin_layout Itemize
@@ -147,8 +146,8 @@ KI, gdzie zawodnicy mogą przesyłać swoje rozwiązania, które następnie są
 Poza wymienionymi wyżej typami konkursów programistycznych, możliwe jest
  dostosowanie systemu, do przeprowadzania sprawdzianów czy nauki, choć w
  dalszej części dokumentacji skupimy się głównie na konkursach.
- Prostota użytkowania aplikacji pozwala skupić się na merytorycznej części
- konkursów a nie na aspektach technicznych.
+ Prostota użytkowania aplikacji pozwala skoncentrować się na merytorycznej
+ części konkursów a nie na aspektach technicznych.
 \end_layout
 
 \begin_layout Section*
@@ -166,7 +165,7 @@ Koordynatorzy
 \emph default
  -- wszelkie osoby chcące w zautomatyzowany sposób publikować problemy o
  charakterze informatycznym, a następnie sprawdzać poprawność nadsyłanych
- rozwiązań tych problemów; w szczególności 
+ rozwiązań; w szczególności 
 \emph on
 organizatorzy
 \emph default
@@ -226,7 +225,7 @@ Bezpieczeństwo
 \begin_layout Standard
 Dzięki systemowi kopii zapasowych oraz dobrze skonfigurowanym politykom
  bezpieczeństwa, aplikacja zapewnia odpowiedni poziom zabezpieczeń w razie
- awarii oraz przed włamaniami, co jest porządane przy organizacji konkursów
+ awarii oraz przed włamaniami, co jest pożądane przy organizacji konkursów
  informatycznych.
 \end_layout
 
@@ -235,7 +234,7 @@ Baza
 \end_layout
 
 \begin_layout Standard
-Tutaj znajdzie się schemat bazy danych.
+[SCHEMAT BAZY DANYCH]
 \end_layout
 
 \begin_layout Chapter*
@@ -243,13 +242,7 @@ Cechy produktu
 \end_layout
 
 \begin_layout Standard
-W poniższej tabeli znajdują się prawie wszystkie cechy produktu przesortortowane
- według ważności, trudności i ryzyka.
- 
-\end_layout
-
-\begin_layout Standard
-Może przydałoby się dopisać opis cech?
+Poniżej znajdują się planowane cechy produktu ułożone według priorytetów.
 \end_layout
 
 \begin_layout Standard
@@ -3790,40 +3783,346 @@ do przesortowania i ewentualnie dopisani/usunięcia zbędnych podsekcji..
 Wysyłanie rozwiązania
 \end_layout
 
-\begin_layout Standard
-wraz z opisem tego, co dzieje się po stronie serwera?
+\begin_layout Enumerate
+Użytkownik wysyła rozwiązanie do serwera WWW
+\end_layout
+
+\begin_layout Enumerate
+Serwer WWW zapisuje informacje o przesłanym rozwiązaniu do bazy danych oraz
+ kolejkuje rozwiązanie jako niesprawdzone
+\end_layout
+
+\begin_layout Enumerate
+Serwer WWW przesyła dane o rozwiązaniu do JudgeManager
+\end_layout
+
+\begin_layout Enumerate
+JudgeManager kolejkuje rozwiązanie jako niesprawdzone oraz przesyła dane
+ o rozwiązaniu do jednego z Judge
+\end_layout
+
+\begin_layout Enumerate
+Judge komunikuje się z bazą danych aby pobrać dane testowe oraz sprawdza
+ rozwiązanie
+\end_layout
+
+\begin_layout Enumerate
+Judge informuje JudgeManagera o tym, że rozwiązaine zostało sprawdzone i
+ przesyła wynik testu do bazy danych
+\end_layout
+
+\begin_layout Enumerate
+Judge Manager informuje serwer WWW, że sprawdzanie zostało zakończone oraz
+ usuwa ze swojej kolejki rozwiązanie
+\end_layout
+
+\begin_layout Enumerate
+Serwer WWW usuwa z kolejki rozwiązanie
 \end_layout
 
 \begin_layout Section*
-Dodawanie zawodów, serii, zadań i testów
+Sprawdzanie rozwiązania przez Judge
+\end_layout
+
+\begin_layout Enumerate
+Judge dostaje identyfikator rozwiązania od JudgeManagera
+\end_layout
+
+\begin_layout Enumerate
+Judge odczytuje z bazy danych informacje o rozwiązaniu (nazwa pliku, kod
+ źródłowy, język, itp)
+\end_layout
+
+\begin_layout Enumerate
+Judge odczytuje z bazy danych informacje o języku (nazwy klas potrzebne
+ do kompilacji, uruchamiania oraz porównywania wyników)
+\end_layout
+
+\begin_layout Enumerate
+Judge kompiluje rozwiązanie użytkownika
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+jeśli nie powiedzie się kompilacja Judge zwraca wynik i kończy działanie
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Judge zaczyna sprawdzać poprawność rozwiązania.
+ Dla każdego testu wykonuje poniższe czynności:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+pobiera dane wejściowe
+\end_layout
+
+\begin_layout Enumerate
+uruchamia za pomocą klasy, pobranej z bazy, program na danych wejściowych
+ i zapamiętuje wynik
+\end_layout
+
+\begin_layout Enumerate
+porównuje wynik z prawidłową odpowiedzią używając specjalnej klasy
+\end_layout
+
+\begin_layout Enumerate
+zapamiętuje wynik
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Judge wysyła informację do JudgeManagera o tym, że rozwiązanie zostało sprawdzon
+e
+\end_layout
+
+\begin_layout Enumerate
+Judge zapisuje wynik do bazy danych
 \end_layout
 
 \begin_layout Section*
 Rejestracja użytkownika
 \end_layout
 
-\begin_layout Section*
-Logowanie się użytkownika
+\begin_layout Enumerate
+Użytkownik wypełnia formularz podając
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+login
+\end_layout
+
+\begin_layout Enumerate
+hasło
+\end_layout
+
+\begin_layout Enumerate
+adres e-mail
+\end_layout
+
+\begin_layout Enumerate
+imię
+\end_layout
+
+\begin_layout Enumerate
+nazwisko
+\end_layout
+
+\begin_layout Enumerate
+datę urodzenia
+\end_layout
+
+\begin_layout Enumerate
+adres zamieszkania
+\end_layout
+
+\begin_layout Enumerate
+informacje o szkołe
+\end_layout
+
+\begin_layout Enumerate
+informacje o nauczycielu
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Przepisuje token z obrazka (CAPTCHA)
+\end_layout
+
+\begin_layout Enumerate
+Naciska przycisk 
+\emph on
+Rejestruj
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+jeśli dany login jest już zajęty proszony jest o ponowne wypełnienie tego
+ pola formularza
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Otrzymuje potwierdzenie rejestracji na podany adres e-mail
 \end_layout
 
 \begin_layout Section*
-Zmiana profilu użytkownika
+Logowanie użytkownika
 \end_layout
 
+\begin_layout Enumerate
+Użytkownik wprowadza następujące dane:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+login
+\end_layout
+
+\begin_layout Enumerate
+hasło
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Naciska przycisk 
+\emph on
+Zaloguj
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+jeśli użytkownik podał nieprawidłowe dane, to zostanie o tym poinformowany
+\end_layout
+
+\end_deeper
 \begin_layout Section*
-Przypominanie hasła
+Dodawanie zawodów, serii, zadań i testów
 \end_layout
 
+\begin_layout Standard
+Dodawać zawody, serie, zadania i testy może jedynie osoba uprawniona, wykorzystu
+jąc panel administracyjny.
+\end_layout
+
+\begin_layout Enumerate
+Uprawniony użytkownik wprowadza następujące dane:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+W przypadku dodawania zawodów:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Nazwę konkursu
+\end_layout
+
+\begin_layout Enumerate
+Typ konkursu
+\end_layout
+
+\begin_layout Enumerate
+Datę rozpoczęcia
+\end_layout
+
+\begin_layout Enumerate
+Informacje techniczne oraz zasady
+\end_layout
+
+\begin_layout Enumerate
+Widoczność
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+W przypadku dodawania serii:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Zawody, do których ma należeć dodawana seria
+\end_layout
+
+\begin_layout Enumerate
+Nazwę serii
+\end_layout
+
+\begin_layout Enumerate
+Daty rozpoczęcia i zakończenia konkursu oraz 
+\emph on
+zamrożenia 
+\emph default
+rankingu
+\end_layout
+
+\begin_layout Enumerate
+Wysokość kary doliczanej za błędne rozwiązanie
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+W przypadku dodawania zadań:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Serię, do której ma należeć dodawane zadania
+\end_layout
+
+\begin_layout Enumerate
+Nazwę zadania oraz jej skrót
+\end_layout
+
+\begin_layout Enumerate
+Treść zadania, w postaci tekstu oraz pliku PDF
+\end_layout
+
+\begin_layout Enumerate
+Limit pamięci
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+W przypadku dodawania testu:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Zadanie, do którego ma należeć dodawany test
+\end_layout
+
+\begin_layout Enumerate
+Dane wejściowe oraz wyjściowe
+\end_layout
+
+\begin_layout Enumerate
+Limit czasu
+\end_layout
+
+\begin_layout Enumerate
+Liczbę punktów
+\end_layout
+
+\begin_layout Enumerate
+Widoczność
+\end_layout
+
+\end_deeper
+\end_deeper
 \begin_layout Section*
 Zmiana profilu/hasła użytkownika przez administratora
+\end_layout
+
+\begin_layout Standard
+Administrator posiada możliwość edycji dowolnych atrybutów użytkowników.
+ Aby tego dokonać wskazuje użytkownika z listy.
+\end_layout
+
+\begin_layout Section*
+Wysyłanie pytań do treści zadania
+\end_layout
+
+\begin_layout Standard
+Użytkownik ma możliwość stawiania pytań dotyczących treści zadania lub pytań
+ ogólnych.
+ Aby wysłać pytanie wybiera z rozwijalnej listy nazwę zadania lub pozycję
+ 
+\emph on
+Ogólne
+\emph default
+ i wypełnia treść pytania.
 \end_layout
 
 \begin_layout Section*
 Dodawanie odpowiedzi na pytania
 \end_layout
 
-\begin_layout Section*
-Wysyłanie pytań do zadania
+\begin_layout Standard
+
 \end_layout
 
 \begin_layout Section*
