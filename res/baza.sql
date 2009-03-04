@@ -127,7 +127,7 @@ CREATE TABLE LANGUAGES_TASKS ( 	id		int not null primary key,
 
 CREATE TABLE SUBMITS_RESULTS_TESTS ( 	id		int not null primary key,
 				submitsId 	int REFERENCES SUBMITS(id),
-			   	resultsId	int REFERENCES RESULTS(id)
+			   	resultsId	int REFERENCES RESULTS(id),
 			   	testsId		int REFERENCES TESTS(id)
 				);
 
