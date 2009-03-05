@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
-import pl.umk.mat.zawodyweb.database.UsersDAO;
 import static org.junit.Assert.*;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 
@@ -47,12 +46,12 @@ public class UsersHibernateDAOTest {
      * Test of findByFirstname method, of class UsersHibernateDAO.
      */
     @Test
-    public void testFindByFirstname() {
-        System.out.println("findByFirstname");
+    public void testGetById() {
+        System.out.println("getById");
         Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-        UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
-        Users user = dao.getById(1);
-        assertEquals(user.getLogin(), "dalton");
+        Users user = DAOFactory.DEFAULT.buildUsersDAO().getById(1);
+        System.out.println(user.getLogin());
         t.commit();
     }
+
 }
