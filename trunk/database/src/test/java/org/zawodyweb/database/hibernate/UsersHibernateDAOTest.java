@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.zawodyweb.database.hibernate;
+package pl.umk.mat.zawodyweb.database.hibernate;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -13,10 +13,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.zawodyweb.database.DAOFactory;
-import org.zawodyweb.database.UsersDAO;
+import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.UsersDAO;
 import static org.junit.Assert.*;
-import org.zawodyweb.database.pojo.Users;
+import pl.umk.mat.zawodyweb.database.pojo.Users;
 
 /**
  *
