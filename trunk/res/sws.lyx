@@ -55,6 +55,9 @@ Rok akademicki: 2008/2009
 \end_layout
 
 \begin_layout Author
+\begin_inset Newline newline
+\end_inset
+
 Sławomir Krysztowiak
 \begin_inset Newline newline
 \end_inset
@@ -234,7 +237,46 @@ Baza
 \end_layout
 
 \begin_layout Standard
-[SCHEMAT BAZY DANYCH]
+Serwerem bazodanowym wykorzystywanym przez aplikację jest PostgreSQL.
+ Poniższy rysunek przedstawia uproszczony schemat bazy danych.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename baza.jpg
+	width 100text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Schemat bazy danych
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Chapter
@@ -3888,11 +3930,6 @@ Obsługa zadań optymalizacyjnych
 Przypadki użycia
 \end_layout
 
-\begin_layout Standard
-do przesortowania i ewentualnie dopisani/usunięcia zbędnych podsekcji..
- ewentualnie cały rozdział do usunięcia
-\end_layout
-
 \begin_layout Section
 Wysyłanie rozwiązania
 \end_layout
@@ -4500,7 +4537,7 @@ Ekran wyboru zadania
 placement h
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
