@@ -1,20 +1,21 @@
 /* tabele */
 
-CREATE TABLE USERS (    id                  int         not null    primary key,
-                        firstName           varchar(40),
-                        lastName            varchar(40),
-                        eMail               varchar(40),
+CREATE TABLE USERS (    id                  serial         not null    primary key,
+                        firstName           text,
+                        lastName            text,
+                        eMail               text,
                         birthDate           date,
                         login               varchar(20),
-                        pass                varchar(32),
-                        address             varchar(80),
-                        school              varchar(80),
+                        pass                varchar(10),
+                        address             text,
+                        school              text,
                         tutor               text,
+                        gaduGadu            int,
                         eMailNotification   int
                     );
 
-CREATE TABLE ROLES (    id                  int         not null    primary key,
-                        name                varchar(40),
+CREATE TABLE ROLES (    id                  serial         not null    primary key,
+                        name                text,
                         addContest          int,
                         editContest         int,
                         delContest          int,
@@ -24,17 +25,16 @@ CREATE TABLE ROLES (    id                  int         not null    primary key,
                         contestant          int
                     );
 
-CREATE TABLE SERIES (	id		int	not null	primary key,
-			name		varchar(40),
+CREATE TABLE SERIES (	id		serial	not null	primary key,
+			name		text,
 			startDate	date,
 			endDate		date,
 			freezeDate	date,
-			unfreezeDate	date,
 			penaltyTime	int
 			);
 
-CREATE TABLE CONTESTS (	id		int	not null	primary key,
-			name		varchar(120),
+CREATE TABLE CONTESTS (	id		serial	not null	primary key,
+			name		text,
 			type		int,
 			startDate	date,
 			about		text,
@@ -43,36 +43,35 @@ CREATE TABLE CONTESTS (	id		int	not null	primary key,
 			visibility	int
 			);
 
-CREATE TABLE SUBMITS (	id		int	not null	primary key,
+CREATE TABLE SUBMITS (	id		serial	not null	primary key,
 			sDate		date,
 			result		int,
-			code		bytea,
-			filename	varchar(255),
-            notes       text
+			code		text,
+			filename	text
 			);
 
-CREATE TABLE TASKS (	id	int	not null	primary key,
-			name	varchar(80),
+CREATE TABLE TASKS (	id	serial	not null	primary key,
+			name	text,
 			text	text,
-			pdf	bytea,
-			abbrev	varchar(5),
+			pdf	varchar(70),
+			abbrev	varchar(10),
 			memlimit int
 			);
 
-CREATE TABLE QUESTIONS (	id		int	not null	primary key,
+CREATE TABLE QUESTIONS (	id		serial	not null	primary key,
 				question	text,
 				answer		text,
 				visibility	int
 				);
 
-CREATE TABLE RESULTS (	id	int	not null	primary key,
+CREATE TABLE RESULTS (	id	serial	not null	primary key,
 			points	int,
 			runTime	int,
 			memory	int,
 			notes	text
 			);
 
-CREATE TABLE TESTS (	id		int	not null	primary key,
+CREATE TABLE TESTS (	id		serial	not null	primary key,
 			input		text,
 			output		text,
 			timeLimit	int,
@@ -80,15 +79,15 @@ CREATE TABLE TESTS (	id		int	not null	primary key,
 			visibility	int
 			);
 
-CREATE TABLE LANGUAGES (	id		int	not null	primary key,
-				name		varchar(40),
-				extension	varchar(8)
+CREATE TABLE LANGUAGES (	id		serial	not null	primary key,
+				name		text,
+				extension	varchar(7)
 				);
 
-CREATE TABLE CLASSES (		id		int	not null	primary key,
-				filename	varchar(255),
+CREATE TABLE CLASSES (		id		serial	not null	primary key,
+				filename	text,
 				version		int,
-				description	varchar(255)
+				description	text
 				);
 
 /* Powiazadania jeden do wielu */
@@ -103,31 +102,29 @@ ALTER TABLE RESULTS ADD testsId int REFERENCES TESTS(id);
 ALTER TABLE LANGUAGES ADD classesId int REFERENCES CLASSES(id);
 ALTER TABLE TASKS ADD classesId int REFERENCES CLASSES(id);
 
-
 /* Powiazania wiele do wielu */
-CREATE TABLE USERS_ROLES ( 	id		int not null primary key,
+CREATE TABLE TASKS_QUESTIONS (
+				id		serial not null primary key,
+				taskId		int REFERENCES TASKS(id),
+				questionId	int REFERENCES QUESTIONS(id)
+				);
+CREATE TABLE USERS_ROLES ( 	id		serial not null primary key,
 				userId 		int REFERENCES USERS(id),
 			   	roleId		int REFERENCES ROLES(id)
 				);
 
-CREATE TABLE SERIES_ROLES ( 	id		int not null primary key,
+CREATE TABLE SERIES_ROLES ( 	id		serial not null primary key,
 				seriesId	int REFERENCES SERIES(id),
 			   	roleId		int REFERENCES ROLES(id)
 				);
 
-CREATE TABLE CONTESTS_ROLES ( 	id		int not null primary key,
+CREATE TABLE CONTESTS_ROLES ( 	id		serial not null primary key,
 				contestsId 	int REFERENCES CONTESTS(id),
 			   	roleId		int REFERENCES ROLES(id)
 				);
 
-CREATE TABLE LANGUAGES_TASKS ( 	id		int not null primary key,
+CREATE TABLE LANGUAGES_TASKS ( 	id		serial not null primary key,
 				tasksId 	int REFERENCES TASKS(id),
 			   	languagesId	int REFERENCES LANGUAGES(id)
 				);
-
-CREATE TABLE SUBMITS_RESULTS_TESTS ( 	id		int not null primary key,
-				submitsId 	int REFERENCES SUBMITS(id),
-			   	resultsId	int REFERENCES RESULTS(id),
-			   	testsId		int REFERENCES TESTS(id)
-				);
-
+				
