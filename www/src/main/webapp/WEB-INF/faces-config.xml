@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE faces-config PUBLIC
+"-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+"http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
+<faces-config>
+    <application>
+        <message-bundle>pl.umk.mat.zawodyweb.www.Messages</message-bundle>
+        <locale-config>
+            <default-locale>pl_PL</default-locale>
+        </locale-config>
+    </application>
+    <managed-bean>
+        <managed-bean-name>sessionBean</managed-bean-name>
+        <managed-bean-class>pl.umk.mat.zawodyweb.www.SessionBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>requestBean</managed-bean-name>
+        <managed-bean-class>pl.umk.mat.zawodyweb.www.RequestBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+</faces-config>
+
