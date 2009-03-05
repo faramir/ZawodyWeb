@@ -1,0 +1,40 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+
+	<!-- You need to complete the configuration here. This is just a sample, you should use a connection pool -->
+	<property name="connection.url">jdbc:postgresql://localhost:5432/zawodyweb</property>
+	<property name="connection.username">zawody</property>
+	<property name="connection.driver_class">org.postgresql.Driver</property>
+	<!-- Your database is PostgreSQL 8.3 -->
+	<property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+	<!-- You can also use org.hibernate.dialect.MySQLInnoDBDialect if all your tables are InnoDBs or org.hibernate.dialect.MySQLMyISAMDialect if all your tables are MyISAMs.-->
+
+	<property name="connection.password">zawody</property>
+	<property name="show_sql">true</property>
+	
+	<!-- Remove this property if you use JTA -->
+	<property name="current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</property>
+		
+	<mapping class="org.zawodyweb.database.pojo.Series" />
+	<mapping class="org.zawodyweb.database.pojo.Users" />
+	<mapping class="org.zawodyweb.database.pojo.SeriesRoles" />
+	<mapping class="org.zawodyweb.database.pojo.SubmitsResultsTests" />
+	<mapping class="org.zawodyweb.database.pojo.Languages" />
+	<mapping class="org.zawodyweb.database.pojo.ContestsRoles" />
+	<mapping class="org.zawodyweb.database.pojo.Tests" />
+	<mapping class="org.zawodyweb.database.pojo.Results" />
+	<mapping class="org.zawodyweb.database.pojo.Classes" />
+	<mapping class="org.zawodyweb.database.pojo.Submits" />
+	<mapping class="org.zawodyweb.database.pojo.Contests" />
+	<mapping class="org.zawodyweb.database.pojo.Questions" />
+	<mapping class="org.zawodyweb.database.pojo.Tasks" />
+	<mapping class="org.zawodyweb.database.pojo.LanguagesTasks" />
+	<mapping class="org.zawodyweb.database.pojo.UsersRoles" />
+	<mapping class="org.zawodyweb.database.pojo.Roles" />
+
+	</session-factory>
+</hibernate-configuration>
