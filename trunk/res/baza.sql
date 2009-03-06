@@ -148,11 +148,3 @@ CREATE TABLE LANGUAGES_TASKS (
         tasksId             int REFERENCES TASKS(id),
         languagesId         int REFERENCES LANGUAGES(id)
 );
-
-CREATE TABLE SUBMITS_RESULTS_TESTS (  
-        id                  serial primary key,
-        submitsId           int REFERENCES SUBMITS(id),
-        resultsId           int REFERENCES RESULTS(id),
-        testsId             int REFERENCES TESTS(id)
-);
-
