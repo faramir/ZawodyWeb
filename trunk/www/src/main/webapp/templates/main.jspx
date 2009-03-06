@@ -57,7 +57,7 @@
                     <a href="register.html">#{messages.registration}</a>
                 </li>
                 <li class="prawa">
-                    <a href="zaloguj.html">#{messages.log_in}</a>
+                    <a href="login.html">#{messages.log_in}</a>
                 </li>
                 <li class="spacer">
                 </li>

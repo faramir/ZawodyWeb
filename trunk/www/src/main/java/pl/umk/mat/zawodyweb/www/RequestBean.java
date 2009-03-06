@@ -2,9 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package pl.umk.mat.zawodyweb.www;
 
+import org.hibernate.Transaction;
+import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.UsersDAO;
+import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 
 /**
@@ -12,10 +15,10 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
  * @author slawek
  */
 public class RequestBean {
-    private Users newUser = new Users();
 
+    private Users newUser = new Users();
     private String repPasswd;
-    
+
     /**
      * @return the newUser
      */
@@ -35,5 +38,19 @@ public class RequestBean {
      */
     public void setRepPasswd(String repPasswd) {
         this.repPasswd = repPasswd;
+    }
+
+    public String registerUser() {
+        Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        try{
+            UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
+            dao.save(newUser);
+            t.commit();
+        }catch(Exception e){
+            t.rollback();
+            return null;
+        }
+
+        return "login";
     }
 }

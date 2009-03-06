@@ -1,0 +1,9 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich">
+    <ui:define name="pageTitle">
+        #{messages.logging}
+    </ui:define>
+    <ui:define name="pageContent">
+        TODO
+    </ui:define>
+</ui:composition>

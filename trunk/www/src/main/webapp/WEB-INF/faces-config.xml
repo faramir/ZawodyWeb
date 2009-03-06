@@ -19,5 +19,18 @@
         <managed-bean-class>pl.umk.mat.zawodyweb.www.RequestBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+    <navigation-rule>
+        <display-name>register_to_login</display-name>
+        <from-view-id>/register.jspx</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                login
+            </from-outcome>
+            <to-view-id>
+                /login.jspx
+            </to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
 </faces-config>
 
