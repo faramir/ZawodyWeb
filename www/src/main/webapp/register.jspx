@@ -1,26 +1,43 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich">
-    <ui:define name="pageTitle">#{messages.registration}</ui:define>
+    <ui:define name="pageTitle">
+        #{messages.registration}
+    </ui:define>
     <ui:define name="pageContent">
-        <a4j:form>
+        <a4j:form id="formRegister">
             <div>
                 <div>
                     #{messages.login}
                 </div>
                 <div>
-                    <h:inputText id="login" required="true" value="#{requestBean.newUser.login}" />
+                    <h:inputText id="login" required="true" value="#{requestBean.newUser.login}" requiredMessage="#{messages.requiredField}" />
+                    <div>
+                        <h:message for="login" />
+                    </div>
                 </div>
                 <div>
                     #{messages.passwd}
                 </div>
                 <div>
-                    <h:inputText secret="true" required="true" value="#{requestBean.newUser.pass}" />
+                    <h:inputSecret id="passwd" required="true" value="#{requestBean.newUser.pass}">
+                        <f:validateLength minimum="6" />
+                    </h:inputSecret>
+                    <div>
+                        <h:message for="passwd" />
+                    </div>
                 </div>
                 <div>
                     #{messages.repeat_passwd}
                 </div>
                 <div>
-                    <h:inputText secret="true" required="true" value="#{requestBean.repPasswd}" />
+                    <h:inputSecret id="repPasswd" required="true" value="#{requestBean.repPasswd}">
+                    </h:inputSecret>
+                    <div>
+                        <h:message for="repPasswd" />
+                    </div>
+                </div>
+                <div>
+                    <a4j:commandButton reRender="formRegister" type="submit" value="#{messages.register}" action="#{requestBean.registerUser}" />
                 </div>
             </div>
         </a4j:form>
