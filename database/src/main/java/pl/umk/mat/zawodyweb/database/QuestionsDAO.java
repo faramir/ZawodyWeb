@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import pl.umk.mat.zawodyweb.database.pojo.Questions;
 /**
  * <p>Generic DAO layer for Questionss</p>
- * <p>Generated at Thu Mar 05 04:19:39 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
  *
  * @author Salto-db Generator v1.1 / EJB3 + Hibernate DAO
  * @see http://www.hibernate.org/328.html
@@ -26,19 +26,19 @@ public interface QuestionsDAO extends GenericDAO<Questions,Integer> {
 	public List<Questions> findByQuestion(String question);
 
 	/**
-	 * Find Questions by answer
-	 */
-	public List<Questions> findByAnswer(String answer);
-
-	/**
 	 * Find Questions by visibility
 	 */
 	public List<Questions> findByVisibility(Integer visibility);
 
 	/**
-	 * Find Questions by userid
+	 * Find Questions by qtype
 	 */
-	public List<Questions> findByUserid(Integer userid);
+	public List<Questions> findByQtype(Integer qtype);
+
+	/**
+	 * Find Questions by usersid
+	 */
+	public List<Questions> findByUsersid(Integer usersid);
 
 	/**
 	 * Find Questions by contestsid
@@ -46,8 +46,8 @@ public interface QuestionsDAO extends GenericDAO<Questions,Integer> {
 	public List<Questions> findByContestsid(Integer contestsid);
 
 	/**
-	 * Find Questions by taksid
+	 * Find Questions by tasksid
 	 */
-	public List<Questions> findByTaksid(Integer taksid);
+	public List<Questions> findByTasksid(Integer tasksid);
 
 }

@@ -6,7 +6,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 
 /**
- * Generated at Thu Mar 05 04:19:39 CET 2009
+ * Generated at Sun Mar 08 19:45:33 CET 2009
  *
  * @author Salto-db Generator v1.1 / EJB3 + Hibernate DAO
  */
@@ -18,6 +18,7 @@ public final class HibernateUtil {
 		try {
 			sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
 		} catch (Throwable ex) {
+
 			throw new ExceptionInInitializerError(ex);
 		}
 	}

@@ -17,14 +17,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.persistence.Embeddable;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import org.hibernate.annotations.GenericGenerator;
 
 /**
  * <p>Pojo mapping TABLE public.users</p>
  *
- * <p>Generated at Thu Mar 05 04:19:38 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:30 CET 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -105,8 +102,8 @@ public class Users implements Serializable {
 	 */
 	@Basic
 	@Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "id", nullable = false)
+	@GeneratedValue
+	@Column(name = "id")
 		public Integer getId() {
 		return id;
 	}

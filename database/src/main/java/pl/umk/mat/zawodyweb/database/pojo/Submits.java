@@ -21,7 +21,7 @@ import javax.persistence.Embeddable;
 /**
  * <p>Pojo mapping TABLE public.submits</p>
  *
- * <p>Generated at Thu Mar 05 04:19:39 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -61,19 +61,19 @@ public class Submits implements Serializable {
 	private String notes;
 	
 	/**
-	 * Attribute tasks
+	 * Attribute problems
 	 */
-	 private Tasks tasks;	
+	 private Problems problems;	
+
+	/**
+	 * Attribute languages
+	 */
+	 private Languages languages;	
 
 	/**
 	 * List of Results
 	 */
 	private List<Results> resultss = null;
-
-	/**
-	 * List of SubmitsResultsTests
-	 */
-	private List<SubmitsResultsTests> submitsResultsTestss = null;
 
 	
 	/**
@@ -81,6 +81,7 @@ public class Submits implements Serializable {
 	 */
 	@Basic
 	@Id
+	@GeneratedValue
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
@@ -174,19 +175,35 @@ public class Submits implements Serializable {
 	}
 	
 	/**
-	 * get tasks
+	 * get problems
 	 */
 	@ManyToOne
-	@JoinColumn(name = "tasksid")
-	public Tasks getTasks() {
-		return this.tasks;
+	@JoinColumn(name = "problemsid")
+	public Problems getProblems() {
+		return this.problems;
 	}
 	
 	/**
-	 * set tasks
+	 * set problems
 	 */
-	public void setTasks(Tasks tasks) {
-		this.tasks = tasks;
+	public void setProblems(Problems problems) {
+		this.problems = problems;
+	}
+
+	/**
+	 * get languages
+	 */
+	@ManyToOne
+	@JoinColumn(name = "languagesid")
+	public Languages getLanguages() {
+		return this.languages;
+	}
+	
+	/**
+	 * set languages
+	 */
+	public void setLanguages(Languages languages) {
+		this.languages = languages;
 	}
 
 	/**
@@ -203,21 +220,6 @@ public class Submits implements Serializable {
 	 */
 	 public void setResultss(List<Results> resultss) {
 	 	this.resultss = resultss;
-	 }
-	/**
-	 * Get the list of SubmitsResultsTests
-	 */
-	 // submitsResultsTestsPK
-	 @OneToMany(mappedBy="submits")
-	 public List<SubmitsResultsTests> getSubmitsResultsTestss() {
-	 	return this.submitsResultsTestss;
-	 }
-	 
-	/**
-	 * Set the list of SubmitsResultsTests
-	 */
-	 public void setSubmitsResultsTestss(List<SubmitsResultsTests> submitsResultsTestss) {
-	 	this.submitsResultsTestss = submitsResultsTestss;
 	 }
 
 

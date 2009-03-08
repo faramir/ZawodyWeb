@@ -21,7 +21,7 @@ import javax.persistence.Embeddable;
 /**
  * <p>Pojo mapping TABLE public.contests</p>
  *
- * <p>Generated at Thu Mar 05 04:19:39 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -92,6 +92,7 @@ public class Contests implements Serializable {
 	 */
 	@Basic
 	@Id
+	@GeneratedValue
 	@Column(name = "id")
 		public Integer getId() {
 		return id;

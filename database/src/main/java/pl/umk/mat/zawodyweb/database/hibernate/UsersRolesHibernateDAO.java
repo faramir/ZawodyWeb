@@ -10,7 +10,7 @@ import org.hibernate.criterion.Restrictions;
 
 /**
  * <p>Hibernate DAO layer for UsersRoless</p>
- * <p>Generated at Thu Mar 05 04:19:39 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
  *
  * @author Salto-db Generator v1.1 / EJB3 + Hibernate DAO
  * @see http://www.hibernate.org/328.html
@@ -20,19 +20,19 @@ public class UsersRolesHibernateDAO extends
 		UsersRolesDAO {
 
 	/**
-	 * Find UsersRoles by userid
+	 * Find UsersRoles by usersid
 	 */
 	@SuppressWarnings("unchecked")
-	public List<UsersRoles> findByUserid(Integer userid) {
-		return findByCriteria(Restrictions.eq("users.userid", userid));
+	public List<UsersRoles> findByUsersid(Integer usersid) {
+		return findByCriteria(Restrictions.eq("users.usersid", usersid));
 	}
 	
 	/**
-	 * Find UsersRoles by roleid
+	 * Find UsersRoles by rolesid
 	 */
 	@SuppressWarnings("unchecked")
-	public List<UsersRoles> findByRoleid(Integer roleid) {
-		return findByCriteria(Restrictions.eq("roles.roleid", roleid));
+	public List<UsersRoles> findByRolesid(Integer rolesid) {
+		return findByCriteria(Restrictions.eq("roles.rolesid", rolesid));
 	}
 	
 

@@ -21,7 +21,7 @@ import javax.persistence.Embeddable;
 /**
  * <p>Pojo mapping TABLE public.classes</p>
  *
- * <p>Generated at Thu Mar 05 04:19:38 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -51,14 +51,19 @@ public class Classes implements Serializable {
 	private String description;
 	
 	/**
+	 * Attribute code.
+	 */
+	private byte[] code;
+	
+	/**
 	 * List of Languages
 	 */
 	private List<Languages> languagess = null;
 
 	/**
-	 * List of Tasks
+	 * List of Problems
 	 */
-	private List<Tasks> taskss = null;
+	private List<Problems> problemss = null;
 
 	
 	/* liste transiente */
@@ -67,6 +72,7 @@ public class Classes implements Serializable {
 	 */
 	@Basic
 	@Id
+	@GeneratedValue
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
@@ -130,6 +136,23 @@ public class Classes implements Serializable {
 		this.description = description;
 	}
 	
+	/* liste transiente */
+	/**
+	 * @return code
+	 */
+	@Basic
+	@Column(name = "code")
+		public byte[] getCode() {
+		return code;
+	}
+
+	/**
+	 * @param code new value for code 
+	 */
+	public void setCode(byte[] code) {
+		this.code = code;
+	}
+	
 	/**
 	 * Get the list of Languages
 	 */
@@ -146,19 +169,19 @@ public class Classes implements Serializable {
 	 	this.languagess = languagess;
 	 }
 	/**
-	 * Get the list of Tasks
+	 * Get the list of Problems
 	 */
-	 // tasksPK
+	 // problemsPK
 	 @OneToMany(mappedBy="classes")
-	 public List<Tasks> getTaskss() {
-	 	return this.taskss;
+	 public List<Problems> getProblemss() {
+	 	return this.problemss;
 	 }
 	 
 	/**
-	 * Set the list of Tasks
+	 * Set the list of Problems
 	 */
-	 public void setTaskss(List<Tasks> taskss) {
-	 	this.taskss = taskss;
+	 public void setProblemss(List<Problems> problemss) {
+	 	this.problemss = problemss;
 	 }
 
 

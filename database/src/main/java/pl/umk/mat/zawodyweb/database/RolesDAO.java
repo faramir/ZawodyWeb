@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import pl.umk.mat.zawodyweb.database.pojo.Roles;
 /**
  * <p>Generic DAO layer for Roless</p>
- * <p>Generated at Thu Mar 05 04:19:39 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
  *
  * @author Salto-db Generator v1.1 / EJB3 + Hibernate DAO
  * @see http://www.hibernate.org/328.html
@@ -28,36 +28,56 @@ public interface RolesDAO extends GenericDAO<Roles,Integer> {
 	/**
 	 * Find Roles by addcontest
 	 */
-	public List<Roles> findByAddcontest(Integer addcontest);
+	public List<Roles> findByAddcontest(Boolean addcontest);
 
 	/**
 	 * Find Roles by editcontest
 	 */
-	public List<Roles> findByEditcontest(Integer editcontest);
+	public List<Roles> findByEditcontest(Boolean editcontest);
 
 	/**
 	 * Find Roles by delcontest
 	 */
-	public List<Roles> findByDelcontest(Integer delcontest);
+	public List<Roles> findByDelcontest(Boolean delcontest);
 
 	/**
 	 * Find Roles by addseries
 	 */
-	public List<Roles> findByAddseries(Integer addseries);
+	public List<Roles> findByAddseries(Boolean addseries);
 
 	/**
 	 * Find Roles by editseries
 	 */
-	public List<Roles> findByEditseries(Integer editseries);
+	public List<Roles> findByEditseries(Boolean editseries);
 
 	/**
 	 * Find Roles by delseries
 	 */
-	public List<Roles> findByDelseries(Integer delseries);
+	public List<Roles> findByDelseries(Boolean delseries);
+
+	/**
+	 * Find Roles by addproblem
+	 */
+	public List<Roles> findByAddproblem(Boolean addproblem);
+
+	/**
+	 * Find Roles by editproblem
+	 */
+	public List<Roles> findByEditproblem(Boolean editproblem);
+
+	/**
+	 * Find Roles by delproblem
+	 */
+	public List<Roles> findByDelproblem(Boolean delproblem);
+
+	/**
+	 * Find Roles by canrate
+	 */
+	public List<Roles> findByCanrate(Boolean canrate);
 
 	/**
 	 * Find Roles by contestant
 	 */
-	public List<Roles> findByContestant(Integer contestant);
+	public List<Roles> findByContestant(Boolean contestant);
 
 }

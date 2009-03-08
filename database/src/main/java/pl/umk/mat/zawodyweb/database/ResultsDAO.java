@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
 /**
  * <p>Generic DAO layer for Resultss</p>
- * <p>Generated at Thu Mar 05 04:19:38 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:31 CET 2009</p>
  *
  * @author Salto-db Generator v1.1 / EJB3 + Hibernate DAO
  * @see http://www.hibernate.org/328.html
@@ -41,9 +41,9 @@ public interface ResultsDAO extends GenericDAO<Results,Integer> {
 	public List<Results> findByNotes(String notes);
 
 	/**
-	 * Find Results by submitid
+	 * Find Results by submitsid
 	 */
-	public List<Results> findBySubmitid(Integer submitid);
+	public List<Results> findBySubmitsid(Integer submitsid);
 
 	/**
 	 * Find Results by testsid

@@ -21,7 +21,7 @@ import javax.persistence.Embeddable;
 /**
  * <p>Pojo mapping TABLE public.tests</p>
  *
- * <p>Generated at Thu Mar 05 04:19:38 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -65,11 +65,6 @@ public class Tests implements Serializable {
 	 */
 	private List<Results> resultss = null;
 
-	/**
-	 * List of SubmitsResultsTests
-	 */
-	private List<SubmitsResultsTests> submitsResultsTestss = null;
-
 	
 	/* liste transiente */
 	/**
@@ -77,6 +72,7 @@ public class Tests implements Serializable {
 	 */
 	@Basic
 	@Id
+	@GeneratedValue
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
@@ -188,21 +184,6 @@ public class Tests implements Serializable {
 	 */
 	 public void setResultss(List<Results> resultss) {
 	 	this.resultss = resultss;
-	 }
-	/**
-	 * Get the list of SubmitsResultsTests
-	 */
-	 // submitsResultsTestsPK
-	 @OneToMany(mappedBy="tests")
-	 public List<SubmitsResultsTests> getSubmitsResultsTestss() {
-	 	return this.submitsResultsTestss;
-	 }
-	 
-	/**
-	 * Set the list of SubmitsResultsTests
-	 */
-	 public void setSubmitsResultsTestss(List<SubmitsResultsTests> submitsResultsTestss) {
-	 	this.submitsResultsTestss = submitsResultsTestss;
 	 }
 
 
