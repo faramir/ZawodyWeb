@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 /**
  * <p>Generic DAO layer for Submitss</p>
- * <p>Generated at Sun Mar 08 19:45:33 CET 2009</p>
+ * <p>Generated at Thu Mar 05 04:19:39 CET 2009</p>
  *
  * @author Salto-db Generator v1.1 / EJB3 + Hibernate DAO
  * @see http://www.hibernate.org/328.html
@@ -46,13 +46,8 @@ public interface SubmitsDAO extends GenericDAO<Submits,Integer> {
 	public List<Submits> findByNotes(String notes);
 
 	/**
-	 * Find Submits by problemsid
+	 * Find Submits by tasksid
 	 */
-	public List<Submits> findByProblemsid(Integer problemsid);
-
-	/**
-	 * Find Submits by languagesid
-	 */
-	public List<Submits> findByLanguagesid(Integer languagesid);
+	public List<Submits> findByTasksid(Integer tasksid);
 
 }
