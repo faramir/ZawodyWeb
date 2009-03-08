@@ -60,7 +60,7 @@ CREATE TABLE SUBMITS (
         notes               text
 );
 
-CREATE TABLE TASKS ( 
+CREATE TABLE PROBLEMS ( 
         id                  serial primary key,
         name                varchar(80),
         text                text,
@@ -72,8 +72,8 @@ CREATE TABLE TASKS (
 CREATE TABLE QUESTIONS ( 
         id                  serial primary key,
         question            text,
-        answer              text,
-        visibility          int
+        visibility          int,
+        qtype               int
 );
 
 CREATE TABLE RESULTS (
@@ -109,42 +109,38 @@ CREATE TABLE CLASSES (
 
 /* Powiazadania jeden do wielu */
 ALTER TABLE SERIES ADD contestsId int REFERENCES CONTESTS(id);
-ALTER TABLE QUESTIONS ADD userId int REFERENCES USERS(id);
+ALTER TABLE QUESTIONS ADD usersId int REFERENCES USERS(id);
 ALTER TABLE QUESTIONS ADD contestsId int REFERENCES CONTESTS(id);
-ALTER TABLE TASKS ADD seriesId int REFERENCES SERIES(id);
-ALTER TABLE RESULTS ADD submitId int REFERENCES SUBMITS(id);
-ALTER TABLE SUBMITS ADD tasksId int REFERENCES TASKS(id);
-ALTER TABLE QUESTIONS ADD taksId int REFERENCES TASKS(id);
+ALTER TABLE PROBLEMS ADD seriesId int REFERENCES SERIES(id);
+ALTER TABLE RESULTS ADD submitsId int REFERENCES SUBMITS(id);
+ALTER TABLE SUBMITS ADD problemsId int REFERENCES PROBLEMS(id);
+ALTER TABLE QUESTIONS ADD tasksId int REFERENCES PROBLEMS(id);
 ALTER TABLE RESULTS ADD testsId int REFERENCES TESTS(id);
 ALTER TABLE LANGUAGES ADD classesId int REFERENCES CLASSES(id);
-ALTER TABLE TASKS ADD classesId int REFERENCES CLASSES(id);
+ALTER TABLE PROBLEMS ADD classesId int REFERENCES CLASSES(id);
 
 /* Powiazania wiele do wielu */
-CREATE TABLE TASKS_QUESTIONS (
-        id                  serial primary key,
-        taskId              int REFERENCES TASKS(id),
-        questionId          int REFERENCES QUESTIONS(id)
-);
 CREATE TABLE USERS_ROLES (  
         id                  serial primary key,
-        userId              int REFERENCES USERS(id),
-        roleId              int REFERENCES ROLES(id)
+        usersId             int REFERENCES USERS(id),
+        rolesId             int REFERENCES ROLES(id)
 );
 
 CREATE TABLE SERIES_ROLES ( 
         id                  serial primary key,
         seriesId            int REFERENCES SERIES(id),
-        roleId              int REFERENCES ROLES(id)
+        rolesId             int REFERENCES ROLES(id)
 );
 
 CREATE TABLE CONTESTS_ROLES ( 
         id                  serial primary key,
         contestsId          int REFERENCES CONTESTS(id),
-        roleId              int REFERENCES ROLES(id)
+        rolesId             int REFERENCES ROLES(id)
 );
 
-CREATE TABLE LANGUAGES_TASKS (
+CREATE TABLE LANGUAGES_PROBLEMS (
         id                  serial primary key,
-        tasksId             int REFERENCES TASKS(id),
+        problemsId          int REFERENCES PROBLEMS(id),
         languagesId         int REFERENCES LANGUAGES(id)
 );
+
