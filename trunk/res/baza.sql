@@ -4,9 +4,9 @@ CREATE TABLE USERS (
         id                  serial primary key,
         firstName           varchar(40),
         lastName            varchar(40),
-        eMail               varchar(40),
+        eMail               varchar(40) unique,
         birthDate           date,
-        login               varchar(20),
+        login               varchar(20) unique,
         pass                varchar(32),
         address             varchar(80),
         school              varchar(80),
@@ -16,7 +16,7 @@ CREATE TABLE USERS (
 
 CREATE TABLE ROLES (  
         id                  serial primary key,
-        name                varchar(40),
+        name                varchar(40) unique,
         addContest          boolean,
         editContest         boolean,
         delContest          boolean,
@@ -42,7 +42,7 @@ CREATE TABLE SERIES (
 
 CREATE TABLE CONTESTS (
         id                  serial primary key,
-        name                varchar(120),
+        name                varchar(120) unique,
         type                int,
         startDate           date,
         about               text,
@@ -95,13 +95,13 @@ CREATE TABLE TESTS (
 
 CREATE TABLE LANGUAGES ( 
         id                  serial primary key,
-        name                varchar(40),
-        extension           varchar(8)
+        name                varchar(40) unique,
+        extension           varchar(8) unique
 );
 
 CREATE TABLE CLASSES ( 
         id                  serial primary key,
-        filename            varchar(255),
+        filename            varchar(255) unique,
         version             int,
         description         varchar(255),
         code                bytea
@@ -118,6 +118,7 @@ ALTER TABLE QUESTIONS ADD tasksId int REFERENCES PROBLEMS(id);
 ALTER TABLE RESULTS ADD testsId int REFERENCES TESTS(id);
 ALTER TABLE LANGUAGES ADD classesId int REFERENCES CLASSES(id);
 ALTER TABLE PROBLEMS ADD classesId int REFERENCES CLASSES(id);
+ALTER TABLE SUBMITS ADD languageId int REFERENCES LANGUAGES(id);
 
 /* Powiazania wiele do wielu */
 CREATE TABLE USERS_ROLES (  
