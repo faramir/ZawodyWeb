@@ -21,7 +21,7 @@ import javax.persistence.Embeddable;
 /**
  * <p>Pojo mapping TABLE public.series</p>
  *
- * <p>Generated at Thu Mar 05 04:19:37 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -71,14 +71,14 @@ public class Series implements Serializable {
 	 private Contests contests;	
 
 	/**
+	 * List of Problems
+	 */
+	private List<Problems> problemss = null;
+
+	/**
 	 * List of SeriesRoles
 	 */
 	private List<SeriesRoles> seriesRoless = null;
-
-	/**
-	 * List of Tasks
-	 */
-	private List<Tasks> taskss = null;
 
 	
 	/**
@@ -86,6 +86,7 @@ public class Series implements Serializable {
 	 */
 	@Basic
 	@Id
+	@GeneratedValue
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
@@ -211,6 +212,21 @@ public class Series implements Serializable {
 	}
 
 	/**
+	 * Get the list of Problems
+	 */
+	 // problemsPK
+	 @OneToMany(mappedBy="series")
+	 public List<Problems> getProblemss() {
+	 	return this.problemss;
+	 }
+	 
+	/**
+	 * Set the list of Problems
+	 */
+	 public void setProblemss(List<Problems> problemss) {
+	 	this.problemss = problemss;
+	 }
+	/**
 	 * Get the list of SeriesRoles
 	 */
 	 // seriesRolesPK
@@ -224,21 +240,6 @@ public class Series implements Serializable {
 	 */
 	 public void setSeriesRoless(List<SeriesRoles> seriesRoless) {
 	 	this.seriesRoless = seriesRoless;
-	 }
-	/**
-	 * Get the list of Tasks
-	 */
-	 // tasksPK
-	 @OneToMany(mappedBy="series")
-	 public List<Tasks> getTaskss() {
-	 	return this.taskss;
-	 }
-	 
-	/**
-	 * Set the list of Tasks
-	 */
-	 public void setTaskss(List<Tasks> taskss) {
-	 	this.taskss = taskss;
 	 }
 
 

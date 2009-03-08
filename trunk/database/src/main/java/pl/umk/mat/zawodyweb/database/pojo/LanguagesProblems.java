@@ -19,16 +19,16 @@ import javax.persistence.Transient;
 import javax.persistence.Embeddable;
 
 /**
- * <p>Pojo mapping TABLE public.languages_tasks</p>
+ * <p>Pojo mapping TABLE public.languages_problems</p>
  *
- * <p>Generated at Thu Mar 05 04:19:39 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:33 CET 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
 @Entity
-@Table(name = "languages_tasks", schema = "public")
+@Table(name = "languages_problems", schema = "public")
 @SuppressWarnings("serial")
-public class LanguagesTasks implements Serializable {
+public class LanguagesProblems implements Serializable {
 
 	/**
 	 * Attribute id.
@@ -36,9 +36,9 @@ public class LanguagesTasks implements Serializable {
 	private Integer id;
 	
 	/**
-	 * Attribute tasks
+	 * Attribute problems
 	 */
-	 private Tasks tasks;	
+	 private Problems problems;	
 
 	/**
 	 * Attribute languages
@@ -51,6 +51,7 @@ public class LanguagesTasks implements Serializable {
 	 */
 	@Basic
 	@Id
+	@GeneratedValue
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
@@ -64,19 +65,19 @@ public class LanguagesTasks implements Serializable {
 	}
 	
 	/**
-	 * get tasks
+	 * get problems
 	 */
 	@ManyToOne
-	@JoinColumn(name = "tasksid")
-	public Tasks getTasks() {
-		return this.tasks;
+	@JoinColumn(name = "problemsid")
+	public Problems getProblems() {
+		return this.problems;
 	}
 	
 	/**
-	 * set tasks
+	 * set problems
 	 */
-	public void setTasks(Tasks tasks) {
-		this.tasks = tasks;
+	public void setProblems(Problems problems) {
+		this.problems = problems;
 	}
 
 	/**

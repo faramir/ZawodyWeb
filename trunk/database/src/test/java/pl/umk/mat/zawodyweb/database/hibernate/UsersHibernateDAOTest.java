@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package pl.umk.mat.zawodyweb.database.hibernate;
 
 import java.sql.Timestamp;
@@ -48,6 +49,9 @@ public class UsersHibernateDAOTest {
     public void testGetById() {
         System.out.println("getById");
         Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        Users user = DAOFactory.DEFAULT.buildUsersDAO().getById(1);
+        System.out.println(user.getLogin());
         t.commit();
     }
+
 }

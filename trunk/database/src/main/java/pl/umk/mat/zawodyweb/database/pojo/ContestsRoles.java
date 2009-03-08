@@ -21,7 +21,7 @@ import javax.persistence.Embeddable;
 /**
  * <p>Pojo mapping TABLE public.contests_roles</p>
  *
- * <p>Generated at Thu Mar 05 04:19:38 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:31 CET 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -51,6 +51,7 @@ public class ContestsRoles implements Serializable {
 	 */
 	@Basic
 	@Id
+	@GeneratedValue
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
@@ -83,7 +84,7 @@ public class ContestsRoles implements Serializable {
 	 * get roles
 	 */
 	@ManyToOne
-	@JoinColumn(name = "roleid")
+	@JoinColumn(name = "rolesid")
 	public Roles getRoles() {
 		return this.roles;
 	}

@@ -21,7 +21,7 @@ import javax.persistence.Embeddable;
 /**
  * <p>Pojo mapping TABLE public.languages</p>
  *
- * <p>Generated at Thu Mar 05 04:19:38 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:31 CET 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -51,9 +51,14 @@ public class Languages implements Serializable {
 	 private Classes classes;	
 
 	/**
-	 * List of LanguagesTasks
+	 * List of LanguagesProblems
 	 */
-	private List<LanguagesTasks> languagesTaskss = null;
+	private List<LanguagesProblems> languagesProblemss = null;
+
+	/**
+	 * List of Submits
+	 */
+	private List<Submits> submitss = null;
 
 	
 	/**
@@ -61,6 +66,7 @@ public class Languages implements Serializable {
 	 */
 	@Basic
 	@Id
+	@GeneratedValue
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
@@ -122,19 +128,34 @@ public class Languages implements Serializable {
 	}
 
 	/**
-	 * Get the list of LanguagesTasks
+	 * Get the list of LanguagesProblems
 	 */
-	 // languagesTasksPK
+	 // languagesProblemsPK
 	 @OneToMany(mappedBy="languages")
-	 public List<LanguagesTasks> getLanguagesTaskss() {
-	 	return this.languagesTaskss;
+	 public List<LanguagesProblems> getLanguagesProblemss() {
+	 	return this.languagesProblemss;
 	 }
 	 
 	/**
-	 * Set the list of LanguagesTasks
+	 * Set the list of LanguagesProblems
 	 */
-	 public void setLanguagesTaskss(List<LanguagesTasks> languagesTaskss) {
-	 	this.languagesTaskss = languagesTaskss;
+	 public void setLanguagesProblemss(List<LanguagesProblems> languagesProblemss) {
+	 	this.languagesProblemss = languagesProblemss;
+	 }
+	/**
+	 * Get the list of Submits
+	 */
+	 // submitsPK
+	 @OneToMany(mappedBy="languages")
+	 public List<Submits> getSubmitss() {
+	 	return this.submitss;
+	 }
+	 
+	/**
+	 * Set the list of Submits
+	 */
+	 public void setSubmitss(List<Submits> submitss) {
+	 	this.submitss = submitss;
 	 }
 
 

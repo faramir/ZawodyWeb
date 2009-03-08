@@ -21,7 +21,7 @@ import javax.persistence.Embeddable;
 /**
  * <p>Pojo mapping TABLE public.questions</p>
  *
- * <p>Generated at Thu Mar 05 04:19:39 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -41,14 +41,14 @@ public class Questions implements Serializable {
 	private String question;
 	
 	/**
-	 * Attribute answer.
-	 */
-	private String answer;
-	
-	/**
 	 * Attribute visibility.
 	 */
 	private Integer visibility;
+	
+	/**
+	 * Attribute qtype.
+	 */
+	private Integer qtype;
 	
 	/**
 	 * Attribute users
@@ -61,9 +61,9 @@ public class Questions implements Serializable {
 	 private Contests contests;	
 
 	/**
-	 * Attribute tasks
+	 * Attribute problems
 	 */
-	 private Tasks tasks;	
+	 private Problems problems;	
 
 	
 	/**
@@ -71,6 +71,7 @@ public class Questions implements Serializable {
 	 */
 	@Basic
 	@Id
+	@GeneratedValue
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
@@ -100,22 +101,6 @@ public class Questions implements Serializable {
 	}
 	
 	/**
-	 * @return answer
-	 */
-	@Basic
-	@Column(name = "answer", length = 2147483647)
-		public String getAnswer() {
-		return answer;
-	}
-
-	/**
-	 * @param answer new value for answer 
-	 */
-	public void setAnswer(String answer) {
-		this.answer = answer;
-	}
-	
-	/**
 	 * @return visibility
 	 */
 	@Basic
@@ -132,10 +117,26 @@ public class Questions implements Serializable {
 	}
 	
 	/**
+	 * @return qtype
+	 */
+	@Basic
+	@Column(name = "qtype")
+		public Integer getQtype() {
+		return qtype;
+	}
+
+	/**
+	 * @param qtype new value for qtype 
+	 */
+	public void setQtype(Integer qtype) {
+		this.qtype = qtype;
+	}
+	
+	/**
 	 * get users
 	 */
 	@ManyToOne
-	@JoinColumn(name = "userid")
+	@JoinColumn(name = "usersid")
 	public Users getUsers() {
 		return this.users;
 	}
@@ -164,19 +165,19 @@ public class Questions implements Serializable {
 	}
 
 	/**
-	 * get tasks
+	 * get problems
 	 */
 	@ManyToOne
-	@JoinColumn(name = "taksid")
-	public Tasks getTasks() {
-		return this.tasks;
+	@JoinColumn(name = "tasksid")
+	public Problems getProblems() {
+		return this.problems;
 	}
 	
 	/**
-	 * set tasks
+	 * set problems
 	 */
-	public void setTasks(Tasks tasks) {
-		this.tasks = tasks;
+	public void setProblems(Problems problems) {
+		this.problems = problems;
 	}
 
 

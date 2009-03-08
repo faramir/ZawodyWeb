@@ -19,16 +19,16 @@ import javax.persistence.Transient;
 import javax.persistence.Embeddable;
 
 /**
- * <p>Pojo mapping TABLE public.tasks</p>
+ * <p>Pojo mapping TABLE public.problems</p>
  *
- * <p>Generated at Thu Mar 05 04:19:39 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:31 CET 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
 @Entity
-@Table(name = "tasks", schema = "public")
+@Table(name = "problems", schema = "public")
 @SuppressWarnings("serial")
-public class Tasks implements Serializable {
+public class Problems implements Serializable {
 
 	/**
 	 * Attribute id.
@@ -71,9 +71,9 @@ public class Tasks implements Serializable {
 	 private Classes classes;	
 
 	/**
-	 * List of LanguagesTasks
+	 * List of LanguagesProblems
 	 */
-	private List<LanguagesTasks> languagesTaskss = null;
+	private List<LanguagesProblems> languagesProblemss = null;
 
 	/**
 	 * List of Questions
@@ -91,6 +91,7 @@ public class Tasks implements Serializable {
 	 */
 	@Basic
 	@Id
+	@GeneratedValue
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
@@ -216,25 +217,25 @@ public class Tasks implements Serializable {
 	}
 
 	/**
-	 * Get the list of LanguagesTasks
+	 * Get the list of LanguagesProblems
 	 */
-	 // languagesTasksPK
-	 @OneToMany(mappedBy="tasks")
-	 public List<LanguagesTasks> getLanguagesTaskss() {
-	 	return this.languagesTaskss;
+	 // languagesProblemsPK
+	 @OneToMany(mappedBy="problems")
+	 public List<LanguagesProblems> getLanguagesProblemss() {
+	 	return this.languagesProblemss;
 	 }
 	 
 	/**
-	 * Set the list of LanguagesTasks
+	 * Set the list of LanguagesProblems
 	 */
-	 public void setLanguagesTaskss(List<LanguagesTasks> languagesTaskss) {
-	 	this.languagesTaskss = languagesTaskss;
+	 public void setLanguagesProblemss(List<LanguagesProblems> languagesProblemss) {
+	 	this.languagesProblemss = languagesProblemss;
 	 }
 	/**
 	 * Get the list of Questions
 	 */
 	 // questionsPK
-	 @OneToMany(mappedBy="tasks")
+	 @OneToMany(mappedBy="problems")
 	 public List<Questions> getQuestionss() {
 	 	return this.questionss;
 	 }
@@ -249,7 +250,7 @@ public class Tasks implements Serializable {
 	 * Get the list of Submits
 	 */
 	 // submitsPK
-	 @OneToMany(mappedBy="tasks")
+	 @OneToMany(mappedBy="problems")
 	 public List<Submits> getSubmitss() {
 	 	return this.submitss;
 	 }

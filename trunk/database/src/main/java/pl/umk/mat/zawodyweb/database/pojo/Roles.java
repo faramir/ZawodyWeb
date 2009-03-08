@@ -21,7 +21,7 @@ import javax.persistence.Embeddable;
 /**
  * <p>Pojo mapping TABLE public.roles</p>
  *
- * <p>Generated at Thu Mar 05 04:19:39 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -43,37 +43,57 @@ public class Roles implements Serializable {
 	/**
 	 * Attribute addcontest.
 	 */
-	private Integer addcontest;
+	private Boolean addcontest;
 	
 	/**
 	 * Attribute editcontest.
 	 */
-	private Integer editcontest;
+	private Boolean editcontest;
 	
 	/**
 	 * Attribute delcontest.
 	 */
-	private Integer delcontest;
+	private Boolean delcontest;
 	
 	/**
 	 * Attribute addseries.
 	 */
-	private Integer addseries;
+	private Boolean addseries;
 	
 	/**
 	 * Attribute editseries.
 	 */
-	private Integer editseries;
+	private Boolean editseries;
 	
 	/**
 	 * Attribute delseries.
 	 */
-	private Integer delseries;
+	private Boolean delseries;
+	
+	/**
+	 * Attribute addproblem.
+	 */
+	private Boolean addproblem;
+	
+	/**
+	 * Attribute editproblem.
+	 */
+	private Boolean editproblem;
+	
+	/**
+	 * Attribute delproblem.
+	 */
+	private Boolean delproblem;
+	
+	/**
+	 * Attribute canrate.
+	 */
+	private Boolean canrate;
 	
 	/**
 	 * Attribute contestant.
 	 */
-	private Integer contestant;
+	private Boolean contestant;
 	
 	/**
 	 * List of ContestsRoles
@@ -97,6 +117,7 @@ public class Roles implements Serializable {
 	 */
 	@Basic
 	@Id
+	@GeneratedValue
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
@@ -132,14 +153,14 @@ public class Roles implements Serializable {
 	 */
 	@Basic
 	@Column(name = "addcontest")
-		public Integer getAddcontest() {
+		public Boolean getAddcontest() {
 		return addcontest;
 	}
 
 	/**
 	 * @param addcontest new value for addcontest 
 	 */
-	public void setAddcontest(Integer addcontest) {
+	public void setAddcontest(Boolean addcontest) {
 		this.addcontest = addcontest;
 	}
 	
@@ -149,14 +170,14 @@ public class Roles implements Serializable {
 	 */
 	@Basic
 	@Column(name = "editcontest")
-		public Integer getEditcontest() {
+		public Boolean getEditcontest() {
 		return editcontest;
 	}
 
 	/**
 	 * @param editcontest new value for editcontest 
 	 */
-	public void setEditcontest(Integer editcontest) {
+	public void setEditcontest(Boolean editcontest) {
 		this.editcontest = editcontest;
 	}
 	
@@ -166,14 +187,14 @@ public class Roles implements Serializable {
 	 */
 	@Basic
 	@Column(name = "delcontest")
-		public Integer getDelcontest() {
+		public Boolean getDelcontest() {
 		return delcontest;
 	}
 
 	/**
 	 * @param delcontest new value for delcontest 
 	 */
-	public void setDelcontest(Integer delcontest) {
+	public void setDelcontest(Boolean delcontest) {
 		this.delcontest = delcontest;
 	}
 	
@@ -183,14 +204,14 @@ public class Roles implements Serializable {
 	 */
 	@Basic
 	@Column(name = "addseries")
-		public Integer getAddseries() {
+		public Boolean getAddseries() {
 		return addseries;
 	}
 
 	/**
 	 * @param addseries new value for addseries 
 	 */
-	public void setAddseries(Integer addseries) {
+	public void setAddseries(Boolean addseries) {
 		this.addseries = addseries;
 	}
 	
@@ -200,14 +221,14 @@ public class Roles implements Serializable {
 	 */
 	@Basic
 	@Column(name = "editseries")
-		public Integer getEditseries() {
+		public Boolean getEditseries() {
 		return editseries;
 	}
 
 	/**
 	 * @param editseries new value for editseries 
 	 */
-	public void setEditseries(Integer editseries) {
+	public void setEditseries(Boolean editseries) {
 		this.editseries = editseries;
 	}
 	
@@ -217,15 +238,83 @@ public class Roles implements Serializable {
 	 */
 	@Basic
 	@Column(name = "delseries")
-		public Integer getDelseries() {
+		public Boolean getDelseries() {
 		return delseries;
 	}
 
 	/**
 	 * @param delseries new value for delseries 
 	 */
-	public void setDelseries(Integer delseries) {
+	public void setDelseries(Boolean delseries) {
 		this.delseries = delseries;
+	}
+	
+	/* liste transiente */
+	/**
+	 * @return addproblem
+	 */
+	@Basic
+	@Column(name = "addproblem")
+		public Boolean getAddproblem() {
+		return addproblem;
+	}
+
+	/**
+	 * @param addproblem new value for addproblem 
+	 */
+	public void setAddproblem(Boolean addproblem) {
+		this.addproblem = addproblem;
+	}
+	
+	/* liste transiente */
+	/**
+	 * @return editproblem
+	 */
+	@Basic
+	@Column(name = "editproblem")
+		public Boolean getEditproblem() {
+		return editproblem;
+	}
+
+	/**
+	 * @param editproblem new value for editproblem 
+	 */
+	public void setEditproblem(Boolean editproblem) {
+		this.editproblem = editproblem;
+	}
+	
+	/* liste transiente */
+	/**
+	 * @return delproblem
+	 */
+	@Basic
+	@Column(name = "delproblem")
+		public Boolean getDelproblem() {
+		return delproblem;
+	}
+
+	/**
+	 * @param delproblem new value for delproblem 
+	 */
+	public void setDelproblem(Boolean delproblem) {
+		this.delproblem = delproblem;
+	}
+	
+	/* liste transiente */
+	/**
+	 * @return canrate
+	 */
+	@Basic
+	@Column(name = "canrate")
+		public Boolean getCanrate() {
+		return canrate;
+	}
+
+	/**
+	 * @param canrate new value for canrate 
+	 */
+	public void setCanrate(Boolean canrate) {
+		this.canrate = canrate;
 	}
 	
 	/* liste transiente */
@@ -234,14 +323,14 @@ public class Roles implements Serializable {
 	 */
 	@Basic
 	@Column(name = "contestant")
-		public Integer getContestant() {
+		public Boolean getContestant() {
 		return contestant;
 	}
 
 	/**
 	 * @param contestant new value for contestant 
 	 */
-	public void setContestant(Integer contestant) {
+	public void setContestant(Boolean contestant) {
 		this.contestant = contestant;
 	}
 	

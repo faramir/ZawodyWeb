@@ -19,22 +19,21 @@
 	<!-- Remove this property if you use JTA -->
 	<property name="current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</property>
 		
-	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Series" />
 	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Users" />
 	<mapping class="pl.umk.mat.zawodyweb.database.pojo.SeriesRoles" />
-	<mapping class="pl.umk.mat.zawodyweb.database.pojo.SubmitsResultsTests" />
 	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Languages" />
 	<mapping class="pl.umk.mat.zawodyweb.database.pojo.ContestsRoles" />
-	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Tests" />
 	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Results" />
-	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Classes" />
-	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Submits" />
-	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Contests" />
+	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Problems" />
 	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Questions" />
-	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Tasks" />
-	<mapping class="pl.umk.mat.zawodyweb.database.pojo.LanguagesTasks" />
 	<mapping class="pl.umk.mat.zawodyweb.database.pojo.UsersRoles" />
 	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Roles" />
+	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Series" />
+	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Tests" />
+	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Classes" />
+	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Contests" />
+	<mapping class="pl.umk.mat.zawodyweb.database.pojo.Submits" />
+	<mapping class="pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems" />
 
 	</session-factory>
 </hibernate-configuration>

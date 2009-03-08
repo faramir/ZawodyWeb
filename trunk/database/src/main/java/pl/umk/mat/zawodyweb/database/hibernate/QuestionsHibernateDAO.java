@@ -10,7 +10,7 @@ import org.hibernate.criterion.Restrictions;
 
 /**
  * <p>Hibernate DAO layer for Questionss</p>
- * <p>Generated at Thu Mar 05 04:19:39 CET 2009</p>
+ * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
  *
  * @author Salto-db Generator v1.1 / EJB3 + Hibernate DAO
  * @see http://www.hibernate.org/328.html
@@ -27,13 +27,6 @@ public class QuestionsHibernateDAO extends
 	}
 	
 	/**
-	 * Find Questions by answer
-	 */
-	public List<Questions> findByAnswer(String answer) {
-		return findByCriteria(Restrictions.eq("answer", answer));
-	}
-	
-	/**
 	 * Find Questions by visibility
 	 */
 	public List<Questions> findByVisibility(Integer visibility) {
@@ -41,11 +34,18 @@ public class QuestionsHibernateDAO extends
 	}
 	
 	/**
-	 * Find Questions by userid
+	 * Find Questions by qtype
+	 */
+	public List<Questions> findByQtype(Integer qtype) {
+		return findByCriteria(Restrictions.eq("qtype", qtype));
+	}
+	
+	/**
+	 * Find Questions by usersid
 	 */
 	@SuppressWarnings("unchecked")
-	public List<Questions> findByUserid(Integer userid) {
-		return findByCriteria(Restrictions.eq("users.userid", userid));
+	public List<Questions> findByUsersid(Integer usersid) {
+		return findByCriteria(Restrictions.eq("users.usersid", usersid));
 	}
 	
 	/**
@@ -57,11 +57,11 @@ public class QuestionsHibernateDAO extends
 	}
 	
 	/**
-	 * Find Questions by taksid
+	 * Find Questions by tasksid
 	 */
 	@SuppressWarnings("unchecked")
-	public List<Questions> findByTaksid(Integer taksid) {
-		return findByCriteria(Restrictions.eq("tasks.taksid", taksid));
+	public List<Questions> findByTasksid(Integer tasksid) {
+		return findByCriteria(Restrictions.eq("problems.tasksid", tasksid));
 	}
 	
 
