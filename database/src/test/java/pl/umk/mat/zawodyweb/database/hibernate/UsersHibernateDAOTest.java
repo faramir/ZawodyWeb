@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.UsersDAO;
 import static org.junit.Assert.*;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 
@@ -49,8 +50,16 @@ public class UsersHibernateDAOTest {
     public void testGetById() {
         System.out.println("getById");
         Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-        Users user = DAOFactory.DEFAULT.buildUsersDAO().getById(1);
-        System.out.println(user.getLogin());
+        UsersDAO dao = HibernateDAOFactory.DEFAULT.buildUsersDAO();
+        Users user =new Users();
+        user.setId(0);
+        user.setLogin("test_user");
+        user.setPass("test_user");
+        dao.save(user);
+        assertTrue(user.getId() > 0);
+        user = dao.findByLogin("test_user").get(0);
+        assertTrue(user != null);
+        dao.delete(user);
         t.commit();
     }
 
