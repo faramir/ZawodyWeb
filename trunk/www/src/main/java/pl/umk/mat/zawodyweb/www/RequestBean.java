@@ -18,7 +18,8 @@ public class RequestBean {
 
     private Users newUser = new Users();
     private String repPasswd;
-
+    private String captchaSessionKey;
+    
     /**
      * @return the newUser
      */
@@ -52,5 +53,19 @@ public class RequestBean {
         }
 
         return "login";
+    }
+
+    /**
+     * @return the captchaSessionKey
+     */
+    public String getCaptchaSessionKey() {
+        return captchaSessionKey;
+    }
+
+    /**
+     * @param captchaSessionKey the captchaSessionKey to set
+     */
+    public void setCaptchaSessionKey(String captchaSessionKey) {
+        this.captchaSessionKey = captchaSessionKey;
     }
 }

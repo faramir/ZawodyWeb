@@ -59,6 +59,10 @@
             <url>http://repo1.maven.org/maven2</url>
         </repository>
         <repository>
+            <id>people.apache.org</id>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+        </repository>
+        <repository>
             <releases>
             </releases>
             <snapshots>
@@ -119,6 +123,11 @@
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-impl</artifactId>
             <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.myfaces.tomahawk</groupId>
+            <artifactId>tomahawk-sandbox</artifactId>
+            <version>1.1.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>

@@ -4,6 +4,7 @@ import java.util.List;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -54,7 +55,7 @@ public class Users implements Serializable {
 	/**
 	 * Attribute birthdate.
 	 */
-	private Timestamp birthdate;
+	private Date birthdate;
 	
 	/**
 	 * Attribute login.
@@ -173,14 +174,14 @@ public class Users implements Serializable {
 	 */
 	@Basic
 	@Column(name = "birthdate")
-		public Timestamp getBirthdate() {
+		public Date getBirthdate() {
 		return birthdate;
 	}
 
 	/**
 	 * @param birthdate new value for birthdate 
 	 */
-	public void setBirthdate(Timestamp birthdate) {
+	public void setBirthdate(Date birthdate) {
 		this.birthdate = birthdate;
 	}
 	
