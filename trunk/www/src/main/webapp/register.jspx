@@ -1,13 +1,13 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:s="http://myfaces.apache.org/sandbox">
     <ui:define name="pageTitle">
-        #{messages.registration}
+        ${messages.registration}
     </ui:define>
     <ui:define name="pageContent">
         <a4j:form id="formRegister">
             <div>
                 <div>
-                    #{messages.login}:
+                    ${messages.login}:
                 </div>
                 <div>
                     <h:inputText id="login" required="true" value="#{requestBean.newUser.login}" requiredMessage="#{messages.requiredField}" />
@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div>
-                    #{messages.passwd}:
+                    ${messages.passwd}:
                 </div>
                 <div>
                     <h:inputSecret id="passwd" required="true" value="#{requestBean.newUser.pass}">
@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div>
-                    #{messages.repeat_passwd}:
+                    ${messages.repeat_passwd}:
                 </div>
                 <div>
                     <h:inputSecret id="repPasswd" required="true" value="#{requestBean.repPasswd}">
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div>
-                    #{messages.email}:
+                    ${messages.email}:
                 </div>
                 <div>
                     <h:inputText id="email" required="true" value="#{requestBean.newUser.email}">
@@ -48,7 +48,7 @@
                     </div>
                 </div>
                 <div>
-                    #{messages.firstname}:
+                    ${messages.firstname}:
                 </div>
                 <div>
                     <h:inputText id="firstname" required="true" value="#{requestBean.newUser.firstname}">
@@ -58,7 +58,7 @@
                     </div>
                 </div>
                 <div>
-                    #{messages.lastname}:
+                    ${messages.lastname}:
                 </div>
                 <div>
                     <h:inputText id="lastname" required="true" value="#{requestBean.newUser.lastname}">
@@ -68,7 +68,7 @@
                     </div>
                 </div>
                 <div>
-                    #{messages.birthdate}
+                    ${messages.birthdate}
                 </div>
                 <div>
                     <h:inputText id="birthdate" required="false" value="#{requestBean.newUser.birthdate}">
@@ -79,21 +79,21 @@
                     </div>
                 </div>
                 <div>
-                    #{messages.homeaddress}
+                    ${messages.homeaddress}
                 </div>
                 <div>
                     <h:inputTextarea id="homeaddress" required="false" value="#{requestBean.newUser.address}">
                     </h:inputTextarea>
                 </div>
                 <div>
-                    #{messages.school}
+                    ${messages.school}
                 </div>
                 <div>
                     <h:inputText id="school" required="false" value="#{requestBean.newUser.school}">
                     </h:inputText>
                 </div>
                 <div>
-                    #{messages.tutor}
+                    ${messages.tutor}
                 </div>
                 <div>
                     <h:inputText id="tutor" required="false" value="#{requestBean.newUser.tutor}">
