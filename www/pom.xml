@@ -63,8 +63,6 @@
             <url>http://people.apache.org/repo/m2-snapshot-repository</url>
         </repository>
         <repository>
-            <releases>
-            </releases>
             <snapshots>
                 <enabled>false</enabled>
                 <updatePolicy>never</updatePolicy>
@@ -100,6 +98,28 @@
             <version>4.4</version>
         </dependency>
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>2.5.1</version>
@@ -130,16 +150,6 @@
             <version>1.1.7-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>taglibs</groupId>
-            <artifactId>standard</artifactId>
-            <version>1.1.2</version>
-        </dependency>
-        <dependency>
             <groupId>org.restfaces</groupId>
             <artifactId>restfaces</artifactId>
             <version>1.2</version>
@@ -160,11 +170,6 @@
             <version>1.4</version>
         </dependency>
         <dependency>
-            <groupId>${pom.groupId}</groupId>
-            <artifactId>database</artifactId>
-            <version>3.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.richfaces.ui</groupId>
             <artifactId>richfaces-ui</artifactId>
             <version>3.3.0.GA</version>
@@ -179,8 +184,8 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
     </dependencies>
+    <!-- -->
     <properties>
         <netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
     </properties>

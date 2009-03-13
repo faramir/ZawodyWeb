@@ -1,11 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
       xmlns:c="http://java.sun.com/jstl/core">
     <f:loadBundle basename="pl.umk.mat.zawodyweb.www.Messages" var="messages" />
     <head>
         <title>
-            #{messages.title} -
+            ${messages.title} -
             <ui:insert name="pageTitle" />
         </title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -15,49 +15,49 @@
     <body id="home">
         <img src="media/images/logo.png" alt="logo" />
         <p id="clock">2008-12-15 22:56:48</p>
-        <h1>#{messages.wmii}</h1>
-        <h2>#{messages.uni}</h2>
+        <h1>${messages.wmii}</h1>
+        <h2>${messages.uni}</h2>
         <div id="page">
-            <h1>#{messages.title} - Eliminacje WMiI UMK do AMPPZ 2008</h1>
+            <h1>${messages.title} - Eliminacje WMiI UMK do AMPPZ 2008</h1>
         </div>
         <div id="left_menu">
             <ul>
                 <li>
-                    <a href="zadania.html">#{messages.problems}</a>
+                    <a href="zadania.html">${messages.problems}</a>
                 </li>
                 <li>
-                    <a href="ranking.html">#{messages.ranking}</a>
+                    <a href="ranking.html">${messages.ranking}</a>
                 </li>
                 <li>
-                    <a href="pytania.html">#{messages.questions}</a>
+                    <a href="pytania.html">${messages.questions}</a>
                 </li>
                 <li>
-                    <a href="harmonogram.html">#{messages.timetable}</a>
+                    <a href="harmonogram.html">${messages.timetable}</a>
                 </li>
                 <li class="last">
-                    <a href="regulamin.html">#{messages.rules}</a>
+                    <a href="regulamin.html">${messages.rules}</a>
                 </li>
             </ul>
         </div>
         <div id="top_menu">
             <ul>
                 <li id="current">
-                    <a href="index.html">#{messages.contest}</a>
+                    <a href="index.html">${messages.contest}</a>
                 </li>
                 <li>
-                    <a href="profil.html">#{messages.profile}</a>
+                    <a href="profil.html">${messages.profile}</a>
                 </li>
                 <li>
-                    <a href="wyslij.html">#{messages.send_now}</a>
+                    <a href="wyslij.html">${messages.send_now}</a>
                 </li>
                 <li class="last">
-                    <a href="ozawodach.html">#{messages.about_contest}</a>
+                    <a href="ozawodach.html">${messages.about_contest}</a>
                 </li>
                 <li class="prawa">
-                    <a href="register.html">#{messages.registration}</a>
+                    <a href="register.html">${messages.registration}</a>
                 </li>
                 <li class="prawa">
-                    <a href="login.html">#{messages.log_in}</a>
+                    <a href="login.html">${messages.log_in}</a>
                 </li>
                 <li class="spacer">
                 </li>
