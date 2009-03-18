@@ -14,7 +14,7 @@
     </head>
     <body id="home">
         <img src="media/images/logo.png" alt="logo" />
-        <p id="clock">2008-12-15 22:56:48</p>
+        <p class="clock">2008-12-15 22:56:48</p>
         <h1>${messages.wmii}</h1>
         <h2>${messages.uni}</h2>
         <div id="page">
@@ -41,7 +41,7 @@
         </div>
         <div id="top_menu">
             <ul>
-                <li id="current">
+                <li>
                     <a href="index.html">${messages.contest}</a>
                 </li>
                 <li>
@@ -60,6 +60,7 @@
                     <a href="login.html">${messages.log_in}</a>
                 </li>
                 <li class="spacer">
+                    ${messages.spacer}
                 </li>
             </ul>
         </div>
