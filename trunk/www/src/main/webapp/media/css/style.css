@@ -207,7 +207,19 @@ border:1px solid #999999;
 float:right;
 clear:right;
 width: 250px;
-background: #decff4;
+/*background: #decff4;*/
+background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+}
+
+.profilform textarea {
+margin-right:20px;
+margin-top: 10px;
+border:1px solid #999999;
+float:right;
+clear:right;
+width: 250px;
+/*background: #decff4;*/
+background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x50.png) repeat-x;
 }
 
 .profilform input.submit {
@@ -221,7 +233,7 @@ background: #decff4;
 	float: right;
 }
 
-.profilform input:focus, .profilform input:hover {
+.profilform input:focus, .profilform input:hover, .profilform textarea:focus, .profilform textarea:hover {
 border:1px solid #333333;
 }
 
