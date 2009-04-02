@@ -82,9 +82,10 @@
                 </div>
                 <div>
                     <h:outputLabel for="captcha">${messages.text_from_picture}:</h:outputLabel>
-                    <h:inputText id="captcha" required="true" value="#{requestBean.captcha}" />
+                    <h:inputText id="captcha" required="true" validator="#{requestBean.validateCaptcha}" />
+                    <h:message for="captcha" errorStyle="color:red; font-size:0.5em; float:right" />
                     <div class="captcha">
-                        <s:captcha captchaSessionKeyName="captchaKey" />
+                        <s:captcha id="captchaImage" captchaSessionKeyName="captchaKey" />
                     </div>
                     <br class="clear" />
                     <br />
