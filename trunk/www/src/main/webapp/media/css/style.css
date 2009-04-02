@@ -183,22 +183,6 @@ background: #decff4;
 border:1px solid #333333;
 }
 
-.row
-{
-    text-align:left;
-}
-
-.row label
-{
-    display:block;
-    float:left;
-}
-
-.row input
-{
-    float:left;
-}
-
 .clear
 {
     clear:both;
@@ -220,6 +204,7 @@ margin:auto;
 .profilform label{
 display:block;
 height:2em;
+float:left;
 background-color:transparent;
 padding:10px 10px 0;
 }
