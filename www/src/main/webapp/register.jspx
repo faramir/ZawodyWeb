@@ -81,6 +81,15 @@
                     <br class="clear" />
                 </div>
                 <div>
+                    <h:outputLabel for="captcha">${messages.text_from_picture}:</h:outputLabel>
+                    <h:inputText id="captcha" required="true" value="#{requestBean.captcha}" />
+                    <div class="captcha">
+                        <s:captcha captchaSessionKeyName="captchaKey" />
+                    </div>
+                    <br class="clear" />
+                    <br />
+                </div>
+                <div>
                     <a4j:commandButton reRender="formRegister" styleClass="submit" type="submit" value="#{messages.register}" action="#{requestBean.registerUser}" />
                 </div>
             </fieldset>
