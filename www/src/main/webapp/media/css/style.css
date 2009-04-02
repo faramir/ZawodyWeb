@@ -183,6 +183,29 @@ background: #decff4;
 border:1px solid #333333;
 }
 
+.row
+{
+    text-align:left;
+}
+
+.row label
+{
+    display:block;
+    float:left;
+}
+
+.row input
+{
+    float:left;
+}
+
+.clear
+{
+    clear:both;
+    font-size:0;
+    height:0;
+}
+
 /* PROFILFORM */
 .profilform {
 width:80%;
