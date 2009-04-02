@@ -6,13 +6,13 @@
     <ui:define name="pageContent">
         <a4j:form id="formRegister" styleClass="profilform">
             <fieldset>
-                <div class="row">
+                <div>
                     <h:outputLabel for="login">${messages.login}:</h:outputLabel>
                     <h:inputText id="login" required="true" value="#{requestBean.newUser.login}" />
                     <h:message for="login" errorStyle="color:red; font-size:0.5em; float:right" />
                     <br class="clear" />
                 </div>
-                <div class="row">
+                <div>
                     <h:outputLabel for="passwd">${messages.passwd}:</h:outputLabel>
                     <h:inputSecret id="passwd" required="true" value="#{requestBean.newUser.pass}">
                         <f:validateLength minimum="6" />
@@ -20,7 +20,7 @@
                     <h:message for="passwd" errorStyle="color:red; font-size:0.5em; float:right;" />
                     <br class="clear" />
                 </div>
-                <div class="row">
+                <div>
                     <h:outputLabel for="repPasswd">${messages.repeat_passwd}:</h:outputLabel>
                     <h:inputSecret id="repPasswd" required="true" value="#{requestBean.repPasswd}">
                         <s:validateCompareTo for="passwd" operator="==" message="#{messages.passwords_doesnt_match}" />
@@ -28,28 +28,28 @@
                     <h:message for="repPasswd" errorStyle="color:red; font-size:0.5em; float:right" />
                     <br class="clear" />
                 </div>
-                <div class="row">
+                <div>
                     <h:outputLabel for="email">${messages.email}:</h:outputLabel>
                     <h:inputText id="email" required="true" value="#{requestBean.newUser.email}">
                     </h:inputText>
                     <h:message for="email" errorStyle="color:red; font-size:0.5em; float:right" />
                     <br class="clear" />
                 </div>
-                <div class="row">
+                <div>
                     <h:outputLabel for="firstname">${messages.firstname}:</h:outputLabel>
                     <h:inputText id="firstname" required="true" value="#{requestBean.newUser.firstname}">
                     </h:inputText>
                     <h:message for="firstname" errorStyle="color:red; font-size:0.5em; float:right" />
                     <br class="clear" />
                 </div>
-                <div class="row">
+                <div>
                     <h:outputLabel for="lastname">${messages.lastname}:</h:outputLabel>
                     <h:inputText id="lastname" required="true" value="#{requestBean.newUser.lastname}">
                     </h:inputText>
                     <h:message for="lastname" errorStyle="color:red; font-size:0.5em; float:right" />
                     <br class="clear" />
                 </div>
-                <div class="row">
+                <div>
                     <h:outputLabel for="birthdate">${messages.birthdate}:</h:outputLabel>
                     <h:inputText id="birthdate" required="false" value="#{requestBean.newUser.birthdate}">
                         <f:convertDateTime pattern="yyyy.MM.dd" />
@@ -62,25 +62,25 @@
                                  timing="onload"/>
                     <br class="clear" />
                 </div>
-                <div class="row">
+                <div>
                     <h:outputLabel for="homeaddress">${messages.homeaddress}:</h:outputLabel>
                     <h:inputTextarea id="homeaddress" required="false" value="#{requestBean.newUser.address}">
                     </h:inputTextarea>
                     <br class="clear" />
                 </div>
-                <div class="row">
+                <div>
                     <h:outputLabel for="school">${messages.school}:</h:outputLabel>
                     <h:inputText id="school" required="false" value="#{requestBean.newUser.school}">
                     </h:inputText>
                     <br class="clear" />
                 </div>
-                <div class="row">
+                <div>
                     <h:outputLabel for="tutor">${messages.tutor}:</h:outputLabel>
                     <h:inputText id="tutor" required="false" value="#{requestBean.newUser.tutor}">
                     </h:inputText>
                     <br class="clear" />
                 </div>
-                <div class="row">
+                <div>
                     <a4j:commandButton reRender="formRegister" styleClass="submit" type="submit" value="#{messages.register}" action="#{requestBean.registerUser}" />
                 </div>
             </fieldset>
