@@ -219,6 +219,12 @@ width: 250px;
 background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
 }
 
+.profilform .captcha
+{
+    margin-right:20px;
+    float:right;
+}
+
 .profilform textarea {
 margin-right:20px;
 margin-top: 10px;
