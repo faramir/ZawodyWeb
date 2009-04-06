@@ -202,19 +202,22 @@ margin:auto;
 }
 
 .profilform label{
+margin-top: 10px;
 display:block;
 height:2em;
 float:left;
 background-color:transparent;
-padding:10px 10px 0;
+padding: 0px;
 }
 
 .profilform input {
 margin-right:20px;
+margin-top: 12px;
 border:1px solid #999999;
 float:right;
 clear:right;
 width: 250px;
+padding: 0px 0px;
 /*background: #decff4;*/
 background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
 }
@@ -239,12 +242,19 @@ background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x50.png) repea
 .profilform input.submit {
 	margin: auto 45%;
 	float: none;
-	width: auto;
+	width: 100px;
 }
 
 .profilform input.check {
 	width: auto;
 	float: right;
+}
+
+.profilform .error {
+    margin-top: 20px;
+    color:red;
+    font-size:0.7em;
+    float:right;
 }
 
 .profilform input:focus, .profilform input:hover, .profilform textarea:focus, .profilform textarea:hover {
