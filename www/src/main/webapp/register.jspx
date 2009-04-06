@@ -1,5 +1,5 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:s="http://myfaces.apache.org/sandbox">
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
     <ui:define name="pageTitle">
         ${messages.registration}
     </ui:define>
@@ -9,7 +9,7 @@
                 <div>
                     <h:outputLabel for="login">${messages.login}:</h:outputLabel>
                     <h:inputText id="login" required="true" value="#{requestBean.newUser.login}" />
-                    <h:message for="login" errorStyle="color:red; font-size:0.5em; float:right" />
+                    <h:message for="login" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
@@ -17,7 +17,7 @@
                     <h:inputSecret id="passwd" required="true" value="#{requestBean.newUser.pass}">
                         <f:validateLength minimum="6" />
                     </h:inputSecret>
-                    <h:message for="passwd" errorStyle="color:red; font-size:0.5em; float:right;" />
+                    <h:message for="passwd" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
@@ -25,28 +25,28 @@
                     <h:inputSecret id="repPasswd" required="true" value="#{requestBean.repPasswd}">
                         <s:validateCompareTo for="passwd" operator="==" message="#{messages.passwords_doesnt_match}" />
                     </h:inputSecret>
-                    <h:message for="repPasswd" errorStyle="color:red; font-size:0.5em; float:right" />
+                    <h:message for="repPasswd" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
                     <h:outputLabel for="email">${messages.email}:</h:outputLabel>
                     <h:inputText id="email" required="true" value="#{requestBean.newUser.email}">
                     </h:inputText>
-                    <h:message for="email" errorStyle="color:red; font-size:0.5em; float:right" />
+                    <h:message for="email" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
                     <h:outputLabel for="firstname">${messages.firstname}:</h:outputLabel>
                     <h:inputText id="firstname" required="true" value="#{requestBean.newUser.firstname}">
                     </h:inputText>
-                    <h:message for="firstname" errorStyle="color:red; font-size:0.5em; float:right" />
+                    <h:message for="firstname" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
                     <h:outputLabel for="lastname">${messages.lastname}:</h:outputLabel>
                     <h:inputText id="lastname" required="true" value="#{requestBean.newUser.lastname}">
                     </h:inputText>
-                    <h:message for="lastname" errorStyle="color:red; font-size:0.5em; float:right" />
+                    <h:message for="lastname" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
@@ -54,7 +54,7 @@
                     <h:inputText id="birthdate" required="false" value="#{requestBean.newUser.birthdate}">
                         <f:convertDateTime pattern="yyyy.MM.dd" />
                     </h:inputText>
-                    <h:message for="birthdate" errorStyle="color:red; font-size:0.5em; float:right" />
+                    <h:message for="birthdate" errorClass="error" />
                     <rich:jQuery selector="#birthdate" name="birthdate" query="datepicker({changeMonth:true,
                                  changeYear:true,dateFormat:'yy.mm.dd',firstDay:1,monthNamesShort: ['Styczeń','Luty',
                                  'Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik',
@@ -83,9 +83,9 @@
                 <div>
                     <h:outputLabel for="captcha">${messages.text_from_picture}:</h:outputLabel>
                     <h:inputText id="captcha" required="true" validator="#{requestBean.validateCaptcha}" />
-                    <h:message for="captcha" errorStyle="color:red; font-size:0.5em; float:right" />
+                    <h:message for="captcha" errorClass="error" />
                     <div class="captcha">
-                        <s:captcha id="captchaImage" captchaSessionKeyName="captchaKey" />
+                        <t:captcha id="captchaImage" imageWidth="250" imageHeight="70" captchaSessionKeyName="captchaKey" />
                     </div>
                     <br class="clear" />
                     <br />
