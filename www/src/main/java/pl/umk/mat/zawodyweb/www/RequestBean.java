@@ -22,10 +22,11 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
  * @author slawek
  */
 public class RequestBean {
+
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
     private Users newUser = new Users();
     private String repPasswd;
-    
+
     /**
      * @return the newUser
      */
@@ -49,11 +50,11 @@ public class RequestBean {
 
     public String registerUser() {
         Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-        try{
+        try {
             UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
             dao.save(newUser);
             t.commit();
-        }catch(Exception e){
+        } catch (Exception e) {
             t.rollback();
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = messages.getString("login_exists");

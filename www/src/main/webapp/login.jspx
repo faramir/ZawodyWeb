@@ -8,7 +8,7 @@
             <fieldset>
                 <div>
                     <h:outputLabel for="login">${messages.login}:</h:outputLabel>
-                    <h:inputText id="login" required="true" value="#{sessionBean.currentUser.login}" />
+                    <h:inputText id="login" required="true" value="#{sessionBean.login}" />
                     <h:message for="login" errorClass="error" />
                     <br class="clear" />
                 </div>
@@ -20,7 +20,7 @@
                 </div>
                 <div>
                     <h:outputLabel for="remember">${messages.remember_login}:</h:outputLabel>
-                    <h:selectBooleanCheckbox id="remember" />
+                    <h:selectBooleanCheckbox id="remember" value="#{sessionBean.rememberMe}" />
                     <br class="clear" />
                 </div>
                 <div>

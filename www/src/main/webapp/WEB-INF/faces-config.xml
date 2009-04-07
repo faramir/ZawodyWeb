@@ -37,11 +37,12 @@
         <from-view-id>/login.jspx</from-view-id>
         <navigation-case>
             <from-outcome>
-                index
+                start
             </from-outcome>
             <to-view-id>
-                /index.jspx
+                /start.jspx
             </to-view-id>
+            <redirect />
         </navigation-case>
     </navigation-rule>
 </faces-config>
