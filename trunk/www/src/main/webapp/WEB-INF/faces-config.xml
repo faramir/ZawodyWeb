@@ -32,5 +32,17 @@
             <redirect />
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <display-name>login_to_index</display-name>
+        <from-view-id>/login.jspx</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                index
+            </from-outcome>
+            <to-view-id>
+                /index.jspx
+            </to-view-id>
+        </navigation-case>
+    </navigation-rule>
 </faces-config>
 

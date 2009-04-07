@@ -4,6 +4,29 @@
         ${messages.logging}
     </ui:define>
     <ui:define name="pageContent">
-        TODO
+        <a4j:form id="formLogin" styleClass="profilform">
+            <fieldset>
+                <div>
+                    <h:outputLabel for="login">${messages.login}:</h:outputLabel>
+                    <h:inputText id="login" required="true" value="#{sessionBean.currentUser.login}" />
+                    <h:message for="login" errorClass="error" />
+                    <br class="clear" />
+                </div>
+                <div>
+                    <h:outputLabel for="passwd">${messages.passwd}:</h:outputLabel>
+                    <h:inputSecret id="passwd" required="true" value="#{sessionBean.currentUser.pass}" />
+                    <h:message for="passwd" errorClass="error" />
+                    <br class="clear" />
+                </div>
+                <div>
+                    <h:outputLabel for="remember">${messages.remember_login}:</h:outputLabel>
+                    <h:selectBooleanCheckbox id="remember" />
+                    <br class="clear" />
+                </div>
+                <div>
+                    <a4j:commandButton reRender="formLogin" styleClass="submit" type="submit" value="#{messages.log_in}" action="#{sessionBean.logIn}" />
+                </div>
+            </fieldset>
+        </a4j:form>
     </ui:define>
 </ui:composition>
