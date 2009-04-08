@@ -12,9 +12,11 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Transaction;
+import pl.umk.mat.zawodyweb.database.ContestsDAO;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
+import pl.umk.mat.zawodyweb.database.pojo.Contests;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 
 /**
@@ -26,6 +28,7 @@ public class RequestBean {
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
     private Users newUser = new Users();
     private String repPasswd;
+    private Contests editedContest;
 
     /**
      * @return the newUser
@@ -48,6 +51,34 @@ public class RequestBean {
         this.repPasswd = repPasswd;
     }
 
+    /**
+     * @return the editedContest
+     */
+    public Contests getEditedContest() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        int contestId = 0;
+        try {
+            contestId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+        } catch (Exception e) {
+            contestId = 0;
+        }
+
+        if (editedContest != null) {
+            return editedContest;
+        }
+
+        if (contestId == 0) {
+            editedContest = new Contests();
+        } else {
+            Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
+            editedContest = dao.getById(contestId);
+            t.commit();
+        }
+
+        return editedContest;
+    }
+
     public String registerUser() {
         Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         try {
@@ -64,6 +95,26 @@ public class RequestBean {
         }
 
         return "login";
+    }
+
+    public String saveContest() {
+        Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        try {
+            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
+            if(editedContest.getId() == 0)
+                editedContest.setId(null);
+            
+            dao.saveOrUpdate(editedContest);
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"),  e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditContest:save", summary, null);
+            return null;
+        }
+
+        return "start";
     }
 
     /**

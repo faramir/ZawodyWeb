@@ -228,7 +228,7 @@ background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repea
     float:right;
 }
 
-.profilform textarea {
+.profilform textarea, select {
 margin-right:20px;
 margin-top: 10px;
 border:1px solid #999999;
