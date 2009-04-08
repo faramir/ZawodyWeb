@@ -9,6 +9,7 @@
         <Node id="login.jspx" x="900" y="150" zoom="true"/>
         <Node id="register.jspx" x="400" y="150" zoom="true"/>
         <Node id="start.jspx" x="150" y="300" zoom="true"/>
+        <Node id="admin/editcontest.jspx" x="650" y="300" zoom="true"/>
     </Scope>
     <Scope Scope="All Faces Configurations"/>
 </Scene>
