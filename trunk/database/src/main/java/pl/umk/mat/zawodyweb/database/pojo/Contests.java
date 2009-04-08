@@ -4,6 +4,7 @@ import java.util.List;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.persistence.Embeddable;
+import javax.persistence.GenerationType;
 
 /**
  * <p>Pojo mapping TABLE public.contests</p>
@@ -48,7 +50,7 @@ public class Contests implements Serializable {
 	/**
 	 * Attribute startdate.
 	 */
-	private Timestamp startdate;
+	private Date startdate;
 	
 	/**
 	 * Attribute about.
@@ -92,7 +94,7 @@ public class Contests implements Serializable {
 	 */
 	@Basic
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
@@ -145,14 +147,14 @@ public class Contests implements Serializable {
 	 */
 	@Basic
 	@Column(name = "startdate")
-		public Timestamp getStartdate() {
+		public Date getStartdate() {
 		return startdate;
 	}
 
 	/**
 	 * @param startdate new value for startdate 
 	 */
-	public void setStartdate(Timestamp startdate) {
+	public void setStartdate(Date startdate) {
 		this.startdate = startdate;
 	}
 	
