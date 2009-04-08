@@ -1,7 +1,7 @@
 <!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:c="http://java.sun.com/jstl/core">
+      xmlns:c="http://java.sun.com/jstl/core" xmlns:a4j="http://richfaces.org/a4j">
     <f:loadBundle basename="pl.umk.mat.zawodyweb.www.Messages" var="messages" />
     <head>
         <title>
@@ -9,57 +9,59 @@
             <ui:insert name="pageTitle" />
         </title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <link rel="stylesheet" type="text/css" href="media/css/style.css" media="screen, projection" />
-        <link rel="stylesheet" type="text/css" href="media/css/jquery-ui-1.7.1.custom.css" media="screen, projection" />
-        <script type="text/javascript" src="media/javascript/jquery-1.3.2.min.js" />
-        <script type="text/javascript" src="media/javascript/jquery-ui-1.7.1.custom.min.js" />
+        <a4j:loadStyle media="screen, projection" src="/media/css/style.css" />
+        <a4j:loadStyle media="screen, projection" src="/media/css/jquery-ui-1.7.1.custom.css" />
+        <a4j:loadScript src="/media/javascript/jquery-1.3.2.min.js" />
+        <a4j:loadScript src="/media/javascript/jquery-ui-1.7.1.custom.min.js" />
+        <a4j:loadScript src="/media/javascript/jquery-ui-1.7.1.custom.min.js" />
     </head>
     <body id="home">
-        <img src="media/images/logo.png" alt="logo" />
+        <h:graphicImage alt="logo" url="/media/images/logo.png" />
         <p class="clock">2008-12-15 22:56:48</p>
         <h1>${messages.wmii}</h1>
         <h2>${messages.uni}</h2>
         <div id="page">
             <h1>${messages.title} - Eliminacje WMiI UMK do AMPPZ 2008</h1>
         </div>
+
         <div id="left_menu">
             <ul>
                 <li>
-                    <a href="zadania.html">${messages.problems}</a>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/zadania.html">${messages.problems}</h:outputLink>
                 </li>
                 <li>
-                    <a href="ranking.html">${messages.ranking}</a>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ranking.html">${messages.ranking}</h:outputLink>
                 </li>
                 <li>
-                    <a href="pytania.html">${messages.questions}</a>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/pytania.html">${messages.questions}</h:outputLink>
                 </li>
                 <li>
-                    <a href="harmonogram.html">${messages.timetable}</a>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/harmonogram.html">${messages.timetable}</h:outputLink>
                 </li>
                 <li class="last">
-                    <a href="regulamin.html">${messages.rules}</a>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/regulamin.html">${messages.rules}</h:outputLink>
                 </li>
             </ul>
         </div>
         <div id="top_menu">
             <ul>
                 <li>
-                    <a href="index.html">${messages.contest}</a>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/index.html">${messages.contest}</h:outputLink>
                 </li>
                 <li>
-                    <a href="profil.html">${messages.profile}</a>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/profil.html">${messages.profile}</h:outputLink>
                 </li>
                 <li>
-                    <a href="wyslij.html">${messages.send_now}</a>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/wyslij.html">${messages.send_now}</h:outputLink>
                 </li>
                 <li class="last">
-                    <a href="ozawodach.html">${messages.about_contest}</a>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ozawodach.html">${messages.about_contest}</h:outputLink>
                 </li>
                 <li class="prawa">
-                    <a href="register.html">${messages.registration}</a>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/register.html">${messages.registration}</h:outputLink>
                 </li>
                 <li class="prawa">
-                    <a href="login.html">${messages.log_in}</a>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/login.html">${messages.log_in}</h:outputLink>
                 </li>
                 <li class="spacer">
                     <h:outputText value="&amp;nbsp;" escape="false" />
