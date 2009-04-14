@@ -58,8 +58,8 @@
                     <rich:jQuery selector="#birthdate" name="birthdate" query="datepicker({changeMonth:true,
                                  changeYear:true,dateFormat:'yy.mm.dd',firstDay:1,monthNamesShort: ['Styczeń','Luty',
                                  'Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik',
-                                 'Listopad','Grudzień'], dayNamesMin: ['N', 'P', 'W', 'Ś', 'C', 'P', 'S'], yearRange: '-50:+10'})"
-                                 timing="onload"/>
+                                 'Listopad','Grudzień'], dayNamesMin: ['N', 'P', 'W', 'Ś', 'C', 'P', 'S'], yearRange: '-50:+10', defaultDate: '-18y'})"
+                                 timing="onload" />
                     <br class="clear" />
                 </div>
                 <div>

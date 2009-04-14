@@ -20,7 +20,7 @@
                 </div>
                 <div>
                     <h:outputLabel for="remember">${messages.remember_login}:</h:outputLabel>
-                    <h:selectBooleanCheckbox id="remember" value="#{sessionBean.rememberMe}" />
+                    <h:selectBooleanCheckbox id="remember" styleClass="check" value="#{sessionBean.rememberMe}" />
                     <br class="clear" />
                 </div>
                 <div>
