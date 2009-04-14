@@ -23,7 +23,7 @@
         <div id="page">
             <h1>${messages.title} - Eliminacje WMiI UMK do AMPPZ 2008</h1>
         </div>
-
+        
         <div id="left_menu">
             <ul>
                 <li>
@@ -38,8 +38,23 @@
                 <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/harmonogram.html">${messages.timetable}</h:outputLink>
                 </li>
-                <li class="last">
+                <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/regulamin.html">${messages.rules}</h:outputLink>
+                </li>
+                <li>
+                    <h:outputText value="&amp;nbsp;" escape="false" />
+                </li>
+                <li>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/dodaj_konkurs.html">${messages.addcontest}</h:outputLink>
+                </li>
+                <li>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/dodaj_serie.html">${messages.addseries}</h:outputLink>
+                </li>
+                <li>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/dodaj_zadanie.html">${messages.addproblem}</h:outputLink>
+                </li>
+                <li class="last">
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/dodaj_testy.html">${messages.addtests}</h:outputLink>
                 </li>
             </ul>
         </div>

@@ -83,7 +83,7 @@ img { 	float: left;
 #top_menu ul {	
 	height: 1.4em;
 	bottom: 4px;
-	padding: 2px;	
+	padding: 2px;
 	font: bold 1em 'Trebuchet MS', Tahoma, Arial, Sans-serif;
 	border: 1px ridge #080808;
 	border-width: 1px;
@@ -120,10 +120,10 @@ img { 	float: left;
 
 #left_menu ul {	
 	margin: 35px 20px 0 10px; 
-	padding: 0 10px 0 10px;	
+	padding: 0 10px 0 10px;
 	float: left;
 	font: bold 1em 'Trebuchet MS', Tahoma, Arial, Sans-serif;
-	width: 140px;
+	width: 145px;
 	border: ridge #080808;
 	border-width: 1px;
 	list-style: none;
@@ -222,6 +222,18 @@ padding: 0px 0px;
 background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
 }
 
+.profilform select {
+margin-right:20px;
+margin-top: 12px;
+border:1px solid #999999;
+float:right;
+clear:right;
+width: 250px;
+padding: 0px 0px;
+/*background: #decff4;*/
+background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+}
+
 .profilform input.check {
 margin-right:20px;
 margin-top: 12px;
@@ -239,7 +251,7 @@ background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repea
     float:right;
 }
 
-.profilform textarea, select {
+.profilform textarea {
 margin-right:20px;
 margin-top: 10px;
 border:1px solid #999999;
