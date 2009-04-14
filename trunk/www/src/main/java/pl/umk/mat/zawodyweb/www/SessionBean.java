@@ -7,24 +7,32 @@ package pl.umk.mat.zawodyweb.www;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Transaction;
+import org.restfaces.annotation.HttpAction;
+import org.restfaces.annotation.Instance;
+import org.restfaces.annotation.Param;
+import pl.umk.mat.zawodyweb.database.ContestsDAO;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
+import pl.umk.mat.zawodyweb.database.pojo.Contests;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 
 /**
  *
  * @author slawek
  */
+@Instance("#{sessionBean}")
 public class SessionBean {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
     private Users currentUser = new Users();
+    private Contests currentContest;
     private boolean isLoggedIn;
     private Boolean rememberMe;
 
@@ -33,6 +41,13 @@ public class SessionBean {
      */
     public Users getCurrentUser() {
         return currentUser;
+    }
+
+    /**
+     * @return the currentContest
+     */
+    public Contests getCurrentContest() {
+        return currentContest;
     }
 
     /**
@@ -73,6 +88,21 @@ public class SessionBean {
             String summary = messages.getString("bad_login_data");
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formLogin:login", summary, null);
             return null;
+        }
+
+        return "start";
+    }
+
+    @HttpAction(name = "contest", pattern = "contest/{id}/{title}")
+    public String selectContest(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        try {
+            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
+            currentContest = dao.getById(id);
+            t.commit();
+        } catch (Exception e) {
+            //TODO: jakis komunikat wywalic
+            t.rollback();
         }
 
         return "start";

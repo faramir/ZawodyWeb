@@ -21,9 +21,13 @@
         <h1>${messages.wmii}</h1>
         <h2>${messages.uni}</h2>
         <div id="page">
-            <h1>${messages.title} - Eliminacje WMiI UMK do AMPPZ 2008</h1>
+            <h1>${messages.title} 
+                <c:if test="#{sessionBean.currentContest != null}">
+                     - ${sessionBean.currentContest.name}
+                </c:if>
+            </h1>
         </div>
-        
+
         <div id="left_menu">
             <ul>
                 <li>
@@ -45,7 +49,7 @@
                     <h:outputText value="&amp;nbsp;" escape="false" />
                 </li>
                 <li>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/dodaj_konkurs.html">${messages.addcontest}</h:outputLink>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editcontest.html">${messages.addcontest}</h:outputLink>
                 </li>
                 <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/dodaj_serie.html">${messages.addseries}</h:outputLink>
@@ -61,7 +65,7 @@
         <div id="top_menu">
             <ul>
                 <li>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/index.html">${messages.contest}</h:outputLink>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/start.html">${messages.contest}</h:outputLink>
                 </li>
                 <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/profil.html">${messages.profile}</h:outputLink>
