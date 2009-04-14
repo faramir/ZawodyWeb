@@ -3,9 +3,18 @@
   "-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN"
   "https://facelets.dev.java.net/source/browse/*checkout*/facelets/src/etc/facelet-taglib_1_0.dtd">
 <facelet-taglib>
-  <namespace>http://zawodyweb.mat.umk.pl/</namespace>
-  <tag>
-    <tag-name>main</tag-name>
-    <source>../../templates/main.jspx</source>
-  </tag>
+    <namespace>http://zawodyweb.mat.umk.pl/</namespace>
+    <tag>
+        <tag-name>main</tag-name>
+        <source>../../templates/main.jspx</source>
+    </tag>
+    <tag>
+        <tag-name>contest-link</tag-name>
+        <source>../../templates/contest-link.jspx</source>
+    </tag>
+    <function>
+        <function-name>filterUri</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
+        <function-signature>java.lang.String filterUri(java.lang.String)</function-signature>
+    </function>
 </facelet-taglib>

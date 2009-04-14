@@ -58,5 +58,18 @@
             <redirect />
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <display-name>select_contest</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                start
+            </from-outcome>
+            <to-view-id>
+                /start.jspx
+            </to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
 </faces-config>
 

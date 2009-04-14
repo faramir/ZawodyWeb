@@ -4,6 +4,7 @@
  */
 package pl.umk.mat.zawodyweb.www;
 
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -49,6 +50,22 @@ public class RequestBean {
      */
     public void setRepPasswd(String repPasswd) {
         this.repPasswd = repPasswd;
+    }
+
+    public List<Contests> getContests() {
+        List<Contests> res = null;
+
+        Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
+        try {
+            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
+            res = dao.findAll();
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+        }
+
+        return res;
     }
 
     /**
@@ -101,15 +118,16 @@ public class RequestBean {
         Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         try {
             ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
-            if(editedContest.getId() == 0)
+            if (editedContest.getId() == 0) {
                 editedContest.setId(null);
-            
+            }
+
             dao.saveOrUpdate(editedContest);
             t.commit();
         } catch (Exception e) {
             t.rollback();
             FacesContext context = FacesContext.getCurrentInstance();
-            String summary = String.format("%s: %s", messages.getString("unexpected_error"),  e.getLocalizedMessage());
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditContest:save", summary, null);
             return null;
         }
