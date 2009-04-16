@@ -42,10 +42,10 @@
     </developers>
     <!-- -->
     <modules>
-        <module>www</module>
         <module>database</module>
         <module>judge-manager</module>
         <module>judge</module>
+        <module>www</module>
     </modules>
     <build>
         <plugins>
