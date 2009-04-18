@@ -37,7 +37,9 @@
                 </c:if>
             </h1>
         </div>
-
+        <div class="banner">
+                <h:graphicImage alt="banner" url="/media/images/banner2.png" />
+        </div>
         <div id="left_menu">
             <ul>
                 <li>
