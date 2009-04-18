@@ -14,10 +14,20 @@
         <a4j:loadScript src="/media/javascript/jquery-1.3.2.min.js" />
         <a4j:loadScript src="/media/javascript/jquery-ui-1.7.1.custom.min.js" />
         <a4j:loadScript src="/media/javascript/jquery-ui-1.7.1.custom.min.js" />
+        <a4j:loadScript src="/media/javascript/jquery.jclock-2.1.1.js" />
     </head>
     <body id="home">
         <h:graphicImage alt="logo" url="/media/images/logo.png" />
-        <p class="clock">2008-12-15 22:56:48</p>
+        <p class="jclock">
+             <script type="text/javascript">
+                $(function($) {
+                    var option = {
+                        format: '%d %B %Y, %H:%M:%S' // 24-hour
+                    }
+                    $('.jclock').jclock(option);
+                });
+            </script>
+        </p>
         <h1>${messages.wmii}</h1>
         <h2>${messages.uni}</h2>
         <div id="page">

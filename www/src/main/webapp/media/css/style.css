@@ -17,10 +17,11 @@ a:visited, a:link {
 	color: #0000FF;
 }
 
-.clock {	font-size: 0.9em;
+.jclock {
+        font-size: 0.9em;
 		color: #000000;
 		float: right;
-		padding: 0 20px 60px 0;
+		padding: 0 20px 100px 0;
 	}
 
 #home h1 {	font-size: 1.3em;
