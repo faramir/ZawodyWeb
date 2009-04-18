@@ -45,6 +45,12 @@ a:visited, a:link {
 		text-align: center;
 	}
 
+.banner {
+        position: absolute;
+        left: 66%;
+        top: -12px;
+}
+
 #content {
 		position: relative; 
 		color: #000000;
