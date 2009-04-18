@@ -8,7 +8,7 @@ body {
 }
 
 a:link:hover, a:visited:hover {
-	color: #4b00ff;
+	color: #0000FF;
 	text-decoration: none;
 }
 
@@ -85,9 +85,10 @@ img { 	float: left;
 	bottom: 4px;
 	padding: 2px;
 	font: bold 1em 'Trebuchet MS', Tahoma, Arial, Sans-serif;
-	border: 1px ridge #080808;
+	border: 1px ridge #c5a7f2;
 	border-width: 1px;
 	list-style: none;
+    background: url(../images/bg_top1.png) repeat-x;
 }
 
 #top_menu ul li{
@@ -96,12 +97,14 @@ img { 	float: left;
 	float: left;
 
 	padding: 0 20px 0 20px;
-	background: url(../images/divider.gif) repeat-y right top; 
+	/*background: url(../images/divider.gif) repeat-y right top; */
+     /*background: url(../images/bg_top1.png) repeat-x;*/
 }
 
-#top_menu ul li.last {
-	background: none; 
-	float: right;
+#top_menu ul li:hover {
+    color: #0000FF;
+	text-decoration: none;
+    background: url(../images/bg_top3.png) repeat-x;
 }
 
 #top_menu ul li.spacer {
@@ -143,6 +146,11 @@ img { 	float: left;
 	padding: 0.4em 1em;
 	margin: 0;
 	border: none;
+}
+
+#left_menu ul li a:link:hover,#left_menu ul li a:visited:hover {
+	color: #4b00ff;
+	text-decoration: none;
 }
 
 /* LOGINFORM */

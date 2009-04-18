@@ -73,7 +73,7 @@
                 <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/wyslij.html">${messages.send_now}</h:outputLink>
                 </li>
-                <li class="last">
+                <li class="prawa">
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ozawodach.html">${messages.about_contest}</h:outputLink>
                 </li>
                 <li class="prawa">
@@ -81,9 +81,6 @@
                 </li>
                 <li class="prawa">
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/login.html">${messages.log_in}</h:outputLink>
-                </li>
-                <li class="spacer">
-                    <h:outputText value="&amp;nbsp;" escape="false" />
                 </li>
             </ul>
         </div>
