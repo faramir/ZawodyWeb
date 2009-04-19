@@ -102,10 +102,7 @@ img { 	float: left;
 	position: relative;
 	display: inline;
 	float: left;
-
 	padding: 0 20px 0 20px;
-	/*background: url(../images/divider.gif) repeat-y right top; */
-     /*background: url(../images/bg_top1.png) repeat-x;*/
 }
 
 #top_menu ul li:hover {
@@ -198,11 +195,10 @@ background: #decff4;
 }
 
 .loginform input:focus, .loginform input:hover {
-border:1px solid #333333;
+    border:1px solid #333333;
 }
 
-.clear
-{
+.clear {
     clear:both;
     font-size:0;
     height:0;
@@ -236,7 +232,6 @@ float:right;
 clear:right;
 width: 250px;
 padding: 0px 0px;
-/*background: #decff4;*/
 background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
 }
 
@@ -248,7 +243,6 @@ float:right;
 clear:right;
 width: 250px;
 padding: 0px 0px;
-/*background: #decff4;*/
 background: url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
 }
 
@@ -259,12 +253,10 @@ border:1px solid #999999;
 float:right;
 clear:right;
 padding: 0px 0px;
-/*background: #decff4;*/
 background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
 }
 
-.profilform .captcha
-{
+.profilform .captcha {
     margin-right:20px;
     float:right;
 }
@@ -276,7 +268,7 @@ border:1px solid #999999;
 float:right;
 clear:right;
 width: 250px;
-/*background: #decff4;*/
+overflow: hidden;
 background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x50.png) repeat-x;
 }
 

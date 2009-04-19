@@ -69,7 +69,7 @@
                 <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/dodaj_zadanie.html">${messages.addproblem}</h:outputLink>
                 </li>
-                <li class="last">
+                <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/dodaj_testy.html">${messages.addtests}</h:outputLink>
                 </li>
             </ul>
