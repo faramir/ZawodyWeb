@@ -59,12 +59,12 @@ a:visited, a:link {
 		padding: 0;	
 		float: left;
 		width: 70%;
-		border: ridge #080808;
+		border: ridge #c5a7f2;
 		border-width: 0 0 1px 0;
 }
 
 #content h1 {
-		border: ridge #080808;
+		border: ridge #c5a7f2;
 		padding: 0 0 20px 0;
 		border-width: 0 0 1px 0;
 		text-align: center;
@@ -111,7 +111,7 @@ img { 	float: left;
 #top_menu ul li:hover {
     color: #0000FF;
 	text-decoration: none;
-    background: url(../images/bg_top3.png) repeat-x;
+    background: url(../images/bg_top2.png) repeat-x;
 }
 
 #top_menu ul li.spacer {
@@ -133,18 +133,21 @@ img { 	float: left;
 	padding: 0 10px 0 10px;
 	float: left;
 	font: bold 1em 'Trebuchet MS', Tahoma, Arial, Sans-serif;
-	width: 145px;
-	border: ridge #080808;
-	border-width: 1px;
+	width: 150px;
+    border: none;
 	list-style: none;
 }
 
-#left_menu ul li{
-	background: url(../images/divider2.gif) repeat-x left bottom;
+#left_menu ul li:hover{
+	border-width: 0px 0px 0px 11px;
+    border-color: #b287f2;
+    margin-left: -4px;
 }
 
-#left_menu ul li.last {
-	background: none;
+#left_menu ul li {
+	border-width: 0px 0px 0px 3px;
+    border-style: solid;
+    border-color: #c5a7f2;
 }
 
 #left_menu ul li a {
