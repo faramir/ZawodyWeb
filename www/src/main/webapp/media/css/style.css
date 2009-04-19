@@ -8,7 +8,7 @@ body {
 }
 
 a:link:hover, a:visited:hover {
-	color: #0000FF;
+	color: #4b00ff;;
 	text-decoration: none;
 }
 
@@ -109,7 +109,7 @@ img { 	float: left;
 }
 
 #top_menu ul li:hover {
-    color: #0000FF;
+    color: #4b00ff;
 	text-decoration: none;
     background: url(../images/bg_top2.png) repeat-x;
 }
