@@ -1,4 +1,4 @@
-/*
+Ôªø/*
  * jQuery jclock - Clock plugin - v 2.1.1
  * http://plugins.jquery.com/project/jclock
  *
@@ -69,18 +69,18 @@
 
       // %B
       $this.monthsFullNames = new Array(12);
-      $this.monthsFullNames[0]  = "Stycznia";
-      $this.monthsFullNames[1]  = "Lutego";
-      $this.monthsFullNames[2]  = "Marca";
-      $this.monthsFullNames[3]  = "Kwietnia";
-      $this.monthsFullNames[4]  = "Maja";
-      $this.monthsFullNames[5]  = "Czerwca";
-      $this.monthsFullNames[6]  = "Lipca";
-      $this.monthsFullNames[7]  = "Sierpnia";
-      $this.monthsFullNames[8]  = "Wrzeúnia";
-      $this.monthsFullNames[9]  = "Paüdziernika";
-      $this.monthsFullNames[10] = "Listopada";
-      $this.monthsFullNames[11] = "Grudnia";
+      $this.monthsFullNames[0]  = "stycznia";
+      $this.monthsFullNames[1]  = "lutego";
+      $this.monthsFullNames[2]  = "marca";
+      $this.monthsFullNames[3]  = "kwietnia";
+      $this.monthsFullNames[4]  = "maja";
+      $this.monthsFullNames[5]  = "czerwca";
+      $this.monthsFullNames[6]  = "lipca";
+      $this.monthsFullNames[7]  = "sierpnia";
+      $this.monthsFullNames[8]  = "wrze≈õnia";
+      $this.monthsFullNames[9]  = "pa≈∫dziernika";
+      $this.monthsFullNames[10] = "listopada";
+      $this.monthsFullNames[11] = "grudnia";
 
       $.fn.jclock.startClock($this);
 

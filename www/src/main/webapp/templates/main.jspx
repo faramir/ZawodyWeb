@@ -22,7 +22,7 @@
              <script type="text/javascript">
                 $(function($) {
                     var option = {
-                        format: '%d %B %Y, %H:%M:%S' // 24-hour
+                        format: '%d %B %Y r. %H:%M:%S' // 24-hour
                     }
                     $('.jclock').jclock(option);
                 });
