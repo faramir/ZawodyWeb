@@ -18,9 +18,11 @@ a:visited, a:link {
 }
 
 .jclock {
-        font-size: 0.9em;
-		color: #000000;
+ 		color: #0000FF;
 		float: right;
+        width: 172px;
+        text-align: center;
+        font: 0.9em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
 		padding: 0 20px 100px 0;
 	}
 
