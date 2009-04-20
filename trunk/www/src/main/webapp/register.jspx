@@ -64,7 +64,7 @@
                 </div>
                 <div>
                     <h:outputLabel for="homeaddress">${messages.homeaddress}:</h:outputLabel>
-                    <h:inputTextarea id="homeaddress" required="false" value="#{requestBean.newUser.address}">
+                    <h:inputTextarea id="homeaddress" styleClass="smaHeight" required="false" value="#{requestBean.newUser.address}">
                     </h:inputTextarea>
                     <br class="clear" />
                 </div>
