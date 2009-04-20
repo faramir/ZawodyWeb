@@ -270,8 +270,18 @@ border:1px solid #999999;
 float:right;
 clear:right;
 width: 250px;
-overflow: hidden;
-background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x50.png) repeat-x;
+overflow: auto;
+font: 0.8em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
+}
+
+.bigHeight {
+    height: 15em;
+    background: #decff4 url(../images/ui-bg_1x150.png) repeat-x;
+}
+
+.smaHeight {
+    height: 4em;
+    background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x50.png) repeat-x;
 }
 
 .profilform input.submit {
