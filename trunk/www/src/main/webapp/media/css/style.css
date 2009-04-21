@@ -47,10 +47,10 @@ a:visited, a:link {
 		text-align: center;
 	}
 
-.banner {
+.logo {
         position: absolute;
-        left: 66%;
-        top: -12px;
+        left: 90px;
+        top: 8px;
 }
 
 #content {
@@ -266,6 +266,7 @@ background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repea
 .profilform textarea {
 margin-right:20px;
 margin-top: 10px;
+margin-bottom: 10px;
 border:1px solid #999999;
 float:right;
 clear:right;
