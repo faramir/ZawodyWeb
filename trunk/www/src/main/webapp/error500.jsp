@@ -1,0 +1,1 @@
+<% response.sendRedirect(response.encodeRedirectURL("error/500.html")); %>
