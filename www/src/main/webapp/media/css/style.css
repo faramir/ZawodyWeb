@@ -233,21 +233,58 @@ border:1px solid #999999;
 float:right;
 clear:right;
 width: 250px;
-padding: 0px 0px;
+padding: 0px 1px;
 background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
 }
-
-.profilform select {
-margin-right:20px;
-margin-top: 12px;
-border:1px solid #999999;
-float:right;
-clear:right;
-width: 250px;
-padding: 0px 0px;
-background: url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+/* SELECT REPLACEMENT */
+select {
+    display: block;
 }
+    select.replaced {
+      display: none;
+    }
+    ul.selectReplacement {
+        margin-right:20px;
+        margin-top: -31px;
+        border:1px solid #999999;
+        float:right;
+        clear:right;
+        width: 248px;
+        padding: 0px 0px;
+        font: 0.8em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
+        background: transparent scroll url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+    }
+    ul.selectReplacement:hover,
+    ul.selectReplacement:focus{
+        border:1px solid #333333;
+    }
 
+    ul.selectReplacement li {
+      background: #d7c5f2;
+      cursor: pointer;
+      display: none;
+      list-style: none;
+      margin: 0;
+      padding: 0px 1px;
+    }
+    ul.selectOpen li {
+      display: block;
+    }
+    ul.selectReplacement li.selected {
+      background: transparent scroll url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+      display: block;
+    }
+    ul.selectOpen li.selected {
+      background: #d7c5f2;
+      display: block;
+    }
+    ul.selectOpen li:hover,
+    ul.selectOpen li.hover,
+    ul.selectOpen li.selected:hover {
+      background: #bb97f2;
+      color: #4b00ff;
+    }
+/* END OF SELECT */
 .profilform input.check {
 margin-right:20px;
 margin-top: 12px;
@@ -272,6 +309,7 @@ float:right;
 clear:right;
 width: 250px;
 overflow: auto;
+padding: 0px 1px;
 font: 0.8em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
 }
 
