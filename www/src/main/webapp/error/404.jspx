@@ -1,0 +1,5 @@
+<ui:composition template="/templates/main.jspx" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a4j="http://richfaces.org/a4j"  xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:zw="http://zawodyweb.mat.umk.pl/">
+    <ui:define name="pageContent">
+        ${messages.error_404}
+    </ui:define>
+</ui:composition>
