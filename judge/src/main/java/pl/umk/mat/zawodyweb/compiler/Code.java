@@ -9,6 +9,11 @@ public class Code {
     private String code;
     private CompilerInterface compiler;
 
+    public Code(String code, CompilerInterface compiler) {
+        this.code = code;
+        this.compiler = compiler;
+    }
+
     public Program compile() {
         String precompiledCode = compiler.precompile(code);
         Program program = compiler.compile(precompiledCode);
