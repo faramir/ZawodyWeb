@@ -10,17 +10,6 @@ import pl.umk.mat.zawodyweb.compiler.Program;
  */
 public class NormalDiff implements CheckerInterface {
 
-    /**
-     * UWAGA: UZYWAC TYLKO DO JUnit TESTOW!!
-     * W KODZIE UZYWAC TYLKO metody check()
-     * @param codeText
-     * @param rightText
-     * @return diff(codeText,rightText)
-     */
-    public int pubDiff(String codeText, String rightText) {
-        return diff(codeText, rightText);
-    }
-
     private int diff(String codeText, String rightText) {
         int i = 0;
         int j = 0;
@@ -28,12 +17,10 @@ public class NormalDiff implements CheckerInterface {
         while (i < rightText.length() && j < codeText.length()) {
             if ((Character.isWhitespace(rightText.charAt(i)) &&
                     Character.isWhitespace(codeText.charAt(j))) ||
-                    (i==0 &&
+                    (i == 0 &&
                     Character.isWhitespace(codeText.charAt(j))) ||
-                    (j==0 &&
-                    Character.isWhitespace(rightText.charAt(i)))
-                    
-                    ){
+                    (j == 0 &&
+                    Character.isWhitespace(rightText.charAt(i)))) {
                 while (i < rightText.length() &&
                         Character.isWhitespace(rightText.charAt(i))) {
                     i++;
