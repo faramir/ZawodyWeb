@@ -9,6 +9,11 @@ public class Program {
     private String path;
     private String params;
 
+    public Program(String path, String params) {
+        this.path = path;
+        this.params = params;
+    }
+
     public void setParams(String params) {
         this.params = params;
     }
