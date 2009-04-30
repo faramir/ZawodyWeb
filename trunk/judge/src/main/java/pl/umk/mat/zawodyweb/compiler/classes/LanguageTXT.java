@@ -1,6 +1,7 @@
 
 package pl.umk.mat.zawodyweb.compiler.classes;
 
+import java.util.Properties;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
@@ -16,23 +17,31 @@ public class LanguageTXT implements CompilerInterface{
     }
 
     @Override
-    public TestOutput runTest(Program program, TestInput input) {
-        return new TestOutput(program.getPath());
+    public TestOutput runTest(String path, TestInput input) {
+        return new TestOutput(path);
     }
 
     @Override
-    public String precompile(String code) {
+    public byte[] precompile(byte[] code) {
         return code;
     }
 
     @Override
-    public Program compile(String code) {
-        return new Program(code, "");
+    public Program compile(byte[] code) {
+        return new Program(new String(code));
     }
 
     @Override
     public Program postcompile(Program program) {
         return program;
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+    }
+
+    @Override
+    public void closeProgram(Program program) {
     }
 
 }

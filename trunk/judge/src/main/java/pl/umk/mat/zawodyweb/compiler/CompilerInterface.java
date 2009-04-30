@@ -4,6 +4,7 @@
  */
 package pl.umk.mat.zawodyweb.compiler;
 
+import java.util.Properties;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 
@@ -13,11 +14,30 @@ import pl.umk.mat.zawodyweb.checker.TestOutput;
  */
 public interface CompilerInterface {
 
-    public TestOutput runTest(Program program, TestInput input);
+    public void setProperties(Properties properties);
 
-    public String precompile(String code);
+    /**
+     * DO NOT USE THIS METHOD. Instead, use Program.runTest()
+     */
+    public TestOutput runTest(String path, TestInput input);
 
-    public Program compile(String code);
+    /**
+     * DO NOT USE THIS METHOD. Instead, use Code.compile()
+     */
+    public byte[] precompile(byte[] code);
 
+    /**
+     * DO NOT USE THIS METHOD. Instead, use Code.compile()
+     */
+    public Program compile(byte[] code);
+
+    /**
+     * DO NOT USE THIS METHOD. Instead, use Code.compile()
+     */
     public Program postcompile(Program program);
+
+    /**
+     * DO NOT USE THIS METHOD. Instead, use Program.closeProgram()
+     */
+    public void closeProgram(Program program);
 }
