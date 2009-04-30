@@ -3,8 +3,6 @@ package pl.umk.mat.zawodyweb.checker.classes;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pl.umk.mat.zawodyweb.checker.CheckerErrors;
 import pl.umk.mat.zawodyweb.checker.CheckerInterface;
 import pl.umk.mat.zawodyweb.checker.CheckerResult;
