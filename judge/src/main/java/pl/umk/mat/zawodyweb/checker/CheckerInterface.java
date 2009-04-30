@@ -4,7 +4,7 @@
  */
 package pl.umk.mat.zawodyweb.checker;
 
-import pl.umk.mat.zawodyweb.compiler.Code;
+import pl.umk.mat.zawodyweb.compiler.Program;
 
 /**
  *
@@ -12,5 +12,5 @@ import pl.umk.mat.zawodyweb.compiler.Code;
  */
 public interface CheckerInterface {
 
-    public CheckerResult check(Code code, TestInput input, TestOutput output);
+    public CheckerResult check(Program program, TestInput input, TestOutput output);
 }

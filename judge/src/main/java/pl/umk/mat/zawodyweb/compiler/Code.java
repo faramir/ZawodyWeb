@@ -6,25 +6,32 @@ package pl.umk.mat.zawodyweb.compiler;
  */
 public class Code {
 
-    private String code;
+    private byte[] code;
     private CompilerInterface compiler;
 
-    public Code(String code, CompilerInterface compiler) {
+    public Code(byte[] code, CompilerInterface compiler) {
         this.code = code;
         this.compiler = compiler;
     }
 
+    public Code(String code, CompilerInterface compiler) {
+        this.code = code.getBytes();
+        this.compiler = compiler;
+    }
+
     public Program compile() {
-        String precompiledCode = compiler.precompile(code);
+        byte[] precompiledCode = compiler.precompile(code);
         Program program = compiler.compile(precompiledCode);
-        return compiler.postcompile(program);
+        program = compiler.postcompile(program);
+        program.setCompiler(compiler);
+        return program;
     }
 
     public CompilerInterface getCompiler() {
         return compiler;
     }
 
-    public String getCode() {
+    public byte[] getCode() {
         return code;
     }
 
@@ -32,7 +39,7 @@ public class Code {
         this.compiler = compiler;
     }
 
-    public void setCode(String code) {
+    public void setCode(byte[] code) {
         this.code = code;
     }
 }
