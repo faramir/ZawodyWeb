@@ -4,6 +4,7 @@ import java.util.List;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.persistence.Embeddable;
+import javax.persistence.GenerationType;
 
 /**
  * <p>Pojo mapping TABLE public.series</p>
@@ -43,22 +45,22 @@ public class Series implements Serializable {
 	/**
 	 * Attribute startdate.
 	 */
-	private Timestamp startdate;
+	private Date startdate;
 	
 	/**
 	 * Attribute enddate.
 	 */
-	private Timestamp enddate;
+	private Date enddate;
 	
 	/**
 	 * Attribute freezedate.
 	 */
-	private Timestamp freezedate;
+	private Date freezedate;
 	
 	/**
 	 * Attribute unfreezedate.
 	 */
-	private Timestamp unfreezedate;
+	private Date unfreezedate;
 	
 	/**
 	 * Attribute penaltytime.
@@ -86,7 +88,7 @@ public class Series implements Serializable {
 	 */
 	@Basic
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
@@ -120,14 +122,14 @@ public class Series implements Serializable {
 	 */
 	@Basic
 	@Column(name = "startdate")
-		public Timestamp getStartdate() {
+		public Date getStartdate() {
 		return startdate;
 	}
 
 	/**
 	 * @param startdate new value for startdate 
 	 */
-	public void setStartdate(Timestamp startdate) {
+	public void setStartdate(Date startdate) {
 		this.startdate = startdate;
 	}
 	
@@ -136,14 +138,14 @@ public class Series implements Serializable {
 	 */
 	@Basic
 	@Column(name = "enddate")
-		public Timestamp getEnddate() {
+		public Date getEnddate() {
 		return enddate;
 	}
 
 	/**
 	 * @param enddate new value for enddate 
 	 */
-	public void setEnddate(Timestamp enddate) {
+	public void setEnddate(Date enddate) {
 		this.enddate = enddate;
 	}
 	
@@ -152,14 +154,14 @@ public class Series implements Serializable {
 	 */
 	@Basic
 	@Column(name = "freezedate")
-		public Timestamp getFreezedate() {
+		public Date getFreezedate() {
 		return freezedate;
 	}
 
 	/**
 	 * @param freezedate new value for freezedate 
 	 */
-	public void setFreezedate(Timestamp freezedate) {
+	public void setFreezedate(Date freezedate) {
 		this.freezedate = freezedate;
 	}
 	
@@ -168,14 +170,14 @@ public class Series implements Serializable {
 	 */
 	@Basic
 	@Column(name = "unfreezedate")
-		public Timestamp getUnfreezedate() {
+		public Date getUnfreezedate() {
 		return unfreezedate;
 	}
 
 	/**
 	 * @param unfreezedate new value for unfreezedate 
 	 */
-	public void setUnfreezedate(Timestamp unfreezedate) {
+	public void setUnfreezedate(Date unfreezedate) {
 		this.unfreezedate = unfreezedate;
 	}
 	
