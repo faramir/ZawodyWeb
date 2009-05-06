@@ -1,0 +1,99 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core">
+    <ui:define name="pageTitle">
+        <c:choose>
+            <c:when test="#{param.id == '0' or param.id == null}">
+            ${messages.series_adding}
+            </c:when>
+            <c:otherwise>
+            ${messages.series_editing}
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
+    <ui:define name="pageContent">
+        <a4j:form id="formEditSeries" styleClass="profilform">
+            <c:choose>
+                <c:when test="#{requestBean.editedSeries == null}">
+                ${messages.no_series}
+                </c:when>
+                <c:otherwise>
+                    <fieldset>
+                        <h:inputHidden id="id" value="#{requestBean.editedSeries.id}" />
+                        <div>
+                            <h:outputLabel for="contest">${messages.series_contest}:</h:outputLabel>
+                            <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}">
+                                <c:forEach var="contest" items="#{requestBean.contests}">
+                                    <f:selectItem itemValue="#{contest.id}" itemLabel="#{contest.name}" />
+                                </c:forEach>
+                            </h:selectOneMenu>
+                            <h:message for="contest" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="name">${messages.series_name}:</h:outputLabel>
+                            <h:inputText id="name" required="true" value="#{requestBean.editedSeries.name}" />
+                            <h:message for="name" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="startdate">${messages.series_startdate}:</h:outputLabel>
+                            <h:inputText id="startdate" required="false" value="#{requestBean.editedSeries.startdate}">
+                                <f:convertDateTime pattern="yyyy.MM.dd" />
+                            </h:inputText>
+                            <h:message for="startdate" errorClass="error" />
+                            <rich:jQuery selector="#startdate" name="startdate" query="datepicker({changeMonth:true,
+                                         changeYear:true,dateFormat:'yy.mm.dd',firstDay:1,monthNamesShort: ['Styczeń','Luty',
+                                         'Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik',
+                                         'Listopad','Grudzień'], dayNamesMin: ['N', 'P', 'W', 'Ś', 'C', 'P', 'S'], yearRange: '-50:+10'})"
+                                         timing="onload"/>
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="enddate">${messages.series_enddate}:</h:outputLabel>
+                            <h:inputText id="enddate" required="false" value="#{requestBean.editedSeries.enddate}">
+                                <f:convertDateTime pattern="yyyy.MM.dd" />
+                            </h:inputText>
+                            <h:message for="enddate" errorClass="error" />
+                            <rich:jQuery selector="#enddate" name="enddate" query="datepicker({changeMonth:true,
+                                         changeYear:true,dateFormat:'yy.mm.dd',firstDay:1,monthNamesShort: ['Styczeń','Luty',
+                                         'Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik',
+                                         'Listopad','Grudzień'], dayNamesMin: ['N', 'P', 'W', 'Ś', 'C', 'P', 'S'], yearRange: '-50:+10'})"
+                                         timing="onload"/>
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="freezedate">${messages.series_freezedate}:</h:outputLabel>
+                            <h:inputText id="freezedate" required="false" value="#{requestBean.editedSeries.freezedate}">
+                                <f:convertDateTime pattern="yyyy.MM.dd" />
+                            </h:inputText>
+                            <h:message for="freezedate" errorClass="error" />
+                            <rich:jQuery selector="#freezedate" name="freezedate" query="datepicker({changeMonth:true,
+                                         changeYear:true,dateFormat:'yy.mm.dd',firstDay:1,monthNamesShort: ['Styczeń','Luty',
+                                         'Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik',
+                                         'Listopad','Grudzień'], dayNamesMin: ['N', 'P', 'W', 'Ś', 'C', 'P', 'S'], yearRange: '-50:+10'})"
+                                         timing="onload"/>
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="unfreezedate">${messages.series_unfreezedate}:</h:outputLabel>
+                            <h:inputText id="unfreezedate" required="false" value="#{requestBean.editedSeries.unfreezedate}">
+                                <f:convertDateTime pattern="yyyy.MM.dd" />
+                            </h:inputText>
+                            <h:message for="unfreezedate" errorClass="error" />
+                            <rich:jQuery selector="#unfreezedate" name="unfreezedate" query="datepicker({changeMonth:true,
+                                         changeYear:true,dateFormat:'yy.mm.dd',firstDay:1,monthNamesShort: ['Styczeń','Luty',
+                                         'Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik',
+                                         'Listopad','Grudzień'], dayNamesMin: ['N', 'P', 'W', 'Ś', 'C', 'P', 'S'], yearRange: '-50:+10'})"
+                                         timing="onload"/>
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <a4j:commandButton id="save" reRender="formEditSeries" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveSeries}" />
+                            <h:message for="save" errorClass="error" />
+                        </div>
+                    </fieldset>
+                </c:otherwise>
+            </c:choose>
+        </a4j:form>
+    </ui:define>
+</ui:composition>
