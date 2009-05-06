@@ -4,6 +4,7 @@
  */
 package pl.umk.mat.zawodyweb.www;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
@@ -11,13 +12,16 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.database.ContestsDAO;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.SeriesDAO;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Contests;
+import pl.umk.mat.zawodyweb.database.pojo.Series;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 
 /**
@@ -25,12 +29,30 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
  * @author slawek
  */
 public class RequestBean {
-
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
+    private SessionBean sessionBean;
     private Users newUser = new Users();
     private String repPasswd;
     private Contests editedContest;
+    private Series editedSeries;
+    private List<Contests> contests = null;
+    private Integer temporaryContestId;
 
+    /**
+     * @return the sessionBean
+     */
+    public SessionBean getSessionBean() {
+        return sessionBean;
+    }
+
+    /**
+     * @param sessionBean the sessionBean to set
+     */
+    public void setSessionBean(SessionBean sessionBean) {
+        this.sessionBean = sessionBean;
+    }
+
+    
     /**
      * @return the newUser
      */
@@ -53,19 +75,19 @@ public class RequestBean {
     }
 
     public List<Contests> getContests() {
-        List<Contests> res = null;
+        if (contests == null) {
+            Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
-        Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-
-        try {
-            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
-            res = dao.findAll();
-            t.commit();
-        } catch (Exception e) {
-            t.rollback();
+            try {
+                ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
+                contests = dao.findAll();
+                t.commit();
+            } catch (Exception e) {
+                t.rollback();
+            }
         }
 
-        return res;
+        return contests;
     }
 
     /**
@@ -94,6 +116,43 @@ public class RequestBean {
         }
 
         return editedContest;
+    }
+
+    public Integer getTemporaryContestId(){
+        try{
+            return sessionBean.getCurrentContest().getId();
+        }catch(NullPointerException e){
+            return 0;
+        }
+    }
+
+    public void setTemporaryContestId(Integer id){
+        temporaryContestId = id;
+    }
+
+    public Series getEditedSeries() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        int seriesId = 0;
+        try{
+            seriesId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+        }catch(Exception e) {
+            seriesId = 0;
+        }
+
+        if(editedSeries != null){
+            return editedSeries;
+        }
+
+        if (seriesId == 0) {
+            editedSeries = new Series();
+        } else {
+            Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+            SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
+            editedSeries = dao.getById(seriesId);
+            t.commit();
+        }
+
+        return editedSeries;
     }
 
     public String registerUser() {
@@ -129,6 +188,31 @@ public class RequestBean {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditContest:save", summary, null);
+            return null;
+        }
+
+        return "start";
+    }
+
+    public String saveSeries(){
+        Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        try{
+            ContestsDAO cdao = DAOFactory.DEFAULT.buildContestsDAO();
+
+            editedSeries.setContests(cdao.getById(temporaryContestId));
+            
+            SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
+            if(editedSeries.getId() == 0){
+                editedSeries.setId(null);
+            }
+
+            dao.saveOrUpdate(editedSeries);
+            t.commit();
+        }catch(Exception e){
+            t.rollback();
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditSeries:save", summary, null);
             return null;
         }
 

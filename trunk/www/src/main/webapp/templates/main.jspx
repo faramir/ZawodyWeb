@@ -65,7 +65,7 @@
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editcontest.html">${messages.addcontest}</h:outputLink>
                 </li>
                 <li>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/dodaj_serie.html">${messages.addseries}</h:outputLink>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editseries.html">${messages.addseries}</h:outputLink>
                 </li>
                 <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/dodaj_zadanie.html">${messages.addproblem}</h:outputLink>
