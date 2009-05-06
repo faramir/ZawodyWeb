@@ -81,7 +81,6 @@ function selectReplacement(obj) {
     function closeSel(obj) {
       // close the ul
     }
-    window.onload = function() {
+   window.onload = function() {
       (document.all && !window.print) ? null : setForm();
-    }
-
+   }
