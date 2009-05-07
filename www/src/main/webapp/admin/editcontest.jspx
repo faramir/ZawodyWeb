@@ -38,15 +38,8 @@
                         </div>
                         <div>
                             <h:outputLabel for="startdate">${messages.contest_startdate}:</h:outputLabel>
-                            <h:inputText id="startdate" required="false" value="#{requestBean.editedContest.startdate}">
-                                <f:convertDateTime pattern="yyyy.MM.dd" />
-                            </h:inputText>
+                            <rich:calendar id="startdate" value="#{requestBean.editedContest.startdate}" datePattern="yyyy.MM.dd HH:mm" />
                             <h:message for="startdate" errorClass="error" />
-                            <rich:jQuery selector="#startdate" name="startdate" query="datepicker({changeMonth:true,
-                                         changeYear:true,dateFormat:'yy.mm.dd',firstDay:1,monthNamesShort: ['Styczeń','Luty',
-                                         'Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik',
-                                         'Listopad','Grudzień'], dayNamesMin: ['N', 'P', 'W', 'Ś', 'C', 'P', 'S'], yearRange: '-50:+10'})"
-                                         timing="onload"/>
                             <br class="clear" />
                         </div>
                         <div>
