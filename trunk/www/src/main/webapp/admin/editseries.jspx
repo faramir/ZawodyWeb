@@ -37,54 +37,26 @@
                         </div>
                         <div>
                             <h:outputLabel for="startdate">${messages.series_startdate}:</h:outputLabel>
-                            <h:inputText id="startdate" required="false" value="#{requestBean.editedSeries.startdate}">
-                                <f:convertDateTime pattern="yyyy.MM.dd" />
-                            </h:inputText>
+                            <rich:calendar id="startdate" value="#{requestBean.editedSeries.startdate}" datePattern="yyyy.MM.dd HH:mm" />
                             <h:message for="startdate" errorClass="error" />
-                            <rich:jQuery selector="#startdate" name="startdate" query="datepicker({changeMonth:true,
-                                         changeYear:true,dateFormat:'yy.mm.dd',firstDay:1,monthNamesShort: ['Styczeń','Luty',
-                                         'Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik',
-                                         'Listopad','Grudzień'], dayNamesMin: ['N', 'P', 'W', 'Ś', 'C', 'P', 'S'], yearRange: '-50:+10'})"
-                                         timing="onload"/>
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="enddate">${messages.series_enddate}:</h:outputLabel>
-                            <h:inputText id="enddate" required="false" value="#{requestBean.editedSeries.enddate}">
-                                <f:convertDateTime pattern="yyyy.MM.dd" />
-                            </h:inputText>
+                            <rich:calendar id="enddate" value="#{requestBean.editedSeries.enddate}" datePattern="yyyy.MM.dd HH:mm" />
                             <h:message for="enddate" errorClass="error" />
-                            <rich:jQuery selector="#enddate" name="enddate" query="datepicker({changeMonth:true,
-                                         changeYear:true,dateFormat:'yy.mm.dd',firstDay:1,monthNamesShort: ['Styczeń','Luty',
-                                         'Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik',
-                                         'Listopad','Grudzień'], dayNamesMin: ['N', 'P', 'W', 'Ś', 'C', 'P', 'S'], yearRange: '-50:+10'})"
-                                         timing="onload"/>
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="freezedate">${messages.series_freezedate}:</h:outputLabel>
-                            <h:inputText id="freezedate" required="false" value="#{requestBean.editedSeries.freezedate}">
-                                <f:convertDateTime pattern="yyyy.MM.dd" />
-                            </h:inputText>
+                            <rich:calendar id="freezedate" value="#{requestBean.editedSeries.freezedate}" datePattern="yyyy.MM.dd HH:mm" />
                             <h:message for="freezedate" errorClass="error" />
-                            <rich:jQuery selector="#freezedate" name="freezedate" query="datepicker({changeMonth:true,
-                                         changeYear:true,dateFormat:'yy.mm.dd',firstDay:1,monthNamesShort: ['Styczeń','Luty',
-                                         'Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik',
-                                         'Listopad','Grudzień'], dayNamesMin: ['N', 'P', 'W', 'Ś', 'C', 'P', 'S'], yearRange: '-50:+10'})"
-                                         timing="onload"/>
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="unfreezedate">${messages.series_unfreezedate}:</h:outputLabel>
-                            <h:inputText id="unfreezedate" required="false" value="#{requestBean.editedSeries.unfreezedate}">
-                                <f:convertDateTime pattern="yyyy.MM.dd" />
-                            </h:inputText>
+                            <rich:calendar id="unfreezedate" value="#{requestBean.editedSeries.unfreezedate}" datePattern="yyyy.MM.dd HH:mm" />
                             <h:message for="unfreezedate" errorClass="error" />
-                            <rich:jQuery selector="#unfreezedate" name="unfreezedate" query="datepicker({changeMonth:true,
-                                         changeYear:true,dateFormat:'yy.mm.dd',firstDay:1,monthNamesShort: ['Styczeń','Luty',
-                                         'Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik',
-                                         'Listopad','Grudzień'], dayNamesMin: ['N', 'P', 'W', 'Ś', 'C', 'P', 'S'], yearRange: '-50:+10'})"
-                                         timing="onload"/>
                             <br class="clear" />
                         </div>
                         <div>
