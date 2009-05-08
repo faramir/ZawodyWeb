@@ -65,6 +65,23 @@ public class TrailingDiffTest {
         int expected = CheckerErrors.ACC;
         assertEquals(expected, Test("15\n", "15"));
     }
+
+    @Test
+    public void trailingTest5() {
+        int expected = CheckerErrors.ACC;
+        assertEquals(expected, Test("     15 13\n\n", "15 13\n"));
+    }
+    @Test
+    public void trailingTest6() {
+        int expected = CheckerErrors.WA;
+        assertEquals(expected, Test("     15  13\n\n", "15 13\n"));
+    }
+    
+    @Test
+    public void trailingTest7() {
+        int expected = CheckerErrors.WA;
+        assertEquals(expected, Test("     15\n13\n\n", "15 13\n"));
+    }
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //

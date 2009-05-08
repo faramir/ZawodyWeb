@@ -77,7 +77,7 @@ public class NormalDiffTest {
     public void differentTest2() {
         int expected = CheckerErrors.WA;
         String codeText = "1512\n";
-        String rightText = "\n 15\n13\n";
+        String rightText = "\n 15\n12\n";
         assertEquals(expected, Test(codeText, rightText));
     }
 
@@ -85,7 +85,7 @@ public class NormalDiffTest {
     public void differentTest3() {
         int expected = CheckerErrors.WA;
         String codeText = "151 2\n";
-        String rightText = "\n 15\n13\n";
+        String rightText = "\n 15\n12\n";
         assertEquals(expected, Test(codeText, rightText));
     }
 
