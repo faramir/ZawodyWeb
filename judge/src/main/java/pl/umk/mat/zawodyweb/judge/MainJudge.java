@@ -60,7 +60,8 @@ public class MainJudge {
             int id = Integer.parseInt(str);
             Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
             Submits submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
-            transaction.commit();
+            
+                       
             if (!sock.isConnected()) {
                 break;
             }
@@ -77,14 +78,13 @@ public class MainJudge {
                     diffClasses.getCode()).newInstance();
             Code code = new Code(codeText, compiler);
             Program program = code.compile();
-            List<Tests> tests = DAOFactory.DEFAULT.buildTestsDAO().findByProblemsid(submit.getProblems().getId());
-            transaction.commit();
+            List<Tests> tests = submit.getProblems().getTestss();
             TestInput testInput;
             TestOutput testOutput;
             for (Tests test : tests) {
                 testInput = new TestInput(test.getInput(),
                         test.getTimelimit(),submit.getProblems().getMemlimit());
-                testOutput = program.runTest(testInput);
+                testOutput = new TestOutput(test.getOutput());
                 CheckerResult result = checker.check(program, testInput, testOutput);
                 Results dbResult = new Results();
                 dbResult.setMemory(testOutput.getMemUsed());
@@ -95,9 +95,10 @@ public class MainJudge {
                 dbResult.setTests(test);
                 DAOFactory.DEFAULT.buildResultsDAO().save(dbResult);
             }
+            transaction.commit();
         }
         HibernateUtil.getSessionFactory().getCurrentSession().close();
         sock.close();
     }
-    // TODO code application logic here
+
 }

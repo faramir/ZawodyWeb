@@ -86,6 +86,10 @@ public class Problems implements Serializable {
 	 */
 	private List<Submits> submitss = null;
 
+    	/**
+	 * List of Submits
+	 */
+	private List<Tests> testss = null;
 	
 	/**
 	 * @return id
@@ -263,5 +267,20 @@ public class Problems implements Serializable {
 	 	this.submitss = submitss;
 	 }
 
+     /**
+	 * Get the list of Submits
+	 */
+	 // submitsPK
+	 @OneToMany(mappedBy="problems")
+	 public List<Tests> getTestss() {
+	 	return this.testss;
+	 }
+
+	/**
+	 * Set the list of Submits
+	 */
+	 public void setTestss(List<Tests> testss) {
+	 	this.testss = testss;
+	 }
 
 }

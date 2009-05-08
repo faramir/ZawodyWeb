@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.persistence.Embeddable;
+import javax.persistence.GenerationType;
 
 /**
  * <p>Pojo mapping TABLE public.results</p>
@@ -71,7 +72,7 @@ public class Results implements Serializable {
 	 */
 	@Basic
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
