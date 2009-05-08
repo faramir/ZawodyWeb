@@ -2,9 +2,8 @@ package pl.umk.mat.zawodyweb.database.pojo;
 
 import java.util.List;
 import java.io.Serializable;
-import java.sql.Timestamp;
-
 import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,7 +22,7 @@ import javax.persistence.GenerationType;
 /**
  * <p>Pojo mapping TABLE public.series</p>
  *
- * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
+ * <p>Generated at Fri May 08 19:00:58 CEST 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -78,9 +77,9 @@ public class Series implements Serializable {
 	private List<Problems> problemss = null;
 
 	/**
-	 * List of SeriesRoles
+	 * List of Roles
 	 */
-	private List<SeriesRoles> seriesRoless = null;
+	private List<Roles> roless = null;
 
 	
 	/**
@@ -229,19 +228,19 @@ public class Series implements Serializable {
 	 	this.problemss = problemss;
 	 }
 	/**
-	 * Get the list of SeriesRoles
+	 * Get the list of Roles
 	 */
-	 // seriesRolesPK
+	 // rolesPK
 	 @OneToMany(mappedBy="series")
-	 public List<SeriesRoles> getSeriesRoless() {
-	 	return this.seriesRoless;
+	 public List<Roles> getRoless() {
+	 	return this.roless;
 	 }
 	 
 	/**
-	 * Set the list of SeriesRoles
+	 * Set the list of Roles
 	 */
-	 public void setSeriesRoless(List<SeriesRoles> seriesRoless) {
-	 	this.seriesRoless = seriesRoless;
+	 public void setRoless(List<Roles> roless) {
+	 	this.roless = roless;
 	 }
 
 

@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
 /**
  * <p>Generic DAO layer for Testss</p>
- * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
+ * <p>Generated at Fri May 08 19:00:59 CEST 2009</p>
  *
  * @author Salto-db Generator v1.1 / EJB3 + Hibernate DAO
  * @see http://www.hibernate.org/328.html
@@ -45,8 +45,8 @@ public interface TestsDAO extends GenericDAO<Tests,Integer> {
 	 */
 	public List<Tests> findByVisibility(Integer visibility);
 
-    /**
-	 * Find Submits by problemsid
+	/**
+	 * Find Tests by problemsid
 	 */
 	public List<Tests> findByProblemsid(Integer problemsid);
 

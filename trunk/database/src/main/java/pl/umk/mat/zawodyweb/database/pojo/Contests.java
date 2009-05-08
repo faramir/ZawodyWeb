@@ -23,7 +23,7 @@ import javax.persistence.GenerationType;
 /**
  * <p>Pojo mapping TABLE public.contests</p>
  *
- * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
+ * <p>Generated at Fri May 08 19:00:59 CEST 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -73,14 +73,14 @@ public class Contests implements Serializable {
 	private Integer visibility;
 	
 	/**
-	 * List of ContestsRoles
-	 */
-	private List<ContestsRoles> contestsRoless = null;
-
-	/**
 	 * List of Questions
 	 */
 	private List<Questions> questionss = null;
+
+	/**
+	 * List of Roles
+	 */
+	private List<Roles> roless = null;
 
 	/**
 	 * List of Series
@@ -227,21 +227,6 @@ public class Contests implements Serializable {
 	}
 	
 	/**
-	 * Get the list of ContestsRoles
-	 */
-	 // contestsRolesPK
-	 @OneToMany(mappedBy="contests")
-	 public List<ContestsRoles> getContestsRoless() {
-	 	return this.contestsRoless;
-	 }
-	 
-	/**
-	 * Set the list of ContestsRoles
-	 */
-	 public void setContestsRoless(List<ContestsRoles> contestsRoless) {
-	 	this.contestsRoless = contestsRoless;
-	 }
-	/**
 	 * Get the list of Questions
 	 */
 	 // questionsPK
@@ -255,6 +240,21 @@ public class Contests implements Serializable {
 	 */
 	 public void setQuestionss(List<Questions> questionss) {
 	 	this.questionss = questionss;
+	 }
+	/**
+	 * Get the list of Roles
+	 */
+	 // rolesPK
+	 @OneToMany(mappedBy="contests")
+	 public List<Roles> getRoless() {
+	 	return this.roless;
+	 }
+	 
+	/**
+	 * Set the list of Roles
+	 */
+	 public void setRoless(List<Roles> roless) {
+	 	this.roless = roless;
 	 }
 	/**
 	 * Get the list of Series

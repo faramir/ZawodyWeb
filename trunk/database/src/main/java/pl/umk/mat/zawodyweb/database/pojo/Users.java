@@ -23,7 +23,7 @@ import javax.persistence.GenerationType;
 /**
  * <p>Pojo mapping TABLE public.users</p>
  *
- * <p>Generated at Sun Mar 08 19:45:30 CET 2009</p>
+ * <p>Generated at Fri May 08 19:00:59 CEST 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -170,7 +170,7 @@ public class Users implements Serializable {
 	
 	/* liste transiente */
 	/**
-	 * @return birthdate
+	 * @return birthTimestamp
 	 */
 	@Basic
 	@Column(name = "birthdate")
@@ -179,7 +179,7 @@ public class Users implements Serializable {
 	}
 
 	/**
-	 * @param birthdate new value for birthdate 
+	 * @param birthdate new value for birthdate
 	 */
 	public void setBirthdate(Date birthdate) {
 		this.birthdate = birthdate;
