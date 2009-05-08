@@ -53,6 +53,14 @@ public class TestsHibernateDAO extends
 	public List<Tests> findByVisibility(Integer visibility) {
 		return findByCriteria(Restrictions.eq("visibility", visibility));
 	}
+
+    /**
+	 * Find Tests by problemsid
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Tests> findByProblemsid(Integer problemsid) {
+		return findByCriteria(Restrictions.eq("problems.problemsid", problemsid));
+	}
 	
 
 }

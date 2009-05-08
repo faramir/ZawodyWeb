@@ -14,6 +14,26 @@ public class TestOutput {
     /* Possible results: MLE, TLE, CE, RE */
     private int result;
     private String resultDesc;
+    private int runtime;
+    private int memUsed;
+
+    public int getMemUsed() {
+        return memUsed;
+    }
+
+    public int getRuntime() {
+        return runtime;
+    }
+
+    public void setMemUsed(int memUsed) {
+        this.memUsed = memUsed;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime = runtime;
+    }
+
+
 
     public TestOutput(String text) {
         this.text = text;

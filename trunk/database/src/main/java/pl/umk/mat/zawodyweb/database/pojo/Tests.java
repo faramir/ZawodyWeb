@@ -59,7 +59,12 @@ public class Tests implements Serializable {
 	 * Attribute visibility.
 	 */
 	private Integer visibility;
-	
+
+    /**
+	 * Attribute problems
+	 */
+	 private Problems problems;
+
 	/**
 	 * List of Results
 	 */
@@ -178,8 +183,19 @@ public class Tests implements Serializable {
 	 public List<Results> getResultss() {
 	 	return this.resultss;
 	 }
-	 
+
 	/**
+	 * get problems
+	 */
+	@ManyToOne
+	@JoinColumn(name = "problemsid")
+	public Problems getProblems() {
+		return this.problems;
+	}
+
+
+
+     /**
 	 * Set the list of Results
 	 */
 	 public void setResultss(List<Results> resultss) {
