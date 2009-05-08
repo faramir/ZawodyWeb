@@ -45,4 +45,9 @@ public interface TestsDAO extends GenericDAO<Tests,Integer> {
 	 */
 	public List<Tests> findByVisibility(Integer visibility);
 
+    /**
+	 * Find Submits by problemsid
+	 */
+	public List<Tests> findByProblemsid(Integer problemsid);
+
 }
