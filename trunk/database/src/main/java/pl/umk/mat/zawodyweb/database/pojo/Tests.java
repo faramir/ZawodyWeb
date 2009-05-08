@@ -30,177 +30,172 @@ import javax.persistence.Embeddable;
 @SuppressWarnings("serial")
 public class Tests implements Serializable {
 
-	/**
-	 * Attribute id.
-	 */
-	private Integer id;
-	
-	/**
-	 * Attribute input.
-	 */
-	private String input;
-	
-	/**
-	 * Attribute output.
-	 */
-	private String output;
-	
-	/**
-	 * Attribute timelimit.
-	 */
-	private Integer timelimit;
-	
-	/**
-	 * Attribute maxpoints.
-	 */
-	private Integer maxpoints;
-	
-	/**
-	 * Attribute visibility.
-	 */
-	private Integer visibility;
+    /**
+     * Attribute id.
+     */
+    private Integer id;
+    /**
+     * Attribute input.
+     */
+    private String input;
+    /**
+     * Attribute output.
+     */
+    private String output;
+    /**
+     * Attribute timelimit.
+     */
+    private Integer timelimit;
+    /**
+     * Attribute maxpoints.
+     */
+    private Integer maxpoints;
+    /**
+     * Attribute visibility.
+     */
+    private Integer visibility;
+    /**
+     * Attribute problems
+     */
+    private Problems problems;
+    /**
+     * List of Results
+     */
+    private List<Results> resultss = null;
+
+    /* liste transiente */
+    /**
+     * @return id
+     */
+    @Basic
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    public Integer getId() {
+        return id;
+    }
 
     /**
-	 * Attribute problems
-	 */
-	 private Problems problems;
+     * @param id new value for id
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	/**
-	 * List of Results
-	 */
-	private List<Results> resultss = null;
+    /* liste transiente */
+    /**
+     * @return input
+     */
+    @Basic
+    @Column(name = "input", length = 2147483647)
+    public String getInput() {
+        return input;
+    }
 
-	
-	/* liste transiente */
-	/**
-	 * @return id
-	 */
-	@Basic
-	@Id
-	@GeneratedValue
-	@Column(name = "id")
-		public Integer getId() {
-		return id;
-	}
+    /**
+     * @param input new value for input
+     */
+    public void setInput(String input) {
+        this.input = input;
+    }
 
-	/**
-	 * @param id new value for id 
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
-	/* liste transiente */
-	/**
-	 * @return input
-	 */
-	@Basic
-	@Column(name = "input", length = 2147483647)
-		public String getInput() {
-		return input;
-	}
+    /* liste transiente */
+    /**
+     * @return output
+     */
+    @Basic
+    @Column(name = "output", length = 2147483647)
+    public String getOutput() {
+        return output;
+    }
 
-	/**
-	 * @param input new value for input 
-	 */
-	public void setInput(String input) {
-		this.input = input;
-	}
-	
-	/* liste transiente */
-	/**
-	 * @return output
-	 */
-	@Basic
-	@Column(name = "output", length = 2147483647)
-		public String getOutput() {
-		return output;
-	}
+    /**
+     * @param output new value for output
+     */
+    public void setOutput(String output) {
+        this.output = output;
+    }
 
-	/**
-	 * @param output new value for output 
-	 */
-	public void setOutput(String output) {
-		this.output = output;
-	}
-	
-	/* liste transiente */
-	/**
-	 * @return timelimit
-	 */
-	@Basic
-	@Column(name = "timelimit")
-		public Integer getTimelimit() {
-		return timelimit;
-	}
+    /* liste transiente */
+    /**
+     * @return timelimit
+     */
+    @Basic
+    @Column(name = "timelimit")
+    public Integer getTimelimit() {
+        return timelimit;
+    }
 
-	/**
-	 * @param timelimit new value for timelimit 
-	 */
-	public void setTimelimit(Integer timelimit) {
-		this.timelimit = timelimit;
-	}
-	
-	/* liste transiente */
-	/**
-	 * @return maxpoints
-	 */
-	@Basic
-	@Column(name = "maxpoints")
-		public Integer getMaxpoints() {
-		return maxpoints;
-	}
+    /**
+     * @param timelimit new value for timelimit
+     */
+    public void setTimelimit(Integer timelimit) {
+        this.timelimit = timelimit;
+    }
 
-	/**
-	 * @param maxpoints new value for maxpoints 
-	 */
-	public void setMaxpoints(Integer maxpoints) {
-		this.maxpoints = maxpoints;
-	}
-	
-	/* liste transiente */
-	/**
-	 * @return visibility
-	 */
-	@Basic
-	@Column(name = "visibility")
-		public Integer getVisibility() {
-		return visibility;
-	}
+    /* liste transiente */
+    /**
+     * @return maxpoints
+     */
+    @Basic
+    @Column(name = "maxpoints")
+    public Integer getMaxpoints() {
+        return maxpoints;
+    }
 
-	/**
-	 * @param visibility new value for visibility 
-	 */
-	public void setVisibility(Integer visibility) {
-		this.visibility = visibility;
-	}
-	
-	/**
-	 * Get the list of Results
-	 */
-	 // resultsPK
-	 @OneToMany(mappedBy="tests")
-	 public List<Results> getResultss() {
-	 	return this.resultss;
-	 }
+    /**
+     * @param maxpoints new value for maxpoints
+     */
+    public void setMaxpoints(Integer maxpoints) {
+        this.maxpoints = maxpoints;
+    }
 
-	/**
-	 * get problems
-	 */
-	@ManyToOne
-	@JoinColumn(name = "problemsid")
-	public Problems getProblems() {
-		return this.problems;
-	}
+    /* liste transiente */
+    /**
+     * @return visibility
+     */
+    @Basic
+    @Column(name = "visibility")
+    public Integer getVisibility() {
+        return visibility;
+    }
 
+    /**
+     * @param visibility new value for visibility
+     */
+    public void setVisibility(Integer visibility) {
+        this.visibility = visibility;
+    }
 
+    /**
+     * Get the list of Results
+     */
+    // resultsPK
+    @OneToMany(mappedBy = "tests")
+    public List<Results> getResultss() {
+        return this.resultss;
+    }
 
-     /**
-	 * Set the list of Results
-	 */
-	 public void setResultss(List<Results> resultss) {
-	 	this.resultss = resultss;
-	 }
+    /**
+     * get problems
+     */
+    @ManyToOne
+    @JoinColumn(name = "problemsid")
+    public Problems getProblems() {
+        return this.problems;
+    }
 
+    /**
+     * set problems
+     */
+    public void setProblems(Problems problems) {
+        this.problems = problems;
+    }
 
+    /**
+     * Set the list of Results
+     */
+    public void setResultss(List<Results> resultss) {
+        this.resultss = resultss;
+    }
 }
