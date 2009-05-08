@@ -5,7 +5,7 @@ CREATE TABLE USERS (
         firstName           varchar(40),
         lastName            varchar(40),
         eMail               varchar(40) unique,
-        birthDate           date,
+        birthDate           timestamp,
         login               varchar(20) unique,
         pass                varchar(32),
         address             varchar(80),
@@ -33,10 +33,10 @@ CREATE TABLE ROLES (
 CREATE TABLE SERIES (  
         id                  serial primary key,
         name                varchar(40),
-        startDate           date,
-        endDate             date,
-        freezeDate          date,
-        unfreezeDate        date,
+        startDate           timestamp,
+        endDate             timestamp,
+        freezeDate          timestamp,
+        unfreezeDate        timestamp,
         penaltyTime         int
 );
 
@@ -44,7 +44,7 @@ CREATE TABLE CONTESTS (
         id                  serial primary key,
         name                varchar(120) unique,
         type                int,
-        startDate           date,
+        startDate           timestamp,
         about               text,
         rules               text,
         tech                text,
@@ -53,7 +53,7 @@ CREATE TABLE CONTESTS (
 
 CREATE TABLE SUBMITS ( 
         id                  serial primary key,
-        sDate               date,
+        sDate               timestamp,
         result              int,
         code                bytea,
         filename            varchar(255),
@@ -120,23 +120,14 @@ ALTER TABLE LANGUAGES ADD classesId int REFERENCES CLASSES(id);
 ALTER TABLE PROBLEMS ADD classesId int REFERENCES CLASSES(id);
 ALTER TABLE SUBMITS ADD languagesId int REFERENCES LANGUAGES(id);
 ALTER TABLE TESTS ADD problemsId int REFERENCES PROBLEMS(id);
+ALTER TABLE ROLES ADD contestsId int REFERENCES CONTESTS(id);
+ALTER TABLE ROLES ADD seriesId int REFERENCES SERIES(id);
+
 
 /* Powiazania wiele do wielu */
 CREATE TABLE USERS_ROLES (  
         id                  serial primary key,
         usersId             int REFERENCES USERS(id),
-        rolesId             int REFERENCES ROLES(id)
-);
-
-CREATE TABLE SERIES_ROLES ( 
-        id                  serial primary key,
-        seriesId            int REFERENCES SERIES(id),
-        rolesId             int REFERENCES ROLES(id)
-);
-
-CREATE TABLE CONTESTS_ROLES ( 
-        id                  serial primary key,
-        contestsId          int REFERENCES CONTESTS(id),
         rolesId             int REFERENCES ROLES(id)
 );
 
