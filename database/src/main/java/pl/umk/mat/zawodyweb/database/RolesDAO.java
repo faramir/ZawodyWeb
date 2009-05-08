@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import pl.umk.mat.zawodyweb.database.pojo.Roles;
 /**
  * <p>Generic DAO layer for Roless</p>
- * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
+ * <p>Generated at Fri May 08 19:01:00 CEST 2009</p>
  *
  * @author Salto-db Generator v1.1 / EJB3 + Hibernate DAO
  * @see http://www.hibernate.org/328.html
@@ -79,5 +79,15 @@ public interface RolesDAO extends GenericDAO<Roles,Integer> {
 	 * Find Roles by contestant
 	 */
 	public List<Roles> findByContestant(Boolean contestant);
+
+	/**
+	 * Find Roles by contestsid
+	 */
+	public List<Roles> findByContestsid(Integer contestsid);
+
+	/**
+	 * Find Roles by seriesid
+	 */
+	public List<Roles> findBySeriesid(Integer seriesid);
 
 }
