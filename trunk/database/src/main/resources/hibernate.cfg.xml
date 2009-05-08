@@ -6,7 +6,8 @@
 	<session-factory>
 
 	<!-- You need to complete the configuration here. This is just a sample, you should use a connection pool -->
-	<property name="connection.url">jdbc:postgresql://localhost:5432/zawodyweb</property>
+	<!-- <property name="connection.url">jdbc:postgresql://localhost:5432/zawodyweb</property> -->
+    <property name="connection.url">jdbc:postgresql://158.75.12.138:8072/zawodyweb</property>
 	<property name="connection.username">zawody</property>
 	<property name="connection.driver_class">org.postgresql.Driver</property>
 	<!-- Your database is PostgreSQL 8.3 -->
