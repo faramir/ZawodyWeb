@@ -59,7 +59,7 @@ public class TestsHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Tests> findByProblemsid(Integer problemsid) {
-		return findByCriteria(Restrictions.eq("problems.problemsid", problemsid));
+		return findByCriteria(Restrictions.eq("problems.id", problemsid));
 	}
 	
 

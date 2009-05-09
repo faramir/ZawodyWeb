@@ -59,7 +59,7 @@ public class ProblemsHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Problems> findBySeriesid(Integer seriesid) {
-		return findByCriteria(Restrictions.eq("series.seriesid", seriesid));
+		return findByCriteria(Restrictions.eq("series.id", seriesid));
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class ProblemsHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Problems> findByClassesid(Integer classesid) {
-		return findByCriteria(Restrictions.eq("classes.classesid", classesid));
+		return findByCriteria(Restrictions.eq("classes.id", classesid));
 	}
 	
 
