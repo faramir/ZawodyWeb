@@ -1,0 +1,81 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk">
+    <ui:define name="pageTitle">
+        <c:choose>
+            <c:when test="#{param.id == '0' or param.id == null}">
+            ${messages.problem_adding}
+            </c:when>
+            <c:otherwise>
+            ${messages.problem_editing}
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
+    <ui:define name="pageContent">
+        <a4j:form id="formEditProblem" styleClass="profilform" enctype="multipart/form-data">
+            <c:choose>
+                <c:when test="#{requestBean.editedProblem == null}">
+                ${messages.no_problem}
+                </c:when>
+                <c:otherwise>
+                    <fieldset>
+                        <h:inputHidden id="id" value="#{requestBean.editedProblem.id}" />
+                        <div>
+                            <h:outputLabel for="name">${messages.problem_name}:</h:outputLabel>
+                            <h:inputText id="name" required="true" value="#{requestBean.editedProblem.name}" />
+                            <h:message for="name" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="text">${messages.problem_text}:</h:outputLabel>
+                            <h:inputTextarea id="text" styleClass="bigHeight" required="true" value="#{requestBean.editedProblem.text}">
+                            </h:inputTextarea>
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="pdf">${messages.problem_pdf}:</h:outputLabel>
+                            <t:inputFileUpload id="pdf" required="true" value="#{requestBean.editedProblem.pdf}" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="abbrev">${messages.problem_abbrev}:</h:outputLabel>
+                            <h:inputText id="abbrev" required="true" value="#{requestBean.editedProblem.abbrev}" />
+                            <h:message for="abbrev" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="memlimit">${messages.problem_memlimit}:</h:outputLabel>
+                            <h:inputText id="memlimit" required="true" value="#{requestBean.editedProblem.memlimit}" />
+                            <h:message for="memlimit" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="contest">${messages.problem_contest}:</h:outputLabel>
+                            <h:selectOneMenu id="contest" required="false" value="#{requestBean.temporaryContestId}">
+                                <c:forEach var="contest" items="#{requestBean.temporarySeriesId}">
+                                    <f:selectItem itemValue="#{contest.id}" itemLabel="#{contest.name}" />
+                                </c:forEach>
+                                <a4j:support event="onchange" reRender="series" ajaxSingle="true" />
+                            </h:selectOneMenu>
+                            <h:message for="contest" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="series">${messages.problem_series}:</h:outputLabel>
+                            <h:selectOneMenu id="series" required="false" value="#{requestBean.ed}">
+                                <c:forEach var="series" items="#{requestBean.contestsSeries}">
+                                    <f:selectItem itemValue="#{series.id}" itemLabel="#{series.name}" />
+                                </c:forEach>
+                            </h:selectOneMenu>
+                            <h:message for="contest" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <a4j:commandButton id="save" reRender="formEditProblem" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveProblem}" />
+                            <h:message for="save" errorClass="error" />
+                        </div>
+                    </fieldset>
+                </c:otherwise>
+            </c:choose>
+        </a4j:form>
+    </ui:define>
+</ui:composition>
