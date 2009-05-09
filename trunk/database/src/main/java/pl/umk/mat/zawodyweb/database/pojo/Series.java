@@ -199,7 +199,7 @@ public class Series implements Serializable {
 	/**
 	 * get contests
 	 */
-	@ManyToOne
+	@ManyToOne(targetEntity=Contests.class)
 	@JoinColumn(name = "contestsid")
 	public Contests getContests() {
 		return this.contests;

@@ -66,7 +66,7 @@ public class SeriesHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Series> findByContestsid(Integer contestsid) {
-		return findByCriteria(Restrictions.eq("contests.contestsid", contestsid));
+		return findByCriteria(Restrictions.eq("contests.id", contestsid));
 	}
 	
 
