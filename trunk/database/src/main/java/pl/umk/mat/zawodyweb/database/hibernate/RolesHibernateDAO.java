@@ -10,7 +10,7 @@ import org.hibernate.criterion.Restrictions;
 
 /**
  * <p>Hibernate DAO layer for Roless</p>
- * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
+ * <p>Generated at Fri May 08 19:01:00 CEST 2009</p>
  *
  * @author Salto-db Generator v1.1 / EJB3 + Hibernate DAO
  * @see http://www.hibernate.org/328.html
@@ -101,6 +101,22 @@ public class RolesHibernateDAO extends
 	 */
 	public List<Roles> findByContestant(Boolean contestant) {
 		return findByCriteria(Restrictions.eq("contestant", contestant));
+	}
+	
+	/**
+	 * Find Roles by contestsid
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Roles> findByContestsid(Integer contestsid) {
+		return findByCriteria(Restrictions.eq("contests.contestsid", contestsid));
+	}
+	
+	/**
+	 * Find Roles by seriesid
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Roles> findBySeriesid(Integer seriesid) {
+		return findByCriteria(Restrictions.eq("series.seriesid", seriesid));
 	}
 	
 
