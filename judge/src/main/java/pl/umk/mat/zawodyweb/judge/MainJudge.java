@@ -41,7 +41,7 @@ public class MainJudge {
     public static void main(String[] args) throws IOException, InterruptedException, InstantiationException, IllegalAccessException {
         Properties properties = new Properties();
         try {
-            properties.load(new FileInputStream("configuration.xml"));
+            properties.loadFromXML(new FileInputStream("configuration.xml"));
         } catch (FileNotFoundException ex) {
             properties.setProperty("PORT", "8888");
             properties.setProperty("HOST", "127.0.0.1");
