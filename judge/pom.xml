@@ -57,7 +57,7 @@
                     <arguments>
                         <argument>-classpath</argument>
                         <classpath />
-                        <argument>pl.umk.mat.zawodyweb.zawodyweb.judge</argument>
+                        <argument>pl.umk.mat.zawodyweb.judge.MainJudge</argument>
                     </arguments>
                 </configuration>
             </plugin>
