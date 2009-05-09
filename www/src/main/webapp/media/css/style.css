@@ -226,7 +226,7 @@ background-color:transparent;
 padding: 0px;
 }
 
-.profilform input {
+.profilform input, select {
 margin-right:20px;
 margin-top: 12px;
 border:1px solid #999999;

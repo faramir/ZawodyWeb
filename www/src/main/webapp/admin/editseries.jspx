@@ -60,6 +60,12 @@
                             <br class="clear" />
                         </div>
                         <div>
+                            <h:outputLabel for="penaltytime">${messages.series_penaltytime}:</h:outputLabel>
+                            <h:inputText id="penaltytime" required="true" value="#{requestBean.editedSeries.penaltytime}" />
+                            <h:message for="penaltytime" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
                             <a4j:commandButton id="save" reRender="formEditSeries" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveSeries}" />
                             <h:message for="save" errorClass="error" />
                         </div>
