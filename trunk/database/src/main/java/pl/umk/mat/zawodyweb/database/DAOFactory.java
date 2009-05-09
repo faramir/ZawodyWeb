@@ -3,7 +3,7 @@ package pl.umk.mat.zawodyweb.database;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateDAOFactory;
 
 /**
- * Generated at Sun Mar 08 19:45:33 CET 2009
+ * Generated at Fri May 08 19:01:00 CEST 2009
  *
  * @see http://www.hibernate.org/328.html
  * @author Salto-db Generator v1.1 / EJB3 + Hibernate DAO
@@ -26,15 +26,21 @@ public abstract class DAOFactory {
         }
     }
 	
-	public abstract UsersDAO buildUsersDAO();
+	public abstract SeriesDAO buildSeriesDAO();
 	
-	public abstract SeriesRolesDAO buildSeriesRolesDAO();
+	public abstract UsersDAO buildUsersDAO();
 	
 	public abstract LanguagesDAO buildLanguagesDAO();
 	
-	public abstract ContestsRolesDAO buildContestsRolesDAO();
+	public abstract TestsDAO buildTestsDAO();
 	
 	public abstract ResultsDAO buildResultsDAO();
+	
+	public abstract ClassesDAO buildClassesDAO();
+	
+	public abstract SubmitsDAO buildSubmitsDAO();
+	
+	public abstract ContestsDAO buildContestsDAO();
 	
 	public abstract ProblemsDAO buildProblemsDAO();
 	
@@ -43,16 +49,6 @@ public abstract class DAOFactory {
 	public abstract UsersRolesDAO buildUsersRolesDAO();
 	
 	public abstract RolesDAO buildRolesDAO();
-	
-	public abstract SeriesDAO buildSeriesDAO();
-	
-	public abstract TestsDAO buildTestsDAO();
-	
-	public abstract ClassesDAO buildClassesDAO();
-	
-	public abstract ContestsDAO buildContestsDAO();
-	
-	public abstract SubmitsDAO buildSubmitsDAO();
 	
 	public abstract LanguagesProblemsDAO buildLanguagesProblemsDAO();
 	
