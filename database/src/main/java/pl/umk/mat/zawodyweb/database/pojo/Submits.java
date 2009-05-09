@@ -17,12 +17,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.persistence.Embeddable;
-import javax.persistence.GenerationType;
 
 /**
  * <p>Pojo mapping TABLE public.submits</p>
  *
- * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
+ * <p>Generated at Fri May 08 19:00:59 CEST 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -82,7 +81,7 @@ public class Submits implements Serializable {
 	 */
 	@Basic
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue
 	@Column(name = "id")
 		public Integer getId() {
 		return id;

@@ -22,7 +22,7 @@ import javax.persistence.GenerationType;
 /**
  * <p>Pojo mapping TABLE public.results</p>
  *
- * <p>Generated at Sun Mar 08 19:45:31 CET 2009</p>
+ * <p>Generated at Fri May 08 19:00:59 CEST 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */

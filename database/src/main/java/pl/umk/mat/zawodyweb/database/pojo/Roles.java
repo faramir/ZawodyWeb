@@ -21,7 +21,7 @@ import javax.persistence.Embeddable;
 /**
  * <p>Pojo mapping TABLE public.roles</p>
  *
- * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
+ * <p>Generated at Fri May 08 19:01:00 CEST 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
  * 
  */
@@ -96,14 +96,14 @@ public class Roles implements Serializable {
 	private Boolean contestant;
 	
 	/**
-	 * List of ContestsRoles
+	 * Attribute contests
 	 */
-	private List<ContestsRoles> contestsRoless = null;
+	 private Contests contests;	
 
 	/**
-	 * List of SeriesRoles
+	 * Attribute series
 	 */
-	private List<SeriesRoles> seriesRoless = null;
+	 private Series series;	
 
 	/**
 	 * List of UsersRoles
@@ -111,7 +111,6 @@ public class Roles implements Serializable {
 	private List<UsersRoles> usersRoless = null;
 
 	
-	/* liste transiente */
 	/**
 	 * @return id
 	 */
@@ -130,7 +129,6 @@ public class Roles implements Serializable {
 		this.id = id;
 	}
 	
-	/* liste transiente */
 	/**
 	 * @return name
 	 */
@@ -147,7 +145,6 @@ public class Roles implements Serializable {
 		this.name = name;
 	}
 	
-	/* liste transiente */
 	/**
 	 * @return addcontest
 	 */
@@ -164,7 +161,6 @@ public class Roles implements Serializable {
 		this.addcontest = addcontest;
 	}
 	
-	/* liste transiente */
 	/**
 	 * @return editcontest
 	 */
@@ -181,7 +177,6 @@ public class Roles implements Serializable {
 		this.editcontest = editcontest;
 	}
 	
-	/* liste transiente */
 	/**
 	 * @return delcontest
 	 */
@@ -198,7 +193,6 @@ public class Roles implements Serializable {
 		this.delcontest = delcontest;
 	}
 	
-	/* liste transiente */
 	/**
 	 * @return addseries
 	 */
@@ -215,7 +209,6 @@ public class Roles implements Serializable {
 		this.addseries = addseries;
 	}
 	
-	/* liste transiente */
 	/**
 	 * @return editseries
 	 */
@@ -232,7 +225,6 @@ public class Roles implements Serializable {
 		this.editseries = editseries;
 	}
 	
-	/* liste transiente */
 	/**
 	 * @return delseries
 	 */
@@ -249,7 +241,6 @@ public class Roles implements Serializable {
 		this.delseries = delseries;
 	}
 	
-	/* liste transiente */
 	/**
 	 * @return addproblem
 	 */
@@ -266,7 +257,6 @@ public class Roles implements Serializable {
 		this.addproblem = addproblem;
 	}
 	
-	/* liste transiente */
 	/**
 	 * @return editproblem
 	 */
@@ -283,7 +273,6 @@ public class Roles implements Serializable {
 		this.editproblem = editproblem;
 	}
 	
-	/* liste transiente */
 	/**
 	 * @return delproblem
 	 */
@@ -300,7 +289,6 @@ public class Roles implements Serializable {
 		this.delproblem = delproblem;
 	}
 	
-	/* liste transiente */
 	/**
 	 * @return canrate
 	 */
@@ -317,7 +305,6 @@ public class Roles implements Serializable {
 		this.canrate = canrate;
 	}
 	
-	/* liste transiente */
 	/**
 	 * @return contestant
 	 */
@@ -335,35 +322,37 @@ public class Roles implements Serializable {
 	}
 	
 	/**
-	 * Get the list of ContestsRoles
+	 * get contests
 	 */
-	 // contestsRolesPK
-	 @OneToMany(mappedBy="roles")
-	 public List<ContestsRoles> getContestsRoless() {
-	 	return this.contestsRoless;
-	 }
-	 
+	@ManyToOne
+	@JoinColumn(name = "contestsid")
+	public Contests getContests() {
+		return this.contests;
+	}
+	
 	/**
-	 * Set the list of ContestsRoles
+	 * set contests
 	 */
-	 public void setContestsRoless(List<ContestsRoles> contestsRoless) {
-	 	this.contestsRoless = contestsRoless;
-	 }
+	public void setContests(Contests contests) {
+		this.contests = contests;
+	}
+
 	/**
-	 * Get the list of SeriesRoles
+	 * get series
 	 */
-	 // seriesRolesPK
-	 @OneToMany(mappedBy="roles")
-	 public List<SeriesRoles> getSeriesRoless() {
-	 	return this.seriesRoless;
-	 }
-	 
+	@ManyToOne
+	@JoinColumn(name = "seriesid")
+	public Series getSeries() {
+		return this.series;
+	}
+	
 	/**
-	 * Set the list of SeriesRoles
+	 * set series
 	 */
-	 public void setSeriesRoless(List<SeriesRoles> seriesRoless) {
-	 	this.seriesRoless = seriesRoless;
-	 }
+	public void setSeries(Series series) {
+		this.series = series;
+	}
+
 	/**
 	 * Get the list of UsersRoles
 	 */
