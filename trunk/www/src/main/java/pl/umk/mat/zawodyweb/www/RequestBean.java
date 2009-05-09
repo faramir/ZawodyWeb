@@ -19,11 +19,13 @@ import pl.umk.mat.zawodyweb.database.ContestsDAO;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.ProblemsDAO;
 import pl.umk.mat.zawodyweb.database.SeriesDAO;
+import pl.umk.mat.zawodyweb.database.TestsDAO;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Contests;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
+import pl.umk.mat.zawodyweb.database.pojo.Tests;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 
 /**
@@ -39,11 +41,14 @@ public class RequestBean {
     private Contests editedContest;
     private Series editedSeries;
     private Problems editedProblem;
+    private Tests editedTest;
     private List<Contests> contests = null;
     private List<Series> contestsSeries = null;
+    private List<Problems> seriesProblems = null;
     private Integer temporaryContestId;
     private Integer temporarySeriesId;
-    
+    private Integer temporaryProblemId;
+
     /**
      * @return the sessionBean
      */
@@ -96,24 +101,37 @@ public class RequestBean {
     }
 
     public List<Series> getContestsSeries() {
-        if(contestsSeries == null){
+        if (contestsSeries == null) {
+            Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
+            try {
+                SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
+                if(temporaryContestId == null)
+                    temporaryContestId = getTemporaryContestId();
+                contestsSeries = dao.findByContestsid(temporaryContestId);
+                t.commit();
+            } catch (Exception e) {
+                t.rollback();
+            }
+        }
+
+        return contestsSeries;
+    }
+
+    public List<Problems> getSeriesProblems() {
+        if(seriesProblems == null){
             Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
             try{
-                SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
-             
-                if(temporaryContestId == null){
-                    temporaryContestId = getTemporaryContestId();
-                }
-
-                contestsSeries = dao.findByContestsid(temporaryContestId);
+                ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
+                seriesProblems = dao.findBySeriesid(temporarySeriesId);
                 t.commit();
             }catch(Exception e){
                 t.rollback();
             }
         }
 
-        return contestsSeries;
+        return seriesProblems;
     }
 
     /**
@@ -145,24 +163,29 @@ public class RequestBean {
     }
 
     public Integer getTemporaryContestId() {
-        try {
-            return sessionBean.getCurrentContest().getId();
-        } catch (NullPointerException e) {
-            return 0;
-        }
+        return temporaryContestId;
     }
 
     public void setTemporaryContestId(Integer id) {
         temporaryContestId = id;
     }
 
-    public Integer getTemporarySeriesId(){
+    public Integer getTemporarySeriesId() {
         return temporarySeriesId;
     }
 
     public void setTemporarySeriesId(Integer id) {
         temporarySeriesId = id;
     }
+
+    public Integer getTemporaryProblemId() {
+        return temporaryProblemId;
+    }
+
+    public void setTemporaryProblemId(Integer temporaryProblemId) {
+        this.temporaryProblemId = temporaryProblemId;
+    }
+
 
     public Series getEditedSeries() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -212,6 +235,31 @@ public class RequestBean {
         }
 
         return editedProblem;
+    }
+
+    public Tests getEditedTest() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        int testId = 0;
+        try {
+            testId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+        } catch (Exception e) {
+            testId = 0;
+        }
+
+        if (editedTest != null) {
+            return editedTest;
+        }
+
+        if (testId == 0) {
+            editedTest = new Tests();
+        } else {
+            Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+            TestsDAO dao = DAOFactory.DEFAULT.buildTestsDAO();
+            editedTest = dao.getById(testId);
+            t.commit();
+        }
+
+        return editedTest;
     }
 
     public String registerUser() {
@@ -282,9 +330,12 @@ public class RequestBean {
         Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         try {
             ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
+            SeriesDAO sdao = DAOFactory.DEFAULT.buildSeriesDAO();
+
             if (editedProblem.getId() == 0) {
                 editedProblem.setId(null);
             }
+            editedProblem.setSeries(sdao.getById(temporarySeriesId));
 
             dao.saveOrUpdate(editedProblem);
             t.commit();
@@ -293,6 +344,31 @@ public class RequestBean {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditProblem:save", summary, null);
+            return null;
+        }
+
+        return "start";
+    }
+
+    public String saveTest() {
+        Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        try {
+            TestsDAO dao = DAOFactory.DEFAULT.buildTestsDAO();
+            ProblemsDAO pdao = DAOFactory.DEFAULT.buildProblemsDAO();
+
+            if (editedTest.getId() == 0) {
+                editedTest.setId(null);
+            }
+
+            editedTest.setProblems(pdao.getById(temporaryProblemId));
+            
+            dao.saveOrUpdate(editedTest);
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditTest:save", summary, null);
             return null;
         }
 

@@ -3,77 +3,85 @@
     <ui:define name="pageTitle">
         <c:choose>
             <c:when test="#{param.id == '0' or param.id == null}">
-            ${messages.problem_adding}
+            ${messages.test_adding}
             </c:when>
             <c:otherwise>
-            ${messages.problem_editing}
+            ${messages.test_editing}
             </c:otherwise>
         </c:choose>
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formEditProblem" styleClass="profilform" enctype="multipart/form-data">
+        <a4j:form id="formEditTest" styleClass="profilform">
             <c:choose>
-                <c:when test="#{requestBean.editedProblem == null}">
-                ${messages.no_problem}
+                <c:when test="#{requestBean.editedTest == null}">
+                ${messages.no_test}
                 </c:when>
                 <c:otherwise>
                     <fieldset>
-                        <h:inputHidden id="id" value="#{requestBean.editedProblem.id}" />
+                        <h:inputHidden id="id" value="#{requestBean.editedTest.id}" />
                         <div>
-                            <h:outputLabel for="name">${messages.problem_name}:</h:outputLabel>
-                            <h:inputText id="name" required="true" value="#{requestBean.editedProblem.name}" />
-                            <h:message for="name" errorClass="error" />
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel for="text">${messages.problem_text}:</h:outputLabel>
-                            <h:inputTextarea id="text" styleClass="bigHeight" required="true" value="#{requestBean.editedProblem.text}">
+                            <h:outputLabel for="input">${messages.test_input}:</h:outputLabel>
+                            <h:inputTextarea id="input" styleClass="bigHeight" required="true" value="#{requestBean.editedTest.input}">
                             </h:inputTextarea>
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="pdf">${messages.problem_pdf}:</h:outputLabel>
-                            <t:inputFileUpload id="pdf" required="true" value="#{requestBean.editedProblem.pdf}" />
+                            <h:outputLabel for="output">${messages.test_output}:</h:outputLabel>
+                            <h:inputTextarea id="output" styleClass="bigHeight" required="true" value="#{requestBean.editedTest.output}">
+                            </h:inputTextarea>
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="abbrev">${messages.problem_abbrev}:</h:outputLabel>
-                            <h:inputText id="abbrev" required="true" value="#{requestBean.editedProblem.abbrev}" />
-                            <h:message for="abbrev" errorClass="error" />
+                            <h:outputLabel for="timelimit">${messages.test_timelimit}:</h:outputLabel>
+                            <h:inputText id="timelimit" required="true" value="#{requestBean.editedTest.timelimit}" />
+                            <h:message for="timelimit" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="memlimit">${messages.problem_memlimit}:</h:outputLabel>
-                            <h:inputText id="memlimit" required="true" value="#{requestBean.editedProblem.memlimit}" />
-                            <h:message for="memlimit" errorClass="error" />
+                            <h:outputLabel for="maxpoints">${messages.test_maxpoints}:</h:outputLabel>
+                            <h:inputText id="maxpoints" required="true" value="#{requestBean.editedTest.maxpoints}" />
+                            <h:message for="maxpoints" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="contest">${messages.problem_contest}:</h:outputLabel>
+                            <h:outputLabel for="contest">${messages.test_contest}:</h:outputLabel>
                             <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}">
                                 <f:selectItem itemValue="" itemLabel="" />
                                 <c:forEach var="contest" items="#{requestBean.contests}">
                                     <f:selectItem itemValue="#{contest.id}" itemLabel="#{contest.name}" />
                                 </c:forEach>
+                                <t:saveState id="saveContestId" value="#{requestBean.temporaryContestId}" />
                                 <a4j:support event="onchange" reRender="series" ajaxSingle="true" />
                             </h:selectOneMenu>
-                            <t:saveState id="saveContestId" value="#{requestBean.temporaryContestId}" />
                             <h:message for="contest" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="series">${messages.problem_series}:</h:outputLabel>
+                            <h:outputLabel for="series">${messages.test_series}:</h:outputLabel>
                             <h:selectOneMenu id="series" required="true" value="#{requestBean.temporarySeriesId}">
                                 <f:selectItem itemValue="" itemLabel="" />
                                 <c:forEach var="series" items="#{requestBean.contestsSeries}">
                                     <f:selectItem itemValue="#{series.id}" itemLabel="#{series.name}" />
                                 </c:forEach>
+                                <t:saveState id="saveSeriesId" value="#{requestBean.temporarySeriesId}" />
+                                <a4j:support event="onchange" reRender="problem" ajaxSingle="true" />
                             </h:selectOneMenu>
                             <h:message for="series" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
-                            <a4j:commandButton id="save" reRender="formEditProblem" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveProblem}" />
+                            <h:outputLabel for="problem">${messages.test_problem}:</h:outputLabel>
+                            <h:selectOneMenu id="problem" required="true" value="#{requestBean.temporaryProblemId}">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <c:forEach var="problem" items="#{requestBean.seriesProblems}">
+                                    <f:selectItem itemValue="#{problem.id}" itemLabel="#{problem.abbrev}" />
+                                </c:forEach>
+                            </h:selectOneMenu>
+                            <h:message for="problem" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <a4j:commandButton id="save" reRender="formEditTest" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveTest}" />
                             <h:message for="save" errorClass="error" />
                         </div>
                     </fieldset>
