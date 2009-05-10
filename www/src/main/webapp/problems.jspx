@@ -10,12 +10,8 @@
                 ${messages.contest_not_choosen}
                 </c:when>
                 <c:otherwise>
-                    <c:forEach var="contest" items="#{requestBean.contests}">
-                        <c:set target="${requestBean.dummy}" value="dupa" var="dupa" />
-                        <h:outputText value="${requestBean.dummy}" />
-                        <c:set scope="request" var="temporaryContestId" value="#{contest.id}" />
-                        <h:outputText value="${requestScope['temporaryContestId']}" />
-                        <t:dataTable id="problems#{contest.id}" var="problem" value="#{requestBean.currentContestProblems}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
+                    <c:forEach var="series" items="#{requestBean.currentContestSeries}">
+                        <t:dataTable id="problems#{series.id}" var="problem" value="#{series.problemss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
                             <h:column>
                                 <f:facet name="header">
                                 ${messages.problem_name}
