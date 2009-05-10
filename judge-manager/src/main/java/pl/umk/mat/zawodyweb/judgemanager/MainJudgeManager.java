@@ -10,8 +10,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Logger;
 import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
@@ -29,34 +29,7 @@ public class MainJudgeManager {
 
     public static final Logger logger = Logger.getLogger(MainJudgeManager.class);
     public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    static class ExitHookThread extends Thread {
-
-        ServerSocket wwwSocket = null;
-        ServerSocket judgeSocket = null;
-
-        public ExitHookThread(ServerSocket wwwSocket, ServerSocket judgeSocket) {
-            super();
-            this.wwwSocket = wwwSocket;
-            this.judgeSocket = judgeSocket;
-        }
-
-        @Override
-        public void run() {
-            try {
-                if (wwwSocket != null) {
-                    wwwSocket.close();
-                }
-                if (judgeSocket != null) {
-                    judgeSocket.close();
-                }
-            } catch (IOException ex) {
-            }
-            HibernateUtil.getSessionFactory().getCurrentSession().close();
-
-            logger.info("JudgeManager stop at " + sdf.format(new Date()));
-        }
-    }
+    public static ConcurrentLinkedQueue<Integer> submitsQueue;
 
     public static void main(String[] args) {
         logger.info("JudgeManager start at " + sdf.format(new Date()));
@@ -102,9 +75,11 @@ public class MainJudgeManager {
         logger.info("Checking database for waiting submits...");
 
         Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-        SubmitsDAO dao = DAOFactory.DEFAULT.buildSubmitsDAO();
+        SubmitsDAO submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
 
-        List<Submits> listSubmits = dao.findByResult(SubmitsResultEnum.WAIT.getCode());
+        for (Submits s : submitsDAO.findByResult(SubmitsResultEnum.WAIT.getCode())) {
+            submitsQueue.add(s.getId());
+        }
 
         /* opening ports */
         logger.info("Opening ports...");
@@ -136,8 +111,10 @@ public class MainJudgeManager {
         }
 
         Runtime.getRuntime().addShutdownHook(new ExitHookThread(wwwSocket, judgeSocket));
-
         logger.info("Listening...");
+
+        new JudgesListener(judgeSocket, properties, submitsQueue, submitsDAO).start();
+
         /* Listening for connection from WWW */
         while (true) {
             try {
@@ -153,12 +130,44 @@ public class MainJudgeManager {
                 DataOutputStream out = new DataOutputStream(wwwClient.getOutputStream());
 
                 int submitId = in.readInt();
-                out.writeInt(submitId);
 
+                submitsQueue.add(submitId);
+
+                out.writeInt(submitId);
+                out.flush();
+                
                 wwwClient.close();
             } catch (IOException ex) {
                 logger.error("Exception occurs: ", ex);
             }
+        }
+    }
+
+    static class ExitHookThread extends Thread {
+
+        ServerSocket wwwSocket = null;
+        ServerSocket judgeSocket = null;
+
+        public ExitHookThread(ServerSocket wwwSocket, ServerSocket judgeSocket) {
+            super();
+            this.wwwSocket = wwwSocket;
+            this.judgeSocket = judgeSocket;
+        }
+
+        @Override
+        public void run() {
+            try {
+                if (wwwSocket != null) {
+                    wwwSocket.close();
+                }
+                if (judgeSocket != null) {
+                    judgeSocket.close();
+                }
+            } catch (IOException ex) {
+            }
+            HibernateUtil.getSessionFactory().getCurrentSession().close();
+
+            logger.info("JudgeManager stop at " + sdf.format(new Date()));
         }
     }
 }
