@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.persistence.Embeddable;
 import javax.persistence.GenerationType;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  * <p>Pojo mapping TABLE public.series</p>
@@ -217,6 +219,7 @@ public class Series implements Serializable {
 	 */
 	 // problemsPK
 	 @OneToMany(mappedBy="series")
+     @LazyCollection(LazyCollectionOption.FALSE)
 	 public List<Problems> getProblemss() {
 	 	return this.problemss;
 	 }
