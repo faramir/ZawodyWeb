@@ -77,6 +77,8 @@ public class MainJudgeManager {
         Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         SubmitsDAO submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
 
+        submitsQueue = new ConcurrentLinkedQueue<Integer>();
+
         for (Submits s : submitsDAO.findByResult(SubmitsResultEnum.WAIT.getCode())) {
             submitsQueue.add(s.getId());
         }
@@ -135,7 +137,7 @@ public class MainJudgeManager {
 
                 out.writeInt(submitId);
                 out.flush();
-                
+
                 wwwClient.close();
             } catch (IOException ex) {
                 logger.error("Exception occurs: ", ex);

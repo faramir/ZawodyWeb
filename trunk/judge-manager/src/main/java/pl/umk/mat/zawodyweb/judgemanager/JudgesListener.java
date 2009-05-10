@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Logger;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
+import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
@@ -72,7 +73,8 @@ public class JudgesListener extends Thread {
                         delay(1000);
                     } else {
                         try {
-                            if (submitsDAO.getById(submit).getResult().equals(SubmitsResultEnum.WAIT.getCode()) == false) {
+                            Submits s = submitsDAO.getById(submit);
+                            if (s != null && s.getResult().equals(SubmitsResultEnum.WAIT.getCode()) == false) {
                                 out.writeInt(submit);
                                 out.flush();
                                 in.readInt();
