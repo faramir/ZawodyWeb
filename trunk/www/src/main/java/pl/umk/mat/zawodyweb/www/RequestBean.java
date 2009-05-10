@@ -56,7 +56,7 @@ public class RequestBean {
     private List<Problems> seriesProblems = null;
     private List<Classes> diffClasses = null;
     private List<Languages> languages = null;
-    private List<Problems> currentContestProblems = null;
+    private List<Series> currentContestSeries = null;
     private Integer temporaryContestId;
     private Integer temporarySeriesId;
     private Integer temporaryProblemId;
@@ -125,7 +125,7 @@ public class RequestBean {
 
                 diffClasses = dao.findAll();
                 List<Languages> tmp = ldao.findAll();
-                for(Languages l: tmp){
+                for (Languages l : tmp) {
                     diffClasses.remove(l.getClasses());
                 }
                 t.commit();
@@ -188,8 +188,20 @@ public class RequestBean {
         return seriesProblems;
     }
 
-    public List<Problems> getCurrentContestProblems() {      
-         return null;
+    public List<Series> getCurrentContestSeries() {
+        if (currentContestSeries == null) {
+            Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
+            try {
+                SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
+                currentContestSeries = dao.findByContestsid(sessionBean.getCurrentContest().getId());
+                t.commit();
+            } catch (Exception e) {
+                t.rollback();
+            }
+        }
+
+        return currentContestSeries;
     }
 
     /**
