@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.umk.mat.zawodyweb.checker;
+package pl.umk.mat.zawodyweb.database;
 
 /**
  *
