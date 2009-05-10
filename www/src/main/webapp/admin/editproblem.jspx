@@ -73,6 +73,27 @@
                             <br class="clear" />
                         </div>
                         <div>
+                            <h:outputLabel for="languages">${messages.problem_languages}:</h:outputLabel>
+                            <h:selectManyListbox id="languages" required="true" value="#{requestBean.temporaryLanguagesIds}">
+                                <c:forEach var="language" items="#{requestBean.languages}">
+                                    <f:selectItem itemValue="#{language.id}" itemLabel="#{language.name}" />
+                                </c:forEach>
+                            </h:selectManyListbox>
+                            <h:message for="languages" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="class">${messages.problem_class}:</h:outputLabel>
+                            <h:selectOneMenu id="class" required="true" value="#{requestBean.temporaryClassId}">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <c:forEach var="class" items="#{requestBean.diffClasses}">
+                                    <f:selectItem itemValue="#{class.id}" itemLabel="#{class.description}" />
+                                </c:forEach>
+                            </h:selectOneMenu>
+                            <h:message for="class" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
                             <a4j:commandButton id="save" reRender="formEditProblem" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveProblem}" />
                             <h:message for="save" errorClass="error" />
                         </div>

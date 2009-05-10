@@ -22,6 +22,7 @@
                         <div>
                             <h:outputLabel for="contest">${messages.series_contest}:</h:outputLabel>
                             <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}">
+                                <f:selectItem itemValue="" itemLabel="" />
                                 <c:forEach var="contest" items="#{requestBean.contests}">
                                     <f:selectItem itemValue="#{contest.id}" itemLabel="#{contest.name}" />
                                 </c:forEach>
