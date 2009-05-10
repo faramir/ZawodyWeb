@@ -41,7 +41,11 @@ public class MainJudge {
     public static void main(String[] args) throws IOException, InterruptedException, InstantiationException, IllegalAccessException {
         Properties properties = new Properties();
         try {
-            properties.loadFromXML(new FileInputStream("configuration.xml"));
+            String configFile = "configuration.xml";
+            if (args.length == 1) {
+                configFile = args[0];
+            }
+            properties.loadFromXML(new FileInputStream(configFile));
         } catch (FileNotFoundException ex) {
             properties.setProperty("PORT", "8888");
             properties.setProperty("HOST", "127.0.0.1");
@@ -60,8 +64,8 @@ public class MainJudge {
             int id = Integer.parseInt(str);
             Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
             Submits submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
-            
-                       
+
+
             if (!sock.isConnected()) {
                 break;
             }
@@ -83,7 +87,7 @@ public class MainJudge {
             TestOutput testOutput;
             for (Tests test : tests) {
                 testInput = new TestInput(test.getInput(),
-                        test.getTimelimit(),submit.getProblems().getMemlimit());
+                        test.getTimelimit(), submit.getProblems().getMemlimit());
                 testOutput = new TestOutput(test.getOutput());
                 CheckerResult result = checker.check(program, testInput, testOutput);
                 Results dbResult = new Results();
@@ -100,5 +104,4 @@ public class MainJudge {
         HibernateUtil.getSessionFactory().getCurrentSession().close();
         sock.close();
     }
-
 }
