@@ -12,7 +12,8 @@ public enum SubmitsResultEnum {
 
     WAIT(0),
     PROCESS(1),
-    DONE(2);
+    DONE(2),
+    MANUAL(3);
     private final int code;
 
     private SubmitsResultEnum(int code) {
