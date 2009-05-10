@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.persistence.Embeddable;
+import javax.persistence.GenerationType;
 
 /**
  * <p>Pojo mapping TABLE public.submits</p>
@@ -70,6 +71,12 @@ public class Submits implements Serializable {
 	 */
 	 private Languages languages;	
 
+     	/**
+	 * Attribute languages
+	 */
+	 private Users users;
+
+
 	/**
 	 * List of Results
 	 */
@@ -81,7 +88,7 @@ public class Submits implements Serializable {
 	 */
 	@Basic
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id")
 		public Integer getId() {
 		return id;
@@ -204,6 +211,19 @@ public class Submits implements Serializable {
 	 */
 	public void setLanguages(Languages languages) {
 		this.languages = languages;
+	}
+
+    	@ManyToOne
+	@JoinColumn(name = "usersid")
+	public Users getUsers() {
+		return this.users;
+	}
+
+	/**
+	 * set languages
+	 */
+	public void setUsers(Users users) {
+		this.users = users;
 	}
 
 	/**

@@ -97,6 +97,11 @@ public class Users implements Serializable {
 	 */
 	private List<UsersRoles> usersRoless = null;
 
+
+	/**
+	 * List of Submits
+	 */
+	private List<Submits> submitss = null;
 	
 	/* liste transiente */
 	/**
@@ -310,7 +315,23 @@ public class Users implements Serializable {
 	 public List<UsersRoles> getUsersRoless() {
 	 	return this.usersRoless;
 	 }
-	 
+
+     	/**
+	 * Get the list of Submits
+	 */
+	 // submitsPK
+	 @OneToMany(mappedBy="users")
+	 public List<Submits> getSubmitss() {
+	 	return this.submitss;
+	 }
+
+     	/**
+	 * Set the list of Submits
+	 */
+	 public void setSubmitss(List<Submits> submitss) {
+	 	this.submitss = submitss;
+	 }
+
 	/**
 	 * Set the list of UsersRoles
 	 */

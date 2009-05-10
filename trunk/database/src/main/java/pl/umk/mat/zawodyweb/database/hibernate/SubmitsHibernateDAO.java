@@ -32,7 +32,16 @@ public class SubmitsHibernateDAO extends
 	public List<Submits> findByResult(Integer result) {
 		return findByCriteria(Restrictions.eq("result", result));
 	}
-	
+
+	/**
+	 * Find Submits by languagesid
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Submits> findByUsersid(Integer usersid) {
+		return findByCriteria(Restrictions.eq("users.usersid", usersid));
+	}
+
+
 	/**
 	 * Find Submits by code
 	 */

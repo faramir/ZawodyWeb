@@ -55,4 +55,9 @@ public interface SubmitsDAO extends GenericDAO<Submits,Integer> {
 	 */
 	public List<Submits> findByLanguagesid(Integer languagesid);
 
+    	/**
+	 * Find Submits by languagesid
+	 */
+	public List<Submits> findByUsersid(Integer usersid);
+
 }
