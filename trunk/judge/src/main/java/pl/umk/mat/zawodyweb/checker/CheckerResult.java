@@ -4,6 +4,8 @@
  */
 package pl.umk.mat.zawodyweb.checker;
 
+import pl.umk.mat.zawodyweb.database.CheckerErrors;
+
 /**
  *
  * @author lukash2k

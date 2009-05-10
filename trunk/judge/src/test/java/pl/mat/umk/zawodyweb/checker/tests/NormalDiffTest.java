@@ -5,7 +5,7 @@
 package pl.mat.umk.zawodyweb.checker.tests;
 
 import org.junit.Test;
-import pl.umk.mat.zawodyweb.checker.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.checker.CheckerResult;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;

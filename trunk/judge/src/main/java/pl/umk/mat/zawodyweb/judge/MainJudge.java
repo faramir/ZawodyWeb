@@ -23,6 +23,7 @@ import pl.umk.mat.zawodyweb.compiler.Code;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.compiler.Program;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Classes;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
@@ -49,6 +50,7 @@ public class MainJudge {
         } catch (FileNotFoundException ex) {
             properties.setProperty("PORT", "8888");
             properties.setProperty("HOST", "127.0.0.1");
+            properties.setProperty("WAITING_TIME", "1000");
         }
         Socket sock = new Socket(InetAddress.getByName(properties.getProperty("HOST")),
                 Integer.parseInt(properties.getProperty("PORT")));
@@ -58,14 +60,16 @@ public class MainJudge {
         while (15 == 15) {
 
             while (!input.ready()) {
-                Thread.sleep(1000);
+                Thread.sleep(Integer.parseInt(properties.getProperty("WAITING_TIME")));
             }
             String str = input.readLine();
             int id = Integer.parseInt(str);
             Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
             Submits submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
-
-
+            submit.setResult(SubmitsResultEnum.PROCESS.getCode());
+            DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
+            transaction.commit();
+            transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
             if (!sock.isConnected()) {
                 break;
             }
@@ -100,6 +104,7 @@ public class MainJudge {
                 DAOFactory.DEFAULT.buildResultsDAO().save(dbResult);
             }
             transaction.commit();
+            output.println(id);
         }
         HibernateUtil.getSessionFactory().getCurrentSession().close();
         sock.close();
