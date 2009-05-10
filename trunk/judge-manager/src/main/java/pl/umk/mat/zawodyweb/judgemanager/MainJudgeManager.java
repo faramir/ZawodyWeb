@@ -122,11 +122,11 @@ public class MainJudgeManager {
             try {
                 Socket wwwClient = wwwSocket.accept();
                 if (wwwClient.getInetAddress().getHostAddress().equals(properties.getProperty("WWW_ADDRESS")) == false) {
-                    logger.warn("www - refused connection from: " + wwwClient.getInetAddress().getHostAddress());
+                    logger.warn("Refused WWW connection from: " + wwwClient.getInetAddress().getHostAddress());
                     wwwClient.close();
                     continue;
                 }
-                logger.debug("www - connection from: " + wwwClient.getInetAddress().getHostAddress());
+                logger.debug("WWW connected from: " + wwwClient.getInetAddress().getHostAddress());
 
                 DataInputStream in = new DataInputStream(wwwClient.getInputStream());
                 DataOutputStream out = new DataOutputStream(wwwClient.getOutputStream());

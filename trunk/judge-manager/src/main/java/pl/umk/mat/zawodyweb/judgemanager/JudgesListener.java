@@ -31,7 +31,7 @@ public class JudgesListener extends Thread {
         this.judgeSocket = judgeSocket;
         this.submitsQueue = submitsQueue;
         this.submitsDAO = submitsDAO;
-        addresses = properties.getProperty("JUDGE_ADDRESSES").split(" ");
+        addresses = properties.getProperty("JUDGE_ADDRESSES").split("[ ]+");
     }
 
     private boolean isAccepted(String address) {
@@ -45,7 +45,7 @@ public class JudgesListener extends Thread {
 
     private class JudgeWaiter extends Thread {
 
-        Socket judgeClient;
+        private Socket judgeClient;
 
         public JudgeWaiter(Socket judgeClient) {
             super();
@@ -61,7 +61,8 @@ public class JudgesListener extends Thread {
 
         @Override
         public void run() {
-            logger.debug("judge - connection from: " + judgeClient.getInetAddress().getHostAddress());
+            String judgeHost = judgeClient.getInetAddress().getHostAddress();
+            logger.debug("Judge connected from: " + judgeHost);
             Integer submit;
             try {
                 DataInputStream in = new DataInputStream(judgeClient.getInputStream());
@@ -69,6 +70,7 @@ public class JudgesListener extends Thread {
 
                 while (true) {
                     submit = submitsQueue.poll();
+                    logger.debug("submit_id from queue: " + submit);
                     if (submit == null) {
                         delay(1000);
                     } else {
@@ -76,6 +78,7 @@ public class JudgesListener extends Thread {
                             Submits s = submitsDAO.getById(submit);
                             if (s != null && s.getResult().equals(SubmitsResultEnum.WAIT.getCode()) == false) {
                                 out.writeInt(submit);
+                                logger.info("Send submit(" + submit + ") to Judge: " + judgeHost);
                                 out.flush();
                                 in.readInt();
                             }
@@ -85,6 +88,11 @@ public class JudgesListener extends Thread {
                     }
                 }
             } catch (IOException ex) {
+            } finally {
+                try {
+                    judgeClient.close();
+                } catch (IOException ex) {
+                }
             }
         }
     }
@@ -95,7 +103,7 @@ public class JudgesListener extends Thread {
             try {
                 Socket judgeClient = judgeSocket.accept();
                 if (isAccepted(judgeClient.getInetAddress().getHostAddress()) == false) {
-                    logger.warn("judge - refused connection from: " + judgeClient.getInetAddress().getHostAddress());
+                    logger.warn("Refused judge connection from: " + judgeClient.getInetAddress().getHostAddress());
                     judgeClient.close();
                     continue;
 
