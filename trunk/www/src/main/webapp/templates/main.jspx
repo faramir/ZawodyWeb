@@ -36,7 +36,7 @@
         <div id="left_menu">
             <ul>
                 <li>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/zadania.html">${messages.problems}</h:outputLink>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/problems.html">${messages.problems}</h:outputLink>
                 </li>
                 <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ranking.html">${messages.ranking}</h:outputLink>

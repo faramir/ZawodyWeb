@@ -6,6 +6,7 @@ package pl.umk.mat.zawodyweb.www;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -13,8 +14,10 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.servlet.ServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Transaction;
+import org.springframework.web.context.request.RequestScope;
 import pl.umk.mat.zawodyweb.database.ClassesDAO;
 import pl.umk.mat.zawodyweb.database.ContestsDAO;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
@@ -53,11 +56,13 @@ public class RequestBean {
     private List<Problems> seriesProblems = null;
     private List<Classes> diffClasses = null;
     private List<Languages> languages = null;
+    private List<Problems> currentContestProblems = null;
     private Integer temporaryContestId;
     private Integer temporarySeriesId;
     private Integer temporaryProblemId;
     private Integer temporaryClassId;
     private Integer[] temporaryLanguagesIds;
+    private String dummy;
 
     /**
      * @return the sessionBean
@@ -181,6 +186,10 @@ public class RequestBean {
         }
 
         return seriesProblems;
+    }
+
+    public List<Problems> getCurrentContestProblems() {      
+         return null;
     }
 
     /**
@@ -469,5 +478,19 @@ public class RequestBean {
             String summary = messages.getString("bad_captcha");
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, component, summary, null);
         }
+    }
+
+    /**
+     * @return the dummy
+     */
+    public String getDummy() {
+        return dummy;
+    }
+
+    /**
+     * @param dummy the dummy to set
+     */
+    public void setDummy(String dummy) {
+        this.dummy = dummy;
     }
 }
