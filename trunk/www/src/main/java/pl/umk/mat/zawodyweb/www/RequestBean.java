@@ -15,14 +15,20 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Transaction;
+import pl.umk.mat.zawodyweb.database.ClassesDAO;
 import pl.umk.mat.zawodyweb.database.ContestsDAO;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.LanguagesDAO;
+import pl.umk.mat.zawodyweb.database.LanguagesProblemsDAO;
 import pl.umk.mat.zawodyweb.database.ProblemsDAO;
 import pl.umk.mat.zawodyweb.database.SeriesDAO;
 import pl.umk.mat.zawodyweb.database.TestsDAO;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
+import pl.umk.mat.zawodyweb.database.pojo.Classes;
 import pl.umk.mat.zawodyweb.database.pojo.Contests;
+import pl.umk.mat.zawodyweb.database.pojo.Languages;
+import pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
@@ -45,9 +51,13 @@ public class RequestBean {
     private List<Contests> contests = null;
     private List<Series> contestsSeries = null;
     private List<Problems> seriesProblems = null;
+    private List<Classes> diffClasses = null;
+    private List<Languages> languages = null;
     private Integer temporaryContestId;
     private Integer temporarySeriesId;
     private Integer temporaryProblemId;
+    private Integer temporaryClassId;
+    private Integer[] temporaryLanguagesIds;
 
     /**
      * @return the sessionBean
@@ -100,14 +110,47 @@ public class RequestBean {
         return contests;
     }
 
+    public List<Classes> getDiffClasses() {
+        if (diffClasses == null) {
+            Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
+            try {
+                ClassesDAO dao = DAOFactory.DEFAULT.buildClassesDAO();
+                diffClasses = dao.findAll();
+                t.commit();
+            } catch (Exception e) {
+                t.rollback();
+            }
+        }
+
+        return diffClasses;
+    }
+
+    public List<Languages> getLanguages() {
+        if (languages == null) {
+            Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
+            try {
+                LanguagesDAO dao = DAOFactory.DEFAULT.buildLanguagesDAO();
+                languages = dao.findAll();
+                t.commit();
+            } catch (Exception e) {
+                t.rollback();
+            }
+        }
+
+        return languages;
+    }
+
     public List<Series> getContestsSeries() {
         if (contestsSeries == null) {
             Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
             try {
                 SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
-                if(temporaryContestId == null)
+                if (temporaryContestId == null) {
                     temporaryContestId = getTemporaryContestId();
+                }
                 contestsSeries = dao.findByContestsid(temporaryContestId);
                 t.commit();
             } catch (Exception e) {
@@ -119,14 +162,14 @@ public class RequestBean {
     }
 
     public List<Problems> getSeriesProblems() {
-        if(seriesProblems == null){
+        if (seriesProblems == null) {
             Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
-            try{
+            try {
                 ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
                 seriesProblems = dao.findBySeriesid(temporarySeriesId);
                 t.commit();
-            }catch(Exception e){
+            } catch (Exception e) {
                 t.rollback();
             }
         }
@@ -186,6 +229,21 @@ public class RequestBean {
         this.temporaryProblemId = temporaryProblemId;
     }
 
+    public Integer getTemporaryClassId() {
+        return temporaryClassId;
+    }
+
+    public void setTemporaryClassId(Integer temporaryClassId) {
+        this.temporaryClassId = temporaryClassId;
+    }
+
+    public Integer[] getTemporaryLanguagesIds() {
+        return temporaryLanguagesIds;
+    }
+
+    public void setTemporaryLanguagesIds(Integer[] temporaryLanguagesIds) {
+        this.temporaryLanguagesIds = temporaryLanguagesIds;
+    }
 
     public Series getEditedSeries() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -331,11 +389,21 @@ public class RequestBean {
         try {
             ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
             SeriesDAO sdao = DAOFactory.DEFAULT.buildSeriesDAO();
+            LanguagesDAO ldao = DAOFactory.DEFAULT.buildLanguagesDAO();
+            LanguagesProblemsDAO lpdao = DAOFactory.DEFAULT.buildLanguagesProblemsDAO();
 
             if (editedProblem.getId() == 0) {
                 editedProblem.setId(null);
             }
             editedProblem.setSeries(sdao.getById(temporarySeriesId));
+
+            for (Integer lid : temporaryLanguagesIds) {
+                LanguagesProblems lp = new LanguagesProblems();
+                lp.setId(null);
+                lp.setLanguages(ldao.getById(lid));
+                lp.setProblems(editedProblem);
+                lpdao.saveOrUpdate(lp);
+            }
 
             dao.saveOrUpdate(editedProblem);
             t.commit();
@@ -361,7 +429,7 @@ public class RequestBean {
             }
 
             editedTest.setProblems(pdao.getById(temporaryProblemId));
-            
+
             dao.saveOrUpdate(editedTest);
             t.commit();
         } catch (Exception e) {
