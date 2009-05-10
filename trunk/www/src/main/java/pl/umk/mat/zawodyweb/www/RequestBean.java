@@ -116,7 +116,13 @@ public class RequestBean {
 
             try {
                 ClassesDAO dao = DAOFactory.DEFAULT.buildClassesDAO();
+                LanguagesDAO ldao = DAOFactory.DEFAULT.buildLanguagesDAO();
+
                 diffClasses = dao.findAll();
+                List<Languages> tmp = ldao.findAll();
+                for(Languages l: tmp){
+                    diffClasses.remove(l.getClasses());
+                }
                 t.commit();
             } catch (Exception e) {
                 t.rollback();
