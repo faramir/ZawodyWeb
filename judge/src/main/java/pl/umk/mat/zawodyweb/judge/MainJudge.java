@@ -5,6 +5,8 @@
 package pl.umk.mat.zawodyweb.judge;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -50,20 +52,18 @@ public class MainJudge {
         } catch (FileNotFoundException ex) {
             properties.setProperty("PORT", "8888");
             properties.setProperty("HOST", "127.0.0.1");
-            properties.setProperty("WAITING_TIME", "1000");
+            properties.setProperty("COMPILED_DIR", "");
+            properties.setProperty("CODE_DIR", "");
+
         }
         Socket sock = new Socket(InetAddress.getByName(properties.getProperty("HOST")),
                 Integer.parseInt(properties.getProperty("PORT")));
-        BufferedReader input = new BufferedReader(new InputStreamReader(
-                sock.getInputStream()));
-        PrintWriter output = new PrintWriter(sock.getOutputStream(), true);
+        DataInputStream input = new DataInputStream(
+                sock.getInputStream());
+        DataOutputStream output = new DataOutputStream(sock.getOutputStream());
         while (15 == 15) {
 
-            while (!input.ready()) {
-                Thread.sleep(Integer.parseInt(properties.getProperty("WAITING_TIME")));
-            }
-            String str = input.readLine();
-            int id = Integer.parseInt(str);
+            int id = input.readInt();
             Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
             Submits submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
             submit.setResult(SubmitsResultEnum.PROCESS.getCode());
@@ -76,7 +76,8 @@ public class MainJudge {
             byte[] codeText = submit.getCode();
             String filename = submit.getFilename();
             if (!filename.isEmpty()) {
-                properties.setProperty("COMPILE_FILENAME", filename);
+                properties.setProperty("COMPILED_FILENAME", filename);
+                properties.setProperty("CODE_FILENAME", filename);
             }
             Classes compilerClasses = submit.getLanguages().getClasses();
             CompilerInterface compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(compilerClasses.getFilename(),
@@ -103,8 +104,10 @@ public class MainJudge {
                 dbResult.setTests(test);
                 DAOFactory.DEFAULT.buildResultsDAO().save(dbResult);
             }
+            submit.setResult(SubmitsResultEnum.PROCESS.getCode());
+            DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
             transaction.commit();
-            output.println(id);
+            output.writeInt(id);
         }
         HibernateUtil.getSessionFactory().getCurrentSession().close();
         sock.close();
