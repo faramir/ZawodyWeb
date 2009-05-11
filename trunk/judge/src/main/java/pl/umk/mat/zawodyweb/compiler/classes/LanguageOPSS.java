@@ -19,7 +19,9 @@ import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
  * @author Jakub Prabucki
  */
 public class LanguageOPSS implements CompilerInterface {
-private Properties properties;
+
+    private Properties properties;
+
     @Override
     public void setProperties(Properties properties) {
         this.properties = properties;
@@ -28,7 +30,7 @@ private Properties properties;
     @Override
     public TestOutput runTest(String path, TestInput input) {
         //properties.getProperty("CODEFILE_EXTENSION"); properties
-        
+
         String loginUrl = "http://opss.assecobs.pl/?&login";
         String login = "";
         String pass = "";
@@ -63,7 +65,7 @@ private Properties properties;
         }
         sendAnswer.releaseConnection();
         return new TestOutput(null);
-    //zakladam, ze jestem zalogowany
+        //zakladam, ze jestem zalogowany
     }
 
     @Override
