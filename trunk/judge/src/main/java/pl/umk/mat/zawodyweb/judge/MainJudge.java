@@ -104,8 +104,8 @@ public class MainJudge {
                 testOutput = new TestOutput(test.getOutput());
                 CheckerResult result = checker.check(program, testInput, testOutput);
                 Results dbResult = new Results();
-                dbResult.setMemory(testOutput.getMemUsed());
-                dbResult.setRuntime(testOutput.getRuntime());
+                dbResult.setMemory(result.getMemUsed());
+                dbResult.setRuntime(result.getRuntime());
                 dbResult.setNotes(result.getDecription());
                 dbResult.setPoints(result.getResult());
                 dbResult.setSubmits(submit);
