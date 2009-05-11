@@ -271,7 +271,7 @@ public class Problems implements Serializable {
 	 * Get the list of Submits
 	 */
 	 // submitsPK
-	 @OneToMany(mappedBy="problems")
+	 @OneToMany(mappedBy="problems", fetch=FetchType.EAGER)
 	 public List<Tests> getTestss() {
 	 	return this.testss;
 	 }

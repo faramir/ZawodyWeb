@@ -11,6 +11,6 @@
 <entry key="CODE_FILENAME">a.pas</entry>
 <entry key="CODE_DIR">F:\submits</entry>
 
-<entry key="COMPILE_TIMEOUT">300</entry>
+<entry key="COMPILE_TIMEOUT">30000</entry>
 
 </properties>
