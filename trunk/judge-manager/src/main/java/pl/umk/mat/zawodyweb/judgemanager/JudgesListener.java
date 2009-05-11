@@ -27,6 +27,7 @@ public class JudgesListener extends Thread {
     private String[] addresses;
 
     public JudgesListener(ServerSocket judgeSocket, Properties properties, ConcurrentLinkedQueue<Integer> submitsQueue, SubmitsDAO submitsDAO) {
+        super();
         this.properties = properties;
         this.judgeSocket = judgeSocket;
         this.submitsQueue = submitsQueue;
@@ -63,27 +64,27 @@ public class JudgesListener extends Thread {
         public void run() {
             String judgeHost = judgeClient.getInetAddress().getHostAddress();
             logger.debug("Judge connected from: " + judgeHost);
-            Integer submit;
+            Integer submitId;
             try {
                 DataInputStream in = new DataInputStream(judgeClient.getInputStream());
                 DataOutputStream out = new DataOutputStream(judgeClient.getOutputStream());
 
                 while (true) {
-                    submit = submitsQueue.poll();
-                    logger.debug("submit_id from queue: " + submit);
-                    if (submit == null) {
+                    submitId = submitsQueue.poll();
+                    logger.debug("submit_id from queue: " + submitId);
+                    if (submitId == null) {
                         delay(1000);
                     } else {
                         try {
-                            Submits s = submitsDAO.getById(submit);
+                            Submits s = submitsDAO.getById(submitId);
                             if (s != null && s.getResult().equals(SubmitsResultEnum.WAIT.getCode()) == false) {
-                                out.writeInt(submit);
-                                logger.info("Send submit(" + submit + ") to Judge: " + judgeHost);
+                                out.writeInt(submitId);
+                                logger.info("Send submit(" + submitId + ") to Judge: " + judgeHost);
                                 out.flush();
                                 in.readInt();
                             }
                         } catch (IOException ex) {
-                            submitsQueue.add(submit);
+                            submitsQueue.add(submitId);
                         }
                     }
                 }
@@ -104,9 +105,10 @@ public class JudgesListener extends Thread {
                 Socket judgeClient = judgeSocket.accept();
                 if (isAccepted(judgeClient.getInetAddress().getHostAddress()) == false) {
                     logger.warn("Refused judge connection from: " + judgeClient.getInetAddress().getHostAddress());
-                    judgeClient.close();
-                    continue;
 
+                    judgeClient.close();
+
+                    continue;
                 }
 
                 new JudgeWaiter(judgeClient).start();
