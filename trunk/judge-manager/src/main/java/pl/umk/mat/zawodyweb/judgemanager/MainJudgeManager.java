@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Logger;
 import org.hibernate.Transaction;
@@ -133,11 +134,35 @@ public class MainJudgeManager {
         new WWWListener(wwwSocket, properties, submitsQueue).start();
 
         /* Check database for unchecked solutions in state PROCESS... */
-        List<Submits> old;
+        Integer[] prev = new Integer[0];
+
         while (true) {
             try {
                 Thread.sleep(delayProcess);
-                old = submitsDAO.findByResult(SubmitsResultEnum.PROCESS.getCode());
+
+                boolean used;
+
+                List<Submits> submits = submitsDAO.findByResult(SubmitsResultEnum.PROCESS.getCode());
+                Vector<Integer> now = new Vector<Integer>();
+
+                for (Submits submit : submits) {
+                    used = false;
+
+                    for (Integer i : prev) {
+                        if (submit.getId().equals(i)) {
+                            submitsQueue.add(submit.getId());
+                            used = true;
+
+                            break;
+                        }
+                    }
+
+                    if (used == false) {
+                        now.add(submit.getId());
+                    }
+                }
+
+                prev = (Integer[]) now.toArray();
             } catch (InterruptedException ex) {
             }
         }
