@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
@@ -25,6 +27,20 @@ public class LanguagePAS implements CompilerInterface {
     int compileResult = CheckerErrors.UNDEF;
     String compileDesc = new String();
 
+    public class InterruptThread extends TimerTask {
+
+        private Thread thread;
+
+        public InterruptThread(Thread thread) {
+            this.thread = thread;
+        }
+
+        @Override
+        public void run() {
+            thread.interrupt();
+        }
+    }
+
     @Override
     public void setProperties(Properties properties) {
         this.properties = properties;
@@ -40,33 +56,29 @@ public class LanguagePAS implements CompilerInterface {
             }
             return output;
         }
+        BufferedReader inputStream;
+        System.gc();
         try {
             Process p = new ProcessBuilder(path).start();
-            BufferedReader inputStream =
-                    new BufferedReader(new InputStreamReader(p.getInputStream()));
-            BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
-            outputStream.write(input.getText());
-            outputStream.flush();
-            outputStream.close();
+            Timer timer = new Timer();
             long time = new Date().getTime();
-            long timeLimit = time + input.getTimeLimit();
-            long currentTime = -1;
-            while (timeLimit > new Date().getTime()) {
-                try {
-                    p.exitValue();
-                } catch (IllegalThreadStateException ex) {
-                    Thread.sleep(50);
-                    continue;
-                }
-                currentTime = new Date().getTime();
-                break;
-            }
-            if (currentTime == -1) {
-                p.destroy();
+            timer.schedule(new InterruptThread(Thread.currentThread()),
+                    input.getTimeLimit());
+            try {
+                inputStream =
+                        new BufferedReader(new InputStreamReader(p.getInputStream()));
+                BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
+                outputStream.write(input.getText());
+                outputStream.flush();
+                outputStream.close();
                 p.waitFor();
+            } catch (InterruptedException ex) {
+                p.destroy();
                 output.setResult(CheckerErrors.TLE);
                 return output;
             }
+            long currentTime = new Date().getTime();
+            timer.cancel();
             if (p.exitValue() != 0) {
                 output.setResult(CheckerErrors.RE);
                 output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
@@ -115,27 +127,21 @@ public class LanguagePAS implements CompilerInterface {
             OutputStream is = new FileOutputStream(codefile);
             is.write(code);
             is.close();
+            System.gc();
             Process p = new ProcessBuilder("ppc386", "-O2", "-XS", "-Xt", "-o" + compilefile, codefile).start();
             BufferedReader input =
                     new BufferedReader(new InputStreamReader(p.getInputStream()));
-            long time = new Date().getTime();
-            long timeLimit = time + Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT"));
-            long currentTime = -1;
-            while (timeLimit > new Date().getTime()) {
-                try {
-                    p.exitValue();
-                } catch (IllegalThreadStateException ex) {
-                    Thread.sleep(700);
-                    continue;
-                }
-                currentTime = new Date().getTime();
-                break;
-            }
-            if (currentTime == -1) {
-                p.destroy();
+            Timer timer = new Timer();
+            timer.schedule(new InterruptThread(Thread.currentThread()),
+                    Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
+            try {
                 p.waitFor();
+            } catch (InterruptedException ex) {
+                p.destroy();
                 compileResult = CheckerErrors.CTLE;
-            } else
+                return compilefile;
+            }
+            timer.cancel();
             if (p.exitValue() != 0) {
 
                 compileResult = CheckerErrors.CE;
