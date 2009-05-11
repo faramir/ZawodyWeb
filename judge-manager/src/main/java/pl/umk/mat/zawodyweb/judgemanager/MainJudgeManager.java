@@ -1,15 +1,13 @@
 package pl.umk.mat.zawodyweb.judgemanager;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Logger;
@@ -32,6 +30,7 @@ public class MainJudgeManager {
     public static ConcurrentLinkedQueue<Integer> submitsQueue;
 
     public static void main(String[] args) {
+        int delayProcess;
         logger.info("JudgeManager start at " + sdf.format(new Date()));
 
         /* getting properties */
@@ -40,12 +39,15 @@ public class MainJudgeManager {
         properties.setProperty("WWW_PORT", "8887");
         properties.setProperty("WWW_LISTEN_ADDRESS", "127.0.0.1");
         properties.setProperty("WWW_POOL", "8");
-        properties.setProperty("WWW_ADDRESS", "127.0.0.1");
+        properties.setProperty("WWW_ADDRESSES", "127.0.0.1");
+        // properties.setProperty("WWW_TIMEOUT", "10000");
 
         properties.setProperty("JUDGE_PORT", "8888");
         properties.setProperty("JUDGE_LISTEN_ADDRESS", "");
-        properties.setProperty("JUDGE_POOL", "8");
+        properties.setProperty("JUDGE_POOL", "16");
         properties.setProperty("JUDGE_ADDRESSES", "127.0.0.1 158.75.12.138");
+
+        properties.setProperty("DELAY_PROCESS", "1800000");
 
         try {
             String configFile = "configuration.xml";
@@ -64,12 +66,21 @@ public class MainJudgeManager {
         logger.debug("WWW_PORT = " + properties.getProperty("WWW_PORT"));
         logger.debug("WWW_LISTEN_ADDRESS = " + properties.getProperty("WWW_LISTEN_ADDRESS"));
         logger.debug("WWW_POOL = " + properties.getProperty("WWW_POOL"));
-        logger.debug("WWW_ADDRESS = " + properties.getProperty("WWW_ADDRESS"));
+        logger.debug("WWW_ADDRESSES = " + properties.getProperty("WWW_ADDRESSES"));
+        // logger.debug("WWW_TIMEOUT = " + properties.getProperty("WWW_TIMEOUT"));
 
         logger.debug("JUDGE_PORT = " + properties.getProperty("JUDGE_PORT"));
         logger.debug("JUDGE_LISTEN_ADDRESS = " + properties.getProperty("JUDGE_LISTEN_ADDRESS"));
         logger.debug("JUDGE_POOL = " + properties.getProperty("JUDGE_POOL"));
         logger.debug("JUDGE_ADDRESSES = " + properties.getProperty("JUDGE_ADDRESSES"));
+
+        logger.debug("DELAY_PROCESS = " + properties.getProperty("DELAY_PROCESS"));
+
+        try {
+            delayProcess = Integer.parseInt(properties.getProperty("DELAY_PROCESS"));
+        } catch (NumberFormatException ex) {
+            delayProcess = 30 * 60 * 1000;
+        }
 
         /* checking database */
         logger.info("Checking database for waiting submits...");
@@ -115,32 +126,19 @@ public class MainJudgeManager {
         Runtime.getRuntime().addShutdownHook(new ExitHookThread(wwwSocket, judgeSocket));
         logger.info("Listening...");
 
+        /* Listening for connection from Judges*/
         new JudgesListener(judgeSocket, properties, submitsQueue, submitsDAO).start();
 
         /* Listening for connection from WWW */
+        new WWWListener(wwwSocket, properties, submitsQueue).start();
+
+        /* Check database for unchecked solutions in state PROCESS... */
+        List<Submits> old;
         while (true) {
             try {
-                Socket wwwClient = wwwSocket.accept();
-                if (wwwClient.getInetAddress().getHostAddress().equals(properties.getProperty("WWW_ADDRESS")) == false) {
-                    logger.warn("Refused WWW connection from: " + wwwClient.getInetAddress().getHostAddress());
-                    wwwClient.close();
-                    continue;
-                }
-                logger.debug("WWW connected from: " + wwwClient.getInetAddress().getHostAddress());
-
-                DataInputStream in = new DataInputStream(wwwClient.getInputStream());
-                DataOutputStream out = new DataOutputStream(wwwClient.getOutputStream());
-
-                int submitId = in.readInt();
-
-                submitsQueue.add(submitId);
-
-                out.writeInt(submitId);
-                out.flush();
-
-                wwwClient.close();
-            } catch (IOException ex) {
-                logger.error("Exception occurs: ", ex);
+                Thread.sleep(delayProcess);
+                old = submitsDAO.findByResult(SubmitsResultEnum.PROCESS.getCode());
+            } catch (InterruptedException ex) {
             }
         }
     }
