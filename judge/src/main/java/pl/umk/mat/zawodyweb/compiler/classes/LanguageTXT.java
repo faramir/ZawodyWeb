@@ -27,13 +27,13 @@ public class LanguageTXT implements CompilerInterface{
     }
 
     @Override
-    public Program compile(byte[] code) {
-        return new Program(new String(code));
+    public String compile(byte[] code) {
+        return new String(code);
     }
 
     @Override
-    public Program postcompile(Program program) {
-        return program;
+    public String postcompile(String path) {
+        return path;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class LanguageTXT implements CompilerInterface{
     }
 
     @Override
-    public void closeProgram(Program program) {
+    public void closeProgram(String path) {
     }
 
 }

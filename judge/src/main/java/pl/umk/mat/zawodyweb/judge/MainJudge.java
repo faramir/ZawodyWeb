@@ -24,6 +24,7 @@ import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.Code;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.compiler.Program;
+import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
@@ -43,19 +44,22 @@ public class MainJudge {
      */
     public static void main(String[] args) throws IOException, InterruptedException, InstantiationException, IllegalAccessException {
         Properties properties = new Properties();
-        try {
-            String configFile = "configuration.xml";
-            if (args.length == 1) {
-                configFile = args[0];
-            }
-            properties.loadFromXML(new FileInputStream(configFile));
-        } catch (FileNotFoundException ex) {
-            properties.setProperty("PORT", "8888");
-            properties.setProperty("HOST", "127.0.0.1");
-            properties.setProperty("COMPILED_DIR", "");
-            properties.setProperty("CODE_DIR", "");
-
+        String configFile = "configuration.xml";
+        if (args.length == 1) {
+            configFile = args[0];
         }
+
+        // Default settings for properties
+        properties.setProperty("PORT", "8888");
+        properties.setProperty("HOST", "127.0.0.1");
+        properties.setProperty("COMPILED_DIR", "");
+        properties.setProperty("CODE_DIR", "");
+        properties.setProperty("COMPILED_FILENAME", "a");
+        properties.setProperty("CODE_FILENAME", "a");
+        properties.setProperty("COMPILE_TIMEOUT", "30000");
+
+
+        properties.loadFromXML(new FileInputStream(configFile));
         Socket sock = new Socket(InetAddress.getByName(properties.getProperty("HOST")),
                 Integer.parseInt(properties.getProperty("PORT")));
         DataInputStream input = new DataInputStream(

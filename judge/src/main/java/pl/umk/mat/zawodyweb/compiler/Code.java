@@ -21,10 +21,9 @@ public class Code {
 
     public Program compile() {
         byte[] precompiledCode = compiler.precompile(code);
-        Program program = compiler.compile(precompiledCode);
-        program = compiler.postcompile(program);
-        program.setCompiler(compiler);
-        return program;
+        String path = compiler.compile(precompiledCode);
+        path= compiler.postcompile(path);
+        return new Program(path, compiler);
     }
 
     public CompilerInterface getCompiler() {
