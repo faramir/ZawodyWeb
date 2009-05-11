@@ -93,6 +93,7 @@ public class MainJudge {
             Classes compilerClasses = submit.getLanguages().getClasses();
             CompilerInterface compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(compilerClasses.getFilename(),
                     compilerClasses.getCode()).newInstance();
+            properties.setProperty("CODEFILE_EXTENSION", submit.getLanguages().getExtension());
             compiler.setProperties(properties);
             Classes diffClasses = submit.getProblems().getClasses();
             CheckerInterface checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(diffClasses.getFilename(),
