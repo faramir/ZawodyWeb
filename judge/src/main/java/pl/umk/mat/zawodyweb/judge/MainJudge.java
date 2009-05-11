@@ -58,8 +58,11 @@ public class MainJudge {
         properties.setProperty("CODE_FILENAME", "a");
         properties.setProperty("COMPILE_TIMEOUT", "30000");
 
-
+        try {
         properties.loadFromXML(new FileInputStream(configFile));
+        } catch (Exception ex) {
+            
+        }
         Socket sock = new Socket(InetAddress.getByName(properties.getProperty("HOST")),
                 Integer.parseInt(properties.getProperty("PORT")));
         DataInputStream input = new DataInputStream(
@@ -79,13 +82,14 @@ public class MainJudge {
             }
             byte[] codeText = submit.getCode();
             String filename = submit.getFilename();
-            if (!filename.isEmpty()) {
+            if (filename!=null && !filename.isEmpty()) {
                 properties.setProperty("COMPILED_FILENAME", filename);
                 properties.setProperty("CODE_FILENAME", filename);
             }
             Classes compilerClasses = submit.getLanguages().getClasses();
             CompilerInterface compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(compilerClasses.getFilename(),
                     compilerClasses.getCode()).newInstance();
+            compiler.setProperties(properties);
             Classes diffClasses = submit.getProblems().getClasses();
             CheckerInterface checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(diffClasses.getFilename(),
                     diffClasses.getCode()).newInstance();
@@ -108,7 +112,8 @@ public class MainJudge {
                 dbResult.setTests(test);
                 DAOFactory.DEFAULT.buildResultsDAO().save(dbResult);
             }
-            submit.setResult(SubmitsResultEnum.PROCESS.getCode());
+            program.closeProgram();
+            submit.setResult(SubmitsResultEnum.DONE.getCode());
             DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
             transaction.commit();
             output.writeInt(id);
