@@ -50,20 +50,21 @@ public class LanguagePAS implements CompilerInterface {
             outputStream.close();
             long time = new Date().getTime();
             long timeLimit = time + input.getTimeLimit();
+            long currentTime = -1;
             while (timeLimit > new Date().getTime()) {
                 try {
                     p.exitValue();
-                    break;
                 } catch (IllegalThreadStateException ex) {
-                    Thread.sleep(100);
+                    Thread.sleep(50);
+                    continue;
                 }
+                currentTime = new Date().getTime();
+                break;
             }
-            p.destroy();
-            p.waitFor();
-            long currentTime = new Date().getTime();
-            if (timeLimit < new Date().getTime()) {
+            if (currentTime == -1) {
+                p.destroy();
+                p.waitFor();
                 output.setResult(CheckerErrors.TLE);
-                output.setRuntime((int) (currentTime - time));
                 return output;
             }
             if (p.exitValue() != 0) {
@@ -117,21 +118,24 @@ public class LanguagePAS implements CompilerInterface {
             Process p = new ProcessBuilder("ppc386", "-O2", "-XS", "-Xt", "-o" + compilefile, codefile).start();
             BufferedReader input =
                     new BufferedReader(new InputStreamReader(p.getInputStream()));
-            long time = new Date().getTime() + Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT"));
-            while (time > new Date().getTime()) {
+            long time = new Date().getTime();
+            long timeLimit = time + Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT"));
+            long currentTime = -1;
+            while (timeLimit > new Date().getTime()) {
                 try {
                     p.exitValue();
-                    break;
                 } catch (IllegalThreadStateException ex) {
                     Thread.sleep(700);
+                    continue;
                 }
+                currentTime = new Date().getTime();
+                break;
             }
-            p.destroy();
-            p.waitFor();
-            if (time < new Date().getTime()) {
+            if (currentTime == -1) {
+                p.destroy();
+                p.waitFor();
                 compileResult = CheckerErrors.CTLE;
-                return compilefile;
-            }
+            } else
             if (p.exitValue() != 0) {
 
                 compileResult = CheckerErrors.CE;
