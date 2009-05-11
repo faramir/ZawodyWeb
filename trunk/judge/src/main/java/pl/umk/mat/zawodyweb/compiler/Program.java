@@ -13,7 +13,7 @@ public class Program {
     private CompilerInterface compiler;
 
     public void closeProgram() {
-        compiler.closeProgram(this);
+        compiler.closeProgram(path);
     }
 
     public TestOutput runTest(TestInput input) {
@@ -30,6 +30,11 @@ public class Program {
 
     public Program(String path) {
         this.path = path;
+    }
+
+        public Program(String path, CompilerInterface compiler) {
+        this.path = path;
+        this.compiler = compiler;
     }
 
     public String getPath() {

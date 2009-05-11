@@ -29,15 +29,15 @@ public interface CompilerInterface {
     /**
      * DO NOT USE THIS METHOD. Instead, use Code.compile()
      */
-    public Program compile(byte[] code);
+    public String compile(byte[] code);
 
     /**
      * DO NOT USE THIS METHOD. Instead, use Code.compile()
      */
-    public Program postcompile(Program program);
+    public String postcompile(String path);
 
     /**
      * DO NOT USE THIS METHOD. Instead, use Program.closeProgram()
      */
-    public void closeProgram(Program program);
+    public void closeProgram(String path);
 }
