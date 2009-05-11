@@ -226,6 +226,10 @@ background-color:transparent;
 padding: 0px;
 }
 
+.rich-calendar-button  {
+    display: none;
+}
+
 .profilform input, select {
 margin-right:20px;
 margin-top: 12px;

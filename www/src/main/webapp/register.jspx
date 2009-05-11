@@ -1,7 +1,7 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
     <ui:define name="pageTitle">
-    ${messages.registration}
+        ${messages.registration}
     </ui:define>
     <ui:define name="pageContent">
         <a4j:form id="formRegister" styleClass="profilform">
@@ -51,7 +51,7 @@
                 </div>
                 <div>
                     <h:outputLabel for="birthdate">${messages.birthdate}:</h:outputLabel>
-                    <rich:calendar id="birthdate" value="#{requestBean.newUser.birthdate}" datePattern="yyyy.MM.dd HH:mm" />
+                    <rich:calendar id="birthdate" value="#{requestBean.newUser.birthdate}" datePattern="yyyy.MM.dd" />
                     <h:message for="birthdate" errorClass="error" />
                     <br class="clear" />
                 </div>
