@@ -14,6 +14,25 @@ public class CheckerResult {
 
     private int result;
     private String decription;
+    private int memUsed;
+    private int runtime;
+
+    public void setMemUsed(int memUsed) {
+        this.memUsed = memUsed;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime = runtime;
+    }
+
+    public int getMemUsed() {
+        return memUsed;
+    }
+
+    public int getRuntime() {
+        return runtime;
+    }
+
 
     public CheckerResult() {
         result = CheckerErrors.UNDEF;
