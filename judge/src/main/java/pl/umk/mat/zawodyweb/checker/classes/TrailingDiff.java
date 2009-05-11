@@ -34,8 +34,8 @@ public class TrailingDiff implements CheckerInterface {
         } catch (IOException ex) {
             System.err.println("IOException at TrailingDiff." + ex.getMessage());
         }
-        result.setRuntime(output.getRuntime());
-        result.setMemUsed(output.getMemUsed());
+        result.setRuntime(codeOutput.getRuntime());
+        result.setMemUsed(codeOutput.getMemUsed());
         return result;
     }
 

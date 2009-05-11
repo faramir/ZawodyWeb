@@ -48,8 +48,9 @@ public class LanguagePAS implements CompilerInterface {
             outputStream.write(input.getText());
             outputStream.flush();
             outputStream.close();
-            long time = new Date().getTime() + input.getTimeLimit();
-            while (time > new Date().getTime()) {
+            long time = new Date().getTime();
+            long timeLimit = time + input.getTimeLimit();
+            while (timeLimit > new Date().getTime()) {
                 try {
                     p.exitValue();
                     break;
@@ -59,10 +60,10 @@ public class LanguagePAS implements CompilerInterface {
             }
             p.destroy();
             p.waitFor();
-
-            if (time < new Date().getTime()) {
+            long currentTime = new Date().getTime();
+            if (timeLimit < new Date().getTime()) {
                 output.setResult(CheckerErrors.TLE);
-                output.setRuntime((int) new Date().getTime());
+                output.setRuntime((int) (currentTime - time));
                 return output;
             }
             if (p.exitValue() != 0) {
@@ -70,7 +71,7 @@ public class LanguagePAS implements CompilerInterface {
                 output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
                 return output;
             }
-            output.setRuntime((int) new Date().getTime());
+            output.setRuntime((int) (currentTime - time));
             String outputText = new String();
             String line;
             while ((line = inputStream.readLine()) != null) {

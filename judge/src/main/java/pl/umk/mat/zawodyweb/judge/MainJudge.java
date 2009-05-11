@@ -69,8 +69,12 @@ public class MainJudge {
                 sock.getInputStream());
         DataOutputStream output = new DataOutputStream(sock.getOutputStream());
         while (15 == 15) {
-
-            int id = input.readInt();
+            int id;
+            try {
+            id = input.readInt();
+            } catch (IOException ex) {
+                break;
+            }
             Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
             Submits submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
             submit.setResult(SubmitsResultEnum.PROCESS.getCode());
