@@ -119,86 +119,97 @@ public class LanguageOPSS implements CompilerInterface {
             return result;
         }
         sendAnswer.releaseConnection();
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("InterruptedException");
-            return result;
-        }
-        GetMethod answer = new GetMethod("http://opss.assecobs.pl/?menu=comp&sub=stat&comp=0&id=" + submitId);
-        InputStream answerStream = null;
-        try {
-            client.executeMethod(answer);
-            answerStream = answer.getResponseBodyAsStream();
-        } catch (HttpException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("HttpException");
-            answer.releaseConnection();
-            return result;
-        } catch (IOException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("IOException");
-            answer.releaseConnection();
-            return result;
-        }
-        try {
-            br = new BufferedReader(new InputStreamReader(answerStream, "iso-8859-2"));
-        } catch (UnsupportedEncodingException e) {
-        }
-        String row = "";
-        try {
-            line = br.readLine();
-            Pattern p2 = Pattern.compile("(<tr class=row0>)|(<tr class=stat_ac>)");
-            Matcher m2 = p2.matcher(line);
-            while (!m2.find() && line != null) {
-                line = br.readLine();
-                m2 = p2.matcher(line);
+        do {
+            try {
+                Thread.sleep(7000);
+            } catch (InterruptedException e) {
+                result.setResult(CheckerErrors.UNDEF);
+                result.setResultDesc(e.getMessage());
+                result.setText("InterruptedException");
+                return result;
             }
-            row = "";
-            for (int i = 0; i < 19; i++) {
-                row += line;
-                line = br.readLine();
+            GetMethod answer = new GetMethod("http://opss.assecobs.pl/?menu=comp&sub=stat&comp=0&id=" + submitId);
+            InputStream answerStream = null;
+            try {
+                client.executeMethod(answer);
+                answerStream = answer.getResponseBodyAsStream();
+            } catch (HttpException e) {
+                result.setResult(CheckerErrors.UNDEF);
+                result.setResultDesc(e.getMessage());
+                result.setText("HttpException");
+                answer.releaseConnection();
+                return result;
+            } catch (IOException e) {
+                result.setResult(CheckerErrors.UNDEF);
+                result.setResultDesc(e.getMessage());
+                result.setText("IOException");
+                answer.releaseConnection();
+                return result;
             }
-        } catch (IOException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("IOException");
-            sendAnswer.releaseConnection();
-            return result;
-        }
-        String[] col = row.split("(<td>)|(</table>)");
-        if (col[6].matches(".*Program zaakceptowany.*")) {
-            result.setResult(CheckerErrors.ACC);
-            result.setRuntime(10 * Integer.parseInt(col[8].replaceAll("\\.", "")));
-            result.setMemUsed(Integer.parseInt(col[9].replaceAll("\\s", "")));
-        } else if (col[6].matches(".*Błąd kompilacji.*")) {
-            result.setResult(CheckerErrors.CE);
-        } else if (col[6].matches(".*Błąd wykonania.*")) {
-            result.setResult(CheckerErrors.RE);
-        } else if (col[6].matches(".*Limit czasu przekroczony.*")) {
-            result.setResult(CheckerErrors.TLE);
-        } else if (col[6].matches(".*Limit pamięci przekroczony.*")) {
-            result.setResult(CheckerErrors.MLE);
-        } else if (col[6].matches(".*Błędna odpowiedź.*")) {
-            result.setResult(CheckerErrors.WA);
-        } else if (col[6].matches(".*Niedozwolona funkcja.*")) {
-            result.setResult(CheckerErrors.RV);
-        } else {
-            result.setResult(CheckerErrors.UNKNOWN);
-            result.setResultDesc("Unknown status: \"" + col[6] + "\"");
-        }
-        answer.releaseConnection();
+            try {
+                br = new BufferedReader(new InputStreamReader(answerStream, "iso-8859-2"));
+            } catch (UnsupportedEncodingException e) {
+            }
+            String row = "";
+            try {
+                line = br.readLine();
+                Pattern p2 = Pattern.compile("(<tr class=row0>)|(<tr class=stat_ac>)|(<tr class=stat_run>)");
+                Matcher m2 = p2.matcher(line);
+                while (!m2.find() && line != null) {
+                    line = br.readLine();
+                    m2 = p2.matcher(line);
+                }
+                row = "";
+                for (int i = 0; i < 19; i++) {
+                    row += line;
+                    line = br.readLine();
+                }
+            } catch (IOException e) {
+                result.setResult(CheckerErrors.UNDEF);
+                result.setResultDesc(e.getMessage());
+                result.setText("IOException");
+                sendAnswer.releaseConnection();
+                return result;
+            }
+            String[] col = row.split("(<td>)|(</table>)");
+            if (col[6].matches(".*Program zaakceptowany.*")) {
+                result.setResult(CheckerErrors.ACC);
+                result.setRuntime(10 * Integer.parseInt(col[8].replaceAll("\\.", "")));
+                result.setMemUsed(Integer.parseInt(col[9].replaceAll("\\s", "")));
+                break;
+            } else if (col[6].matches(".*Błąd kompilacji.*")) {
+                result.setResult(CheckerErrors.CE);
+                break;
+            } else if (col[6].matches(".*Błąd wykonania.*")) {
+                result.setResult(CheckerErrors.RE);
+                break;
+            } else if (col[6].matches(".*Limit czasu przekroczony.*")) {
+                result.setResult(CheckerErrors.TLE);
+                break;
+            } else if (col[6].matches(".*Limit pamięci przekroczony.*")) {
+                result.setResult(CheckerErrors.MLE);
+                break;
+            } else if (col[6].matches(".*Błędna odpowiedź.*")) {
+                result.setResult(CheckerErrors.WA);
+                break;
+            } else if (col[6].matches(".*Niedozwolona funkcja.*")) {
+                result.setResult(CheckerErrors.RV);
+            } else if (col[6].matches(".*Uruchamianie.*")) {
+            } else if (col[6].matches(".*Kompilacja.*")) {
+            } else {
+                result.setResult(CheckerErrors.UNKNOWN);
+                result.setResultDesc("Unknown status: \"" + col[6] + "\"");
+                break;
+            }
+            answer.releaseConnection();
+        } while (true);
         GetMethod logout = new GetMethod("http://opss.assecobs.pl/?logoff");
         try {
             client.executeMethod(logout);
         } catch (HttpException e) {
-            answer.releaseConnection();
+            logout.releaseConnection();
         } catch (IOException e) {
-            answer.releaseConnection();
+            logout.releaseConnection();
         }
         logout.releaseConnection();
         return result;
