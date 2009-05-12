@@ -12,6 +12,10 @@
         <tag-name>contest-link</tag-name>
         <source>../../templates/contest-link.jspx</source>
     </tag>
+    <tag>
+        <tag-name>problem-link</tag-name>
+        <source>../../templates/problem-link.jspx</source>
+    </tag>
     <function>
         <function-name>filterUri</function-name>
         <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
