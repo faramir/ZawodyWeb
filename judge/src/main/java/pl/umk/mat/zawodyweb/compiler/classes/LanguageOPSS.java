@@ -4,11 +4,18 @@
  */
 package pl.umk.mat.zawodyweb.compiler.classes;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
@@ -68,8 +75,10 @@ public class LanguageOPSS implements CompilerInterface {
             new NameValuePair("form_send_submittxt", "Wyślij kod")
         };
         sendAnswer.setRequestBody(dataSendAnswer);
+        InputStream status = null;
         try {
             client.executeMethod(sendAnswer);
+            status = sendAnswer.getResponseBodyAsStream();
         } catch (HttpException e) {
             result.setResult(CheckerErrors.UNDEF);
             result.setResultDesc(e.getMessage());
@@ -83,7 +92,104 @@ public class LanguageOPSS implements CompilerInterface {
             sendAnswer.releaseConnection();
             return result;
         }
+        String submitId = null;
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(status, "iso-8859-2"));
+        } catch (UnsupportedEncodingException e) {
+        }
+        String line;
+        try {
+            Pattern p = Pattern.compile("<a[^>]*href=[^>]*sub=stat[^>]*id=\\d*[^>]*>");
+            line = br.readLine();
+            Matcher m = p.matcher(line);
+            while (!m.find() && line != null) {
+                line = br.readLine();
+                m = p.matcher(line);
+            }
+            Pattern p1 = Pattern.compile("id=\\d*");
+            Matcher m1 = p1.matcher(m.group());
+            m1.find();
+            submitId = m1.group().split("=")[1];
+        } catch (IOException e) {
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText("IOException");
+            sendAnswer.releaseConnection();
+            return result;
+        }
         sendAnswer.releaseConnection();
+        GetMethod answer = new GetMethod("http://opss.assecobs.pl/?menu=comp&sub=stat&comp=0&id=" + submitId);
+        try {
+            client.executeMethod(answer);
+        } catch (HttpException e) {
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText("HttpException");
+            sendAnswer.releaseConnection();
+            return result;
+        } catch (IOException e) {
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText("IOException");
+            sendAnswer.releaseConnection();
+            return result;
+        }
+        InputStream answerStream = null;
+        try {
+            client.executeMethod(answer);
+            answerStream = answer.getResponseBodyAsStream();
+        } catch (HttpException e) {
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText("HttpException");
+            sendAnswer.releaseConnection();
+            return result;
+        } catch (IOException e) {
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText("IOException");
+            sendAnswer.releaseConnection();
+            return result;
+        }
+        try {
+            br = new BufferedReader(new InputStreamReader(answerStream, "iso-8859-2"));
+        } catch (UnsupportedEncodingException e) {
+        }
+        String row = "";
+        try {
+            line = br.readLine();
+            Pattern p2 = Pattern.compile("<tr class=row0>");
+            Matcher m2 = p2.matcher(line);
+            while (!m2.find() && line != null) {
+                line = br.readLine();
+                m2 = p2.matcher(line);
+            }
+            row = "";
+            for (int i = 0; i < 19; i++) {
+                row += line;
+                line = br.readLine();
+            }
+        } catch (IOException ex) {
+        }
+        String[] col = row.split("(<td>)|(</table>)");
+        if (col[6].equals("Program zaakceptowany")) {
+            result.setResult(CheckerErrors.ACC);
+        } else if (col[6].equals("Błąd kompilacji")) {
+            result.setResult(CheckerErrors.CE);
+        } else if (col[6].equals("Błąd wykonania")) {
+            result.setResult(CheckerErrors.RE);
+        } else if (col[6].equals("Limit czasu przekroczony")) {
+            result.setResult(CheckerErrors.TLE);
+        } else if (col[6].equals("Limit pamięci przekroczony")) {
+            result.setResult(CheckerErrors.MLE);
+        } else if (col[6].equals("Błędna odpowiedź")) {
+            result.setResult(CheckerErrors.WA);
+        } else if (col[6].equals("Niedozwolona funkcja")) {
+            result.setResult(CheckerErrors.RV);
+        } else {
+            result.setResult(CheckerErrors.UNDEF);
+        }
         return result;
     }
 
