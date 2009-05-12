@@ -10,7 +10,6 @@ import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.checker.CheckerResult;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
-import pl.umk.mat.zawodyweb.checker.classes.NormalDiff;
 import pl.umk.mat.zawodyweb.checker.classes.TrailingDiff;
 import pl.umk.mat.zawodyweb.compiler.Code;
 import pl.umk.mat.zawodyweb.compiler.Program;
