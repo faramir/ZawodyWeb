@@ -75,14 +75,6 @@ public class LanguageOPSS implements CompilerInterface {
             new NameValuePair("form_send_submittxt", "Wyślij kod")
         };
         sendAnswer.setRequestBody(dataSendAnswer);
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("InterruptedException");
-            return result;
-        }
         InputStream status = null;
         try {
             client.executeMethod(sendAnswer);
@@ -127,22 +119,15 @@ public class LanguageOPSS implements CompilerInterface {
             return result;
         }
         sendAnswer.releaseConnection();
-        GetMethod answer = new GetMethod("http://opss.assecobs.pl/?menu=comp&sub=stat&comp=0&id=" + submitId);
         try {
-            client.executeMethod(answer);
-        } catch (HttpException e) {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
             result.setResult(CheckerErrors.UNDEF);
             result.setResultDesc(e.getMessage());
-            result.setText("HttpException");
-            answer.releaseConnection();
-            return result;
-        } catch (IOException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("IOException");
-            answer.releaseConnection();
+            result.setText("InterruptedException");
             return result;
         }
+        GetMethod answer = new GetMethod("http://opss.assecobs.pl/?menu=comp&sub=stat&comp=0&id=" + submitId);
         InputStream answerStream = null;
         try {
             client.executeMethod(answer);
@@ -167,7 +152,7 @@ public class LanguageOPSS implements CompilerInterface {
         String row = "";
         try {
             line = br.readLine();
-            Pattern p2 = Pattern.compile("(<tr class=row0>)|<tr class=stat_ac>");
+            Pattern p2 = Pattern.compile("(<tr class=row0>)|(<tr class=stat_ac>)");
             Matcher m2 = p2.matcher(line);
             while (!m2.find() && line != null) {
                 line = br.readLine();
@@ -188,6 +173,8 @@ public class LanguageOPSS implements CompilerInterface {
         String[] col = row.split("(<td>)|(</table>)");
         if (col[6].matches(".*Program zaakceptowany.*")) {
             result.setResult(CheckerErrors.ACC);
+            result.setRuntime(10 * Integer.parseInt(col[8].replaceAll("\\.", "")));
+            result.setMemUsed(Integer.parseInt(col[9].replaceAll("\\s", "")));
         } else if (col[6].matches(".*Błąd kompilacji.*")) {
             result.setResult(CheckerErrors.CE);
         } else if (col[6].matches(".*Błąd wykonania.*")) {
