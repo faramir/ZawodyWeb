@@ -19,4 +19,5 @@ public class CheckerErrors {
     public static final int MLE = 5;
     public static final int RV = 6;
     public static final int CTLE = 7;
+    public static final int UNKNOWN = 8;
 }

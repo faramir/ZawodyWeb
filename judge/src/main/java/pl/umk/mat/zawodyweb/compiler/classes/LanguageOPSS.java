@@ -76,8 +76,12 @@ public class LanguageOPSS implements CompilerInterface {
         };
         sendAnswer.setRequestBody(dataSendAnswer);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText("InterruptedException");
+            return result;
         }
         InputStream status = null;
         try {
@@ -130,13 +134,13 @@ public class LanguageOPSS implements CompilerInterface {
             result.setResult(CheckerErrors.UNDEF);
             result.setResultDesc(e.getMessage());
             result.setText("HttpException");
-            sendAnswer.releaseConnection();
+            answer.releaseConnection();
             return result;
         } catch (IOException e) {
             result.setResult(CheckerErrors.UNDEF);
             result.setResultDesc(e.getMessage());
             result.setText("IOException");
-            sendAnswer.releaseConnection();
+            answer.releaseConnection();
             return result;
         }
         InputStream answerStream = null;
@@ -147,13 +151,13 @@ public class LanguageOPSS implements CompilerInterface {
             result.setResult(CheckerErrors.UNDEF);
             result.setResultDesc(e.getMessage());
             result.setText("HttpException");
-            sendAnswer.releaseConnection();
+            answer.releaseConnection();
             return result;
         } catch (IOException e) {
             result.setResult(CheckerErrors.UNDEF);
             result.setResultDesc(e.getMessage());
             result.setText("IOException");
-            sendAnswer.releaseConnection();
+            answer.releaseConnection();
             return result;
         }
         try {
@@ -182,23 +186,34 @@ public class LanguageOPSS implements CompilerInterface {
             return result;
         }
         String[] col = row.split("(<td>)|(</table>)");
-        if (col[6].equals("Program zaakceptowany")) {
+        if (col[6].matches(".*Program zaakceptowany.*")) {
             result.setResult(CheckerErrors.ACC);
-        } else if (col[6].equals("Błąd kompilacji")) {
+        } else if (col[6].matches(".*Błąd kompilacji.*")) {
             result.setResult(CheckerErrors.CE);
-        } else if (col[6].equals("Błąd wykonania")) {
+        } else if (col[6].matches(".*Błąd wykonania.*")) {
             result.setResult(CheckerErrors.RE);
-        } else if (col[6].equals("Limit czasu przekroczony")) {
+        } else if (col[6].matches(".*Limit czasu przekroczony.*")) {
             result.setResult(CheckerErrors.TLE);
-        } else if (col[6].equals("Limit pamięci przekroczony")) {
+        } else if (col[6].matches(".*Limit pamięci przekroczony.*")) {
             result.setResult(CheckerErrors.MLE);
-        } else if (col[6].equals("Błędna odpowiedź")) {
+        } else if (col[6].matches(".*Błędna odpowiedź.*")) {
             result.setResult(CheckerErrors.WA);
-        } else if (col[6].equals("Niedozwolona funkcja")) {
+        } else if (col[6].matches(".*Niedozwolona funkcja.*")) {
             result.setResult(CheckerErrors.RV);
         } else {
-            result.setResult(CheckerErrors.UNDEF);
+            result.setResult(CheckerErrors.UNKNOWN);
+            result.setResultDesc("Unknown status: \"" + col[6] + "\"");
         }
+        answer.releaseConnection();
+        GetMethod logout = new GetMethod("http://opss.assecobs.pl/?logoff");
+        try {
+            client.executeMethod(logout);
+        } catch (HttpException e) {
+            answer.releaseConnection();
+        } catch (IOException e) {
+            answer.releaseConnection();
+        }
+        logout.releaseConnection();
         return result;
     }
 
