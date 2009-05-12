@@ -75,6 +75,10 @@ public class LanguageOPSS implements CompilerInterface {
             new NameValuePair("form_send_submittxt", "Wyślij kod")
         };
         sendAnswer.setRequestBody(dataSendAnswer);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+        }
         InputStream status = null;
         try {
             client.executeMethod(sendAnswer);
@@ -159,7 +163,7 @@ public class LanguageOPSS implements CompilerInterface {
         String row = "";
         try {
             line = br.readLine();
-            Pattern p2 = Pattern.compile("<tr class=row0>");
+            Pattern p2 = Pattern.compile("(<tr class=row0>)|<tr class=stat_ac>");
             Matcher m2 = p2.matcher(line);
             while (!m2.find() && line != null) {
                 line = br.readLine();
@@ -170,7 +174,12 @@ public class LanguageOPSS implements CompilerInterface {
                 row += line;
                 line = br.readLine();
             }
-        } catch (IOException ex) {
+        } catch (IOException e) {
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText("IOException");
+            sendAnswer.releaseConnection();
+            return result;
         }
         String[] col = row.split("(<td>)|(</table>)");
         if (col[6].equals("Program zaakceptowany")) {
