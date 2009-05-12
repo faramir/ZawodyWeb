@@ -5,7 +5,6 @@ import java.util.Properties;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
-import pl.umk.mat.zawodyweb.compiler.Program;
 
 /**
  *

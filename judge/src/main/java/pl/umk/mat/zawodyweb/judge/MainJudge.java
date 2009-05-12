@@ -4,14 +4,10 @@
  */
 package pl.umk.mat.zawodyweb.judge;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.List;
@@ -24,7 +20,6 @@ import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.Code;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.compiler.Program;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
