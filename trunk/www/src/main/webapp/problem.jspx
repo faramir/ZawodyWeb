@@ -1,0 +1,16 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
+    <ui:define name="pageTitle">
+        ${requestBean.currentProblem.name}
+    </ui:define>
+    <ui:define name="pageContent">
+        <a4j:form id="formProblem" styleClass="profilform">
+            ${messages.problem_name}: (${requestBean.currentProblem.abbrev}) ${requestBean.currentProblem.name}
+            <br />
+            ${messages.problem_memlimit}: ${requestBean.currentProblem.memlimit}
+            <br />
+            ${requestBean.currentProblem.text}
+        </a4j:form>
+    </ui:define>
+</ui:composition>

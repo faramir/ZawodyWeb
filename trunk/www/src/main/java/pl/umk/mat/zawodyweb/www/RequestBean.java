@@ -5,6 +5,7 @@
 package pl.umk.mat.zawodyweb.www;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -15,8 +16,13 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletRequest;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Transaction;
+import org.restfaces.annotation.HttpAction;
+import org.restfaces.annotation.Instance;
+import org.restfaces.annotation.Param;
 import org.springframework.web.context.request.RequestScope;
 import pl.umk.mat.zawodyweb.database.ClassesDAO;
 import pl.umk.mat.zawodyweb.database.ContestsDAO;
@@ -41,6 +47,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
  *
  * @author slawek
  */
+@Instance("#{requestBean}")
 public class RequestBean {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
@@ -62,6 +69,7 @@ public class RequestBean {
     private Integer temporaryProblemId;
     private Integer temporaryClassId;
     private Integer[] temporaryLanguagesIds;
+    private Problems currentProblem;
     private String dummy;
 
     /**
@@ -195,6 +203,7 @@ public class RequestBean {
             try {
                 SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
                 currentContestSeries = dao.findByContestsid(sessionBean.getCurrentContest().getId());
+                Collections.reverse(currentContestSeries);
                 t.commit();
             } catch (Exception e) {
                 t.rollback();
@@ -230,6 +239,10 @@ public class RequestBean {
         }
 
         return editedContest;
+    }
+
+    public Problems getCurrentProblem() {
+        return currentProblem;
     }
 
     public Integer getTemporaryContestId() {
@@ -443,6 +456,24 @@ public class RequestBean {
         }
 
         return "start";
+    }
+
+    @HttpAction(name = "problem", pattern = "problem/{id}/{title}")
+    public String goToProblem(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
+        try {
+            currentProblem = dao.getById(id);
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+        }
+        
+        if (currentProblem == null) {
+            return "/error/404";
+        } else {
+            return "problem";
+        }
     }
 
     public String saveTest() {

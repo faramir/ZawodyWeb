@@ -1,0 +1,3 @@
+<a href="#{facesContext.externalContext.requestContextPath}/problem/#{problem.id}/#{zw:filterUri(problem.name)}.html">
+    #{problem.name}
+</a>

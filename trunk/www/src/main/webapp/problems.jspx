@@ -1,5 +1,6 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk">
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
     <ui:define name="pageTitle">
         ${messages.problems}
     </ui:define>
@@ -11,12 +12,14 @@
                 </c:when>
                 <c:otherwise>
                     <c:forEach var="series" items="#{requestBean.currentContestSeries}">
+                        ${series.name}
+                        <br />
                         <t:dataTable id="problems#{series.id}" var="problem" value="#{series.problemss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
                             <h:column>
                                 <f:facet name="header">
                                 ${messages.problem_name}
                                 </f:facet>
-                                <h:outputText value="#{problem.name}" />
+                                <zw:problem-link problem="${problem}" />
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
