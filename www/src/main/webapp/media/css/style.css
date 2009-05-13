@@ -226,10 +226,6 @@ background-color:transparent;
 padding: 0px;
 }
 
-.rich-calendar-button  {
-    display: none;
-}
-
 .profilform input, select {
 margin-right:20px;
 margin-top: 12px;
@@ -561,5 +557,114 @@ background: #decff4;
 
 .sendform input:focus, .sendform input:hover, .sendform textarea:focus, .sendform textarea:hover, .sendform select:focus, .sendform select:hover, .sendform input#file:focus, .sendform input#file:hover {
 border:1px solid #333333;
+}
+/* RICH SKIN CSS */
+.rich-calendar-button  {
+    display: block;
+    float: right;
+    clear: right;
+    margin: -20px 0 0 0;
+    padding: 0px;
+}
+
+.rich-calendar-header {
+	background-color: #bb97f2;
+}
+
+.rich-calendar-tool {
+	vertical-align: middle;
+	text-align: center;
+	width: 20px;
+	height: 22px;
+	background-color: #bb97f2;
+	font-weight: bold;
+	color: #000;
+}
+
+.rich-calendar-month {
+	vertical-align: middle;
+	text-align: center;
+	height: 22px;
+	background-color: #bb97f2;
+	font-weight: bold;
+	color: #000;
+	white-space: nowrap;
+}
+
+.rich-calendar-boundary-dates {
+	color: #A0A0A0;
+}
+.profilform table td.rich-calendar-spinner-input-container {
+        background-color: #efeaf7;
+        margin: 10px;
+        padding: 0px;
+        width: 10px;
+}
+
+.profilform input.rich-calendar-spinner-input {
+		width: 25px;
+        margin: 0px;
+        padding: 0px;
+}
+
+.profilform.rich-calendar-spinner-buttons {
+		width: 25px;
+        margin: 0px;
+        padding: 0px;
+}
+
+.profilform table td.rich-calendar-time-layout-fields {
+    background-color: #efeaf7;
+    margin: 0px;
+    padding: 0px;
+    width: 10px;
+}
+
+.profilform.rich-calendar-time-layout-fields:hover {
+    background-color: #efeaf7;
+}
+
+.profilform table td.rich-calendar-time-layout-fields:hover {
+    background-color: #efeaf7;
+}
+
+.profilform table td.rich-calendar-time-layout-ok {
+    background-color: #efeaf7;
+}
+
+.profilform table td.rich-calendar-time-layout-ok:hover {
+    background-color: #efeaf7;
+}
+
+.profilform table td.rich-calendar-time-layout-cancel {
+    background-color: #efeaf7;
+}
+
+.profilform table td.rich-calendar-time-layout-cancel:hover {
+    background-color: #efeaf7;
+}
+
+.profilform table td.rich-calendar-spinner-input-container {
+        background-color: #efeaf7;
+}
+
+.profilform table td.rich-calendar-spinner-input-container:hover {
+        background-color: #efeaf7;
+}
+
+.rich-calendar-cell-size {
+	height: 22px;
+	width: 31px;
+}
+
+.rich-calendar-week {
+      background-color: #faf8e9;
+      color: #2181ff;
+}
+
+.rich-calendar-select {
+	background-color: #224986;
+	color: #FFFFFF;
+	font-weight: bold;
 }
 

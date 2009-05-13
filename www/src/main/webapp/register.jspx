@@ -51,7 +51,7 @@
                 </div>
                 <div>
                     <h:outputLabel for="birthdate">${messages.birthdate}:</h:outputLabel>
-                    <rich:calendar id="birthdate" value="#{requestBean.newUser.birthdate}" datePattern="yyyy.MM.dd" />
+                    <rich:calendar id="birthdate" value="#{requestBean.newUser.birthdate}" inputClass="callender-input" todayControlMode="hidden" datePattern="yyyy.MM.dd" cellWidth="31px" cellHeight="22px" style="width:250px" />
                     <h:message for="birthdate" errorClass="error" />
                     <br class="clear" />
                 </div>
