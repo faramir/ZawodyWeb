@@ -94,7 +94,7 @@ public class SessionBean {
         return "problems";
     }
     
-    private void selectContest(int id) {
+    public void selectContest(int id) {
         ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
         currentContest = dao.getById(id);
     }

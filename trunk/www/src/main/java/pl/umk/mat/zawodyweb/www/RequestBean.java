@@ -397,6 +397,7 @@ public class RequestBean {
         if (currentProblem == null) {
             return "/error/404";
         } else {
+            sessionBean.selectContest(currentProblem.getSeries().getContests().getId());
             return "problem";
         }
     }
