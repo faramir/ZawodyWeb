@@ -7,12 +7,10 @@ package pl.umk.mat.zawodyweb.www;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Transaction;
 import org.restfaces.annotation.HttpAction;
 import org.restfaces.annotation.Instance;
 import org.restfaces.annotation.Param;
@@ -70,7 +68,6 @@ public class SessionBean {
         response.addCookie(cookie);
 
 
-        Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         try {
             UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
             Users user = dao.findByLogin(currentUser.getLogin()).get(0);
@@ -78,10 +75,8 @@ public class SessionBean {
                 isLoggedIn = true;
                 currentUser = user;
             }
-            t.commit();
         } catch (Exception e) {
             isLoggedIn = false;
-            t.rollback();
         }
 
         if (!isLoggedIn) {
@@ -93,19 +88,15 @@ public class SessionBean {
         return "start";
     }
 
-    @HttpAction(name = "contest", pattern = "contest/{id}/{title}")
-    public String selectContest(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
-        Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-        try {
-            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
-            currentContest = dao.getById(id);
-            t.commit();
-        } catch (Exception e) {
-            //TODO: jakis komunikat wywalic
-            t.rollback();
-        }
-
-        return "start";
+    @HttpAction(name = "problems", pattern = "problems/{id}/{title}")
+    public String goToProblems(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        selectContest(id);
+        return "problems";
+    }
+    
+    private void selectContest(int id) {
+        ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
+        currentContest = dao.getById(id);
     }
 
     private Cookie getLoginCookie() {

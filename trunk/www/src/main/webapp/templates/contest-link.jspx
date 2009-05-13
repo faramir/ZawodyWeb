@@ -1,3 +1,21 @@
-<a href="#{facesContext.externalContext.requestContextPath}/contest/#{contest.id}/#{zw:filterUri(contest.name)}.html">
-    #{contest.name}
-</a>
+<c:choose xmlns:c="http://java.sun.com/jstl/core">
+    <c:when test="${contest == 'null'}">
+        <a href="#{facesContext.externalContext.requestContextPath}/#{type}.html">
+            ${messages.problems}
+        </a>
+    </c:when>
+    <c:otherwise>
+        <a href="#{facesContext.externalContext.requestContextPath}/#{type}/#{contest.id}/#{zw:filterUri(contest.name)}.html">
+            <c:choose xmlns:c="http://java.sun.com/jstl/core">
+                <c:when test="${default == 'true'}">
+                #{messages.problems}
+                </c:when>
+                <c:otherwise>
+                #{contest.name}
+                </c:otherwise>
+            </c:choose>
+        </a>
+    </c:otherwise>
+</c:choose>
+
+
