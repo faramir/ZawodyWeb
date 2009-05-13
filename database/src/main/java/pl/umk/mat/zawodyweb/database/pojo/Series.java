@@ -219,7 +219,6 @@ public class Series implements Serializable {
 	 */
 	 // problemsPK
 	 @OneToMany(mappedBy="series")
-     @LazyCollection(LazyCollectionOption.FALSE)
 	 public List<Problems> getProblemss() {
 	 	return this.problemss;
 	 }
