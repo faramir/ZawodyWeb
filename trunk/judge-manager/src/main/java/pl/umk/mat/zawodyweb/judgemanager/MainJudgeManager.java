@@ -51,7 +51,7 @@ public class MainJudgeManager {
         properties.setProperty("DELAY_PROCESS", "1800000");
 
         try {
-            String configFile = "configuration.xml";
+            String configFile = MainJudgeManager.class.getResource(".").getPath() + "configuration.xml";
             if (args.length == 1) {
                 configFile = args[0];
             }
@@ -162,7 +162,7 @@ public class MainJudgeManager {
                     }
                 }
 
-                prev = (Integer[]) now.toArray();
+                prev = now.toArray(prev);
             } catch (InterruptedException ex) {
             }
         }
