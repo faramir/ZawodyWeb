@@ -63,14 +63,14 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <display-name>select_contest</display-name>
+        <display-name>goToProblems</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
             <from-outcome>
-                start
+                problems
             </from-outcome>
             <to-view-id>
-                /start.jspx
+                /problems.jspx
             </to-view-id>
         </navigation-case>
     </navigation-rule>

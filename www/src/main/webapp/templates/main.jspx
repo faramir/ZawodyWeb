@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
       xmlns:c="http://java.sun.com/jstl/core" xmlns:a4j="http://richfaces.org/a4j"
-      xmlns:rich="http://richfaces.org/rich">
+      xmlns:rich="http://richfaces.org/rich" xmlns:zw="http://zawodyweb.mat.umk.pl/">
     <f:loadBundle basename="pl.umk.mat.zawodyweb.www.Messages" var="messages" />
     <head>
         <title>
@@ -36,7 +36,7 @@
         <div id="left_menu">
             <ul>
                 <li>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/problems.html">${messages.problems}</h:outputLink>
+                    <zw:contest-link contest="${sessionBean.currentContest}" type="problems" default="true" />
                 </li>
                 <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ranking.html">${messages.ranking}</h:outputLink>

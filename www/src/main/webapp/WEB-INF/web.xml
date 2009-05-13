@@ -48,12 +48,20 @@
             <param-value>20m</param-value>
         </init-param>
     </filter>
+    <filter>
+        <filter-name>hibernateSession</filter-name>
+        <filter-class>pl.umk.mat.zawodyweb.www.HibernateSessionRequestFilter</filter-class>
+    </filter>
     <listener>
         <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
     </listener>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+    <filter-mapping>
+        <filter-name>hibernateSession</filter-name>
+        <servlet-name>faces</servlet-name>
+    </filter-mapping>
     <filter-mapping>
         <filter-name>richfaces</filter-name>
         <servlet-name>faces</servlet-name>
