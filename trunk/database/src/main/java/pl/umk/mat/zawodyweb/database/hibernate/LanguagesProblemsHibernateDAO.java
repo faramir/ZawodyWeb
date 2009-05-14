@@ -24,7 +24,7 @@ public class LanguagesProblemsHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<LanguagesProblems> findByProblemsid(Integer problemsid) {
-		return findByCriteria(Restrictions.eq("problems.problemsid", problemsid));
+		return findByCriteria(Restrictions.eq("problems.id", problemsid));
 	}
 	
 	/**
@@ -32,7 +32,7 @@ public class LanguagesProblemsHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<LanguagesProblems> findByLanguagesid(Integer languagesid) {
-		return findByCriteria(Restrictions.eq("languages.languagesid", languagesid));
+		return findByCriteria(Restrictions.eq("languages.id", languagesid));
 	}
 	
 
