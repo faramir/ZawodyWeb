@@ -1,0 +1,44 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
+    <ui:define name="pageTitle">
+        ${messages.send_solution}
+    </ui:define>
+    <ui:define name="pageContent">
+        <a4j:form id="formSubmit" styleClass="profilform"  enctype="multipart/form-data">
+            <div>
+                <h:outputLabel for="problem">${messages.submit_problem}:</h:outputLabel>
+                <h:selectOneMenu id="problem" required="true" value="#{requestBean.temporaryProblemId}">
+                    <c:forEach var="problem" items="#{requestBean.submittableProblems}">
+                        <f:selectItem itemValue="#{problem.id}" itemLabel="#{problem.name}" />
+                    </c:forEach>
+                    <t:saveState id="saveProblemId" value="#{requestBean.temporaryProblemId}" />
+                    <a4j:support event="onchange" reRender="language" ajaxSingle="true" />
+                </h:selectOneMenu>
+                <h:message for="problem" errorClass="error" />
+                <br class="clear" />
+            </div>
+            <div>
+                <h:outputLabel for="language">${messages.submit_language}:</h:outputLabel>
+                <h:selectOneMenu id="language" required="true" value="#{requestBean.temporaryLanguageId}">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <c:forEach var="languagesproblems" items="#{requestBean.temporaryLanguagesProblems}">
+                        <f:selectItem itemValue="#{languagesproblems.languages.id}" itemLabel="#{languagesproblems.languages.name}" />
+                    </c:forEach>
+                </h:selectOneMenu>
+                <h:message for="language" errorClass="error" />
+                <br class="clear" />
+            </div>
+            <div>
+                <h:outputLabel for="source">${messages.submit_sourcefile}:</h:outputLabel>
+                <t:inputFileUpload id="source" required="true" value="#{requestBean.editedProblem.pdf}" />
+                <h:message for="source" errorClass="error" />
+                <br class="clear" />
+            </div>
+            <div>
+                <a4j:commandButton id="send" reRender="formSubmit" styleClass="submit" type="submit" value="#{messages.send}" action="#{requestBean.sendSolution}" />
+                <h:message for="send" errorClass="error" />
+            </div>
+        </a4j:form>
+    </ui:define>
+</ui:composition>

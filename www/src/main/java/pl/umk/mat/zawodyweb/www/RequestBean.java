@@ -33,6 +33,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Languages;
 import pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
+import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 
@@ -51,6 +52,8 @@ public class RequestBean {
     private Series editedSeries;
     private Problems editedProblem;
     private Tests editedTest;
+    private Submits editedSubmit = null;
+    private List<LanguagesProblems> temporaryLanguagesProblems = null;
     private List<Contests> contests = null;
     private List<Series> contestsSeries = null;
     private List<Problems> seriesProblems = null;
@@ -62,8 +65,10 @@ public class RequestBean {
     private Integer temporaryProblemId;
     private Integer temporaryClassId;
     private Integer[] temporaryLanguagesIds;
+    private Integer temporaryLanguageId;
     private Problems currentProblem;
     private String dummy;
+    private List<Problems> submittableProblems;
 
     /**
      * @return the sessionBean
@@ -154,6 +159,15 @@ public class RequestBean {
         return seriesProblems;
     }
 
+    public List<Problems> getSubmittableProblems() {
+        if (submittableProblems == null) {
+            ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
+            submittableProblems = dao.findAll();
+        }
+
+        return submittableProblems;
+    }
+
     public List<Series> getCurrentContestSeries() {
         if (currentContestSeries == null) {
 
@@ -189,6 +203,23 @@ public class RequestBean {
         }
 
         return editedContest;
+    }
+
+    public Submits getEditedSubmit() {
+        if (editedSubmit == null) {
+            editedSubmit = new Submits();
+        }
+
+        return editedSubmit;
+    }
+
+    public List<LanguagesProblems> getTemporaryLanguagesProblems() {
+        if(temporaryLanguagesProblems == null){
+            LanguagesProblemsDAO dao = DAOFactory.DEFAULT.buildLanguagesProblemsDAO();
+            temporaryLanguagesProblems = dao.findByProblemsid(temporaryProblemId);
+        }
+
+        return temporaryLanguagesProblems;
     }
 
     public Problems getCurrentProblem() {
@@ -233,6 +264,14 @@ public class RequestBean {
 
     public void setTemporaryLanguagesIds(Integer[] temporaryLanguagesIds) {
         this.temporaryLanguagesIds = temporaryLanguagesIds;
+    }
+
+    public Integer getTemporaryLanguageId() {
+        return temporaryLanguageId;
+    }
+
+    public void setTemporaryLanguageId(Integer temporaryLanguageId) {
+        this.temporaryLanguageId = temporaryLanguageId;
     }
 
     public Series getEditedSeries() {
@@ -356,6 +395,10 @@ public class RequestBean {
         }
 
         return "start";
+    }
+
+    public String sendSolution() {
+        return "/start";
     }
 
     public String saveProblem() {
