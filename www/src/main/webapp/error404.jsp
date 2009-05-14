@@ -1,1 +1,1 @@
-<% response.sendRedirect(response.encodeRedirectURL("error/404.html")); %>
+<% response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/error/404.html")); %>

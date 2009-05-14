@@ -19,7 +19,7 @@
                                 <f:facet name="header">
                                 ${messages.problem_name}
                                 </f:facet>
-                                <zw:problem-link problem="${problem}" />
+                                <zw:problem-link problem="${problem}" message="${problem.name}" type="problem" />
                             </h:column>
                             <h:column>
                                 <f:facet name="header">

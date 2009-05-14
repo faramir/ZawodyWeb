@@ -11,6 +11,8 @@
             ${messages.problem_memlimit}: ${requestBean.currentProblem.memlimit}
             <br />
             ${requestBean.currentProblem.text}
+            <br />
+            <zw:problem-link problem="${requestBean.currentProblem}" message="${messages.send_solution}" type="submit" />
         </a4j:form>
     </ui:define>
 </ui:composition>

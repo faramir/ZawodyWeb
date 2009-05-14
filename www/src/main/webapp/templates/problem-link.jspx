@@ -1,3 +1,6 @@
-<a href="#{facesContext.externalContext.requestContextPath}/problem/#{problem.id}/#{zw:filterUri(problem.name)}.html">
-    #{problem.name}
-</a>
+<h:panelGroup xmlns:h="http://java.sun.com/jsf/html">
+    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/#{type}.html" rendered="#{problem == null}">${messages.send_now}</h:outputLink>
+    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/#{type}/#{problem.id}/#{zw:filterUri(problem.name)}.html" rendered="#{!(problem == null)}">
+        <h:outputText value="#{message}" />
+    </h:outputLink>
+</h:panelGroup>

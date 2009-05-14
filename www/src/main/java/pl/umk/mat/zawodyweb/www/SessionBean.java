@@ -93,10 +93,12 @@ public class SessionBean {
         selectContest(id);
         return "problems";
     }
-    
+
     public void selectContest(int id) {
-        ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
-        currentContest = dao.getById(id);
+        if (currentContest == null || !currentContest.getId().equals(id)) {
+            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
+            currentContest = dao.getById(id);
+        }
     }
 
     private Cookie getLoginCookie() {
