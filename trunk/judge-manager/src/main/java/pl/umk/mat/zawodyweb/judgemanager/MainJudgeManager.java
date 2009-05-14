@@ -7,7 +7,6 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -41,14 +40,14 @@ public class MainJudgeManager {
         properties.setProperty("WWW_LISTEN_ADDRESS", "127.0.0.1");
         properties.setProperty("WWW_POOL", "8");
         properties.setProperty("WWW_ADDRESSES", "127.0.0.1");
-        // properties.setProperty("WWW_TIMEOUT", "10000");
+        properties.setProperty("WWW_TIMEOUT", "10000");
 
         properties.setProperty("JUDGE_PORT", "8888");
         properties.setProperty("JUDGE_LISTEN_ADDRESS", "");
         properties.setProperty("JUDGE_POOL", "16");
         properties.setProperty("JUDGE_ADDRESSES", "127.0.0.1 158.75.12.138");
 
-        properties.setProperty("DELAY_PROCESS", "1800000");
+        properties.setProperty("DELAY_PROCESS", "600000");
 
         try {
             String configFile = MainJudgeManager.class.getResource(".").getPath() + "configuration.xml";
@@ -68,7 +67,7 @@ public class MainJudgeManager {
         logger.debug("WWW_LISTEN_ADDRESS = " + properties.getProperty("WWW_LISTEN_ADDRESS"));
         logger.debug("WWW_POOL = " + properties.getProperty("WWW_POOL"));
         logger.debug("WWW_ADDRESSES = " + properties.getProperty("WWW_ADDRESSES"));
-        // logger.debug("WWW_TIMEOUT = " + properties.getProperty("WWW_TIMEOUT"));
+        logger.debug("WWW_TIMEOUT = " + properties.getProperty("WWW_TIMEOUT"));
 
         logger.debug("JUDGE_PORT = " + properties.getProperty("JUDGE_PORT"));
         logger.debug("JUDGE_LISTEN_ADDRESS = " + properties.getProperty("JUDGE_LISTEN_ADDRESS"));
@@ -86,14 +85,20 @@ public class MainJudgeManager {
         /* checking database */
         logger.info("Checking database for waiting submits...");
 
-        Transaction t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-        SubmitsDAO submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
-
         submitsQueue = new ConcurrentLinkedQueue<Integer>();
+
+        SubmitsDAO submitsDAO = null;
+        Transaction transaction = null;
+
+        transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
+        submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
 
         for (Submits s : submitsDAO.findByResult(SubmitsResultEnum.WAIT.getCode())) {
             submitsQueue.add(s.getId());
         }
+
+        transaction.commit();
 
         /* opening ports */
         logger.info("Opening ports...");
@@ -142,10 +147,13 @@ public class MainJudgeManager {
 
                 boolean used;
 
-                List<Submits> submits = submitsDAO.findByResult(SubmitsResultEnum.PROCESS.getCode());
+                transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
+                submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO(); // ! bez tego jest rzucany wyjątek org.hibernate.SessionException: Session is closed!
+
                 Vector<Integer> now = new Vector<Integer>();
 
-                for (Submits submit : submits) {
+                for (Submits submit : submitsDAO.findByResult(SubmitsResultEnum.PROCESS.getCode())) {
                     used = false;
 
                     for (Integer i : prev) {
@@ -159,8 +167,11 @@ public class MainJudgeManager {
 
                     if (used == false) {
                         now.add(submit.getId());
+                        logger.info("Add submit(" + submit.getId() + ") with PROGRESS status to queue");
                     }
                 }
+
+                transaction.commit();
 
                 prev = now.toArray(prev);
             } catch (InterruptedException ex) {
@@ -190,7 +201,7 @@ public class MainJudgeManager {
                 }
             } catch (IOException ex) {
             }
-            HibernateUtil.getSessionFactory().getCurrentSession().close();
+            // dalton said: "never": HibernateUtil.getSessionFactory().getCurrentSession().close();
 
             logger.info("JudgeManager stop at " + sdf.format(new Date()));
         }

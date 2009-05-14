@@ -17,25 +17,22 @@ import org.apache.log4j.Logger;
 public class WWWListener extends Thread {
 
     public static final Logger logger = Logger.getLogger(WWWListener.class);
-    private Properties properties;
     private ServerSocket wwwSocket;
     private ConcurrentLinkedQueue<Integer> submitsQueue;
     private String[] addresses;
-    //private int soTimeout;
+    private int soTimeout;
 
     public WWWListener(ServerSocket wwwSocket, Properties properties, ConcurrentLinkedQueue<Integer> submitsQueue) {
         super();
-        this.properties = properties;
         this.wwwSocket = wwwSocket;
         this.submitsQueue = submitsQueue;
         addresses = properties.getProperty("WWW_ADDRESSES").split("[ ]+");
-        /*
+
         try {
             soTimeout = Integer.parseInt(properties.getProperty("WWW_TIMEOUT", "10000"));
         } catch (NumberFormatException ex) {
             soTimeout = 10000;
         }
-        */
     }
 
     private boolean isAccepted(String address) {
@@ -59,7 +56,7 @@ public class WWWListener extends Thread {
 
                     continue;
                 }
-                // wwwClient.setSoTimeout(soTimeout);
+                wwwClient.setSoTimeout(soTimeout);
 
                 logger.debug("WWW connected from: " + wwwClient.getInetAddress().getHostAddress());
 
