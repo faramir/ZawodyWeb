@@ -20,7 +20,6 @@ import pl.umk.mat.zawodyweb.database.pojo.Submits;
 public class JudgesListener extends Thread {
 
     public static final Logger logger = Logger.getLogger(JudgesListener.class);
-    private Properties properties;
     private ServerSocket judgeSocket;
     private ConcurrentLinkedQueue<Integer> submitsQueue;
     private SubmitsDAO submitsDAO;
@@ -28,7 +27,6 @@ public class JudgesListener extends Thread {
 
     public JudgesListener(ServerSocket judgeSocket, Properties properties, ConcurrentLinkedQueue<Integer> submitsQueue, SubmitsDAO submitsDAO) {
         super();
-        this.properties = properties;
         this.judgeSocket = judgeSocket;
         this.submitsQueue = submitsQueue;
         this.submitsDAO = submitsDAO;
