@@ -2,5 +2,4 @@
     <ui:define name="pageContent">
         ${messages.error_500}
     </ui:define>
-    <ui:remove>java.lang.OutOfMemoryError</ui:remove>
 </ui:composition>
