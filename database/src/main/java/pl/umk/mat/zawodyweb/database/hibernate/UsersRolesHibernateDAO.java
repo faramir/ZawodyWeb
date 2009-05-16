@@ -24,7 +24,7 @@ public class UsersRolesHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<UsersRoles> findByUsersid(Integer usersid) {
-		return findByCriteria(Restrictions.eq("users.usersid", usersid));
+		return findByCriteria(Restrictions.eq("users.id", usersid));
 	}
 	
 	/**
@@ -32,7 +32,7 @@ public class UsersRolesHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<UsersRoles> findByRolesid(Integer rolesid) {
-		return findByCriteria(Restrictions.eq("roles.rolesid", rolesid));
+		return findByCriteria(Restrictions.eq("roles.id", rolesid));
 	}
 	
 
