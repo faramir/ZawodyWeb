@@ -1,17 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package pl.umk.mat.zawodyweb.www;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -20,6 +13,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
+import org.hibernate.exception.ConstraintViolationException;
 import org.restfaces.annotation.HttpAction;
 import org.restfaces.annotation.Instance;
 import org.restfaces.annotation.Param;
@@ -52,6 +46,7 @@ public class RequestBean {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
     private SessionBean sessionBean;
+    private RolesBean rolesBean;
     private Users newUser = new Users();
     private String repPasswd;
     private Contests editedContest;
@@ -90,6 +85,27 @@ public class RequestBean {
      */
     public void setSessionBean(SessionBean sessionBean) {
         this.sessionBean = sessionBean;
+    }
+
+    /**
+     * @return the rolesBean
+     */
+    public RolesBean getRolesBean() {
+        return rolesBean;
+    }
+
+    /**
+     * @param rolesBean the rolesBean to set
+     */
+    public void setRolesBean(RolesBean rolesBean) {
+        this.rolesBean = rolesBean;
+    }
+
+    /**
+     * @param editedProblem the editedProblem to set
+     */
+    public void setEditedProblem(Problems editedProblem) {
+        this.editedProblem = editedProblem;
     }
 
     /**
@@ -368,14 +384,21 @@ public class RequestBean {
     }
 
     public String registerUser() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
         try {
-            UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
-            dao.save(newUser);
+            try {
+                UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
+                dao.save(newUser);
+            } catch (ConstraintViolationException e) {
+                String summary = messages.getString("login_exists");
+                WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formRegister:login", summary, null);
+                newUser.setPass(StringUtils.EMPTY);
+                return null;
+            }
         } catch (Exception e) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            String summary = messages.getString("login_exists");
-            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formRegister:login", summary, null);
-            newUser.setPass(StringUtils.EMPTY);
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formRegister:save", summary, null);
             return null;
         }
 
@@ -388,6 +411,7 @@ public class RequestBean {
             if (editedContest.getId() == 0) {
                 editedContest.setId(null);
             }
+
             dao.saveOrUpdate(editedContest);
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -451,26 +475,26 @@ public class RequestBean {
             LanguagesProblemsDAO lpdao = DAOFactory.DEFAULT.buildLanguagesProblemsDAO();
 
             if (temporaryFile != null) {
-                editedProblem.setPdf(temporaryFile.getBytes());
+                getEditedProblem().setPdf(temporaryFile.getBytes());
             }
 
-            if (editedProblem.getId() == 0) {
-                editedProblem.setId(null);
+            if (getEditedProblem().getId() == 0) {
+                getEditedProblem().setId(null);
             }
 
-            editedProblem.setSeries(sdao.getById(temporarySeriesId));
+            getEditedProblem().setSeries(sdao.getById(temporarySeriesId));
 
             for (Integer lid : temporaryLanguagesIds) {
                 LanguagesProblems lp = new LanguagesProblems();
                 lp.setId(null);
                 lp.setLanguages(ldao.getById(lid));
-                lp.setProblems(editedProblem);
+                lp.setProblems(getEditedProblem());
                 lpdao.saveOrUpdate(lp);
             }
 
-            dao.saveOrUpdate(editedProblem);
+            dao.saveOrUpdate(getEditedProblem());
 
-            sessionBean.selectContest(editedProblem.getSeries().getContests().getId());
+            sessionBean.selectContest(getEditedProblem().getSeries().getContests().getId());
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -482,9 +506,11 @@ public class RequestBean {
     }
 
     @HttpAction(name = "problem", pattern = "problem/{id}/{title}")
-    public String goToProblem(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+    public String goToProblem(
+            @Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-        currentProblem = dao.getById(id);
+        currentProblem =
+                dao.getById(id);
 
         if (currentProblem == null) {
             return "/error/404";
@@ -492,20 +518,25 @@ public class RequestBean {
             sessionBean.selectContest(currentProblem.getSeries().getContests().getId());
             return "problem";
         }
+
     }
 
     @HttpAction(name = "submit", pattern = "submit/{id}/{title}")
-    public String goToSubmit(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+    public String goToSubmit(
+            @Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-        currentProblem = dao.getById(id);
+        currentProblem =
+                dao.getById(id);
 
         if (currentProblem == null) {
             return "/error/404";
         } else {
             sessionBean.selectContest(currentProblem.getSeries().getContests().getId());
-            temporaryProblemId = id;
+            temporaryProblemId =
+                    id;
             return "submit";
         }
+
     }
 
     public String saveTest() {
@@ -550,6 +581,7 @@ public class RequestBean {
             String summary = messages.getString("bad_captcha");
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, component, summary, null);
         }
+
     }
 
     private String sendSolution(byte[] bytes, String fileName, String controlId) {
@@ -578,6 +610,7 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, controlId, summary, null);
             return null;
         }
+
     }
 
     /**

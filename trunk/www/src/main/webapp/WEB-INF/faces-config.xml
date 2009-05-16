@@ -15,12 +15,25 @@
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
     <managed-bean>
+        <managed-bean-name>rolesBean</managed-bean-name>
+        <managed-bean-class>pl.umk.mat.zawodyweb.www.RolesBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>sessionBean</property-name>
+            <value>#{sessionBean}</value>
+        </managed-property>
+    </managed-bean>
+    <managed-bean>
         <managed-bean-name>requestBean</managed-bean-name>
         <managed-bean-class>pl.umk.mat.zawodyweb.www.RequestBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>sessionBean</property-name>
             <value>#{sessionBean}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>rolesBean</property-name>
+            <value>#{rolesBean}</value>
         </managed-property>
     </managed-bean>
     <navigation-rule>
@@ -101,7 +114,7 @@
     </navigation-rule>
     <navigation-rule>
         <display-name>submit_to_problems</display-name>
-        <from-view-id>submit.jspx</from-view-id>
+        <from-view-id>/submit.jspx</from-view-id>
         <navigation-case>
             <from-outcome>
                 problems

@@ -84,7 +84,7 @@
                     <br />
                 </div>
                 <div>
-                    <a4j:commandButton reRender="formRegister" styleClass="submit" type="submit" value="#{messages.register}" action="#{requestBean.registerUser}" />
+                    <a4j:commandButton id="save" reRender="formRegister" styleClass="submit" type="submit" value="#{messages.register}" action="#{requestBean.registerUser}" />
                 </div>
             </fieldset>
         </a4j:form>
