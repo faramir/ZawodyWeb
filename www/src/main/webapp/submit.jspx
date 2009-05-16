@@ -30,14 +30,26 @@
                 <br class="clear" />
             </div>
             <div>
-                <h:outputLabel for="source">${messages.submit_sourcefile}:</h:outputLabel>
-                <t:inputFileUpload id="source" required="true" value="#{requestBean.editedProblem.pdf}" />
-                <h:message for="source" errorClass="error" />
+                <h:outputLabel for="sourcefile">${messages.submit_sourcefile}:</h:outputLabel>
+                <t:inputFileUpload id="sourcefile" value="#{requestBean.temporaryFile}" />
+                <h:message for="sourcefile" errorClass="error" />
                 <br class="clear" />
             </div>
             <div>
-                <a4j:commandButton id="send" reRender="formSubmit" styleClass="submit" type="submit" value="#{messages.send}" action="#{requestBean.sendSolution}" />
-                <h:message for="send" errorClass="error" />
+                <h:commandButton id="sendfile" styleClass="submit" type="submit" value="#{messages.submit_send_file}" action="#{requestBean.sendFile}" />
+                <h:message for="sendfile" errorClass="error" />
+                <br class="clear" />
+            </div>
+            <div>
+                <h:outputLabel for="sourcecode">${messages.submit_sourcecode}:</h:outputLabel>
+                <h:inputTextarea id="sourcecode" value="#{requestBean.temporarySource}" styleClass="bigHeight" />
+                <h:message for="sourcecode" errorClass="error" />
+                <br class="clear" />
+            </div>
+            <div>
+                <h:commandButton id="sendcode" styleClass="submit" type="submit" value="#{messages.submit_send_code}" action="#{requestBean.sendCode}" />
+                <h:message for="sendcode" errorClass="error" />
+                <br class="clear" />
             </div>
         </a4j:form>
     </ui:define>
