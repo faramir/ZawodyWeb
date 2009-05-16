@@ -74,13 +74,26 @@
             </to-view-id>
         </navigation-case>
     </navigation-rule>
-  <navigation-rule>
-    <display-name>*</display-name>
-    <from-view-id>*</from-view-id>
-    <navigation-case>
-      <from-outcome>problem</from-outcome>
-      <to-view-id>/problem.jspx</to-view-id>
-    </navigation-case>
-  </navigation-rule>
+    <navigation-rule>
+        <display-name>edit_problem_to_problems</display-name>
+        <from-view-id>/admin/editproblem.jspx</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                problems
+            </from-outcome>
+            <to-view-id>
+                /problems.jspx
+            </to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <display-name>*</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>problem</from-outcome>
+            <to-view-id>/problem.jspx</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 </faces-config>
 
