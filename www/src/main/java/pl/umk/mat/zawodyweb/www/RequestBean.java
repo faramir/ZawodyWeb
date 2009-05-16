@@ -15,6 +15,7 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import org.apache.commons.lang.StringUtils;
+import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.restfaces.annotation.HttpAction;
 import org.restfaces.annotation.Instance;
 import org.restfaces.annotation.Param;
@@ -69,6 +70,7 @@ public class RequestBean {
     private Problems currentProblem;
     private String dummy;
     private List<Problems> submittableProblems;
+    private UploadedFile temporaryFile;
 
     /**
      * @return the sessionBean
@@ -214,7 +216,7 @@ public class RequestBean {
     }
 
     public List<LanguagesProblems> getTemporaryLanguagesProblems() {
-        if(temporaryLanguagesProblems == null){
+        if (temporaryLanguagesProblems == null) {
             LanguagesProblemsDAO dao = DAOFactory.DEFAULT.buildLanguagesProblemsDAO();
             temporaryLanguagesProblems = dao.findByProblemsid(temporaryProblemId);
         }
@@ -272,6 +274,14 @@ public class RequestBean {
 
     public void setTemporaryLanguageId(Integer temporaryLanguageId) {
         this.temporaryLanguageId = temporaryLanguageId;
+    }
+
+    public UploadedFile getTemporaryFile() {
+        return temporaryFile;
+    }
+
+    public void setTemporaryFile(UploadedFile temporaryFile) {
+        this.temporaryFile = temporaryFile;
     }
 
     public Series getEditedSeries() {
@@ -408,9 +418,14 @@ public class RequestBean {
             LanguagesDAO ldao = DAOFactory.DEFAULT.buildLanguagesDAO();
             LanguagesProblemsDAO lpdao = DAOFactory.DEFAULT.buildLanguagesProblemsDAO();
 
+            if (temporaryFile != null) {
+                editedProblem.setPdf(temporaryFile.getBytes());
+            }
+
             if (editedProblem.getId() == 0) {
                 editedProblem.setId(null);
             }
+
             editedProblem.setSeries(sdao.getById(temporarySeriesId));
 
             for (Integer lid : temporaryLanguagesIds) {
@@ -422,6 +437,8 @@ public class RequestBean {
             }
 
             dao.saveOrUpdate(editedProblem);
+
+            sessionBean.selectContest(editedProblem.getSeries().getContests().getId());
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -429,7 +446,7 @@ public class RequestBean {
             return null;
         }
 
-        return "start";
+        return "problems";
     }
 
     @HttpAction(name = "problem", pattern = "problem/{id}/{title}")
