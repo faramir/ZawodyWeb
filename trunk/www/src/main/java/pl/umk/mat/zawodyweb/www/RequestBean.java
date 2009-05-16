@@ -4,8 +4,12 @@
  */
 package pl.umk.mat.zawodyweb.www;
 
+import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -26,6 +30,7 @@ import pl.umk.mat.zawodyweb.database.LanguagesDAO;
 import pl.umk.mat.zawodyweb.database.LanguagesProblemsDAO;
 import pl.umk.mat.zawodyweb.database.ProblemsDAO;
 import pl.umk.mat.zawodyweb.database.SeriesDAO;
+import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 import pl.umk.mat.zawodyweb.database.TestsDAO;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
 import pl.umk.mat.zawodyweb.database.pojo.Classes;
@@ -67,6 +72,7 @@ public class RequestBean {
     private Integer temporaryClassId;
     private Integer[] temporaryLanguagesIds;
     private Integer temporaryLanguageId;
+    private String temporarySource;
     private Problems currentProblem;
     private String dummy;
     private List<Problems> submittableProblems;
@@ -284,6 +290,14 @@ public class RequestBean {
         this.temporaryFile = temporaryFile;
     }
 
+    public String getTemporarySource() {
+        return temporarySource;
+    }
+
+    public void setTemporarySource(String temporarySource) {
+        this.temporarySource = temporarySource;
+    }
+
     public Series getEditedSeries() {
         FacesContext context = FacesContext.getCurrentInstance();
         int seriesId = 0;
@@ -407,8 +421,26 @@ public class RequestBean {
         return "start";
     }
 
-    public String sendSolution() {
-        return "/start";
+    public String sendFile() throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        if (temporaryFile == null) {
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit:sourcefile", messages.getString("javax.faces.component.UIInput.REQUIRED"), null);
+            return null;
+        }
+
+        return sendSolution(temporaryFile.getBytes(), temporaryFile.getName(), "formSubmit:sendfile");
+    }
+
+    public String sendCode() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        if (temporarySource == null || StringUtils.isEmpty(temporarySource)) {
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit:sourcecode", messages.getString("javax.faces.component.UIInput.REQUIRED"), null);
+            return null;
+        }
+
+        return sendSolution(temporarySource.getBytes(), "source", "formSubmit:sendcode");
     }
 
     public String saveProblem() {
@@ -462,6 +494,20 @@ public class RequestBean {
         }
     }
 
+    @HttpAction(name = "submit", pattern = "submit/{id}/{title}")
+    public String goToSubmit(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
+        currentProblem = dao.getById(id);
+
+        if (currentProblem == null) {
+            return "/error/404";
+        } else {
+            sessionBean.selectContest(currentProblem.getSeries().getContests().getId());
+            temporaryProblemId = id;
+            return "submit";
+        }
+    }
+
     public String saveTest() {
         try {
             TestsDAO dao = DAOFactory.DEFAULT.buildTestsDAO();
@@ -503,6 +549,34 @@ public class RequestBean {
             ((HtmlInputText) component).setValid(false);
             String summary = messages.getString("bad_captcha");
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, component, summary, null);
+        }
+    }
+
+    private String sendSolution(byte[] bytes, String fileName, String controlId) {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        LanguagesDAO ldao = DAOFactory.DEFAULT.buildLanguagesDAO();
+        ProblemsDAO pdao = DAOFactory.DEFAULT.buildProblemsDAO();
+        SubmitsDAO dao = DAOFactory.DEFAULT.buildSubmitsDAO();
+        UsersDAO udao = DAOFactory.DEFAULT.buildUsersDAO();
+
+        try {
+            Submits submit = new Submits();
+
+            submit.setId(null);
+            submit.setFilename(fileName);
+            submit.setCode(bytes);
+            submit.setLanguages(ldao.getById(temporaryLanguageId));
+            submit.setProblems(pdao.getById(temporaryProblemId));
+            submit.setSdate(new Timestamp(Calendar.getInstance().getTime().getTime()));
+            submit.setUsers(udao.getById(sessionBean.getCurrentUser().getId()));
+
+            dao.saveOrUpdate(submit);
+            return "problems";
+        } catch (Exception e) {
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, controlId, summary, null);
+            return null;
         }
     }
 
