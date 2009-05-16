@@ -29,11 +29,13 @@
                             <h:outputLabel for="text">${messages.problem_text}:</h:outputLabel>
                             <h:inputTextarea id="text" styleClass="bigHeight" required="true" value="#{requestBean.editedProblem.text}">
                             </h:inputTextarea>
+                            <h:message for="text" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="pdf">${messages.problem_pdf}:</h:outputLabel>
-                            <t:inputFileUpload id="pdf" required="true" value="#{requestBean.editedProblem.pdf}" />
+                            <t:inputFileUpload id="pdf" required="true" value="#{requestBean.temporaryFile}" storage="file" accept="application/pdf" />
+                            <h:message for="pdf" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
@@ -94,7 +96,7 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <a4j:commandButton id="save" reRender="formEditProblem" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveProblem}" />
+                            <h:commandButton id="save" value="#{messages.save}" styleClass="submit" type="submit" action="#{requestBean.saveProblem}" />
                             <h:message for="save" errorClass="error" />
                         </div>
                     </fieldset>
