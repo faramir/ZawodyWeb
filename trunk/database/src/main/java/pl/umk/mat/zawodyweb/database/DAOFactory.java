@@ -51,5 +51,7 @@ public abstract class DAOFactory {
 	public abstract RolesDAO buildRolesDAO();
 	
 	public abstract LanguagesProblemsDAO buildLanguagesProblemsDAO();
+
+    public abstract PDFDAO buildPDFDAO();
 	
 }
