@@ -50,7 +50,7 @@ public class PDF implements Serializable {
 
     @OneToMany(mappedBy = "pdf")
     public List<Problems> getProblems() {
-        return this.problemss;
+        return  this.problemss;
     }
 
     public void setProblems(List<Problems> problems) {
