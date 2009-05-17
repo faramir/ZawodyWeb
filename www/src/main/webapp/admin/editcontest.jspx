@@ -46,7 +46,7 @@
                                 </div>
                                 <div>
                                     <h:outputLabel for="startdate">${messages.contest_startdate}:</h:outputLabel>
-                                    <rich:calendar id="startdate" value="#{requestBean.editedContest.startdate}" datePattern="yyyy.MM.dd HH:mm" />
+                                    <rich:calendar id="startdate" value="#{requestBean.editedContest.startdate}" datePattern="yyyy.MM.dd HH:mm"  showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
                                     <h:message for="startdate" errorClass="error" />
                                     <br class="clear" />
                                 </div>
