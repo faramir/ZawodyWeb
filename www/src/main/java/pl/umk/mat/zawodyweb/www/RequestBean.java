@@ -27,6 +27,7 @@ import pl.umk.mat.zawodyweb.database.SeriesDAO;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 import pl.umk.mat.zawodyweb.database.TestsDAO;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
+import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Classes;
 import pl.umk.mat.zawodyweb.database.pojo.Contests;
 import pl.umk.mat.zawodyweb.database.pojo.Languages;
@@ -323,15 +324,17 @@ public class RequestBean {
             seriesId = 0;
         }
 
-        if (editedSeries != null) {
-            return editedSeries;
+        if (editedSeries == null) {
+            if (seriesId == 0) {
+                editedSeries = new Series();
+            } else {
+                SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
+                editedSeries = dao.getById(seriesId);
+            }
         }
 
-        if (seriesId == 0) {
-            editedSeries = new Series();
-        } else {
-            SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
-            editedSeries = dao.getById(seriesId);
+        if (editedSeries != null && editedSeries.getContests() != null) {
+            temporaryContestId = editedSeries.getContests().getId();
         }
 
         return editedSeries;
@@ -407,8 +410,7 @@ public class RequestBean {
 
     public String saveContest() {
         Integer id = editedContest.getId();
-        if (!(((id == 0 || id == null) && rolesBean.canAddContest(null, null)) ||
-                id != 0 && id != null && rolesBean.canEditContest(id, null))) {
+        if ((id == 0 && !rolesBean.canAddContest(null, null)) || (id > 0 && !rolesBean.canEditContest(id, null))) {
             return null;
         }
 
@@ -418,7 +420,7 @@ public class RequestBean {
                 editedContest.setId(null);
             }
 
-            dao.saveOrUpdate(editedContest);
+            dao.merge(editedContest);
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -430,6 +432,11 @@ public class RequestBean {
     }
 
     public String saveSeries() {
+        Integer id = editedSeries.getId();
+        if ((id == 0 && !rolesBean.canAddSeries(temporaryContestId, null)) || (id > 0 && !rolesBean.canEditSeries(temporaryContestId, id))) {
+            return null;
+        }
+
         try {
             ContestsDAO cdao = DAOFactory.DEFAULT.buildContestsDAO();
 
@@ -440,7 +447,7 @@ public class RequestBean {
                 editedSeries.setId(null);
             }
 
-            dao.saveOrUpdate(editedSeries);
+            dao.merge(editedSeries);
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());

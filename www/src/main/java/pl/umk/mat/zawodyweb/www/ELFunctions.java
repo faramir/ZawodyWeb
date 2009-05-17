@@ -25,4 +25,8 @@ public class ELFunctions {
         }
         return out;
     }
+
+    public static Boolean isNullOrZero(Integer a){
+        return a == null || a == 0;
+    }
 }

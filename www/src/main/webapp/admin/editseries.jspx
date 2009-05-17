@@ -17,60 +17,69 @@
                 ${messages.no_series}
                 </c:when>
                 <c:otherwise>
-                    <fieldset>
-                        <h:inputHidden id="id" value="#{requestBean.editedSeries.id}" />
-                        <div>
-                            <h:outputLabel for="contest">${messages.series_contest}:</h:outputLabel>
-                            <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}">
-                                <f:selectItem itemValue="" itemLabel="" />
-                                <c:forEach var="contest" items="#{requestBean.contests}">
-                                    <f:selectItem itemValue="#{contest.id}" itemLabel="#{contest.name}" />
-                                </c:forEach>
-                            </h:selectOneMenu>
-                            <h:message for="contest" errorClass="error" />
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel for="name">${messages.series_name}:</h:outputLabel>
-                            <h:inputText id="name" required="true" value="#{requestBean.editedSeries.name}" />
-                            <h:message for="name" errorClass="error" />
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel for="startdate">${messages.series_startdate}:</h:outputLabel>
-                            <rich:calendar id="startdate" value="#{requestBean.editedSeries.startdate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
-                            <h:message for="startdate" errorClass="error" />
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel for="enddate">${messages.series_enddate}:</h:outputLabel>
-                            <rich:calendar id="enddate" value="#{requestBean.editedSeries.enddate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
-                            <h:message for="enddate" errorClass="error" />
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel for="freezedate">${messages.series_freezedate}:</h:outputLabel>
-                            <rich:calendar id="freezedate" value="#{requestBean.editedSeries.freezedate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
-                            <h:message for="freezedate" errorClass="error" />
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel for="unfreezedate">${messages.series_unfreezedate}:</h:outputLabel>
-                            <rich:calendar id="unfreezedate" value="#{requestBean.editedSeries.unfreezedate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
-                            <h:message for="unfreezedate" errorClass="error" />
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel for="penaltytime">${messages.series_penaltytime}:</h:outputLabel>
-                            <h:inputText id="penaltytime" required="true" value="#{requestBean.editedSeries.penaltytime}" />
-                            <h:message for="penaltytime" errorClass="error" />
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <a4j:commandButton id="save" reRender="formEditSeries" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveSeries}" />
-                            <h:message for="save" errorClass="error" />
-                        </div>
-                    </fieldset>
+                    <c:choose>
+                        <c:when test="#{!(zw:isNullOrZero(requestBean.editedSeries.id)) and !(zw:canEditSeries(rolesBean, requestBean.editedSeries.contests.id, requestBean.editedSeries.id))}">
+                        ${messages.nonsufficient_privileges}
+                        </c:when>
+                        <c:otherwise>
+                            <fieldset>
+                                <h:inputHidden id="id" value="#{requestBean.editedSeries.id}" />
+                                <div>
+                                    <h:outputLabel for="contest">${messages.series_contest}:</h:outputLabel>
+                                    <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}" disabled="#{requestBean.editedSeries.id != null and requestBean.editedSeries.id != 0}">
+                                        <f:selectItem itemValue="" itemLabel="" />
+                                        <c:forEach var="contest" items="#{requestBean.contests}">
+                                            <c:if test="#{zw:canAddSeries(rolesBean, contest.id, null) or (!(zw:isNullOrZero(requestBean.editedSeries.id)) and zw:canEditSeries(rolesBean, requestBean.editedSeries.contests.id, requestBean.editedSeries.id))}">
+                                                <f:selectItem itemValue="#{contest.id}" itemLabel="#{contest.name}" />
+                                            </c:if>
+                                        </c:forEach>
+                                    </h:selectOneMenu>
+                                    <h:message for="contest" errorClass="error" />
+                                    <br class="clear" />
+                                </div>
+                                <div>
+                                    <h:outputLabel for="name">${messages.series_name}:</h:outputLabel>
+                                    <h:inputText id="name" required="true" value="#{requestBean.editedSeries.name}" />
+                                    <h:message for="name" errorClass="error" />
+                                    <br class="clear" />
+                                </div>
+                                <div>
+                                    <h:outputLabel for="startdate">${messages.series_startdate}:</h:outputLabel>
+                                    <rich:calendar id="startdate" value="#{requestBean.editedSeries.startdate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
+                                    <h:message for="startdate" errorClass="error" />
+                                    <br class="clear" />
+                                </div>
+                                <div>
+                                    <h:outputLabel for="enddate">${messages.series_enddate}:</h:outputLabel>
+                                    <rich:calendar id="enddate" value="#{requestBean.editedSeries.enddate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
+                                    <h:message for="enddate" errorClass="error" />
+                                    <br class="clear" />
+                                </div>
+                                <div>
+                                    <h:outputLabel for="freezedate">${messages.series_freezedate}:</h:outputLabel>
+                                    <rich:calendar id="freezedate" value="#{requestBean.editedSeries.freezedate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
+                                    <h:message for="freezedate" errorClass="error" />
+                                    <br class="clear" />
+                                </div>
+                                <div>
+                                    <h:outputLabel for="unfreezedate">${messages.series_unfreezedate}:</h:outputLabel>
+                                    <rich:calendar id="unfreezedate" value="#{requestBean.editedSeries.unfreezedate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
+                                    <h:message for="unfreezedate" errorClass="error" />
+                                    <br class="clear" />
+                                </div>
+                                <div>
+                                    <h:outputLabel for="penaltytime">${messages.series_penaltytime}:</h:outputLabel>
+                                    <h:inputText id="penaltytime" required="true" value="#{requestBean.editedSeries.penaltytime}" />
+                                    <h:message for="penaltytime" errorClass="error" />
+                                    <br class="clear" />
+                                </div>
+                                <div>
+                                    <a4j:commandButton id="save" reRender="formEditSeries" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveSeries}" />
+                                    <h:message for="save" errorClass="error" />
+                                </div>
+                            </fieldset>
+                        </c:otherwise>
+                    </c:choose>
                 </c:otherwise>
             </c:choose>
         </a4j:form>

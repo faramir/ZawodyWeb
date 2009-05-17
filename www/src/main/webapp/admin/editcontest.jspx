@@ -18,10 +18,10 @@
                 </c:when>
                 <c:otherwise>
                     <c:choose>
-                        <c:when test="#{(requestBean.editedContest.id == null or requestBean.editedContest.id == 0) and !(zw:canAddContest(rolesBean, null, null))}">
+                        <c:when test="#{zw:isNullOrZero(requestBean.editedContest.id) and !(zw:canAddContest(rolesBean, null, null))}">
                         ${messages.nonsufficient_privileges}
                         </c:when>
-                        <c:when test="#{(requestBean.editedContest.id != null and requestBean.editedContest.id != 0) and !(zw:canEditContest(rolesBean, requestBean.editedContest.id, null))}">
+                        <c:when test="#{!(zw:isNullOrZero(requestBean.editedContest.id)) and !(zw:canEditContest(rolesBean, requestBean.editedContest.id, null))}">
                         ${messages.nonsufficient_privileges}
                         </c:when>
                         <c:otherwise>
