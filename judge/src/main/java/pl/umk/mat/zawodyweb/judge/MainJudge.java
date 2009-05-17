@@ -13,6 +13,8 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Properties;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.checker.CheckerInterface;
 import pl.umk.mat.zawodyweb.checker.CheckerResult;
@@ -36,7 +38,6 @@ import pl.umk.mat.zawodyweb.database.pojo.Tests;
  */
 public class MainJudge {
 
-
     public static final org.apache.log4j.Logger logger = Logger.getLogger(MainJudge.class);
 
     /**
@@ -59,13 +60,13 @@ public class MainJudge {
         properties.setProperty("COMPILE_TIMEOUT", "30000");
 
         try {
-            logger.debug("Reading configuration file from "+configFile+"...");
+            logger.debug("Reading configuration file from " + configFile + "...");
             properties.loadFromXML(new FileInputStream(configFile));
         } catch (Exception ex) {
             logger.fatal(ex.getMessage());
         }
-        logger.debug("Connection with JudgeManager on "+properties.getProperty("HOST")+
-                ":"+properties.getProperty("PORT")+"...");
+        logger.debug("Connection with JudgeManager on " + properties.getProperty("HOST") +
+                ":" + properties.getProperty("PORT") + "...");
         Socket sock = new Socket(InetAddress.getByName(properties.getProperty("HOST")),
                 Integer.parseInt(properties.getProperty("PORT")));
         DataInputStream input = new DataInputStream(
@@ -75,7 +76,7 @@ public class MainJudge {
             int id;
             try {
                 id = input.readInt();
-                logger.info("Received submit id: "+id);
+                logger.info("Received submit id: " + id);
             } catch (IOException ex) {
                 logger.error("Connection to JudgeManager closed, shutting down Judge...");
                 break;
@@ -110,7 +111,8 @@ public class MainJudge {
             Code code = new Code(codeText, compiler);
             Program program = code.compile();
             logger.debug("Downloading tests...");
-            List<Tests> tests = submit.getProblems().getTestss();
+            List<Tests> tests = DAOFactory.DEFAULT.buildTestsDAO().
+                    findByProblemsid(submit.getProblems().getId());
             TestInput testInput;
             TestOutput testOutput;
             boolean undefinedResult = false;
@@ -145,7 +147,7 @@ public class MainJudge {
                 logger.error("Some of the tests got UNDEFINED result -- this should not happend.");
                 transaction.rollback();
             }
-            logger.info("Processing SubmitID: "+id+" finished.");
+            logger.info("Processing SubmitID: " + id + " finished.");
             output.writeInt(id);
         }
         HibernateUtil.getSessionFactory().getCurrentSession().close();
