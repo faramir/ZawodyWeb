@@ -20,6 +20,5 @@ public interface PDFDAO extends GenericDAO<PDF,Integer> {
 	 * You might want to extend this interface and to change the dao factory to return 
 	 * an instance of the new implemenation in buildClassesDAO()
 	 */
-	  	 
 
 }
