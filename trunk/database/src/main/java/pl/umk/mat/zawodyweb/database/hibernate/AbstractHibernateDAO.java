@@ -76,6 +76,10 @@ public abstract class AbstractHibernateDAO<T, ID extends Serializable> implement
 		getSession().saveOrUpdate(entity);
 	}
 
+    public void merge(T entity) {
+        getSession().merge(entity);
+    }
+
 	public void delete(T entity) {
 		getSession().delete(entity);
 	}
