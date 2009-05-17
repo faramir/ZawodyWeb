@@ -16,16 +16,10 @@ public class RolesBean {
     private List<UsersRoles> userRoles = null;
     private Boolean rolesRead = false;
 
-    /**
-     * @return the sessionBean
-     */
     public SessionBean getSessionBean() {
         return sessionBean;
     }
 
-    /**
-     * @param sessionBean the sessionBean to set
-     */
     public void setSessionBean(SessionBean sessionBean) {
         this.sessionBean = sessionBean;
     }
@@ -71,6 +65,141 @@ public class RolesBean {
         for (UsersRoles ur : getUserRoles()) {
             Roles role = ur.getRoles();
             if (isOk(role, contestId, seriesId) && role.getEditcontest()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Boolean canDeleteContest(Integer contestId, Integer seriesId) {
+        if (getUserRoles() == null) {
+            return false;
+        }
+
+        for (UsersRoles ur : getUserRoles()) {
+            Roles role = ur.getRoles();
+            if (isOk(role, contestId, seriesId) && role.getDelcontest()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Boolean canAddSeries(Integer contestId, Integer seriesId) {
+        if (getUserRoles() == null) {
+            return false;
+        }
+
+        for (UsersRoles ur : getUserRoles()) {
+            Roles role = ur.getRoles();
+            if (isOk(role, contestId, seriesId) && role.getAddseries()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Boolean canEditSeries(Integer contestId, Integer seriesId) {
+        if (getUserRoles() == null) {
+            return false;
+        }
+
+        for (UsersRoles ur : getUserRoles()) {
+            Roles role = ur.getRoles();
+            if (isOk(role, contestId, seriesId) && role.getEditseries()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Boolean canDeleteSeries(Integer contestId, Integer seriesId) {
+        if (getUserRoles() == null) {
+            return false;
+        }
+
+        for (UsersRoles ur : getUserRoles()) {
+            Roles role = ur.getRoles();
+            if (isOk(role, contestId, seriesId) && role.getDelseries()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Boolean canAddProblem(Integer contestId, Integer seriesId) {
+        if (getUserRoles() == null) {
+            return false;
+        }
+
+        for (UsersRoles ur : getUserRoles()) {
+            Roles role = ur.getRoles();
+            if (isOk(role, contestId, seriesId) && role.getAddproblem()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Boolean canEditProblem(Integer contestId, Integer seriesId) {
+        if (getUserRoles() == null) {
+            return false;
+        }
+
+        for (UsersRoles ur : getUserRoles()) {
+            Roles role = ur.getRoles();
+            if (isOk(role, contestId, seriesId) && role.getEditproblem()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Boolean canDeleteProblem(Integer contestId, Integer seriesId) {
+        if (getUserRoles() == null) {
+            return false;
+        }
+
+        for (UsersRoles ur : getUserRoles()) {
+            Roles role = ur.getRoles();
+            if (isOk(role, contestId, seriesId) && role.getDelproblem()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Boolean canRate(Integer contestId, Integer seriesId) {
+        if (getUserRoles() == null) {
+            return false;
+        }
+
+        for (UsersRoles ur : getUserRoles()) {
+            Roles role = ur.getRoles();
+            if (isOk(role, contestId, seriesId) && role.getCanrate()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Boolean isContestant(Integer contestId, Integer seriesId) {
+        if (getUserRoles() == null) {
+            return false;
+        }
+
+        for (UsersRoles ur : getUserRoles()) {
+            Roles role = ur.getRoles();
+            if (isOk(role, contestId, seriesId) && role.getContestant()) {
                 return true;
             }
         }

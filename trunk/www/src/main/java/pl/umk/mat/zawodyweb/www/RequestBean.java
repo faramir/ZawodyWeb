@@ -406,6 +406,12 @@ public class RequestBean {
     }
 
     public String saveContest() {
+        Integer id = editedContest.getId();
+        if (!(((id == 0 || id == null) && rolesBean.canAddContest(null, null)) ||
+                id != 0 && id != null && rolesBean.canEditContest(id, null))) {
+            return null;
+        }
+
         try {
             ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
             if (editedContest.getId() == 0) {
