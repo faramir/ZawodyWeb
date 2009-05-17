@@ -7,10 +7,13 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.apache.log4j.Logger;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
@@ -22,6 +25,7 @@ import pl.umk.mat.zawodyweb.database.CheckerErrors;
  */
 public class LanguagePAS implements CompilerInterface {
 
+    public static final org.apache.log4j.Logger logger = Logger.getLogger(LanguagePAS.class);
     Properties properties;
     String ofile;
     int compileResult = CheckerErrors.UNDEF;
@@ -58,9 +62,15 @@ public class LanguagePAS implements CompilerInterface {
         }
         BufferedReader inputStream;
         System.gc();
+        List<String> command = Arrays.asList(path);
+        if (System.getProperty("os.name").toLowerCase().matches(".*linux.*")) {
+            command = Arrays.asList("bash","-c","ulimit -v "+input.getMemoryLimit()+" && "+path);
+        } else {
+            logger.error("Non-Linux OS: "+System.getProperty("os.name")+". Memory Limit check is off.");
+        }
         try {
-            Process p = new ProcessBuilder(path).start();
             Timer timer = new Timer();
+            Process p = new ProcessBuilder(command).start();
             long time = new Date().getTime();
             timer.schedule(new InterruptThread(Thread.currentThread()),
                     input.getTimeLimit());
@@ -71,6 +81,7 @@ public class LanguagePAS implements CompilerInterface {
                 outputStream.write(input.getText());
                 outputStream.flush();
                 outputStream.close();
+                logger.info("Waiting after "+(new Date().getTime()-time)+"ms.");
                 p.waitFor();
             } catch (InterruptedException ex) {
                 p.destroy();

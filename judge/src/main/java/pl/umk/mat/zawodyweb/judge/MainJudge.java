@@ -45,7 +45,7 @@ public class MainJudge {
      */
     public static void main(String[] args) throws IOException, InterruptedException, InstantiationException, IllegalAccessException {
         Properties properties = new Properties();
-        String configFile = "configuration.xml";
+        String configFile = MainJudge.class.getResource(".").getPath() +"configuration.xml";
         if (args.length == 1) {
             configFile = args[0];
         }
@@ -63,7 +63,7 @@ public class MainJudge {
             logger.debug("Reading configuration file from " + configFile + "...");
             properties.loadFromXML(new FileInputStream(configFile));
         } catch (Exception ex) {
-            logger.fatal(ex.getMessage());
+            logger.error(ex.getMessage());
         }
         logger.debug("Connection with JudgeManager on " + properties.getProperty("HOST") +
                 ":" + properties.getProperty("PORT") + "...");
