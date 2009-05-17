@@ -2,7 +2,6 @@ package pl.umk.mat.zawodyweb.database.pojo;
 
 import java.util.List;
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
@@ -12,12 +11,10 @@ import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-import javax.persistence.Embeddable;
 import javax.persistence.GenerationType;
+import javax.persistence.OneToOne;
 
 /**
  * <p>Pojo mapping TABLE public.problems</p>
@@ -90,7 +87,9 @@ public class Problems implements Serializable {
 	 * List of Submits
 	 */
 	private List<Tests> testss = null;
-	
+
+    private PDF pdfData = null;
+
 	/**
 	 * @return id
 	 */
@@ -144,8 +143,8 @@ public class Problems implements Serializable {
 	/**
 	 * @return pdf
 	 */
-	@Basic
-	@Column(name = "pdf")
+    @Basic
+    @Column(name = "pdf")
 		public byte[] getPdf() {
 		return pdf;
 	}
@@ -156,7 +155,23 @@ public class Problems implements Serializable {
 	public void setPdf(byte[] pdf) {
 		this.pdf = pdf;
 	}
-	
+
+    	/**
+	 * @return pdf
+	 */
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "pdfid")
+		public PDF getPDF() {
+		return pdfData;
+	}
+
+	/**
+	 * @param pdf new value for pdf
+	 */
+	public void setPDF(PDF pdf) {
+		this.pdfData = pdf;
+	}
+
 	/**
 	 * @return abbrev
 	 */

@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.persistence.Embeddable;
 import javax.persistence.GenerationType;
+import javax.persistence.Lob;
 
 /**
  * <p>Pojo mapping TABLE public.classes</p>
@@ -141,7 +142,7 @@ public class Classes implements Serializable {
 	/**
 	 * @return code
 	 */
-	@Basic
+    @Basic
 	@Column(name = "code")
 		public byte[] getCode() {
 		return code;
