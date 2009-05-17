@@ -330,34 +330,46 @@ public class RequestBean {
             } else {
                 SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
                 editedSeries = dao.getById(seriesId);
-            }
-        }
 
-        if (editedSeries != null && editedSeries.getContests() != null) {
-            temporaryContestId = editedSeries.getContests().getId();
+                if (editedSeries.getContests() != null) {
+                    temporaryContestId = editedSeries.getContests().getId();
+                }
+            }
         }
 
         return editedSeries;
     }
 
     public Problems getEditedProblem() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        int problemId = 0;
-        try {
-            problemId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
-        } catch (Exception e) {
-            problemId = 0;
-        }
+        if (editedProblem == null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            int problemId = 0;
+            try {
+                problemId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+            } catch (Exception e) {
+                problemId = 0;
+            }
 
-        if (editedProblem != null) {
-            return editedProblem;
-        }
+            if (problemId == 0) {
+                editedProblem = new Problems();
+            } else {
+                ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
+                editedProblem = dao.getById(problemId);
 
-        if (problemId == 0) {
-            editedProblem = new Problems();
-        } else {
-            ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-            editedProblem = dao.getById(problemId);
+                if (editedProblem.getSeries() != null) {
+                    temporarySeriesId = editedProblem.getSeries().getId();
+                    temporaryContestId = editedProblem.getSeries().getContests().getId();
+                }
+                if (editedProblem.getClasses() != null) {
+                    temporaryClassId = editedProblem.getClasses().getId();
+                }
+                if (editedProblem.getLanguagesProblemss() != null) {
+                    temporaryLanguagesIds = new Integer[editedProblem.getLanguagesProblemss().size()];
+                    for (int i = 0; i < editedProblem.getLanguagesProblemss().size(); ++i) {
+                        temporaryLanguagesIds[i] = editedProblem.getLanguagesProblemss().get(i).getLanguages().getId();
+                    }
+                }
+            }
         }
 
         return editedProblem;
@@ -486,28 +498,28 @@ public class RequestBean {
             SeriesDAO sdao = DAOFactory.DEFAULT.buildSeriesDAO();
             LanguagesDAO ldao = DAOFactory.DEFAULT.buildLanguagesDAO();
             LanguagesProblemsDAO lpdao = DAOFactory.DEFAULT.buildLanguagesProblemsDAO();
+            ClassesDAO cdao = DAOFactory.DEFAULT.buildClassesDAO();
 
             if (temporaryFile != null) {
-                getEditedProblem().setPdf(temporaryFile.getBytes());
+                editedProblem.setPdf(temporaryFile.getBytes());
             }
 
-            if (getEditedProblem().getId() == 0) {
-                getEditedProblem().setId(null);
+            if (editedProblem.getId() == 0) {
+                editedProblem.setId(null);
             }
 
-            getEditedProblem().setSeries(sdao.getById(temporarySeriesId));
+            editedProblem.setSeries(sdao.getById(temporarySeriesId));
+            editedProblem.setClasses(cdao.getById(temporaryClassId));
 
             for (Integer lid : temporaryLanguagesIds) {
                 LanguagesProblems lp = new LanguagesProblems();
                 lp.setId(null);
                 lp.setLanguages(ldao.getById(lid));
-                lp.setProblems(getEditedProblem());
+                lp.setProblems(editedProblem);
                 lpdao.saveOrUpdate(lp);
             }
 
-            dao.saveOrUpdate(getEditedProblem());
-
-            sessionBean.selectContest(getEditedProblem().getSeries().getContests().getId());
+            dao.saveOrUpdate(editedProblem);
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -515,15 +527,14 @@ public class RequestBean {
             return null;
         }
 
+        sessionBean.selectContest(editedProblem.getSeries().getContests().getId());
         return "problems";
     }
 
     @HttpAction(name = "problem", pattern = "problem/{id}/{title}")
-    public String goToProblem(
-            @Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+    public String goToProblem(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-        currentProblem =
-                dao.getById(id);
+        currentProblem = dao.getById(id);
 
         if (currentProblem == null) {
             return "/error/404";
@@ -535,21 +546,17 @@ public class RequestBean {
     }
 
     @HttpAction(name = "submit", pattern = "submit/{id}/{title}")
-    public String goToSubmit(
-            @Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+    public String goToSubmit(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-        currentProblem =
-                dao.getById(id);
+        currentProblem = dao.getById(id);
 
         if (currentProblem == null) {
             return "/error/404";
         } else {
             sessionBean.selectContest(currentProblem.getSeries().getContests().getId());
-            temporaryProblemId =
-                    id;
+            temporaryProblemId = id;
             return "submit";
         }
-
     }
 
     public String saveTest() {
