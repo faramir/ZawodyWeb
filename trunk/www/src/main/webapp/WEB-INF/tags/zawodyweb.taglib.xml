@@ -22,6 +22,11 @@
         <function-signature>java.lang.String filterUri(java.lang.String)</function-signature>
     </function>
     <function>
+        <function-name>isNullOrZero</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
+        <function-signature>java.lang.Boolean isNullOrZero(java.lang.Integer)</function-signature>
+    </function>
+    <function>
         <function-name>canAddContest</function-name>
         <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
         <function-signature>java.lang.Boolean canAddContest(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
