@@ -26,10 +26,10 @@
                                 <h:inputHidden id="id" value="#{requestBean.editedSeries.id}" />
                                 <div>
                                     <h:outputLabel for="contest">${messages.series_contest}:</h:outputLabel>
-                                    <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}" disabled="#{requestBean.editedSeries.id != null and requestBean.editedSeries.id != 0}">
+                                    <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}">
                                         <f:selectItem itemValue="" itemLabel="" />
                                         <c:forEach var="contest" items="#{requestBean.contests}">
-                                            <c:if test="#{zw:canAddSeries(rolesBean, contest.id, null) or (!(zw:isNullOrZero(requestBean.editedSeries.id)) and zw:canEditSeries(rolesBean, requestBean.editedSeries.contests.id, requestBean.editedSeries.id))}">
+                                            <c:if test="#{zw:canAddSeries(rolesBean, contest.id, null) or !(zw:isNullOrZero(requestBean.editedSeries.id))}">
                                                 <f:selectItem itemValue="#{contest.id}" itemLabel="#{contest.name}" />
                                             </c:if>
                                         </c:forEach>
