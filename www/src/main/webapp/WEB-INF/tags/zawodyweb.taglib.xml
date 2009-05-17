@@ -31,4 +31,49 @@
         <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
         <function-signature>java.lang.Boolean canEditContest(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
     </function>
+    <function>
+        <function-name>canDeleteContest</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
+        <function-signature>java.lang.Boolean canDeleteContest(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
+    </function>
+    <function>
+        <function-name>canAddSeries</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
+        <function-signature>java.lang.Boolean canAddSeries(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
+    </function>
+    <function>
+        <function-name>canEditSeries</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
+        <function-signature>java.lang.Boolean canEditSeries(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
+    </function>
+    <function>
+        <function-name>canDeleteSeries</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
+        <function-signature>java.lang.Boolean canDeleteSeries(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
+    </function>
+    <function>
+        <function-name>canAddProblem</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
+        <function-signature>java.lang.Boolean canAddProblem(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
+    </function>
+    <function>
+        <function-name>canEditProblem</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
+        <function-signature>java.lang.Boolean canEditProblem(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
+    </function>
+    <function>
+        <function-name>canDeleteProblem</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
+        <function-signature>java.lang.Boolean canDeleteProblem(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
+    </function>
+    <function>
+        <function-name>canRate</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
+        <function-signature>java.lang.Boolean canRate(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
+    </function>
+    <function>
+        <function-name>isContestant</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
+        <function-signature>java.lang.Boolean isContestant(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
+    </function>
 </facelet-taglib>

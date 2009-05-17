@@ -17,54 +17,64 @@
                 ${messages.no_contest}
                 </c:when>
                 <c:otherwise>
-                    <fieldset>
-                        <h:inputHidden id="id" value="#{requestBean.editedContest.id}" />
-                        <div>
-                            <h:outputLabel for="name">${messages.contest_name}:</h:outputLabel>
-                            <h:inputText id="name" required="true" value="#{requestBean.editedContest.name}" />
-                            <h:message for="name" errorClass="error" />
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel for="type">${messages.contest_type}:</h:outputLabel>
-                            <h:selectOneMenu id="type" required="true" value="#{requestBean.editedContest.type}">
-                                <f:selectItem itemValue="0" itemLabel="ACM" />
-                                <f:selectItem itemValue="1" itemLabel="PA" />
-                                <f:selectItem itemValue="2" itemLabel="KI" />
-                                <f:convertNumber integerOnly="true" />
-                            </h:selectOneMenu>
-                            <h:message for="type" errorClass="error" />
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel for="startdate">${messages.contest_startdate}:</h:outputLabel>
-                            <rich:calendar id="startdate" value="#{requestBean.editedContest.startdate}" datePattern="yyyy.MM.dd HH:mm" />
-                            <h:message for="startdate" errorClass="error" />
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel for="about">${messages.contest_about}:</h:outputLabel>
-                            <h:inputTextarea id="about" styleClass="bigHeight" required="false" value="#{requestBean.editedContest.about}">
-                            </h:inputTextarea>
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel for="rules">${messages.contest_rules}:</h:outputLabel>
-                            <h:inputTextarea id="rules" styleClass="bigHeight" required="false" value="#{requestBean.editedContest.rules}">
-                            </h:inputTextarea>
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel for="tech">${messages.contest_tech}:</h:outputLabel>
-                            <h:inputTextarea id="tech" styleClass="bigHeight" required="false" value="#{requestBean.editedContest.tech}">
-                            </h:inputTextarea>
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <a4j:commandButton id="save" reRender="formEditContest" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveContest}" />
-                            <h:message for="save" errorClass="error" />
-                        </div>
-                    </fieldset>
+                    <c:choose>
+                        <c:when test="#{(requestBean.editedContest.id == null or requestBean.editedContest.id == 0) and !(zw:canAddContest(rolesBean, null, null))}">
+                        ${messages.nonsufficient_privileges}
+                        </c:when>
+                        <c:when test="#{(requestBean.editedContest.id != null and requestBean.editedContest.id != 0) and !(zw:canEditContest(rolesBean, requestBean.editedContest.id, null))}">
+                        ${messages.nonsufficient_privileges}
+                        </c:when>
+                        <c:otherwise>
+                            <fieldset>
+                                <h:inputHidden id="id" value="#{requestBean.editedContest.id}" />
+                                <div>
+                                    <h:outputLabel for="name">${messages.contest_name}:</h:outputLabel>
+                                    <h:inputText id="name" required="true" value="#{requestBean.editedContest.name}" />
+                                    <h:message for="name" errorClass="error" />
+                                    <br class="clear" />
+                                </div>
+                                <div>
+                                    <h:outputLabel for="type">${messages.contest_type}:</h:outputLabel>
+                                    <h:selectOneMenu id="type" required="true" value="#{requestBean.editedContest.type}">
+                                        <f:selectItem itemValue="0" itemLabel="ACM" />
+                                        <f:selectItem itemValue="1" itemLabel="PA" />
+                                        <f:selectItem itemValue="2" itemLabel="KI" />
+                                        <f:convertNumber integerOnly="true" />
+                                    </h:selectOneMenu>
+                                    <h:message for="type" errorClass="error" />
+                                    <br class="clear" />
+                                </div>
+                                <div>
+                                    <h:outputLabel for="startdate">${messages.contest_startdate}:</h:outputLabel>
+                                    <rich:calendar id="startdate" value="#{requestBean.editedContest.startdate}" datePattern="yyyy.MM.dd HH:mm" />
+                                    <h:message for="startdate" errorClass="error" />
+                                    <br class="clear" />
+                                </div>
+                                <div>
+                                    <h:outputLabel for="about">${messages.contest_about}:</h:outputLabel>
+                                    <h:inputTextarea id="about" styleClass="bigHeight" required="false" value="#{requestBean.editedContest.about}">
+                                    </h:inputTextarea>
+                                    <br class="clear" />
+                                </div>
+                                <div>
+                                    <h:outputLabel for="rules">${messages.contest_rules}:</h:outputLabel>
+                                    <h:inputTextarea id="rules" styleClass="bigHeight" required="false" value="#{requestBean.editedContest.rules}">
+                                    </h:inputTextarea>
+                                    <br class="clear" />
+                                </div>
+                                <div>
+                                    <h:outputLabel for="tech">${messages.contest_tech}:</h:outputLabel>
+                                    <h:inputTextarea id="tech" styleClass="bigHeight" required="false" value="#{requestBean.editedContest.tech}">
+                                    </h:inputTextarea>
+                                    <br class="clear" />
+                                </div>
+                                <div>
+                                    <a4j:commandButton id="save" reRender="formEditContest" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveContest}" />
+                                    <h:message for="save" errorClass="error" />
+                                </div>
+                            </fieldset>
+                        </c:otherwise>
+                    </c:choose>
                 </c:otherwise>
             </c:choose>
         </a4j:form>
