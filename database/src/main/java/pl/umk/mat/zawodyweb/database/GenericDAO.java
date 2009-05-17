@@ -30,6 +30,8 @@ public interface GenericDAO<T, ID extends Serializable> {
 
 	void saveOrUpdate(T entity);
 
+    void merge(T entity);
+
 	void delete(T entity);
 	
 	void deleteById(ID id);
