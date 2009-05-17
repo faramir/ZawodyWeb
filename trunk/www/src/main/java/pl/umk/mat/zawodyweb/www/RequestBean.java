@@ -2,6 +2,7 @@ package pl.umk.mat.zawodyweb.www;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -501,7 +502,7 @@ public class RequestBean {
             ClassesDAO cdao = DAOFactory.DEFAULT.buildClassesDAO();
 
             if (temporaryFile != null) {
-                editedProblem.setPdf(temporaryFile.getBytes());
+                //TODO: pdf
             }
 
             if (editedProblem.getId() == 0) {
@@ -511,15 +512,22 @@ public class RequestBean {
             editedProblem.setSeries(sdao.getById(temporarySeriesId));
             editedProblem.setClasses(cdao.getById(temporaryClassId));
 
+            List<LanguagesProblems> tmpList = lpdao.findByProblemsid(editedProblem.getId());
+
+            if (tmpList != null) {
+                for (LanguagesProblems lp : tmpList) {
+                    lpdao.delete(lp);
+                }
+            }
+
             for (Integer lid : temporaryLanguagesIds) {
                 LanguagesProblems lp = new LanguagesProblems();
-                lp.setId(null);
                 lp.setLanguages(ldao.getById(lid));
                 lp.setProblems(editedProblem);
                 lpdao.saveOrUpdate(lp);
             }
 
-            dao.saveOrUpdate(editedProblem);
+            dao.merge(editedProblem);
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
