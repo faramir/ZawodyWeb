@@ -76,7 +76,7 @@
                         </div>
                         <div>
                             <h:outputLabel for="languages">${messages.problem_languages}:</h:outputLabel>
-                            <h:selectManyListbox id="languages" required="true" value="#{requestBean.temporaryLanguagesIds}">
+                            <h:selectManyListbox id="languages" styleClass="bigHeight" required="true" value="#{requestBean.temporaryLanguagesIds}">
                                 <c:forEach var="language" items="#{requestBean.languages}">
                                     <f:selectItem itemValue="#{language.id}" itemLabel="#{language.name}" />
                                 </c:forEach>

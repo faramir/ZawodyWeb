@@ -38,25 +38,25 @@
                         </div>
                         <div>
                             <h:outputLabel for="startdate">${messages.series_startdate}:</h:outputLabel>
-                            <rich:calendar id="startdate" value="#{requestBean.editedSeries.startdate}" datePattern="yyyy.MM.dd HH:mm" />
+                            <rich:calendar id="startdate" value="#{requestBean.editedSeries.startdate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
                             <h:message for="startdate" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="enddate">${messages.series_enddate}:</h:outputLabel>
-                            <rich:calendar id="enddate" value="#{requestBean.editedSeries.enddate}" datePattern="yyyy.MM.dd HH:mm" />
+                            <rich:calendar id="enddate" value="#{requestBean.editedSeries.enddate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
                             <h:message for="enddate" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="freezedate">${messages.series_freezedate}:</h:outputLabel>
-                            <rich:calendar id="freezedate" value="#{requestBean.editedSeries.freezedate}" datePattern="yyyy.MM.dd HH:mm" />
+                            <rich:calendar id="freezedate" value="#{requestBean.editedSeries.freezedate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
                             <h:message for="freezedate" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="unfreezedate">${messages.series_unfreezedate}:</h:outputLabel>
-                            <rich:calendar id="unfreezedate" value="#{requestBean.editedSeries.unfreezedate}" datePattern="yyyy.MM.dd HH:mm" />
+                            <rich:calendar id="unfreezedate" value="#{requestBean.editedSeries.unfreezedate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
                             <h:message for="unfreezedate" errorClass="error" />
                             <br class="clear" />
                         </div>
