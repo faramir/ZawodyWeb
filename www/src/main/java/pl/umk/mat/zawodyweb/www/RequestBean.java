@@ -77,6 +77,7 @@ public class RequestBean {
     private String dummy;
     private List<Problems> submittableProblems;
     private UploadedFile temporaryFile;
+    private boolean deletePdf;
 
     /**
      * @return the sessionBean
@@ -319,6 +320,14 @@ public class RequestBean {
         this.temporaryFile = temporaryFile;
     }
 
+    public Boolean getDeletePdf() {
+        return deletePdf;
+    }
+
+    public void setDeletePdf(Boolean deletePdf) {
+        this.deletePdf = deletePdf;
+    }
+
     public String getTemporarySource() {
         return temporarySource;
     }
@@ -526,6 +535,12 @@ public class RequestBean {
                 current.setPdf(temporaryFile.getBytes());
                 pdao.saveOrUpdate(current);
                 editedProblem.setPDF(current);
+            }
+
+            if (deletePdf) {
+                PDF tmp = editedProblem.getPDF();
+                editedProblem.setPDF(null);
+                pdao.delete(tmp);
             }
 
             editedProblem.setSeries(sdao.getById(temporarySeriesId));

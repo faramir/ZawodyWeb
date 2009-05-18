@@ -39,11 +39,27 @@
                                     <br class="clear" />
                                 </div>
                                 <div>
-                                    <h:outputLabel for="pdf">${messages.problem_pdf}:</h:outputLabel>
+                                    <h:outputLabel for="pdf">
+                                        <c:choose>
+                                            <c:when test="#{requestBean.editedProblem.PDF == null}">
+                                            ${messages.problem_pdf}:
+                                            </c:when>
+                                            <c:otherwise>
+                                            ${messages.problem_change_pdf}:
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </h:outputLabel>
                                     <t:inputFileUpload id="pdf" value="#{requestBean.temporaryFile}" storage="file" accept="application/pdf" />
                                     <h:message for="pdf" errorClass="error" />
                                     <br class="clear" />
                                 </div>
+                                <c:if test="#{requestBean.editedProblem.PDF != null}">
+                                    <div>
+                                        <h:outputLabel for="pdfdel">${messages.problem_delete_pdf}</h:outputLabel>
+                                        <h:selectBooleanCheckbox id="pdfdel" value="#{requestBean.deletePdf}" styleClass="check" />
+                                        <br class="clear" />
+                                    </div>
+                                </c:if>
                                 <div>
                                     <h:outputLabel for="abbrev">${messages.problem_abbrev}:</h:outputLabel>
                                     <h:inputText id="abbrev" required="true" value="#{requestBean.editedProblem.abbrev}" />
