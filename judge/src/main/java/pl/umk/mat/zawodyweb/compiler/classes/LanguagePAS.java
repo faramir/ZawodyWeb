@@ -64,9 +64,9 @@ public class LanguagePAS implements CompilerInterface {
         System.gc();
         List<String> command = Arrays.asList(path);
         if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
-            command = Arrays.asList("bash","-c","ulimit -v "+input.getMemoryLimit()+" && "+path);
+            command = Arrays.asList("bash", "-c", "ulimit -v " + input.getMemoryLimit() + " && " + path);
         } else {
-            logger.error("OS without bash: "+System.getProperty("os.name")+". Memory Limit check is off.");
+            logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
         }
         try {
             Timer timer = new Timer();
@@ -81,7 +81,7 @@ public class LanguagePAS implements CompilerInterface {
                 outputStream.write(input.getText());
                 outputStream.flush();
                 outputStream.close();
-                logger.debug("Waiting for program after "+(new Date().getTime()-time)+"ms.");
+                logger.debug("Waiting for program after " + (new Date().getTime() - time) + "ms.");
                 p.waitFor();
             } catch (InterruptedException ex) {
                 p.destroy();
@@ -114,22 +114,49 @@ public class LanguagePAS implements CompilerInterface {
         if (str.matches(".*uses\\s+crt.*")) {
             compileResult = CheckerErrors.RV;
         }
-        String forbiddenCalls = "fork open";
+        String forbiddenCalls = "append asm assign blockread blockwrite close eof eoln erase filepos filesize flush getdir " +
+                "mkdir reset rewrite rmdir seek seekeof seekeoln seekof seekoln truncate uses access acct alarm " +
+                "ork chdir chown chroot clearerr clearerr_unlocked close confstr crypt ctermid daemon dup2 dup " +
+                "encrypt endusershell euidaccess execl execle execlp execv execve execvp _exit fchdir fchown " +
+                "fcloseall fclose fdatasync fdopen feof feof_unlocked ferror ferror_unlocked fexecve fflush " +
+                "fflush_unlocked fgetc fgetc_unlocked fgetpos64 fgetpos fgets fgets_unlocked fileno " +
+                "fileno_unlocked flockfile fmemopen fopen64 fopen fopencookie fork fpathconf fprintf fputc " +
+                "fputc_unlocked fputs fputs_unlocked fread fread_unlocked freopen64 freopen fscanf fseek " +
+                "fseeko64 fseeko fsetpos64 fsetpos ftell ftello64 ftello ftruncate64 ftruncate ftrylockfile " +
+                "funlockfile fwrite fwrite_unlocked getc getc_unlocked get_current_dir_name getcwd __getdelim " +
+                "getdelim getdomainname getegid geteuid getgid getgroups gethostid gethostname getline getlogin " +
+                "getlogin_r getpagesize getpass __getpgid getpgid getpgrp getpid getppid getsid getuid " +
+                "getusershell getw getwd group_member isatty lchown link lockf64 lockf lseek nice __off64t open " +
+                "open_memstream pathconf pause pclose pipe popen pread64 pread profil pthread_atfork pthread_ " +
+                "putc putc_unlocked putw pwrite64 pwrite readlink remove rename revoke rewind rmdir sbrk setbuf " +
+                "setbuffer setdomainname setegid seteuid setgid sethostid sethostname setlinebuf setlogin " +
+                "setpgid setpgrp setregid setreuid setsid setuid setusershell setvbuf signal sleep swab symlink " +
+                "sync sysconf tcgetpgrp tcsetpgrp tempnam tmpfile64 tmpfile tmpnam tmpnam_r truncate64 truncate " +
+                "ttyname ttyname_r ttyslot ualarm ungetc unlink usleep vfork vfprintf vfscanf vhangup";
         String strWithoutComments = new String();
-        int len = str.length()-1;
-        for (int i=0;i<len;i++) {
-            if (str.charAt(i)=='{')
-            {while(str.charAt(i) !='}') i++; i++;}
-            if (str.charAt(i)=='(' && str.charAt(i+1)=='*')
-            {while(str.charAt(i) !='*' || str.charAt(i+1) !=')') i++;i+=2;}
-            strWithoutComments= strWithoutComments + str.charAt(i);
+        int len = str.length() - 1;
+        for (int i = 0; i < len; i++) {
+            if (str.charAt(i) == '{') {
+                while (str.charAt(i) != '}') {
+                    i++;
+                }
+                i++;
+            }
+            if (str.charAt(i) == '(' && str.charAt(i + 1) == '*') {
+                while (str.charAt(i) != '*' || str.charAt(i + 1) != ')') {
+                    i++;
+                }
+                i += 2;
+            }
+            strWithoutComments = strWithoutComments + str.charAt(i);
         }
         str = strWithoutComments;
         System.out.println(str);
-        String regexp1_on = "(?s).*[^A-Za-z0-9_]("+forbiddenCalls.replaceAll(" ","|")+")\\s*\\([^\\)]\\).*";
-        String regexp2_on = "(?s).*&("+forbiddenCalls.replaceAll(" ","|")+").*";
-        if (str.matches(regexp1_on) || str.matches(regexp2_on))
+        String regexp1_on = "(?s).*[^A-Za-z0-9_](" + forbiddenCalls.replaceAll(" ", "|") + ")\\s*\\([^\\)]\\).*";
+        String regexp2_on = "(?s).*&(" + forbiddenCalls.replaceAll(" ", "|") + ").*";
+        if (str.matches(regexp1_on) || str.matches(regexp2_on)) {
             compileResult = CheckerErrors.RV;
+        }
         return code;
     }
 
@@ -191,8 +218,9 @@ public class LanguagePAS implements CompilerInterface {
 
     @Override
     public String postcompile(String path) {
-        if (ofile != null)
-        new File(ofile).delete();
+        if (ofile != null) {
+            new File(ofile).delete();
+        }
         return path;
     }
 
