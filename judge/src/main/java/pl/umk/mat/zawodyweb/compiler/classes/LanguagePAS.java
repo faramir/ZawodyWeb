@@ -115,18 +115,20 @@ public class LanguagePAS implements CompilerInterface {
             compileResult = CheckerErrors.RV;
         }
         String forbiddenCalls = "fork open";
-        String multilineCommentOpen = "\\{";
-        String multilineCommentClose = "\\}";
-        //String inlineComment = "//";
-        str = str.replaceAll("(?s)"+multilineCommentOpen+"[^("+multilineCommentClose+")]*"+multilineCommentClose, "");
-        //str = str.replaceAll("(?s)"+inlineComment+".*$", "");
-        multilineCommentOpen = "\\(\\*";
-        multilineCommentClose = "\\)\\*";
-        //String inlineComment = "//";
-        str = str.replaceAll("(?s)"+multilineCommentOpen+"[^("+multilineCommentClose+")]*"+multilineCommentClose, "");
-        //str = str.replaceAll("(?s)"+inlineComment+".*$", "");
-        String regexp1_on = "(?s).*("+forbiddenCalls.replaceAll(" ","|")+")\\s*\\([^\\)]\\).*";
-        if (str.matches(regexp1_on))
+        String strWithoutComments = new String();
+        int len = str.length()-1;
+        for (int i=0;i<len;i++) {
+            if (str.charAt(i)=='{')
+            {while(str.charAt(i) !='}') i++; i++;}
+            if (str.charAt(i)=='(' && str.charAt(i+1)=='*')
+            {while(str.charAt(i) !='*' || str.charAt(i+1) !=')') i++;i+=2;}
+            strWithoutComments= strWithoutComments + str.charAt(i);
+        }
+        str = strWithoutComments;
+        System.out.println(str);
+        String regexp1_on = "(?s).*[^A-Za-z0-9_]("+forbiddenCalls.replaceAll(" ","|")+")\\s*\\([^\\)]\\).*";
+        String regexp2_on = "(?s).*&("+forbiddenCalls.replaceAll(" ","|")+").*";
+        if (str.matches(regexp1_on) || str.matches(regexp2_on))
             compileResult = CheckerErrors.RV;
         return code;
     }
