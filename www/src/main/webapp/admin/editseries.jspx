@@ -1,5 +1,5 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core">
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk">
     <ui:define name="pageTitle">
         <c:choose>
             <c:when test="#{param.id == '0' or param.id == null}">
@@ -23,7 +23,7 @@
                         </c:when>
                         <c:otherwise>
                             <fieldset>
-                                <h:inputHidden id="id" value="#{requestBean.editedSeries.id}" />
+                                <t:saveState id="saveid" value="#{requestBean.temporarySeriesId}" />
                                 <div>
                                     <h:outputLabel for="contest">${messages.series_contest}:</h:outputLabel>
                                     <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}">

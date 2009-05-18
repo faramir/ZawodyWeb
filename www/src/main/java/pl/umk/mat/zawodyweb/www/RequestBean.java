@@ -23,6 +23,7 @@ import pl.umk.mat.zawodyweb.database.ContestsDAO;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.LanguagesDAO;
 import pl.umk.mat.zawodyweb.database.LanguagesProblemsDAO;
+import pl.umk.mat.zawodyweb.database.PDFDAO;
 import pl.umk.mat.zawodyweb.database.ProblemsDAO;
 import pl.umk.mat.zawodyweb.database.SeriesDAO;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
@@ -33,6 +34,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Classes;
 import pl.umk.mat.zawodyweb.database.pojo.Contests;
 import pl.umk.mat.zawodyweb.database.pojo.Languages;
 import pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems;
+import pl.umk.mat.zawodyweb.database.pojo.PDF;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
@@ -67,6 +69,7 @@ public class RequestBean {
     private Integer temporarySeriesId;
     private Integer temporaryProblemId;
     private Integer temporaryClassId;
+    private Integer temporaryTestId;
     private Integer[] temporaryLanguagesIds;
     private Integer temporaryLanguageId;
     private String temporarySource;
@@ -209,23 +212,23 @@ public class RequestBean {
      * @return the editedContest
      */
     public Contests getEditedContest() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        int contestId = 0;
-        try {
-            contestId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
-        } catch (Exception e) {
-            contestId = 0;
-        }
+        if (editedContest == null) {
+            FacesContext context = FacesContext.getCurrentInstance();
 
-        if (editedContest != null) {
-            return editedContest;
-        }
+            if (!WWWHelper.isPost(context)) {
+                try {
+                    temporaryContestId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+                } catch (Exception e) {
+                    temporaryContestId = 0;
+                }
+            }
 
-        if (contestId == 0) {
-            editedContest = new Contests();
-        } else {
-            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
-            editedContest = dao.getById(contestId);
+            if (temporaryContestId == 0) {
+                editedContest = new Contests();
+            } else {
+                ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
+                editedContest = dao.getById(temporaryContestId);
+            }
         }
 
         return editedContest;
@@ -284,6 +287,14 @@ public class RequestBean {
         this.temporaryClassId = temporaryClassId;
     }
 
+    public Integer getTemporaryTestId() {
+        return temporaryTestId;
+    }
+
+    public void setTemporaryTestId(Integer temporaryTestId) {
+        this.temporaryTestId = temporaryTestId;
+    }
+
     public Integer[] getTemporaryLanguagesIds() {
         return temporaryLanguagesIds;
     }
@@ -317,22 +328,23 @@ public class RequestBean {
     }
 
     public Series getEditedSeries() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        int seriesId = 0;
-        try {
-            seriesId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
-        } catch (Exception e) {
-            seriesId = 0;
-        }
-
         if (editedSeries == null) {
-            if (seriesId == 0) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            if (!WWWHelper.isPost(context)) {
+                try {
+                    temporarySeriesId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+                } catch (Exception e) {
+                    temporarySeriesId = 0;
+                }
+            }
+
+            if (temporarySeriesId == 0) {
                 editedSeries = new Series();
             } else {
                 SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
-                editedSeries = dao.getById(seriesId);
+                editedSeries = dao.getById(temporarySeriesId);
 
-                if (editedSeries.getContests() != null) {
+                if (!WWWHelper.isPost(context) && editedSeries.getContests() != null) {
                     temporaryContestId = editedSeries.getContests().getId();
                 }
             }
@@ -344,30 +356,34 @@ public class RequestBean {
     public Problems getEditedProblem() {
         if (editedProblem == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-            int problemId = 0;
-            try {
-                problemId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
-            } catch (Exception e) {
-                problemId = 0;
+
+            if (!WWWHelper.isPost(context)) {
+                try {
+                    temporaryProblemId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+                } catch (Exception e) {
+                    temporaryProblemId = 0;
+                }
             }
 
-            if (problemId == 0) {
+            if (temporaryProblemId == 0) {
                 editedProblem = new Problems();
             } else {
                 ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-                editedProblem = dao.getById(problemId);
+                editedProblem = dao.getById(temporaryProblemId);
 
-                if (editedProblem.getSeries() != null) {
-                    temporarySeriesId = editedProblem.getSeries().getId();
-                    temporaryContestId = editedProblem.getSeries().getContests().getId();
-                }
-                if (editedProblem.getClasses() != null) {
-                    temporaryClassId = editedProblem.getClasses().getId();
-                }
-                if (editedProblem.getLanguagesProblemss() != null) {
-                    temporaryLanguagesIds = new Integer[editedProblem.getLanguagesProblemss().size()];
-                    for (int i = 0; i < editedProblem.getLanguagesProblemss().size(); ++i) {
-                        temporaryLanguagesIds[i] = editedProblem.getLanguagesProblemss().get(i).getLanguages().getId();
+                if (!WWWHelper.isPost(context)) {
+                    if (editedProblem.getSeries() != null) {
+                        temporarySeriesId = editedProblem.getSeries().getId();
+                        temporaryContestId = editedProblem.getSeries().getContests().getId();
+                    }
+                    if (editedProblem.getClasses() != null) {
+                        temporaryClassId = editedProblem.getClasses().getId();
+                    }
+                    if (editedProblem.getLanguagesProblemss() != null) {
+                        temporaryLanguagesIds = new Integer[editedProblem.getLanguagesProblemss().size()];
+                        for (int i = 0; i < editedProblem.getLanguagesProblemss().size(); ++i) {
+                            temporaryLanguagesIds[i] = editedProblem.getLanguagesProblemss().get(i).getLanguages().getId();
+                        }
                     }
                 }
             }
@@ -377,23 +393,31 @@ public class RequestBean {
     }
 
     public Tests getEditedTest() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        int testId = 0;
-        try {
-            testId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
-        } catch (Exception e) {
-            testId = 0;
-        }
+        if (editedTest == null) {
+            FacesContext context = FacesContext.getCurrentInstance();
 
-        if (editedTest != null) {
-            return editedTest;
-        }
+            if (!WWWHelper.isPost(context)) {
+                try {
+                    temporaryTestId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+                } catch (Exception e) {
+                    temporaryTestId = 0;
+                }
+            }
 
-        if (testId == 0) {
-            editedTest = new Tests();
-        } else {
-            TestsDAO dao = DAOFactory.DEFAULT.buildTestsDAO();
-            editedTest = dao.getById(testId);
+            if (temporaryTestId == 0) {
+                editedTest = new Tests();
+            } else {
+                TestsDAO dao = DAOFactory.DEFAULT.buildTestsDAO();
+                editedTest = dao.getById(temporaryTestId);
+
+                if (!WWWHelper.isPost(context)) {
+                    if (editedTest.getProblems() != null) {
+                        temporaryContestId = editedTest.getProblems().getSeries().getContests().getId();
+                        temporarySeriesId = editedTest.getProblems().getSeries().getId();
+                        temporaryProblemId = editedTest.getProblems().getId();
+                    }
+                }
+            }
         }
 
         return editedTest;
@@ -423,17 +447,13 @@ public class RequestBean {
 
     public String saveContest() {
         Integer id = editedContest.getId();
-        if ((id == 0 && !rolesBean.canAddContest(null, null)) || (id > 0 && !rolesBean.canEditContest(id, null))) {
+        if ((ELFunctions.isNullOrZero(id) && !rolesBean.canAddContest(null, null)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditContest(id, null))) {
             return null;
         }
 
         try {
             ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
-            if (editedContest.getId() == 0) {
-                editedContest.setId(null);
-            }
-
-            dao.merge(editedContest);
+            dao.saveOrUpdate(editedContest);
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -446,21 +466,16 @@ public class RequestBean {
 
     public String saveSeries() {
         Integer id = editedSeries.getId();
-        if ((id == 0 && !rolesBean.canAddSeries(temporaryContestId, null)) || (id > 0 && !rolesBean.canEditSeries(temporaryContestId, id))) {
+        if ((ELFunctions.isNullOrZero(id) && !rolesBean.canAddSeries(temporaryContestId, null)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditSeries(temporaryContestId, id))) {
             return null;
         }
 
         try {
             ContestsDAO cdao = DAOFactory.DEFAULT.buildContestsDAO();
-
             editedSeries.setContests(cdao.getById(temporaryContestId));
 
             SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
-            if (editedSeries.getId() == 0) {
-                editedSeries.setId(null);
-            }
-
-            dao.merge(editedSeries);
+            dao.saveOrUpdate(editedSeries);
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -500,13 +515,17 @@ public class RequestBean {
             LanguagesDAO ldao = DAOFactory.DEFAULT.buildLanguagesDAO();
             LanguagesProblemsDAO lpdao = DAOFactory.DEFAULT.buildLanguagesProblemsDAO();
             ClassesDAO cdao = DAOFactory.DEFAULT.buildClassesDAO();
+            PDFDAO pdao = DAOFactory.DEFAULT.buildPDFDAO();
 
             if (temporaryFile != null) {
-                //TODO: pdf
-            }
+                PDF current = editedProblem.getPDF();
+                if (current == null) {
+                    current = new PDF();
+                }
 
-            if (editedProblem.getId() == 0) {
-                editedProblem.setId(null);
+                current.setPdf(temporaryFile.getBytes());
+                pdao.saveOrUpdate(current);
+                editedProblem.setPDF(current);
             }
 
             editedProblem.setSeries(sdao.getById(temporarySeriesId));
@@ -527,7 +546,7 @@ public class RequestBean {
                 lpdao.saveOrUpdate(lp);
             }
 
-            dao.merge(editedProblem);
+            dao.saveOrUpdate(editedProblem);
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -572,12 +591,7 @@ public class RequestBean {
             TestsDAO dao = DAOFactory.DEFAULT.buildTestsDAO();
             ProblemsDAO pdao = DAOFactory.DEFAULT.buildProblemsDAO();
 
-            if (editedTest.getId() == 0) {
-                editedTest.setId(null);
-            }
-
             editedTest.setProblems(pdao.getById(temporaryProblemId));
-
             dao.saveOrUpdate(editedTest);
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -586,7 +600,7 @@ public class RequestBean {
             return null;
         }
 
-        return "start";
+        return "problems";
     }
 
     /**

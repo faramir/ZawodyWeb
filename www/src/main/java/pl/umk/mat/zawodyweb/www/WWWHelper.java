@@ -4,6 +4,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class contains helpful methods that are often used in beans
@@ -48,5 +49,10 @@ public class WWWHelper {
             String detail) {
         FacesMessage message = new FacesMessage(severity, summary, detail);
         context.addMessage(clientId, message);
+    }
+
+    public static Boolean isPost(FacesContext context){
+        HttpServletRequest hsr = (HttpServletRequest) context.getExternalContext().getRequest();
+        return hsr.getMethod().equals("POST");
     }
 }
