@@ -152,9 +152,8 @@ public class LanguagePAS implements CompilerInterface {
         }
         str = strWithoutComments;
         System.out.println(str);
-        String regexp1_on = "(?s).*[^A-Za-z0-9_](" + forbiddenCalls.replaceAll(" ", "|") + ")\\s*\\([^\\)]\\).*";
-        String regexp2_on = "(?s).*&(" + forbiddenCalls.replaceAll(" ", "|") + ").*";
-        if (str.matches(regexp1_on) || str.matches(regexp2_on)) {
+        String regexp1_on = "(?s).*[^A-Za-z0-9_](" + forbiddenCalls.replaceAll(" ", "|") + ")[^A-Za-z0-9_].*";
+        if (str.matches(regexp1_on)) {
             compileResult = CheckerErrors.RV;
         }
         return code;
