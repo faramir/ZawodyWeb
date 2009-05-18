@@ -17,6 +17,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
@@ -38,10 +39,17 @@ public class LanguageOPSS implements CompilerInterface {
     @Override
     public TestOutput runTest(String path, TestInput input) {
         TestOutput result = new TestOutput(null);
+
         String loginUrl = "http://opss.assecobs.pl/?&login";
         String login = properties.getProperty("opss.login");
         String password = properties.getProperty("opss.password");
+
         HttpClient client = new HttpClient();
+
+        HttpClientParams params = client.getParams();
+        params.setParameter("http.useragent", "Opera/9.64 (Windows NT 6.0; U; pl) Presto/2.1.1");
+        client.setParams(params);
+
         PostMethod logging = new PostMethod(loginUrl);
         NameValuePair[] dataLogging = {
             new NameValuePair("login_form_submit", "1"),
