@@ -74,7 +74,7 @@ public class LanguageACM implements CompilerInterface {
         }
         String line, name, value;
         
-        NameValuePair[] loginData = new NameValuePair[12]; // FIXME: a bit non-koscher thing - try to use Vector<NVP> instead of constant-size array
+        NameValuePair[] loginData = new NameValuePair[12]; // FIXME: a bit non-kosher thing - try to use Vector<NVP> instead of constant-size array
         loginData[0] = new NameValuePair("username", login);
         loginData[1] = new NameValuePair("passwd", password);
         int noData = 2;
@@ -102,6 +102,11 @@ public class LanguageACM implements CompilerInterface {
         sendAnswer.setRequestBody(loginData);
         try {
             client.executeMethod(sendAnswer);
+            br = new BufferedReader(new InputStreamReader(sendAnswer.getResponseBodyAsStream(), "UTF-8"));
+            String linia;
+            while ((linia = br.readLine())!=null) {
+                System.out.println(linia);
+            }
         } catch (HttpException e) {
             sendAnswer.releaseConnection();
         } catch (IOException e) {
