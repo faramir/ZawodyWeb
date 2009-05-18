@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
-import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
@@ -40,8 +39,8 @@ public class LanguageACM implements CompilerInterface {
         TestOutput result = new TestOutput(null);
         String acmSite = "http://uva.onlinejudge.org/";
 
-        String login = properties.getProperty("acm_uva.login", "spamz");
-        String password = properties.getProperty("acm_uva.password", "spamz2");
+        String login = properties.getProperty("acm_uva.login");
+        String password = properties.getProperty("acm_uva.password");
 
         HttpClient client = new HttpClient();
         GetMethod logging = new GetMethod(acmSite);
@@ -87,7 +86,7 @@ public class LanguageACM implements CompilerInterface {
                 if (line.matches(".*hidden.*name=\".*value=\".*")) {
                     name = line.split("name=\"")[1].split("\"")[0];
                     value = line.split("value=\"")[1].split("\"")[0];
-                    loginData[noData++] = new NameValuePair(name, value); // FIXME: check if it's necessery: URLDecoder.decode(value, "UTF-8"));
+                    loginData[noData++] = new NameValuePair(name, value); // FIXME: check if it's neccesary: URLDecoder.decode(value, "UTF-8"));
                 }
                 line = br.readLine();
             }
