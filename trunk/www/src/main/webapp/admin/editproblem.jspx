@@ -12,6 +12,7 @@
     </ui:define>
     <ui:define name="pageContent">
         <a4j:form id="formEditProblem" styleClass="profilform" enctype="multipart/form-data">
+
             <c:choose>
                 <c:when test="#{requestBean.editedProblem == null}">
                 ${messages.no_problem}
@@ -23,7 +24,7 @@
                         </c:when>
                         <c:otherwise>
                             <fieldset>
-                                <h:inputHidden id="id" value="#{requestBean.editedProblem.id}" />
+                                <t:saveState id="saveid" value="#{requestBean.temporaryProblemId}" />
                                 <div>
                                     <h:outputLabel for="name">${messages.problem_name}:</h:outputLabel>
                                     <h:inputText id="name" required="true" value="#{requestBean.editedProblem.name}" />

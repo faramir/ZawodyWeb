@@ -18,7 +18,7 @@
                 </c:when>
                 <c:otherwise>
                     <fieldset>
-                        <h:inputHidden id="id" value="#{requestBean.editedTest.id}" />
+                        <t:saveState id="saveid" value="#{requestBean.temporaryTestId}" />
                         <div>
                             <h:outputLabel for="input">${messages.test_input}:</h:outputLabel>
                             <h:inputTextarea id="input" styleClass="bigHeight" required="true" value="#{requestBean.editedTest.input}">
