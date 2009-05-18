@@ -63,10 +63,10 @@ public class LanguagePAS implements CompilerInterface {
         BufferedReader inputStream;
         System.gc();
         List<String> command = Arrays.asList(path);
-        if (System.getProperty("os.name").toLowerCase().matches(".*linux.*")) {
+        if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
             command = Arrays.asList("bash","-c","ulimit -v "+input.getMemoryLimit()+" && "+path);
         } else {
-            logger.error("Non-Linux OS: "+System.getProperty("os.name")+". Memory Limit check is off.");
+            logger.error("OS without bash: "+System.getProperty("os.name")+". Memory Limit check is off.");
         }
         try {
             Timer timer = new Timer();
@@ -81,7 +81,7 @@ public class LanguagePAS implements CompilerInterface {
                 outputStream.write(input.getText());
                 outputStream.flush();
                 outputStream.close();
-                logger.info("Waiting after "+(new Date().getTime()-time)+"ms.");
+                logger.debug("Waiting for program after "+(new Date().getTime()-time)+"ms.");
                 p.waitFor();
             } catch (InterruptedException ex) {
                 p.destroy();
@@ -103,6 +103,7 @@ public class LanguagePAS implements CompilerInterface {
             }
             output.setText(outputText);
         } catch (Exception ex) {
+            logger.error(ex.getMessage());
         }
         return output;
     }
@@ -113,7 +114,21 @@ public class LanguagePAS implements CompilerInterface {
         if (str.matches(".*uses\\s+crt.*")) {
             compileResult = CheckerErrors.RV;
         }
-        return str.getBytes();
+        String forbiddenCalls = "fork open";
+        String multilineCommentOpen = "\\{";
+        String multilineCommentClose = "\\}";
+        //String inlineComment = "//";
+        str = str.replaceAll("(?s)"+multilineCommentOpen+"[^("+multilineCommentClose+")]*"+multilineCommentClose, "");
+        //str = str.replaceAll("(?s)"+inlineComment+".*$", "");
+        multilineCommentOpen = "\\(\\*";
+        multilineCommentClose = "\\)\\*";
+        //String inlineComment = "//";
+        str = str.replaceAll("(?s)"+multilineCommentOpen+"[^("+multilineCommentClose+")]*"+multilineCommentClose, "");
+        //str = str.replaceAll("(?s)"+inlineComment+".*$", "");
+        String regexp1_on = "(?s).*("+forbiddenCalls.replaceAll(" ","|")+")\\s*\\([^\\)]\\).*";
+        if (str.matches(regexp1_on))
+            compileResult = CheckerErrors.RV;
+        return code;
     }
 
     @Override
@@ -174,6 +189,7 @@ public class LanguagePAS implements CompilerInterface {
 
     @Override
     public String postcompile(String path) {
+        if (ofile != null)
         new File(ofile).delete();
         return path;
     }
