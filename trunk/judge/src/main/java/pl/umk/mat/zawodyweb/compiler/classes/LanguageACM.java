@@ -10,11 +10,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
@@ -37,13 +39,21 @@ public class LanguageACM implements CompilerInterface {
     public TestOutput runTest(String path, TestInput input) {
         TestOutput result = new TestOutput(null);
         String acmSite = "http://uva.onlinejudge.org/";
-        String login = "spamz";
-        String pass = "spamz2";
+
+        String login = properties.getProperty("acm_uva.login", "spamz");
+        String password = properties.getProperty("acm_uva.password", "spamz2");
+
         HttpClient client = new HttpClient();
         GetMethod logging = new GetMethod(acmSite);
         InputStream firstGet = null;
+
+        HttpClientParams params = client.getParams();
+        params.setParameter("http.useragent", "Opera/9.64 (Windows NT 6.0; U; pl) Presto/2.1.1");
+        client.setParams(params);
+
         try {
             client.executeMethod(logging);
+            firstGet = logging.getResponseBodyAsStream();
         } catch (HttpException e) {
             result.setResult(CheckerErrors.UNDEF);
             result.setResultDesc(e.getMessage());
@@ -55,6 +65,7 @@ public class LanguageACM implements CompilerInterface {
             result.setResultDesc(e.getMessage());
             result.setText("IOException");
             logging.releaseConnection();
+            return result; // FIXME: tak miało być?
         }
         BufferedReader br = null;
         try {
@@ -62,20 +73,21 @@ public class LanguageACM implements CompilerInterface {
         } catch (UnsupportedEncodingException e) {
         }
         String line, name, value;
-        NameValuePair[] loginData = new NameValuePair[12];
+        
+        NameValuePair[] loginData = new NameValuePair[12]; // FIXME: a bit non-koscher thing - try to use Vector<NVP> instead of constant-size array
         loginData[0] = new NameValuePair("username", login);
-        loginData[1] = new NameValuePair("passwd", pass);
+        loginData[1] = new NameValuePair("passwd", password);
         int noData = 2;
         try {
             line = br.readLine();
             while (line != null && !line.matches(".*class=\"mod_login\".*")) {
                 line = br.readLine();
             }
-            while (line != null && !line.matches(".*Submit.*Login.*")) {
+            while (line != null && !line.matches("(?i).*submit.*login.*")) {
                 if (line.matches(".*hidden.*name=\".*value=\".*")) {
                     name = line.split("name=\"")[1].split("\"")[0];
                     value = line.split("value=\"")[1].split("\"")[0];
-                    loginData[noData++] = new NameValuePair(name, value.replaceAll(":", "%3A"));
+                    loginData[noData++] = new NameValuePair(name, value); // FIXME: check if it's necessery: URLDecoder.decode(value, "UTF-8"));
                 }
                 line = br.readLine();
             }
@@ -83,10 +95,10 @@ public class LanguageACM implements CompilerInterface {
             loginData[noData++] = new NameValuePair("Submit", "Login");
         } catch (IOException e) {
         }
-        PostMethod sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=com_comprofiler&amp;task=login");
+
+        PostMethod sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=com_comprofiler&task=login");
         sendAnswer.setRequestHeader("Referer", acmSite);
-        sendAnswer.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; pl; rv:1.9.0.10) Gecko/2009042316 Firefox/3.0.10 (.NET CLR 3.5.30729)");
-        sendAnswer.setRequestHeader("Connection", "Close");
+
         sendAnswer.setRequestBody(loginData);
         try {
             client.executeMethod(sendAnswer);
@@ -95,6 +107,7 @@ public class LanguageACM implements CompilerInterface {
         } catch (IOException e) {
             sendAnswer.releaseConnection();
         }
+
         return result;
     }
 

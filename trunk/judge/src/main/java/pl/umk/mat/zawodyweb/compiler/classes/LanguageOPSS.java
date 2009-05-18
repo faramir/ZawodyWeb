@@ -39,14 +39,14 @@ public class LanguageOPSS implements CompilerInterface {
     public TestOutput runTest(String path, TestInput input) {
         TestOutput result = new TestOutput(null);
         String loginUrl = "http://opss.assecobs.pl/?&login";
-        String login = "zawodyweb";
-        String pass = "zawody.web.2009";
+        String login = properties.getProperty("opss.login");
+        String password = properties.getProperty("opss.password");
         HttpClient client = new HttpClient();
         PostMethod logging = new PostMethod(loginUrl);
         NameValuePair[] dataLogging = {
             new NameValuePair("login_form_submit", "1"),
             new NameValuePair("login_form_login", login),
-            new NameValuePair("login_form_pass", pass)
+            new NameValuePair("login_form_pass", password)
         };
         logging.setRequestBody(dataLogging);
         try {
