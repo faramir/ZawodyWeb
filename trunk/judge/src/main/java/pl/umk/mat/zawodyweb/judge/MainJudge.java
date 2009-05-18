@@ -58,6 +58,10 @@ public class MainJudge {
         properties.setProperty("COMPILED_FILENAME", "a");
         properties.setProperty("CODE_FILENAME", "a");
         properties.setProperty("COMPILE_TIMEOUT", "30000");
+        properties.setProperty("acm_uva.login", "spamz");
+        properties.setProperty("acm_uva.password", "spamz2");
+        properties.setProperty("opss.login", "zawodyweb");
+        properties.setProperty("opss.password", "zawody.web.2009");
 
         try {
             logger.debug("Reading configuration file from " + configFile + "...");
