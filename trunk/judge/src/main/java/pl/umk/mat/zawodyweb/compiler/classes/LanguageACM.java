@@ -73,7 +73,7 @@ public class LanguageACM implements CompilerInterface {
         } catch (UnsupportedEncodingException e) {
         }
         String line, name, value;
-        Vector<NameValuePair> vectorLoginData= new Vector<NameValuePair>();
+        Vector<NameValuePair> vectorLoginData = new Vector<NameValuePair>();
         vectorLoginData.addElement(new NameValuePair("username", login));
         vectorLoginData.addElement(new NameValuePair("passwd", password));
         try {
@@ -96,10 +96,8 @@ public class LanguageACM implements CompilerInterface {
 
         PostMethod sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=com_comprofiler&task=login");
         sendAnswer.setRequestHeader("Referer", acmSite);
-        NameValuePair[] loginData = new NameValuePair[vectorLoginData.size()];
-        for (int i=0;i<vectorLoginData.size();i++){
-            loginData[i] =  vectorLoginData.get(i);
-        }
+        NameValuePair[] loginData = new NameValuePair[0];
+        loginData = vectorLoginData.toArray(loginData);
         sendAnswer.setRequestBody(loginData);
         try {
             client.executeMethod(sendAnswer);
