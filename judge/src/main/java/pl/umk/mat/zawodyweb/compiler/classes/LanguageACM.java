@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import java.util.Vector;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
@@ -64,7 +65,7 @@ public class LanguageACM implements CompilerInterface {
             result.setResultDesc(e.getMessage());
             result.setText("IOException");
             logging.releaseConnection();
-            return result; // FIXME: tak miało być?
+            return result;
         }
         BufferedReader br = null;
         try {
@@ -72,11 +73,9 @@ public class LanguageACM implements CompilerInterface {
         } catch (UnsupportedEncodingException e) {
         }
         String line, name, value;
-
-        NameValuePair[] loginData = new NameValuePair[12]; // FIXME: a bit non-kosher thing - try to use Vector<NVP> instead of constant-size array
-        loginData[0] = new NameValuePair("username", login);
-        loginData[1] = new NameValuePair("passwd", password);
-        int noData = 2;
+        Vector<NameValuePair> vectorLoginData= new Vector<NameValuePair>();
+        vectorLoginData.addElement(new NameValuePair("username", login));
+        vectorLoginData.addElement(new NameValuePair("passwd", password));
         try {
             line = br.readLine();
             while (line != null && !line.matches(".*class=\"mod_login\".*")) {
@@ -86,18 +85,21 @@ public class LanguageACM implements CompilerInterface {
                 if (line.matches(".*hidden.*name=\".*value=\".*")) {
                     name = line.split("name=\"")[1].split("\"")[0];
                     value = line.split("value=\"")[1].split("\"")[0];
-                    loginData[noData++] = new NameValuePair(name, value); // FIXME: check if it's neccesary: URLDecoder.decode(value, "UTF-8"));
+                    vectorLoginData.addElement(new NameValuePair(name, value)); // FIXME: check if it's neccesary: URLDecoder.decode(value, "UTF-8"));
                 }
                 line = br.readLine();
             }
-            loginData[noData++] = new NameValuePair("remember", "yes");
-            loginData[noData++] = new NameValuePair("Submit", "Login");
+            vectorLoginData.addElement(new NameValuePair("remember", "yes"));
+            vectorLoginData.addElement(new NameValuePair("Submit", "Login"));
         } catch (IOException e) {
         }
 
         PostMethod sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=com_comprofiler&task=login");
         sendAnswer.setRequestHeader("Referer", acmSite);
-
+        NameValuePair[] loginData = new NameValuePair[vectorLoginData.size()];
+        for (int i=0;i<vectorLoginData.size();i++){
+            loginData[i] =  vectorLoginData.get(i);
+        }
         sendAnswer.setRequestBody(loginData);
         try {
             client.executeMethod(sendAnswer);
