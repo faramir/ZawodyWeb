@@ -92,8 +92,13 @@ public class LanguageACM implements CompilerInterface {
             vectorLoginData.addElement(new NameValuePair("remember", "yes"));
             vectorLoginData.addElement(new NameValuePair("Submit", "Login"));
         } catch (IOException e) {
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText("IOException");
+            logging.releaseConnection();
+            return result;
         }
-
+        logging.releaseConnection();
         PostMethod sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=com_comprofiler&task=login");
         sendAnswer.setRequestHeader("Referer", acmSite);
         NameValuePair[] loginData = new NameValuePair[0];
@@ -101,13 +106,56 @@ public class LanguageACM implements CompilerInterface {
         sendAnswer.setRequestBody(loginData);
         try {
             client.executeMethod(sendAnswer);
-            br = new BufferedReader(new InputStreamReader(sendAnswer.getResponseBodyAsStream(), "UTF-8"));
+        //br = new BufferedReader(new InputStreamReader(sendAnswer.getResponseBodyAsStream(), "UTF-8"));
         } catch (HttpException e) {
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText("HttpException");
             sendAnswer.releaseConnection();
+            return result;
         } catch (IOException e) {
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText("IOException");
             sendAnswer.releaseConnection();
+            return result;
         }
-
+        sendAnswer.releaseConnection();
+        sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=save_submission");
+        String lang = properties.getProperty("CODEFILE_EXTENSION");
+        if (lang.equals("c")) {
+            lang = "1";
+        } else if (lang.equals("java")) {
+            lang = "2";
+        } else if (lang.equals("cpp")) {
+            lang = "3";
+        } else if (lang.equals("pas")) {
+            lang = "4";
+        }
+        NameValuePair[] dataSendAnswer = {
+            new NameValuePair("problemid", ""),
+            new NameValuePair("category", ""),
+            new NameValuePair("localid", input.getText()),
+            new NameValuePair("language", lang),
+            new NameValuePair("code", path),
+            new NameValuePair("submit", "Submit")
+        };
+        sendAnswer.setRequestBody(dataSendAnswer);
+        try {
+            client.executeMethod(sendAnswer);
+        } catch (HttpException e) {
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText("HttpException");
+            sendAnswer.releaseConnection();
+            return result;
+        } catch (IOException e) {
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText("IOException");
+            sendAnswer.releaseConnection();
+            return result;
+        }
         return result;
     }
 
