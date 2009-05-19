@@ -36,13 +36,13 @@
         <div id="left_menu">
             <ul>
                 <li>
-                    <zw:contest-link contest="${sessionBean.currentContest}" type="problems" default="true" />
+                    <zw:contest-link contest="${sessionBean.currentContest}" type="problems" message="#{messages.problems}" />
                 </li>
                 <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ranking.html">${messages.ranking}</h:outputLink>
                 </li>
                 <li>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/pytania.html">${messages.questions}</h:outputLink>
+                    <zw:contest-link contest="${sessionBean.currentContest}" type="questions" message="#{messages.questions}" />
                 </li>
                 <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/harmonogram.html">${messages.timetable}</h:outputLink>

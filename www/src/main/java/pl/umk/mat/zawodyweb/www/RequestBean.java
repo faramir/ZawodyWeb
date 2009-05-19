@@ -5,7 +5,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -25,6 +27,7 @@ import pl.umk.mat.zawodyweb.database.LanguagesDAO;
 import pl.umk.mat.zawodyweb.database.LanguagesProblemsDAO;
 import pl.umk.mat.zawodyweb.database.PDFDAO;
 import pl.umk.mat.zawodyweb.database.ProblemsDAO;
+import pl.umk.mat.zawodyweb.database.QuestionsDAO;
 import pl.umk.mat.zawodyweb.database.SeriesDAO;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 import pl.umk.mat.zawodyweb.database.TestsDAO;
@@ -36,6 +39,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Languages;
 import pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems;
 import pl.umk.mat.zawodyweb.database.pojo.PDF;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
+import pl.umk.mat.zawodyweb.database.pojo.Questions;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
@@ -57,14 +61,17 @@ public class RequestBean {
     private Series editedSeries;
     private Problems editedProblem;
     private Tests editedTest;
-    private Submits editedSubmit = null;
+    private Submits editedSubmit;
+    private Questions editedQuestion;
     private List<LanguagesProblems> temporaryLanguagesProblems = null;
     private List<Contests> contests = null;
     private List<Series> contestsSeries = null;
     private List<Problems> seriesProblems = null;
+    private List<Problems> contestsProblems = null;
     private List<Classes> diffClasses = null;
     private List<Languages> languages = null;
     private List<Series> currentContestSeries = null;
+    private List<Questions> currentContestQuestions = null;
     private Integer temporaryContestId;
     private Integer temporarySeriesId;
     private Integer temporaryProblemId;
@@ -189,6 +196,22 @@ public class RequestBean {
         return seriesProblems;
     }
 
+    public List<Problems> getContestsProblems() {
+        if (contestsProblems == null && sessionBean.getCurrentContest() != null) {
+            SeriesDAO sdao = DAOFactory.DEFAULT.buildSeriesDAO();
+
+            List<Series> series = sdao.findByContestsid(sessionBean.getCurrentContest().getId());
+            if (series != null) {
+                contestsProblems = new ArrayList<Problems>();
+                for (Series s : series) {
+                    contestsProblems.addAll(s.getProblemss());
+                }
+            }
+        }
+
+        return contestsProblems;
+    }
+
     public List<Problems> getSubmittableProblems() {
         if (submittableProblems == null) {
             ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
@@ -200,13 +223,23 @@ public class RequestBean {
 
     public List<Series> getCurrentContestSeries() {
         if (currentContestSeries == null) {
-
             SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
             currentContestSeries = dao.findByContestsid(sessionBean.getCurrentContest().getId());
             Collections.reverse(currentContestSeries);
         }
 
         return currentContestSeries;
+    }
+
+    public List<Questions> getCurrentContestQuestions() {
+        if(currentContestQuestions == null){
+            QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
+            Map<String, Object> criteria = new HashMap();
+            criteria.put("contests.id", sessionBean.getCurrentContest().getId());
+            currentContestQuestions = dao.findByCriteria(criteria);
+        }
+
+        return currentContestQuestions;
     }
 
     /**
@@ -241,6 +274,14 @@ public class RequestBean {
         }
 
         return editedSubmit;
+    }
+
+    public Questions getEditedQuestion() {
+        if (editedQuestion == null) {
+            editedQuestion = new Questions();
+        }
+
+        return editedQuestion;
     }
 
     public List<LanguagesProblems> getTemporaryLanguagesProblems() {
@@ -571,6 +612,39 @@ public class RequestBean {
 
         sessionBean.selectContest(editedProblem.getSeries().getContests().getId());
         return "problems";
+    }
+
+    public String saveQuestion() {
+        try {
+            QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
+            ProblemsDAO pdao = DAOFactory.DEFAULT.buildProblemsDAO();
+            UsersDAO udao = DAOFactory.DEFAULT.buildUsersDAO();
+
+            editedQuestion.setContests(sessionBean.getCurrentContest());
+            editedQuestion.setProblems(pdao.getById(temporaryProblemId));
+            editedQuestion.setQtype(0);
+            editedQuestion.setUsers(sessionBean.getCurrentUser());
+
+            dao.saveOrUpdate(editedQuestion);
+            return "questions";
+        } catch (Exception e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formQuestions:save", summary, null);
+            return null;
+        }
+    }
+
+    @HttpAction(name = "problems", pattern = "problems/{id}/{title}")
+    public String goToProblems(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        sessionBean.selectContest(id);
+        return "problems";
+    }
+
+    @HttpAction(name = "questions", pattern = "questions/{id}/{title}")
+    public String goToQuestions(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        sessionBean.selectContest(id);
+        return "questions";
     }
 
     @HttpAction(name = "problem", pattern = "problem/{id}/{title}")

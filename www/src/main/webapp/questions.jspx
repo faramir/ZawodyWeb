@@ -1,0 +1,58 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
+    <ui:define name="pageTitle">
+        ${messages.questions}
+    </ui:define>
+    <ui:define name="pageContent">
+        <a4j:form id="formQuestions" styleClass="profilform">
+            <div>
+                <h:outputLabel for="problem">${messages.questions_problem}:</h:outputLabel>
+                <h:selectOneMenu id="problem" required="false" value="#{requestBean.temporaryProblemId}">
+                    <f:selectItem itemValue="" itemLabel="#{messages.questions_general}" />
+                    <c:forEach var="problem" items="#{requestBean.contestsProblems}">
+                        <f:selectItem itemValue="#{problem.id}" itemLabel="#{problem.name}" />
+                    </c:forEach>
+                    <t:saveState id="saveProblemId" value="#{requestBean.temporaryProblemId}" />
+                </h:selectOneMenu>
+                <h:message for="problem" errorClass="error" />
+                <br class="clear" />
+            </div>
+            <div>
+                <h:outputLabel for="text">${messages.question_text}:</h:outputLabel>
+                <h:inputTextarea id="text" styleClass="bigHeight" required="true" value="#{requestBean.editedQuestion.question}">
+                </h:inputTextarea>
+                <h:message for="text" errorClass="error" />
+                <br class="clear" />
+            </div>
+            <div>
+                <a4j:commandButton id="save" reRender="formQuestions" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveQuestion}" />
+                <h:message for="save" errorClass="error" />
+                <br class="clear" />
+            </div>
+            <div>
+                <t:dataTable id="questions" var="question" footerClass="paginator" value="#{requestBean.currentContestQuestions}" preserveDataModel="false" rows="10" rowClasses="linia2,linia1" columnClasses="col1,col2">
+                    <h:column>
+                        <f:facet name="header">
+                        ${messages.question}
+                        </f:facet>
+                        ${question.question}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                        ${messages.questions_problem}
+                        </f:facet>
+                        <c:catch>
+                            <h:panelGroup rendered="#{question.problems == null}">
+                                <zw:contest-link id="link" contest="${question.contests}" type="problems" message="${messages.questions_general}" />
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{question.problems != null}">
+                                <zw:problem-link problem="#{question.problems}" message="#{question.problems.name}" type="problem" />
+                            </h:panelGroup>
+                        </c:catch>
+                    </h:column>
+                </t:dataTable>
+            </div>
+        </a4j:form>
+    </ui:define>
+</ui:composition>

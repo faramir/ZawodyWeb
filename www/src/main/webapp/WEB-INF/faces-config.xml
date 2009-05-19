@@ -101,6 +101,18 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
+        <display-name>goToQuestions</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                questions
+            </from-outcome>
+            <to-view-id>
+                /questions.jspx
+            </to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
         <display-name>submitProblem</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
