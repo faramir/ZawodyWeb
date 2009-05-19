@@ -87,12 +87,6 @@ public class SessionBean {
         return "start";
     }
 
-    @HttpAction(name = "problems", pattern = "problems/{id}/{title}")
-    public String goToProblems(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
-        selectContest(id);
-        return "problems";
-    }
-
     public void selectContest(int id) {
         if (currentContest == null || !currentContest.getId().equals(id)) {
             ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();

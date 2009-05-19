@@ -6,7 +6,7 @@
                     <f:facet name="header">
                     ${messages.contest_name}
                     </f:facet>
-                    <zw:contest-link id="link" contest="${contest}" type="problems" />
+                    <zw:contest-link id="link" contest="${contest}" type="problems" message="#{contest.name}" />
                 </h:column>
                 <h:column>
                     <f:facet name="header">
