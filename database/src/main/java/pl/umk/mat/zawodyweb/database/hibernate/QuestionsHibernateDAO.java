@@ -53,7 +53,7 @@ public class QuestionsHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Questions> findByContestsid(Integer contestsid) {
-		return findByCriteria(Restrictions.eq("contests.contestsid", contestsid));
+		return findByCriteria(Restrictions.eq("contests.id", contestsid));
 	}
 	
 	/**
