@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Properties;
 import java.util.Vector;
 import org.apache.commons.httpclient.HttpClient;
@@ -106,7 +107,7 @@ public class LanguageACM implements CompilerInterface {
         sendAnswer.setRequestBody(loginData);
         try {
             client.executeMethod(sendAnswer);
-        //br = new BufferedReader(new InputStreamReader(sendAnswer.getResponseBodyAsStream(), "UTF-8"));
+            //br = new BufferedReader(new InputStreamReader(sendAnswer.getResponseBodyAsStream(), "UTF-8"));
         } catch (HttpException e) {
             result.setResult(CheckerErrors.UNDEF);
             result.setResultDesc(e.getMessage());
@@ -141,8 +142,20 @@ public class LanguageACM implements CompilerInterface {
             new NameValuePair("submit", "Submit")
         };
         sendAnswer.setRequestBody(dataSendAnswer);
+
+        int id;
         try {
             client.executeMethod(sendAnswer);
+            String location = sendAnswer.getResponseHeader("Location").getValue();
+            try {
+                id = Integer.parseInt(location.substring(location.lastIndexOf("+") + 1));
+            } catch (NumberFormatException ex) {
+                result.setResult(CheckerErrors.UNDEF);
+                result.setResultDesc(URLDecoder.decode(location.substring(location.lastIndexOf("=") + 1), "UTF-8"));
+                result.setText("NumberFormatException");
+                sendAnswer.releaseConnection();
+                return result;
+            }
         } catch (HttpException e) {
             result.setResult(CheckerErrors.UNDEF);
             result.setResultDesc(e.getMessage());
@@ -156,11 +169,16 @@ public class LanguageACM implements CompilerInterface {
             sendAnswer.releaseConnection();
             return result;
         }
+
+        // TODO: tutaj należy zrobić coś z wyliczonym id
+        System.out.println("id = " + id);
+
         return result;
     }
 
     @Override
-    public byte[] precompile(byte[] code) {
+    public byte[] precompile(
+            byte[] code) {
         return code;
     }
 
