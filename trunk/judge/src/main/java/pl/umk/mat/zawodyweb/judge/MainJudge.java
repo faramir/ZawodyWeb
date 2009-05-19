@@ -13,8 +13,6 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Properties;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.checker.CheckerInterface;
 import pl.umk.mat.zawodyweb.checker.CheckerResult;

@@ -77,9 +77,9 @@ public class LanguageOPSS implements CompilerInterface {
         NameValuePair[] dataSendAnswer = {
             new NameValuePair("form_send_submit", "1"),
             new NameValuePair("form_send_comp", ""),
-            new NameValuePair("form_send_problem", input.getText()), //tu numer zadania
-            new NameValuePair("form_send_lang", properties.getProperty("CODEFILE_EXTENSION")), //tu rozszerzenie
-            new NameValuePair("form_send_sourcetext", path), //tu kod zrodlowy
+            new NameValuePair("form_send_problem", input.getText()),
+            new NameValuePair("form_send_lang", properties.getProperty("CODEFILE_EXTENSION")),
+            new NameValuePair("form_send_sourcetext", path),
             new NameValuePair("form_send_submittxt", "Wyślij kod")
         };
         sendAnswer.setRequestBody(dataSendAnswer);
