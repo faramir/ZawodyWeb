@@ -270,6 +270,23 @@ public class LanguageACM implements CompilerInterface {
             }
         } while (true);
         logging.releaseConnection();
+        sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=logout");
+        NameValuePair[] logout = {
+            new NameValuePair("op2", "logout"),
+            new NameValuePair("return", "http://uva.onlinejudge.org"),
+            new NameValuePair("lang", "english"),
+            new NameValuePair("message", "0"),
+            new NameValuePair("Submit", "Logout")
+        };
+        sendAnswer.setRequestBody(logout);
+        try {
+            client.executeMethod(sendAnswer);
+        } catch (HttpException e) {
+            sendAnswer.releaseConnection();
+        } catch (IOException e) {
+            sendAnswer.releaseConnection();
+        }
+        sendAnswer.releaseConnection();
         return result;
     }
 
