@@ -97,7 +97,7 @@ public abstract class AbstractHibernateDAO<T, ID extends Serializable> implement
      * Use this inside subclasses as a convenience method.
      */
     @SuppressWarnings("unchecked")
-    protected List<T> findByCriteria(Criterion... criterion) {
+    public List<T> findByCriteria(Criterion... criterion) {
         Criteria crit = getSession().createCriteria(getPersistentClass());
         for (Criterion c : criterion) {
             crit.add(c);

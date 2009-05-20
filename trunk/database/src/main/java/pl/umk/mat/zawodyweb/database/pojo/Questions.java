@@ -31,156 +31,163 @@ import javax.persistence.GenerationType;
 @SuppressWarnings("serial")
 public class Questions implements Serializable {
 
-	/**
-	 * Attribute id.
-	 */
-	private Integer id;
-	
-	/**
-	 * Attribute question.
-	 */
-	private String question;
-	
-	/**
-	 * Attribute visibility.
-	 */
-	private Integer visibility;
-	
-	/**
-	 * Attribute qtype.
-	 */
-	private Integer qtype;
-	
-	/**
-	 * Attribute users
-	 */
-	 private Users users;	
+    /**
+     * Attribute id.
+     */
+    private Integer id;
+    private String subject;
+    /**
+     * Attribute question.
+     */
+    private String question;
+    /**
+     * Attribute visibility.
+     */
+    private Integer visibility;
+    /**
+     * Attribute qtype.
+     */
+    private Integer qtype;
+    /**
+     * Attribute users
+     */
+    private Users users;
+    /**
+     * Attribute contests
+     */
+    private Contests contests;
+    /**
+     * Attribute problems
+     */
+    private Problems problems;
 
-	/**
-	 * Attribute contests
-	 */
-	 private Contests contests;	
+    /**
+     * @return id
+     */
+    @Basic
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    public Integer getId() {
+        return id;
+    }
 
-	/**
-	 * Attribute problems
-	 */
-	 private Problems problems;	
+    /**
+     * @param id new value for id
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	
-	/**
-	 * @return id
-	 */
-	@Basic
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "id")
-		public Integer getId() {
-		return id;
-	}
+    /**
+     * @return lastname
+     */
+    @Basic
+    @Column(name = "subject", length = 50)
+    public String getSubject() {
+        return subject;
+    }
 
-	/**
-	 * @param id new value for id 
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
-	/**
-	 * @return question
-	 */
-	@Basic
-	@Column(name = "question", length = 2147483647)
-		public String getQuestion() {
-		return question;
-	}
+    /**
+     * @param lastname new value for lastname
+     */
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
 
-	/**
-	 * @param question new value for question 
-	 */
-	public void setQuestion(String question) {
-		this.question = question;
-	}
-	
-	/**
-	 * @return visibility
-	 */
-	@Basic
-	@Column(name = "visibility")
-		public Integer getVisibility() {
-		return visibility;
-	}
+    /**
+     * @return question
+     */
+    @Basic
+    @Column(name = "question", length = 2147483647)
+    public String getQuestion() {
+        return question;
+    }
 
-	/**
-	 * @param visibility new value for visibility 
-	 */
-	public void setVisibility(Integer visibility) {
-		this.visibility = visibility;
-	}
-	
-	/**
-	 * @return qtype
-	 */
-	@Basic
-	@Column(name = "qtype")
-		public Integer getQtype() {
-		return qtype;
-	}
+    /**
+     * @param question new value for question
+     */
+    public void setQuestion(String question) {
+        this.question = question;
+    }
 
-	/**
-	 * @param qtype new value for qtype 
-	 */
-	public void setQtype(Integer qtype) {
-		this.qtype = qtype;
-	}
-	
-	/**
-	 * get users
-	 */
-	@ManyToOne
-	@JoinColumn(name = "usersid")
-	public Users getUsers() {
-		return this.users;
-	}
-	
-	/**
-	 * set users
-	 */
-	public void setUsers(Users users) {
-		this.users = users;
-	}
+    /**
+     * @return visibility
+     */
+    @Basic
+    @Column(name = "visibility")
+    public Integer getVisibility() {
+        return visibility;
+    }
 
-	/**
-	 * get contests
-	 */
-	@ManyToOne
-	@JoinColumn(name = "contestsid")
-	public Contests getContests() {
-		return this.contests;
-	}
-	
-	/**
-	 * set contests
-	 */
-	public void setContests(Contests contests) {
-		this.contests = contests;
-	}
+    /**
+     * @param visibility new value for visibility
+     */
+    public void setVisibility(Integer visibility) {
+        this.visibility = visibility;
+    }
 
-	/**
-	 * get problems
-	 */
-	@ManyToOne
-	@JoinColumn(name = "tasksid")
-	public Problems getProblems() {
-		return this.problems;
-	}
-	
-	/**
-	 * set problems
-	 */
-	public void setProblems(Problems problems) {
-		this.problems = problems;
-	}
+    /**
+     * @return qtype
+     */
+    @Basic
+    @Column(name = "qtype")
+    public Integer getQtype() {
+        return qtype;
+    }
 
+    /**
+     * @param qtype new value for qtype
+     */
+    public void setQtype(Integer qtype) {
+        this.qtype = qtype;
+    }
 
+    /**
+     * get users
+     */
+    @ManyToOne
+    @JoinColumn(name = "usersid")
+    public Users getUsers() {
+        return this.users;
+    }
 
+    /**
+     * set users
+     */
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    /**
+     * get contests
+     */
+    @ManyToOne
+    @JoinColumn(name = "contestsid")
+    public Contests getContests() {
+        return this.contests;
+    }
+
+    /**
+     * set contests
+     */
+    public void setContests(Contests contests) {
+        this.contests = contests;
+    }
+
+    /**
+     * get problems
+     */
+    @ManyToOne
+    @JoinColumn(name = "tasksid")
+    public Problems getProblems() {
+        return this.problems;
+    }
+
+    /**
+     * set problems
+     */
+    public void setProblems(Problems problems) {
+        this.problems = problems;
+    }
 }
