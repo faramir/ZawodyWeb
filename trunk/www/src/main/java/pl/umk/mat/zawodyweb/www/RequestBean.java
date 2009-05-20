@@ -670,14 +670,14 @@ public class RequestBean {
     }
 
     public String saveAnswer() {
-        try{
+        try {
             QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
             String tmp = getEditedQuestion().getQuestion().replaceAll("\n", "\n> ");
             tmp = ">".concat(tmp).concat("\n\n").concat(answer);
             getEditedQuestion().setQuestion(tmp);
             dao.saveOrUpdate(getEditedQuestion());
             return "questions";
-        }catch(Exception e){
+        } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formQuestion:save", summary, null);
@@ -688,13 +688,21 @@ public class RequestBean {
     @HttpAction(name = "problems", pattern = "problems/{id}/{title}")
     public String goToProblems(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         sessionBean.selectContest(id);
-        return "problems";
+        if (sessionBean.getCurrentContest() == null) {
+            return "/error/404";
+        } else {
+            return "problems";
+        }
     }
 
     @HttpAction(name = "questions", pattern = "questions/{id}/{title}")
     public String goToQuestions(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         sessionBean.selectContest(id);
-        return "questions";
+        if (sessionBean.getCurrentContest() == null) {
+            return "/error/404";
+        } else {
+            return "questions";
+        }
     }
 
     @HttpAction(name = "problem", pattern = "problem/{id}/{title}")
