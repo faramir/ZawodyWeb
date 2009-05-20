@@ -26,6 +26,10 @@ public class ELFunctions {
         return out;
     }
 
+    public static String nlToBr(String in) {
+        return in.replace("\n", "<br />");
+    }
+
     public static Boolean isNullOrZero(Integer a){
         return a == null || a == 0;
     }

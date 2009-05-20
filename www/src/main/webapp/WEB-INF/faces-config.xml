@@ -101,8 +101,21 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <display-name>goToQuestions</display-name>
+        <display-name>questions_to_questions</display-name>
         <from-view-id>/questions.jspx</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                questions
+            </from-outcome>
+            <to-view-id>
+                /questions.jspx
+            </to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <display-name>question_to_questions</display-name>
+        <from-view-id>/question.jspx</from-view-id>
         <navigation-case>
             <from-outcome>
                 questions
@@ -182,6 +195,14 @@
         <navigation-case>
             <from-outcome>problem</from-outcome>
             <to-view-id>/problem.jspx</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <display-name>ToQuestion</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>question</from-outcome>
+            <to-view-id>/question.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>
 </faces-config>
