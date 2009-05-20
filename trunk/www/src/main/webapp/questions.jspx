@@ -19,6 +19,13 @@
                 <br class="clear" />
             </div>
             <div>
+                <h:outputLabel for="subject">${messages.question_subject}:</h:outputLabel>
+                <h:inputText id="subject" maxlength="50" required="true" value="#{requestBean.editedQuestion.subject}">
+                </h:inputText>
+                <h:message for="subject" errorClass="error" />
+                <br class="clear" />
+            </div>
+            <div>
                 <h:outputLabel for="text">${messages.question_text}:</h:outputLabel>
                 <h:inputTextarea id="text" styleClass="bigHeight" required="true" value="#{requestBean.editedQuestion.question}">
                 </h:inputTextarea>
@@ -26,7 +33,7 @@
                 <br class="clear" />
             </div>
             <div>
-                <a4j:commandButton id="save" reRender="formQuestions" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveQuestion}" />
+                <a4j:commandButton id="save" reRender="formQuestions" styleClass="submit" type="submit" value="#{messages.send}" action="#{requestBean.saveQuestion}" />
                 <h:message for="save" errorClass="error" />
                 <br class="clear" />
             </div>
@@ -36,7 +43,7 @@
                         <f:facet name="header">
                         ${messages.question}
                         </f:facet>
-                        ${question.question}
+                        <zw:question-link question="#{question}" />
                     </h:column>
                     <h:column>
                         <f:facet name="header">

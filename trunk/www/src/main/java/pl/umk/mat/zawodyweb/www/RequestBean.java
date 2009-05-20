@@ -16,6 +16,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 import org.restfaces.annotation.HttpAction;
 import org.restfaces.annotation.Instance;
@@ -234,9 +235,8 @@ public class RequestBean {
     public List<Questions> getCurrentContestQuestions() {
         if(currentContestQuestions == null){
             QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
-            Map<String, Object> criteria = new HashMap();
-            criteria.put("contests.id", sessionBean.getCurrentContest().getId());
-            currentContestQuestions = dao.findByCriteria(criteria);
+            currentContestQuestions = dao.findByCriteria(Restrictions.eq("contests.id", sessionBean.getCurrentContest().getId()),
+                    Restrictions.or(Restrictions.eq("qtype", 1), Restrictions.eq("users.id", sessionBean.getCurrentUser().getId())));
         }
 
         return currentContestQuestions;
@@ -626,6 +626,7 @@ public class RequestBean {
             editedQuestion.setUsers(sessionBean.getCurrentUser());
 
             dao.saveOrUpdate(editedQuestion);
+
             return "questions";
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
