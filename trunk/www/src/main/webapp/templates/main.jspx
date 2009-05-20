@@ -67,6 +67,9 @@
                 </li>
             </ul>
         </div>
+        <div class="welcomeClass">
+            <h:outputText id="welcome">Witaj dalton!</h:outputText>
+        </div>
         <div id="top_menu">
             <ul>
                 <li>

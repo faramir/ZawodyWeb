@@ -230,11 +230,16 @@ padding: 0px;
     text-align: center;
     float: none;
     font-weight: bold;
-    color: #0000FF;
+    display: inline-block;
+    color: #001188;
     height: auto;
-    margin: 30px auto 0px auto;
-    width: 50%;
-    background: #decff4;
+    margin: 30px 0 0px 24px;
+    padding: 5px;
+    width: 86%;
+    border: ridge;
+    border-color: #decff4;
+    border-width: 2px 2px 0px 2px;
+    background: #decff4 url(../images/bg_top1.png) repeat-x;
 }
 
 .profilform input, select {
@@ -319,6 +324,10 @@ border:1px solid #333333;
 
 .profilform table tr:hover {
 	background: #f6f6f6;
+}
+
+.profilform table.pagingrid tr:hover {
+	background: transparent;
 }
 
 .profilform table th {
@@ -665,3 +674,9 @@ tbody {
 	font-weight: bold;
 }
 
+.welcomeClass{
+    float:right;
+    font-size:11px;
+    margin-right:5%;
+    color:#000;
+}
