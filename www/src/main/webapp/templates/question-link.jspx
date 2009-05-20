@@ -1,0 +1,5 @@
+<h:panelGroup xmlns:h="http://java.sun.com/jsf/html">
+    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/question/#{question.id}/#{zw:filterUri(question.subject)}.html" rendered="#{!(question == null)}">
+        <h:outputText value="#{question.subject}" />
+    </h:outputLink>
+</h:panelGroup>
