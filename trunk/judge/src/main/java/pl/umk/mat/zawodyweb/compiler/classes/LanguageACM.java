@@ -107,7 +107,6 @@ public class LanguageACM implements CompilerInterface {
         sendAnswer.setRequestBody(loginData);
         try {
             client.executeMethod(sendAnswer);
-            //br = new BufferedReader(new InputStreamReader(sendAnswer.getResponseBodyAsStream(), "UTF-8"));
         } catch (HttpException e) {
             result.setResult(CheckerErrors.UNDEF);
             result.setResultDesc(e.getMessage());
@@ -169,10 +168,109 @@ public class LanguageACM implements CompilerInterface {
             sendAnswer.releaseConnection();
             return result;
         }
-
-        // TODO: tutaj należy zrobić coś z wyliczonym id
-        System.out.println("id = " + id);
-
+        sendAnswer.releaseConnection();
+        int limit = 50;
+        int limitstart = 0;
+        String statusSite = "";
+        String stat = "", time = "";
+        try {
+            Thread.sleep(7000);
+        } catch (InterruptedException e) {
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText("InterruptedException");
+            return result;
+        }
+        do {
+            logging = new GetMethod("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=9&limit=50&limitstart=" + String.valueOf(limitstart));
+            firstGet = null;
+            try {
+                client.executeMethod(logging);
+                firstGet = logging.getResponseBodyAsStream();
+            } catch (HttpException e) {
+                result.setResult(CheckerErrors.UNDEF);
+                result.setResultDesc(e.getMessage());
+                result.setText("HttpException");
+                logging.releaseConnection();
+                return result;
+            } catch (IOException e) {
+                result.setResult(CheckerErrors.UNDEF);
+                result.setResultDesc(e.getMessage());
+                result.setText("IOException");
+                logging.releaseConnection();
+                return result;
+            }
+            try {
+                br = new BufferedReader(new InputStreamReader(firstGet, "UTF-8"));
+            } catch (UnsupportedEncodingException ex) {
+            }
+            try {
+                while ((line = br.readLine()) != null) {
+                    if (line.matches(".*<td>" + String.valueOf(id) + "</td>.*")) {
+                        statusSite = line;
+                        line = br.readLine();
+                        while (!line.matches(".*</tr>.*")) {
+                            statusSite += line;
+                            line = br.readLine();
+                        }
+                        String[] split = statusSite.split("(<td[^>]*>)|(</td>)");
+                        stat = split[7];
+                        time = split[11];
+                    }
+                }
+            } catch (IOException e) {
+                result.setResult(CheckerErrors.UNDEF);
+                result.setResultDesc(e.getMessage());
+                result.setText("IOException");
+                logging.releaseConnection();
+                return result;
+            }
+            if (!stat.equals("") && !time.equals("")) {
+                System.out.println(stat);
+                System.out.println(time);
+                if (!stat.equals("Received") && !stat.equals("Running") && !stat.equals("Sent to judge") && !stat.equals("In judge queue")) {
+                    if (stat.matches(".*Accepted.*")) {
+                        result.setResult(CheckerErrors.ACC);
+                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
+                    } else if (stat.matches(".*Compilation error.*")) {
+                        result.setResult(CheckerErrors.CE);
+                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
+                    } else if (stat.matches(".*Presentation error.*")) {
+                        result.setResult(CheckerErrors.ACC);
+                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
+                    } else if (stat.matches(".*Wrong answer.*")) {
+                        result.setResult(CheckerErrors.WA);
+                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
+                    } else if (stat.matches(".*Time limit exceeded.*")) {
+                        result.setResult(CheckerErrors.TLE);
+                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
+                    } else if (stat.matches(".*Memory limit exceeded.*")) {
+                        result.setResult(CheckerErrors.MLE);
+                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
+                    } else if (stat.matches(".*Runtime error.*")) {
+                        result.setResult(CheckerErrors.RE);
+                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
+                    } else {
+                        result.setResult(CheckerErrors.UNKNOWN);
+                        result.setResultDesc("Unknown status: \"" + stat + "\"");
+                        break;
+                    }
+                    break;
+                } else {
+                    try {
+                        Thread.sleep(7000);
+                    } catch (InterruptedException e) {
+                        result.setResult(CheckerErrors.UNDEF);
+                        result.setResultDesc(e.getMessage());
+                        result.setText("InterruptedException");
+                        return result;
+                    }
+                }
+            } else {
+                limitstart += limit;
+            }
+        } while (true);
+        logging.releaseConnection();
         return result;
     }
 
