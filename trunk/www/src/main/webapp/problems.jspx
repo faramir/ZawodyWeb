@@ -12,9 +12,9 @@
                 </c:when>
                 <c:otherwise>
                     <c:forEach var="series" items="#{requestBean.currentContestSeries}">
-                        <h:outputLabel for="series">${series.name}:</h:outputLabel>
+                        <h:outputLabel for="problems#{series.id}" styleClass="seria">${series.name}:</h:outputLabel>
                         <br />
-                        <t:dataTable id="problems#{series.id}" var="problem" value="#{series.problemss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
+                        <t:dataTable id="problems#{series.id}" var="problem" styleClass="seria" value="#{series.problemss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
                             <h:column>
                                 <f:facet name="header">
                                 ${messages.problem_name}
