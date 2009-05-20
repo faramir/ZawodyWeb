@@ -228,18 +228,18 @@ padding: 0px;
 
 .profilform label.seria {
     text-align: center;
-    float: none;
+    float: right;
     font-weight: bold;
     display: inline-block;
     color: #001188;
     height: auto;
-    margin: 30px 0 0px 24px;
+    margin: 30px 0 0px 0px;
     padding: 5px;
-    width: 86%;
+    width: 98%;
     border: ridge;
     border-color: #decff4;
     border-width: 2px 2px 0px 2px;
-    background: #decff4 url(../images/bg_top1.png) repeat-x;
+    background: #decff4 url(../images/ui-bg_1x150.png) repeat-x;
 }
 
 .profilform input, select {
@@ -677,6 +677,7 @@ tbody {
 .welcomeClass{
     float:right;
     font-size:11px;
+    width: 16%;
     margin-right:5%;
     color:#000;
 }
