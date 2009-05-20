@@ -3,6 +3,8 @@ package pl.umk.mat.zawodyweb.database;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
 
 /**
  * Generated at Fri May 08 19:01:00 CEST 2009
@@ -21,6 +23,8 @@ public interface GenericDAO<T, ID extends Serializable> {
 	List<T> findAll();
 	
 	List<T> findByCriteria(Map criterias);
+
+    List<T> findByCriteria(Criterion... criterion);
 	
 	public List<T> findByExample(T exampleInstance, String[] excludeProperty);
 
