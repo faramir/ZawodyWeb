@@ -33,7 +33,7 @@
                 <br class="clear" />
             </div>
             <div>
-                <a4j:commandButton id="save" reRender="formQuestions" styleClass="submit" type="submit" value="#{messages.send}" action="#{requestBean.saveQuestion}" />
+                <a4j:commandButton id="save" reRender="formQuestions" styleClass="submit" type="submit" value="#{messages.send}" action="#{requestBean.addQuestion}" />
                 <h:message for="save" errorClass="error" />
                 <br class="clear" />
             </div>

@@ -78,6 +78,7 @@ public class RequestBean {
     private Integer temporaryProblemId;
     private Integer temporaryClassId;
     private Integer temporaryTestId;
+    private Integer temporaryQuestionId;
     private Integer[] temporaryLanguagesIds;
     private Integer temporaryLanguageId;
     private String temporarySource;
@@ -85,6 +86,7 @@ public class RequestBean {
     private String dummy;
     private List<Problems> submittableProblems;
     private UploadedFile temporaryFile;
+    private String answer;
     private boolean deletePdf;
 
     /**
@@ -233,7 +235,7 @@ public class RequestBean {
     }
 
     public List<Questions> getCurrentContestQuestions() {
-        if(currentContestQuestions == null){
+        if (currentContestQuestions == null) {
             QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
             currentContestQuestions = dao.findByCriteria(Restrictions.eq("contests.id", sessionBean.getCurrentContest().getId()),
                     Restrictions.or(Restrictions.eq("qtype", 1), Restrictions.eq("users.id", sessionBean.getCurrentUser().getId())));
@@ -257,7 +259,7 @@ public class RequestBean {
                 }
             }
 
-            if (temporaryContestId == 0) {
+            if (ELFunctions.isNullOrZero(temporaryContestId)) {
                 editedContest = new Contests();
             } else {
                 ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
@@ -278,7 +280,22 @@ public class RequestBean {
 
     public Questions getEditedQuestion() {
         if (editedQuestion == null) {
-            editedQuestion = new Questions();
+            FacesContext context = FacesContext.getCurrentInstance();
+
+            if (!WWWHelper.isPost(context)) {
+                try {
+                    temporaryQuestionId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+                } catch (Exception e) {
+                    temporaryQuestionId = 0;
+                }
+            }
+
+            if (ELFunctions.isNullOrZero(temporaryQuestionId)) {
+                editedQuestion = new Questions();
+            } else {
+                QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
+                editedQuestion = dao.getById(temporaryQuestionId);
+            }
         }
 
         return editedQuestion;
@@ -337,6 +354,14 @@ public class RequestBean {
         this.temporaryTestId = temporaryTestId;
     }
 
+    public Integer getTemporaryQuestionId() {
+        return temporaryQuestionId;
+    }
+
+    public void setTemporaryQuestionId(Integer temporaryQuestionId) {
+        this.temporaryQuestionId = temporaryQuestionId;
+    }
+
     public Integer[] getTemporaryLanguagesIds() {
         return temporaryLanguagesIds;
     }
@@ -377,6 +402,14 @@ public class RequestBean {
         this.temporarySource = temporarySource;
     }
 
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
     public Series getEditedSeries() {
         if (editedSeries == null) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -388,7 +421,7 @@ public class RequestBean {
                 }
             }
 
-            if (temporarySeriesId == 0) {
+            if (ELFunctions.isNullOrZero(temporarySeriesId)) {
                 editedSeries = new Series();
             } else {
                 SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
@@ -415,7 +448,7 @@ public class RequestBean {
                 }
             }
 
-            if (temporaryProblemId == 0) {
+            if (ELFunctions.isNullOrZero(temporaryProblemId)) {
                 editedProblem = new Problems();
             } else {
                 ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
@@ -454,7 +487,7 @@ public class RequestBean {
                 }
             }
 
-            if (temporaryTestId == 0) {
+            if (ELFunctions.isNullOrZero(temporaryTestId)) {
                 editedTest = new Tests();
             } else {
                 TestsDAO dao = DAOFactory.DEFAULT.buildTestsDAO();
@@ -568,26 +601,26 @@ public class RequestBean {
             PDFDAO pdao = DAOFactory.DEFAULT.buildPDFDAO();
 
             if (temporaryFile != null) {
-                PDF current = editedProblem.getPDF();
+                PDF current = getEditedProblem().getPDF();
                 if (current == null) {
                     current = new PDF();
                 }
 
                 current.setPdf(temporaryFile.getBytes());
                 pdao.saveOrUpdate(current);
-                editedProblem.setPDF(current);
+                getEditedProblem().setPDF(current);
             }
 
             if (deletePdf) {
-                PDF tmp = editedProblem.getPDF();
-                editedProblem.setPDF(null);
+                PDF tmp = getEditedProblem().getPDF();
+                getEditedProblem().setPDF(null);
                 pdao.delete(tmp);
             }
 
-            editedProblem.setSeries(sdao.getById(temporarySeriesId));
-            editedProblem.setClasses(cdao.getById(temporaryClassId));
+            getEditedProblem().setSeries(sdao.getById(temporarySeriesId));
+            getEditedProblem().setClasses(cdao.getById(temporaryClassId));
 
-            List<LanguagesProblems> tmpList = lpdao.findByProblemsid(editedProblem.getId());
+            List<LanguagesProblems> tmpList = lpdao.findByProblemsid(getEditedProblem().getId());
 
             if (tmpList != null) {
                 for (LanguagesProblems lp : tmpList) {
@@ -598,11 +631,11 @@ public class RequestBean {
             for (Integer lid : temporaryLanguagesIds) {
                 LanguagesProblems lp = new LanguagesProblems();
                 lp.setLanguages(ldao.getById(lid));
-                lp.setProblems(editedProblem);
+                lp.setProblems(getEditedProblem());
                 lpdao.saveOrUpdate(lp);
             }
 
-            dao.saveOrUpdate(editedProblem);
+            dao.saveOrUpdate(getEditedProblem());
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -614,24 +647,40 @@ public class RequestBean {
         return "problems";
     }
 
-    public String saveQuestion() {
+    public String addQuestion() {
         try {
             QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
             ProblemsDAO pdao = DAOFactory.DEFAULT.buildProblemsDAO();
             UsersDAO udao = DAOFactory.DEFAULT.buildUsersDAO();
 
-            editedQuestion.setContests(sessionBean.getCurrentContest());
-            editedQuestion.setProblems(pdao.getById(temporaryProblemId));
-            editedQuestion.setQtype(0);
-            editedQuestion.setUsers(sessionBean.getCurrentUser());
+            getEditedQuestion().setContests(sessionBean.getCurrentContest());
+            getEditedQuestion().setProblems(pdao.getById(temporaryProblemId));
+            getEditedQuestion().setQtype(0);
+            getEditedQuestion().setUsers(sessionBean.getCurrentUser());
 
-            dao.saveOrUpdate(editedQuestion);
+            dao.save(getEditedQuestion());
 
             return "questions";
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formQuestions:save", summary, null);
+            return null;
+        }
+    }
+
+    public String saveAnswer() {
+        try{
+            QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
+            String tmp = getEditedQuestion().getQuestion().replaceAll("\n", "\n> ");
+            tmp = ">".concat(tmp).concat("\n\n").concat(answer);
+            getEditedQuestion().setQuestion(tmp);
+            dao.saveOrUpdate(getEditedQuestion());
+            return "questions";
+        }catch(Exception e){
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formQuestion:save", summary, null);
             return null;
         }
     }
@@ -659,7 +708,20 @@ public class RequestBean {
             sessionBean.selectContest(currentProblem.getSeries().getContests().getId());
             return "problem";
         }
+    }
 
+    @HttpAction(name = "question", pattern = "question/{id}/{title}")
+    public String goToQuestion(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
+        temporaryQuestionId = id;
+        editedQuestion = dao.getById(id);
+
+        if (editedQuestion == null) {
+            return "/error/404";
+        } else {
+            sessionBean.selectContest(editedQuestion.getContests().getId());
+            return "question";
+        }
     }
 
     @HttpAction(name = "submit", pattern = "submit/{id}/{title}")
