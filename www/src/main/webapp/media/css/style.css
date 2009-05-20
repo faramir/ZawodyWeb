@@ -226,6 +226,17 @@ background-color:transparent;
 padding: 0px;
 }
 
+.profilform label.seria {
+    text-align: center;
+    float: none;
+    font-weight: bold;
+    color: #0000FF;
+    height: auto;
+    margin: 30px auto 0px auto;
+    width: 50%;
+    background: #decff4;
+}
+
 .profilform input, select {
 margin-right:20px;
 margin-top: 12px;
@@ -353,6 +364,10 @@ border:1px solid #333333;
     width: 90%;
     padding: 0px;
     margin: 0px auto;
+}
+
+.profilform.pagingrid table:hover {
+	background-color: transparent;
 }
 
 img.lewy {
