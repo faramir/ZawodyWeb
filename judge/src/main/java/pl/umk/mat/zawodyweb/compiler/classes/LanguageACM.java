@@ -253,7 +253,6 @@ public class LanguageACM implements CompilerInterface {
                     } else {
                         result.setResult(CheckerErrors.UNKNOWN);
                         result.setResultDesc("Unknown status: \"" + stat + "\"");
-                        break;
                     }
                     break;
                 } else {
