@@ -87,6 +87,7 @@ public class RequestBean {
     private List<Problems> submittableProblems;
     private UploadedFile temporaryFile;
     private String answer;
+    private boolean publicAnswer;
     private boolean deletePdf;
 
     /**
@@ -295,6 +296,9 @@ public class RequestBean {
             } else {
                 QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
                 editedQuestion = dao.getById(temporaryQuestionId);
+                if (editedQuestion != null && !WWWHelper.isPost(context)) {
+                    publicAnswer =editedQuestion.getQtype().equals(1);
+                }
             }
         }
 
@@ -392,6 +396,14 @@ public class RequestBean {
 
     public void setDeletePdf(Boolean deletePdf) {
         this.deletePdf = deletePdf;
+    }
+
+    public boolean isPublicAnswer() {
+        return publicAnswer;
+    }
+
+    public void setPublicAnswer(boolean publicAnswer) {
+        this.publicAnswer = publicAnswer;
     }
 
     public String getTemporarySource() {
@@ -675,6 +687,7 @@ public class RequestBean {
             String tmp = getEditedQuestion().getQuestion().replaceAll("\n", "\n> ");
             tmp = ">".concat(tmp).concat("\n\n").concat(answer);
             getEditedQuestion().setQuestion(tmp);
+            getEditedQuestion().setQtype(publicAnswer ? 1 : 0);
             dao.saveOrUpdate(getEditedQuestion());
             return "questions";
         } catch (Exception e) {
@@ -727,6 +740,7 @@ public class RequestBean {
         if (editedQuestion == null) {
             return "/error/404";
         } else {
+            publicAnswer = editedQuestion.getQtype() == 1;
             sessionBean.selectContest(editedQuestion.getContests().getId());
             return "question";
         }

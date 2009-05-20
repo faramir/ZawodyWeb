@@ -28,6 +28,11 @@
                     <br class="clear" />
                 </div>
                 <div>
+                    <h:outputLabel for="answerpub">${messages.problem_public_answer}</h:outputLabel>
+                    <h:selectBooleanCheckbox id="answerpub" value="#{requestBean.publicAnswer}" styleClass="check" />
+                    <br class="clear" />
+                </div>
+                <div>
                     <a4j:commandButton id="save" reRender="formQuestion" styleClass="submit" type="submit" value="#{messages.question_makeanswer}" action="#{requestBean.saveAnswer}" />
                     <h:message for="save" errorClass="error" />
                     <br class="clear" />
