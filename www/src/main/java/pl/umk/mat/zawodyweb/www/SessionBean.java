@@ -30,7 +30,7 @@ public class SessionBean {
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
     private Users currentUser = new Users();
     private Contests currentContest;
-    private boolean isLoggedIn;
+    private boolean loggedIn;
     private Boolean rememberMe;
 
     /**
@@ -50,8 +50,8 @@ public class SessionBean {
     /**
      * @return the isLoggedIn
      */
-    public boolean isIsLoggedIn() {
-        return isLoggedIn;
+    public boolean isLoggedIn() {
+        return loggedIn;
     }
 
     public String logIn() {
@@ -71,18 +71,26 @@ public class SessionBean {
             UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
             Users user = dao.findByLogin(currentUser.getLogin()).get(0);
             if (user.getPass().equals(currentUser.getPass())) {
-                isLoggedIn = true;
+                loggedIn = true;
                 currentUser = user;
             }
         } catch (Exception e) {
-            isLoggedIn = false;
+            loggedIn = false;
         }
 
-        if (!isLoggedIn) {
+        if (!loggedIn) {
             String summary = messages.getString("bad_login_data");
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formLogin:login", summary, null);
             return null;
         }
+
+        return "start";
+    }
+
+    @HttpAction(name = "logout", pattern = "logout")
+    public String logOut() {
+        currentUser = new Users();
+        loggedIn = false;
 
         return "start";
     }

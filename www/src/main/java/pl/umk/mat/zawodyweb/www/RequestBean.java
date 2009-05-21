@@ -16,6 +16,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 import org.restfaces.annotation.HttpAction;
@@ -73,6 +74,7 @@ public class RequestBean {
     private List<Languages> languages = null;
     private List<Series> currentContestSeries = null;
     private List<Questions> currentContestQuestions = null;
+    private List<Submits> submissions = null;
     private Integer temporaryContestId;
     private Integer temporarySeriesId;
     private Integer temporaryProblemId;
@@ -245,6 +247,18 @@ public class RequestBean {
         return currentContestQuestions;
     }
 
+    public List<Submits> getSubmissions() {
+        if (submissions == null) {
+            SubmitsDAO dao = DAOFactory.DEFAULT.buildSubmitsDAO();
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
+            c.createCriteria("problems").createCriteria("series").createCriteria("contests").add(Restrictions.eq("id", sessionBean.getCurrentContest().getId()));
+            c.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
+            submissions = c.list();
+        }
+
+        return submissions;
+    }
+
     /**
      * @return the editedContest
      */
@@ -297,7 +311,7 @@ public class RequestBean {
                 QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
                 editedQuestion = dao.getById(temporaryQuestionId);
                 if (editedQuestion != null && !WWWHelper.isPost(context)) {
-                    publicAnswer =editedQuestion.getQtype().equals(1);
+                    publicAnswer = editedQuestion.getQtype().equals(1);
                 }
             }
         }
@@ -715,6 +729,16 @@ public class RequestBean {
             return "/error/404";
         } else {
             return "questions";
+        }
+    }
+
+    @HttpAction(name = "submissions", pattern = "submissions/{id}/{title}")
+    public String goToSubmissions(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        sessionBean.selectContest(id);
+        if (sessionBean.getCurrentContest() == null) {
+            return "/error/404";
+        } else {
+            return "submissions";
         }
     }
 
