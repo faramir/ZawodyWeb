@@ -40,6 +40,33 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <!-- -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <tasks>
+                        <taskdef name="instrument" classname="org.hibernate.tool.instrument.cglib.InstrumentTask">
+                            <classpath>
+                                <path refid="maven.runtime.classpath" />
+                                <path refid="maven.plugin.classpath" />
+                            </classpath>
+                        </taskdef>
+                        <instrument verbose="false">
+                            <fileset dir="${project.build.outputDirectory}">
+                                <include name="**/pojo/**/*.class" />
+                            </fileset>
+                        </instrument>
+                    </tasks>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <!-- -->
@@ -77,7 +104,7 @@
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>8.3-603.jdbc4</version>
-        </dependency> 
+        </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>persistence-api</artifactId>
@@ -92,6 +119,12 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-annotations</artifactId>
             <version>3.2.1.ga</version>
+        </dependency>
+        <dependency>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.8.0.GA</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 </project>

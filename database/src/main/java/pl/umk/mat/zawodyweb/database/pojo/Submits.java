@@ -31,216 +31,203 @@ import javax.persistence.GenerationType;
 @SuppressWarnings("serial")
 public class Submits implements Serializable {
 
-	/**
-	 * Attribute id.
-	 */
-	private Integer id;
-	
-	/**
-	 * Attribute sdate.
-	 */
-	private Timestamp sdate;
-	
-	/**
-	 * Attribute result.
-	 */
-	private Integer result;
-	
-	/**
-	 * Attribute code.
-	 */
-	private byte[] code;
-	
-	/**
-	 * Attribute filename.
-	 */
-	private String filename;
-	
-	/**
-	 * Attribute notes.
-	 */
-	private String notes;
-	
-	/**
-	 * Attribute problems
-	 */
-	 private Problems problems;	
+    /**
+     * Attribute id.
+     */
+    private Integer id;
+    /**
+     * Attribute sdate.
+     */
+    private Timestamp sdate;
+    /**
+     * Attribute result.
+     */
+    private Integer result;
+    /**
+     * Attribute code.
+     */
+    private byte[] code;
+    /**
+     * Attribute filename.
+     */
+    private String filename;
+    /**
+     * Attribute notes.
+     */
+    private String notes;
+    /**
+     * Attribute problems
+     */
+    private Problems problems;
+    /**
+     * Attribute languages
+     */
+    private Languages languages;
+    /**
+     * Attribute languages
+     */
+    private Users users;
+    /**
+     * List of Results
+     */
+    private List<Results> resultss = null;
 
-	/**
-	 * Attribute languages
-	 */
-	 private Languages languages;	
+    /**
+     * @return id
+     */
+    @Basic
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    public Integer getId() {
+        return id;
+    }
 
-     	/**
-	 * Attribute languages
-	 */
-	 private Users users;
+    /**
+     * @param id new value for id
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
+    /**
+     * @return sdate
+     */
+    @Basic
+    @Column(name = "sdate")
+    public Timestamp getSdate() {
+        return sdate;
+    }
 
-	/**
-	 * List of Results
-	 */
-	private List<Results> resultss = null;
+    /**
+     * @param sdate new value for sdate
+     */
+    public void setSdate(Timestamp sdate) {
+        this.sdate = sdate;
+    }
 
-	
-	/**
-	 * @return id
-	 */
-	@Basic
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "id")
-		public Integer getId() {
-		return id;
-	}
+    /**
+     * @return result
+     */
+    @Basic
+    @Column(name = "result")
+    public Integer getResult() {
+        return result;
+    }
 
-	/**
-	 * @param id new value for id 
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
-	/**
-	 * @return sdate
-	 */
-	@Basic
-	@Column(name = "sdate")
-		public Timestamp getSdate() {
-		return sdate;
-	}
+    /**
+     * @param result new value for result
+     */
+    public void setResult(Integer result) {
+        this.result = result;
+    }
 
-	/**
-	 * @param sdate new value for sdate 
-	 */
-	public void setSdate(Timestamp sdate) {
-		this.sdate = sdate;
-	}
-	
-	/**
-	 * @return result
-	 */
-	@Basic
-	@Column(name = "result")
-		public Integer getResult() {
-		return result;
-	}
+    /**
+     * @return code
+     */
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "code")
+    public byte[] getCode() {
+        return code;
+    }
 
-	/**
-	 * @param result new value for result 
-	 */
-	public void setResult(Integer result) {
-		this.result = result;
-	}
-	
-	/**
-	 * @return code
-	 */
-	@Basic
-	@Column(name = "code")
-		public byte[] getCode() {
-		return code;
-	}
+    /**
+     * @param code new value for code
+     */
+    public void setCode(byte[] code) {
+        this.code = code;
+    }
 
-	/**
-	 * @param code new value for code 
-	 */
-	public void setCode(byte[] code) {
-		this.code = code;
-	}
-	
-	/**
-	 * @return filename
-	 */
-	@Basic
-	@Column(name = "filename", length = 255)
-		public String getFilename() {
-		return filename;
-	}
+    /**
+     * @return filename
+     */
+    @Basic
+    @Column(name = "filename", length = 255)
+    public String getFilename() {
+        return filename;
+    }
 
-	/**
-	 * @param filename new value for filename 
-	 */
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
-	
-	/**
-	 * @return notes
-	 */
-	@Basic
-	@Column(name = "notes", length = 2147483647)
-		public String getNotes() {
-		return notes;
-	}
+    /**
+     * @param filename new value for filename
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 
-	/**
-	 * @param notes new value for notes 
-	 */
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-	
-	/**
-	 * get problems
-	 */
-	@ManyToOne
-	@JoinColumn(name = "problemsid")
-	public Problems getProblems() {
-		return this.problems;
-	}
-	
-	/**
-	 * set problems
-	 */
-	public void setProblems(Problems problems) {
-		this.problems = problems;
-	}
+    /**
+     * @return notes
+     */
+    @Basic
+    @Column(name = "notes", length = 2147483647)
+    public String getNotes() {
+        return notes;
+    }
 
-	/**
-	 * get languages
-	 */
-	@ManyToOne
-	@JoinColumn(name = "languagesid")
-	public Languages getLanguages() {
-		return this.languages;
-	}
-	
-	/**
-	 * set languages
-	 */
-	public void setLanguages(Languages languages) {
-		this.languages = languages;
-	}
+    /**
+     * @param notes new value for notes
+     */
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 
-    	@ManyToOne
-	@JoinColumn(name = "usersid")
-	public Users getUsers() {
-		return this.users;
-	}
+    /**
+     * get problems
+     */
+    @ManyToOne
+    @JoinColumn(name = "problemsid")
+    public Problems getProblems() {
+        return this.problems;
+    }
 
-	/**
-	 * set languages
-	 */
-	public void setUsers(Users users) {
-		this.users = users;
-	}
+    /**
+     * set problems
+     */
+    public void setProblems(Problems problems) {
+        this.problems = problems;
+    }
 
-	/**
-	 * Get the list of Results
-	 */
-	 // resultsPK
-	 @OneToMany(mappedBy="submits")
-	 public List<Results> getResultss() {
-	 	return this.resultss;
-	 }
-	 
-	/**
-	 * Set the list of Results
-	 */
-	 public void setResultss(List<Results> resultss) {
-	 	this.resultss = resultss;
-	 }
+    /**
+     * get languages
+     */
+    @ManyToOne
+    @JoinColumn(name = "languagesid")
+    public Languages getLanguages() {
+        return this.languages;
+    }
 
+    /**
+     * set languages
+     */
+    public void setLanguages(Languages languages) {
+        this.languages = languages;
+    }
 
+    @ManyToOne
+    @JoinColumn(name = "usersid")
+    public Users getUsers() {
+        return this.users;
+    }
+
+    /**
+     * set languages
+     */
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    /**
+     * Get the list of Results
+     */
+    // resultsPK
+    @OneToMany(mappedBy = "submits")
+    public List<Results> getResultss() {
+        return this.resultss;
+    }
+
+    /**
+     * Set the list of Results
+     */
+    public void setResultss(List<Results> resultss) {
+        this.resultss = resultss;
+    }
 }
