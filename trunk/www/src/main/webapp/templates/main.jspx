@@ -45,6 +45,9 @@
                     <zw:contest-link contest="${sessionBean.currentContest}" type="questions" message="#{messages.questions}" />
                 </li>
                 <li>
+                    <zw:contest-link contest="${sessionBean.currentContest}" type="submissions" message="#{messages.submissions}" />
+                </li>
+                <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/harmonogram.html">${messages.timetable}</h:outputLink>
                 </li>
                 <li>
@@ -67,9 +70,11 @@
                 </li>
             </ul>
         </div>
-        <div class="welcomeClass">
-            <h:outputText id="welcome">Witaj dalton!</h:outputText>
-        </div>
+        <c:if test="#{sessionBean.loggedIn}">
+            <div class="welcomeClass">
+                <h:outputText id="welcome">#{messages.welcome} #{sessionBean.currentUser.login}</h:outputText>
+            </div>
+        </c:if>
         <div id="top_menu">
             <ul>
                 <li>
@@ -88,7 +93,8 @@
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/register.html">${messages.registration}</h:outputLink>
                 </li>
                 <li class="prawa">
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/login.html">${messages.log_in}</h:outputLink>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/login.html" rendered="#{!(sessionBean.loggedIn)}">${messages.log_in}</h:outputLink>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/logout.html" rendered="#{sessionBean.loggedIn}">${messages.log_out}</h:outputLink>
                 </li>
             </ul>
         </div>

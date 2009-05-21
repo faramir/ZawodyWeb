@@ -63,6 +63,19 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
+        <display-name>to_index</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                start
+            </from-outcome>
+            <to-view-id>
+                /start.jspx
+            </to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
         <display-name>editcontest_to_index</display-name>
         <from-view-id>/admin/editcontest.jspx</from-view-id>
         <navigation-case>
@@ -135,6 +148,18 @@
             </from-outcome>
             <to-view-id>
                 /questions.jspx
+            </to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <display-name>goToSubmissions</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                submissions
+            </from-outcome>
+            <to-view-id>
+                /submissions.jspx
             </to-view-id>
         </navigation-case>
     </navigation-rule>
