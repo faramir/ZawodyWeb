@@ -120,11 +120,5 @@
             <artifactId>hibernate-annotations</artifactId>
             <version>3.2.1.ga</version>
         </dependency>
-        <dependency>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>3.8.0.GA</version>
-            <scope>runtime</scope>
-        </dependency>
     </dependencies>
 </project>
