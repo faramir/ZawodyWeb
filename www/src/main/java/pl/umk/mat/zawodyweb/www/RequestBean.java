@@ -17,6 +17,7 @@ import javax.faces.context.FacesContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 import org.restfaces.annotation.HttpAction;
@@ -253,6 +254,7 @@ public class RequestBean {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
             c.createCriteria("problems").createCriteria("series").createCriteria("contests").add(Restrictions.eq("id", sessionBean.getCurrentContest().getId()));
             c.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
+            c.addOrder(Order.desc("sdate"));
             submissions = c.list();
         }
 
@@ -844,7 +846,7 @@ public class RequestBean {
             submit.setUsers(udao.getById(sessionBean.getCurrentUser().getId()));
 
             dao.saveOrUpdate(submit);
-            return "problems";
+            return "submissions";
         } catch (Exception e) {
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, controlId, summary, null);
