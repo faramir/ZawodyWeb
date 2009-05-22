@@ -11,6 +11,18 @@
                     ${requestBean.currentProblem.name}
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/pdf.html" title="PDF" rendered="#{requestBean.currentProblem.PDF != null}">PDF</h:outputLink>
                 </div>
+                <div class="termin">
+                    ${requestBean.currentProblem.series.enddate}
+                </div>
+                <div class="jezyki">
+                    ${messages.languages}:
+                    <c:forEach var="languageproblem" items="#{requestBean.currentProblem.languagesProblemss}">
+                    ${languageproblem.languages.extension}
+                    </c:forEach>
+                </div>
+                <div class="czas">
+                    ${messages.test_timelimit}: ${zw:maxLimitTime(requestBean.currentProblem)} s
+                </div>
                 <div class="pamiec">
                     ${messages.problem_memlimit}: ${requestBean.currentProblem.memlimit} MB
                 </div>

@@ -16,7 +16,7 @@
                             <f:facet name="header">
                             ${messages.submission_date}
                             </f:facet>
-                            <h:outputText value="#{submit.id}" />
+                            <h:outputText value="#{submit.sdate}" />
                         </h:column>
                         <h:column>
                             <f:facet name="header">
