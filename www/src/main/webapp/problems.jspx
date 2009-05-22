@@ -12,6 +12,7 @@
                 </c:when>
                 <c:otherwise>
                     <c:forEach var="series" items="#{requestBean.currentContestSeries}">
+                        <div class="seria">
                         <h:outputLabel for="problems#{series.id}" styleClass="seria">${series.name}:</h:outputLabel>
                         <br />
                         <t:dataTable id="problems#{series.id}" var="problem" styleClass="seria" value="#{series.problemss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
@@ -28,6 +29,10 @@
                                 <h:outputText value="#{problem.abbrev}" />
                             </h:column>
                         </t:dataTable>
+                        </div>
+                        <div class="seriaDol">
+                            
+                        </div>
                     </c:forEach>
                 </c:otherwise>
             </c:choose>
