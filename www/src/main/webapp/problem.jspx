@@ -6,13 +6,20 @@
     </ui:define>
     <ui:define name="pageContent">
         <a4j:form id="formProblem" styleClass="profilform">
-            ${messages.problem_name}: (${requestBean.currentProblem.abbrev}) ${requestBean.currentProblem.name}
-            <br />
-            ${messages.problem_memlimit}: ${requestBean.currentProblem.memlimit}
-            <br />
-            <h:outputText value="${zw:nlToBr(requestBean.currentProblem.text)}" escape="false" />
-            <br />
-            <zw:problem-link problem="${requestBean.currentProblem}" message="${messages.send_solution}" type="submit" />
+          <div class="zadanko">
+            <div class="nazwa">
+                ${requestBean.currentProblem.name}
+            </div>
+            <div class="pamiec">
+                ${messages.problem_memlimit}: ${requestBean.currentProblem.memlimit} MB
+            </div>
+            <div class="tresc">
+                <h:outputText value="${zw:nlToBr(requestBean.currentProblem.text)}" escape="false" />
+            </div>
+            <div class="wyslij">
+                <zw:problem-link problem="${requestBean.currentProblem}" message="${messages.send_solution}" type="submit" />
+            </div>
+          </div>
         </a4j:form>
     </ui:define>
 </ui:composition>
