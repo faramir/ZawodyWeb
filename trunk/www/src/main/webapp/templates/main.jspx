@@ -9,6 +9,7 @@
             ${messages.title} -
             <ui:insert name="pageTitle" />
         </title>
+        <link rel="shortcut icon" href="#{facesContext.externalContext.requestContextPath}/media/images/favicon.ico" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <a4j:loadStyle media="screen, projection" src="/media/css/style.css" />
         <a4j:loadScript src="resource://jquery.js"/>
