@@ -54,18 +54,6 @@
                 <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/regulamin.html">${messages.rules}</h:outputLink>
                 </li>
-                <li>
-                    <h:outputText value="&amp;nbsp;" escape="false" />
-                </li>
-                <li>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editseries.html">${messages.addseries}</h:outputLink>
-                </li>
-                <li>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editproblem.html">${messages.addproblem}</h:outputLink>
-                </li>
-                <li>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/edittest.html">${messages.addtest}</h:outputLink>
-                </li>
             </ul>
         </div>
         <c:if test="#{sessionBean.loggedIn}">

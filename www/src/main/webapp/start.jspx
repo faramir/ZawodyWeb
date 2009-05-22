@@ -7,6 +7,7 @@
                     ${messages.contest_name}
                     </f:facet>
                     <zw:contest-link id="link" contest="${contest}" type="problems" message="#{contest.name}" />
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editcontest.html?id=#{contest.id}" rendered="#{zw:canEditContest(rolesBean, contest.id, null)}">E</h:outputLink>
                 </h:column>
                 <h:column>
                     <f:facet name="header">
@@ -25,7 +26,7 @@
                 </f:facet>
             </t:dataScroller>
             </h:panelGrid>
-            <div>
+            <div> 
                 <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editcontest.html" rendered="#{zw:canAddContest(rolesBean, null, null)}">${messages.addcontest}</h:outputLink>
             </div>
         </a4j:form>
