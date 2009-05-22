@@ -57,9 +57,6 @@
                     <h:outputText value="&amp;nbsp;" escape="false" />
                 </li>
                 <li>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editcontest.html" rendered="#{zw:canAddContest(rolesBean, null, null)}">${messages.addcontest}</h:outputLink>
-                </li>
-                <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editseries.html">${messages.addseries}</h:outputLink>
                 </li>
                 <li>
