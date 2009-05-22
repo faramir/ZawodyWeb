@@ -15,6 +15,7 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.custom.datascroller.ScrollerActionEvent;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
@@ -822,11 +823,32 @@ public class RequestBean {
         Problems p = dao.getById(id);
         if (p != null) {
             temporaryProblemId = id;
-            temporarySeriesId= p.getSeries().getId();
+            temporarySeriesId = p.getSeries().getId();
             temporaryContestId = p.getSeries().getContests().getId();
         }
 
         return "/admin/edittest";
+    }
+
+    @HttpAction(name = "getpdf", pattern = "get/{id}/pdf")
+    public String getProblemPDF(@Param(name = "id", encode = true) int id) throws IOException {
+        ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
+        Problems p = dao.getById(id);
+
+        if (p != null && p.getPDF() != null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+
+            HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + p.getName() + ".pdf\"");
+            response.getOutputStream().write(p.getPDF().getPdf());
+            response.getOutputStream().flush();
+            response.getOutputStream().close();
+            context.responseComplete();
+            return null;
+        }else{
+            return "/error/404";
+        }
     }
 
     public String saveTest() {
