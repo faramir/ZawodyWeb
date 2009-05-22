@@ -10,7 +10,7 @@
             <br />
             ${messages.problem_memlimit}: ${requestBean.currentProblem.memlimit}
             <br />
-            <h:outputText value="${requestBean.currentProblem.text}" escape="false" />
+            <h:outputText value="${zw:nlToBr(requestBean.currentProblem.text)}" escape="false" />
             <br />
             <zw:problem-link problem="${requestBean.currentProblem}" message="${messages.send_solution}" type="submit" />
         </a4j:form>
