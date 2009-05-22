@@ -173,7 +173,7 @@ public class Submits implements Serializable {
     /**
      * get problems
      */
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "problemsid")
     public Problems getProblems() {
         return this.problems;
@@ -189,7 +189,7 @@ public class Submits implements Serializable {
     /**
      * get languages
      */
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "languagesid")
     public Languages getLanguages() {
         return this.languages;
@@ -202,7 +202,7 @@ public class Submits implements Serializable {
         this.languages = languages;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "usersid")
     public Users getUsers() {
         return this.users;
