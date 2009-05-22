@@ -233,14 +233,29 @@ padding: 0px;
     display: inline-block;
     color: #001188;
     height: auto;
-    margin: 30px 0 0px 0px;
+    margin: 2px 0 0px 0px;
     padding: 5px;
     width: 98%;
-    border: ridge;
-    border-color: #decff4;
-    border-width: 2px 2px 0px 2px;
-    background: #decff4 url(../images/ui-bg_1x150.png) repeat-x;
+    background: transparent;
 }
+
+.profilform div.seria {
+    border: solid;
+    border-color: #dfd1f4;
+    border-width: 0px 1px 0px 0px;
+    margin: 20px 0 0px 0px;
+    background: #e9dff7 url(../images/seriaGora.png) repeat-x;
+}
+
+.profilform div.seriaDol {
+    border: solid;
+    border-color: #dfd1f4;
+    border-width: 0px 1px 0px 0px;
+    margin: 0px 0px 10px 0px;
+    height: 30px;
+    background: #e9dff7 url(../images/seriaDol.png) repeat-x;
+}
+
 
 .profilform input, select {
 margin-right:20px;
@@ -679,5 +694,6 @@ tbody {
     font-size:11px;
     width: 16%;
     margin-right:5%;
+    margin-bottom: 0px;
     color:#000;
 }
