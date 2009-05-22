@@ -256,6 +256,62 @@ padding: 0px;
     background: #e9dff7 url(../images/seriaDol.png) repeat-x;
 }
 
+.profilform div.zadanko div.nazwa {
+    font-size: 32px;
+    background: #decff4;
+    width: 90%;
+    margin: auto;
+    text-align: center;
+    padding-top: 10px;
+}
+
+.profilform div.zadanko {
+   border: solid #000;
+   border-width: 0 1px 0 1px;
+}
+
+.profilform div.zadanko div.pamiec {
+    font-size: 11px;
+    background: #decff4;
+    width: 90%;
+    margin: 0 auto 10px auto;
+    text-align: right;
+}
+
+.profilform div.zadanko div.wyslij {
+    font-size: 18px;
+    margin: 10px auto 10px auto;
+    text-align: center;
+    background: #decff4;
+    width: 90%;
+    padding: 10px 0 10px 0;
+}
+
+.profilform div.zadanko div.tresc {
+    padding: 0 45px 0 45px;
+}
+
+.profilform div.zadanko div.tresc div {
+    margin: 0px;
+    padding: 0px;
+    font: 1em Monospace;
+}
+
+#content h1 {
+    text-align: left;
+    font-size: 20px;
+    border: 0px;
+    margin: 10px -15px 0px -15px;
+    padding: 0px;
+}
+
+#content h2 {
+    text-align: left;
+    font-size: 17px;
+    border: 0px;
+    margin: 10px -15px 0px -15px;
+    padding: 0px;
+}
 
 .profilform input, select {
 margin-right:20px;
