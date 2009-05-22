@@ -16,7 +16,7 @@
                             <f:facet name="header">
                             ${messages.submission_date}
                             </f:facet>
-                            <h:outputText value="#{submit.sdate}" />
+                            <h:outputText value="#{submit.id}" />
                         </h:column>
                         <h:column>
                             <f:facet name="header">
@@ -32,7 +32,7 @@
                         </h:column>
                     </t:dataTable>
                     <h:panelGrid columns="1" styleClass="pagingrid" >
-                        <t:dataScroller for="submissions" paginator="true" paginatorActiveColumnClass="act" paginatorTableClass="paginator" paginatorMaxPages="9" >
+                        <t:dataScroller for="submissions" paginator="true" paginatorActiveColumnClass="act" paginatorTableClass="paginator" paginatorMaxPages="9" actionListener="#{requestBean.submissionsScrollerAction}" >
                             <f:facet name="previous" >
                                 <t:graphicImage url="/media/images/left_arrow.png" styleClass="lewy" />
                             </f:facet>

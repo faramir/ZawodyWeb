@@ -14,10 +14,13 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import org.apache.commons.lang.StringUtils;
+import org.apache.myfaces.custom.datascroller.ScrollerActionEvent;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 import org.restfaces.annotation.HttpAction;
@@ -47,6 +50,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Series;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
+import pl.umk.mat.zawodyweb.www.datamodels.PagedDataModel;
 
 /**
  *
@@ -75,7 +79,7 @@ public class RequestBean {
     private List<Languages> languages = null;
     private List<Series> currentContestSeries = null;
     private List<Questions> currentContestQuestions = null;
-    private List<Submits> submissions = null;
+    private PagedDataModel submissions = null;
     private Integer temporaryContestId;
     private Integer temporarySeriesId;
     private Integer temporaryProblemId;
@@ -84,6 +88,7 @@ public class RequestBean {
     private Integer temporaryQuestionId;
     private Integer[] temporaryLanguagesIds;
     private Integer temporaryLanguageId;
+    private int temporaryPageIndex = 0;
     private String temporarySource;
     private Problems currentProblem;
     private String dummy;
@@ -248,14 +253,21 @@ public class RequestBean {
         return currentContestQuestions;
     }
 
-    public List<Submits> getSubmissions() {
+    public PagedDataModel getSubmissions() {
         if (submissions == null) {
-            SubmitsDAO dao = DAOFactory.DEFAULT.buildSubmitsDAO();
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
+            c.setProjection(Projections.rowCount());
             c.createCriteria("problems").createCriteria("series").createCriteria("contests").add(Restrictions.eq("id", sessionBean.getCurrentContest().getId()));
             c.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
-            c.addOrder(Order.desc("sdate"));
-            submissions = c.list();
+            Number number = (Number) c.uniqueResult();
+
+            Criteria c2 = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
+            c2.createCriteria("problems").createCriteria("series").createCriteria("contests").add(Restrictions.eq("id", sessionBean.getCurrentContest().getId()));
+            c2.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
+            c2.addOrder(Order.desc("sdate"));
+            c2.setFirstResult(temporaryPageIndex * 10);
+            c2.setMaxResults(10);
+            submissions = new PagedDataModel(c2.list(), number.intValue());
         }
 
         return submissions;
@@ -824,6 +836,12 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, component, summary, null);
         }
 
+    }
+
+    public void submissionsScrollerAction(ActionEvent event) {
+        ScrollerActionEvent scrollerEvent = (ScrollerActionEvent) event;
+        temporaryPageIndex = scrollerEvent.getPageIndex() - 1;
+        submissions = null;
     }
 
     private String sendSolution(byte[] bytes, String fileName, String controlId) {
