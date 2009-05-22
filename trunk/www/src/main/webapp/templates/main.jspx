@@ -1,4 +1,4 @@
-<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
       xmlns:c="http://java.sun.com/jstl/core" xmlns:a4j="http://richfaces.org/a4j"
@@ -6,7 +6,6 @@
     <f:loadBundle basename="pl.umk.mat.zawodyweb.www.Messages" var="messages" />
     <head>
         <title>
-            ${messages.title} -
             <ui:insert name="pageTitle" />
         </title>
         <link rel="shortcut icon" href="#{facesContext.externalContext.requestContextPath}/media/images/favicon.ico" />
@@ -25,9 +24,9 @@
         <h1>${messages.wmii}</h1>
         <h2>${messages.uni}</h2>
         <div id="page">
-            <h1>${messages.title}
+            <h1>
                 <c:if test="#{sessionBean.currentContest != null}">
-                    - ${sessionBean.currentContest.name}
+                    ${sessionBean.currentContest.name}
                 </c:if>
             </h1>
         </div>
