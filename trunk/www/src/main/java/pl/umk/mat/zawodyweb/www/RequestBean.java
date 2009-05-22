@@ -798,6 +798,37 @@ public class RequestBean {
         }
     }
 
+    @HttpAction(name = "addseries", pattern = "add/{id}/series")
+    public String goToAddseries(@Param(name = "id", encode = true) int id) {
+        temporaryContestId = id;
+        return "/admin/editseries";
+    }
+
+    @HttpAction(name = "addproblem", pattern = "add/{id}/problem")
+    public String goToAddproblem(@Param(name = "id", encode = true) int id) {
+        SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
+        Series s = dao.getById(id);
+        if (s != null) {
+            temporarySeriesId = id;
+            temporaryContestId = s.getContests().getId();
+        }
+
+        return "/admin/editproblem";
+    }
+
+    @HttpAction(name = "addtest", pattern = "add/{id}/test")
+    public String goToAddtest(@Param(name = "id", encode = true) int id) {
+        ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
+        Problems p = dao.getById(id);
+        if (p != null) {
+            temporaryProblemId = id;
+            temporarySeriesId= p.getSeries().getId();
+            temporaryContestId = p.getSeries().getContests().getId();
+        }
+
+        return "/admin/edittest";
+    }
+
     public String saveTest() {
         try {
             TestsDAO dao = DAOFactory.DEFAULT.buildTestsDAO();

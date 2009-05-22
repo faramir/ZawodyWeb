@@ -13,27 +13,35 @@
                 <c:otherwise>
                     <c:forEach var="series" items="#{requestBean.currentContestSeries}">
                         <div class="seria">
-                        <h:outputLabel for="problems#{series.id}" styleClass="seria">${series.name}:</h:outputLabel>
-                        <br />
-                        <t:dataTable id="problems#{series.id}" var="problem" styleClass="seria" value="#{series.problemss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
-                            <h:column>
-                                <f:facet name="header">
-                                ${messages.problem_name}
-                                </f:facet>
-                                <zw:problem-link problem="${problem}" message="${problem.name}" type="problem" />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header">
-                                ${messages.problem_abbrev}
-                                </f:facet>
-                                <h:outputText value="#{problem.abbrev}" />
-                            </h:column>
-                        </t:dataTable>
+                            <h:outputLabel for="problems#{series.id}" styleClass="seria">${series.name}:</h:outputLabel>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editseries.html?id=#{series.id}" title="#{messages.editseries}" rendered="#{zw:canEditSeries(rolesBean, series.contests.id, series.id)}">E</h:outputLink>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{series.id}/problem.html" title="#{messages.addproblem}" rendered="#{zw:canAddProblem(rolesBean, series.contests.id, series.id)}">+</h:outputLink>
+                            <br />
+                            <t:dataTable id="problems#{series.id}" var="problem" styleClass="seria" value="#{series.problemss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
+                                <h:column>
+                                    <f:facet name="header">
+                                    ${messages.problem_name}
+                                    </f:facet>
+                                    <zw:problem-link problem="${problem}" message="${problem.name}" type="problem" />
+                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editproblem.html?id=#{problem.id}" title="#{messages.editproblem}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}">E</h:outputLink>
+                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{problem.id}/test.html" title="#{messages.addtest}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}">+</h:outputLink>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                    ${messages.problem_abbrev}
+                                    </f:facet>
+                                    <h:outputText value="#{problem.abbrev}" />
+                                </h:column>
+                            </t:dataTable>
                         </div>
                         <div class="seriaDol">
-                            
                         </div>
                     </c:forEach>
+                    <div>
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{sessionBean.currentContest.id}/series.html" title="${messages.addseries}" rendered="#{zw:canEditSeries(rolesBean, sessionBean.currentContest.id, null)}">
+                        ${messages.addseries}
+                        </h:outputLink>
+                    </div>
                 </c:otherwise>
             </c:choose>
         </a4j:form>
