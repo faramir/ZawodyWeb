@@ -12,7 +12,6 @@
     </ui:define>
     <ui:define name="pageContent">
         <a4j:form id="formEditProblem" styleClass="profilform" enctype="multipart/form-data">
-
             <c:choose>
                 <c:when test="#{requestBean.editedProblem == null}">
                 ${messages.no_problem}
