@@ -201,7 +201,9 @@ public class Users implements Serializable {
 
     /* liste transiente */
     /**
-     * @return pass
+     * For comparison between plaintext and database saved password use
+     * checkPass(String passToCheck)
+     * @return pass hash of the password (<b>NOT</b> plaintext password)
      */
     @Basic
     @Column(name = "pass", length = 32)
@@ -223,17 +225,19 @@ public class Users implements Serializable {
     }
 
     public boolean checkPass (String passToCheck) {
-        return passToCheck.equals(pass);
-        //return hashPass(passToCheck).equals(pass);
+        return hashPass(passToCheck).equals(pass);
     }
 
     /**
+     * @deprecated Only for Hibernate -- instead, use savePass(String pass)
      * @param pass new value for pass
      */
     public void setPass(String pass) {
-        //if (pass.length()==40 && pass.matches("(?s)(a|b|c|d|e|f|0|1|2|3|4|5|6|7|8|9)*"))
             this.pass = pass;
-          //  this.pass = hashPass(pass);
+    }
+
+    public void savePass(String pass) {
+        this.pass = hashPass(pass);
     }
 
     /* liste transiente */

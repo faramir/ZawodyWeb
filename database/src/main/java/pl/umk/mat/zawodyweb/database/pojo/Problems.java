@@ -136,6 +136,7 @@ public class Problems implements Serializable {
     }
 
     /**
+     * @deprecated only for Hibernate. Instead, use loadProperties()
      * @return text
      */
     @Basic
@@ -144,6 +145,11 @@ public class Problems implements Serializable {
         return this.config;
     }
 
+
+    /**
+     * @deprecated only for Hibernate. Instead, use saveProperities()
+     * @param config
+     */
     public void setConfig(String config) {
         this.config = config;
     }
