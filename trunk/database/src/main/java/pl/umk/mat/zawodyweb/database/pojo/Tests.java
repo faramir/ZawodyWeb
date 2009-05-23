@@ -70,7 +70,7 @@ public class Tests implements Serializable {
      */
     @Basic
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public Integer getId() {
         return id;
@@ -87,7 +87,7 @@ public class Tests implements Serializable {
     /**
      * @return input
      */
-    @Basic
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "input", length = 2147483647)
     public String getInput() {
         return input;
@@ -104,7 +104,7 @@ public class Tests implements Serializable {
     /**
      * @return output
      */
-    @Basic
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "output", length = 2147483647)
     public String getOutput() {
         return output;
@@ -178,9 +178,16 @@ public class Tests implements Serializable {
     }
 
     /**
+     * Set the list of Results
+     */
+    public void setResultss(List<Results> resultss) {
+        this.resultss = resultss;
+    }
+
+    /**
      * get problems
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problemsid")
     public Problems getProblems() {
         return this.problems;
@@ -191,12 +198,5 @@ public class Tests implements Serializable {
      */
     public void setProblems(Problems problems) {
         this.problems = problems;
-    }
-
-    /**
-     * Set the list of Results
-     */
-    public void setResultss(List<Results> resultss) {
-        this.resultss = resultss;
     }
 }

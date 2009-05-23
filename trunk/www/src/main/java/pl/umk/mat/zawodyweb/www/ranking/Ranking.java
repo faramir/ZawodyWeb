@@ -1,6 +1,6 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Vector;
 import pl.umk.mat.zawodyweb.database.ContestsDAO;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
@@ -21,7 +21,7 @@ public class Ranking {
         return instance;
     }
 
-    Vector<RankingEntry> getRanking(int contest_id, Timestamp date, boolean admin) {
+    Vector<RankingEntry> getRanking(int contest_id, Date date, boolean admin) {
         ContestsDAO contestsDAO = DAOFactory.DEFAULT.buildContestsDAO();
 
         if (contestsDAO.getById(contest_id).getType().equals(0)) {
