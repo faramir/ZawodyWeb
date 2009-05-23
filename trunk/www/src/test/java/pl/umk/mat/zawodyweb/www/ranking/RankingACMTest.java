@@ -40,12 +40,13 @@ public class RankingACMTest {
     }
 
     /**
-     * Test of findByFirstname method, of class UsersHibernateDAO.
+     * Test of getRanking method by RankingACM
+     * requires data in database!
      */
     @Test
     public void testRankingACM() {
 
-        RankingACM.getInstance().getRanking(3, new Date(109,4,16,19,16,17), true);
+        RankingACM.getInstance().getRanking(3, new Date(2009-1900,5-1,16,19,16,17), true);
 
     }
 }

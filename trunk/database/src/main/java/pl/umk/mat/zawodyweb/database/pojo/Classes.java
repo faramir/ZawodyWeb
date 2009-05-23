@@ -32,159 +32,151 @@ import javax.persistence.Lob;
 @SuppressWarnings("serial")
 public class Classes implements Serializable {
 
-	/**
-	 * Attribute id.
-	 */
-	private Integer id;
-	
-	/**
-	 * Attribute filename.
-	 */
-	private String filename;
-	
-	/**
-	 * Attribute version.
-	 */
-	private Integer version;
-	
-	/**
-	 * Attribute description.
-	 */
-	private String description;
-	
-	/**
-	 * Attribute code.
-	 */
-	private byte[] code;
-	
-	/**
-	 * List of Languages
-	 */
-	private List<Languages> languagess = null;
+    /**
+     * Attribute id.
+     */
+    private Integer id;
+    /**
+     * Attribute filename.
+     */
+    private String filename;
+    /**
+     * Attribute version.
+     */
+    private Integer version;
+    /**
+     * Attribute description.
+     */
+    private String description;
+    /**
+     * Attribute code.
+     */
+    private byte[] code;
+    /**
+     * List of Languages
+     */
+    private List<Languages> languagess = null;
+    /**
+     * List of Problems
+     */
+    private List<Problems> problemss = null;
 
-	/**
-	 * List of Problems
-	 */
-	private List<Problems> problemss = null;
-
-	
-	/* liste transiente */
-	/**
-	 * @return id
-	 */
-	@Basic
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "id")
-		public Integer getId() {
-		return id;
-	}
-
-	/**
-	 * @param id new value for id 
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
-	/* liste transiente */
-	/**
-	 * @return filename
-	 */
-	@Basic
-	@Column(name = "filename", length = 255)
-		public String getFilename() {
-		return filename;
-	}
-
-	/**
-	 * @param filename new value for filename 
-	 */
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
-	
-	/* liste transiente */
-	/**
-	 * @return version
-	 */
-	@Basic
-	@Column(name = "version")
-		public Integer getVersion() {
-		return version;
-	}
-
-	/**
-	 * @param version new value for version 
-	 */
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-	
-	/* liste transiente */
-	/**
-	 * @return description
-	 */
-	@Basic
-	@Column(name = "description", length = 255)
-		public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @param description new value for description 
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	/* liste transiente */
-	/**
-	 * @return code
-	 */
+    /* liste transiente */
+    /**
+     * @return id
+     */
     @Basic
-	@Column(name = "code")
-		public byte[] getCode() {
-		return code;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    public Integer getId() {
+        return id;
+    }
 
-	/**
-	 * @param code new value for code 
-	 */
-	public void setCode(byte[] code) {
-		this.code = code;
-	}
-	
-	/**
-	 * Get the list of Languages
-	 */
-	 // languagesPK
-	 @OneToMany(mappedBy="classes")
-	 public List<Languages> getLanguagess() {
-	 	return this.languagess;
-	 }
-	 
-	/**
-	 * Set the list of Languages
-	 */
-	 public void setLanguagess(List<Languages> languagess) {
-	 	this.languagess = languagess;
-	 }
-	/**
-	 * Get the list of Problems
-	 */
-	 // problemsPK
-	 @OneToMany(mappedBy="classes")
-	 public List<Problems> getProblemss() {
-	 	return this.problemss;
-	 }
-	 
-	/**
-	 * Set the list of Problems
-	 */
-	 public void setProblemss(List<Problems> problemss) {
-	 	this.problemss = problemss;
-	 }
+    /**
+     * @param id new value for id
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
+    /* liste transiente */
+    /**
+     * @return filename
+     */
+    @Basic
+    @Column(name = "filename", length = 255)
+    public String getFilename() {
+        return filename;
+    }
 
+    /**
+     * @param filename new value for filename
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    /* liste transiente */
+    /**
+     * @return version
+     */
+    @Basic
+    @Column(name = "version")
+    public Integer getVersion() {
+        return version;
+    }
+
+    /**
+     * @param version new value for version
+     */
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    /* liste transiente */
+    /**
+     * @return description
+     */
+    @Basic
+    @Column(name = "description", length = 255)
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description new value for description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /* liste transiente */
+    /**
+     * @return code
+     */
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "code")
+    public byte[] getCode() {
+        return code;
+    }
+
+    /**
+     * @param code new value for code
+     */
+    public void setCode(byte[] code) {
+        this.code = code;
+    }
+
+    /**
+     * Get the list of Languages
+     */
+    // languagesPK
+    @OneToMany(mappedBy = "classes")
+    public List<Languages> getLanguagess() {
+        return this.languagess;
+    }
+
+    /**
+     * Set the list of Languages
+     */
+    public void setLanguagess(List<Languages> languagess) {
+        this.languagess = languagess;
+    }
+
+    /**
+     * Get the list of Problems
+     */
+    // problemsPK
+    @OneToMany(mappedBy = "classes")
+    public List<Problems> getProblemss() {
+        return this.problemss;
+    }
+
+    /**
+     * Set the list of Problems
+     */
+    public void setProblemss(List<Problems> problemss) {
+        this.problemss = problemss;
+    }
 }
