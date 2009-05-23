@@ -113,7 +113,7 @@ public class RankingACM {
          * po przejrzeniu wszystkich serii sortujemy userów po ilości rozwiązanych zadań
          * i całkowitym czasie rozwiązywania zadań
          * wewnątrz usera sortujemy rozwiązania pod kątem rzeczywistej daty rozwiązania,
-         * dopisujemy gwiazdki (lub nawiasy) i wszystko przesyłamy jako wynik działania programu
+         * dopisujemy gwiazdki (lub nawiasy) i wszystko zwracamy
          */
 
         return null;
