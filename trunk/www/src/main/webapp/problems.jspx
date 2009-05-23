@@ -14,8 +14,6 @@
                     <c:forEach var="series" items="#{requestBean.currentContestSeries}">
                         <div class="seria">
                             <h:outputLabel for="problems#{series.id}" styleClass="seria">${series.name}:</h:outputLabel>
-                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editseries.html?id=#{series.id}" title="#{messages.editseries}" rendered="#{zw:canEditSeries(rolesBean, series.contests.id, series.id)}">E</h:outputLink>
-                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{series.id}/problem.html" title="#{messages.addproblem}" rendered="#{zw:canAddProblem(rolesBean, series.contests.id, series.id)}">+</h:outputLink>
                             <br />
                             <t:dataTable id="problems#{series.id}" var="problem" styleClass="seria" value="#{series.problemss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
                                 <h:column>
@@ -23,8 +21,8 @@
                                     ${messages.problem_name}
                                     </f:facet>
                                     <zw:problem-link problem="${problem}" message="${problem.name}" type="problem" />
-                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editproblem.html?id=#{problem.id}" title="#{messages.editproblem}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}">E</h:outputLink>
-                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{problem.id}/test.html" title="#{messages.addtest}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}">+</h:outputLink>
+                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editproblem.html?id=#{problem.id}" title="#{messages.editproblem}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.editproblem}" title="#{messages.editproblem}" url="/media/images/edytuj.png" /></h:outputLink>
+                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{problem.id}/test.html" title="#{messages.addtest}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.addtest}" title="#{messages.addtest}" url="/media/images/dodaj.png" /></h:outputLink>
                                 </h:column>
                                 <h:column>
                                     <f:facet name="header">
@@ -33,13 +31,15 @@
                                     <h:outputText value="#{problem.abbrev}" />
                                 </h:column>
                             </t:dataTable>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editseries.html?id=#{series.id}" title="#{messages.editseries}" rendered="#{zw:canEditSeries(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.editseries}" title="#{messages.editseries}" url="/media/images/edytuj.png" /></h:outputLink>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{series.id}/problem.html" title="#{messages.addproblem}" rendered="#{zw:canAddProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addproblem}" title="#{messages.addproblem}" url="/media/images/dodaj.png" /></h:outputLink>
                         </div>
                         <div class="seriaDol">
                         </div>
                     </c:forEach>
-                    <div>
+                    <div class="ikona" style="margin-left:-40px">
                         <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{sessionBean.currentContest.id}/series.html" title="${messages.addseries}" rendered="#{zw:canEditSeries(rolesBean, sessionBean.currentContest.id, null)}">
-                        ${messages.addseries}
+                        <h:graphicImage alt="${messages.addseries}" title="${messages.addseries}" url="/media/images/dodaj.png" />
                         </h:outputLink>
                     </div>
                 </c:otherwise>

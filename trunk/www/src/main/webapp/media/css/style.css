@@ -23,7 +23,7 @@ a:visited, a:link {
         width: 172px;
         text-align: center;
         font: 0.9em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
-		padding: 0 20px 100px 0;
+		padding: 0 20px 80px 0;
 	}
 
 #home h1 {	font-size: 1.3em;
@@ -93,6 +93,7 @@ img { 	float: left;
 	height: 1.4em;
 	bottom: 4px;
 	padding: 2px;
+    margin: 0px;
 	font: bold 1em 'Trebuchet MS', Tahoma, Arial, Sans-serif;
 	border: 1px ridge #c5a7f2;
 	border-width: 1px;
@@ -258,23 +259,49 @@ padding: 0px;
 
 .profilform div.zadanko div.nazwa {
     font-size: 32px;
-    background: #decff4;
-    width: 90%;
+    background: #ddcff3;
+    background: #ddcff3 url(../images/trescGora.png) repeat-x;
     margin: auto;
     text-align: center;
     padding-top: 10px;
+    padding-bottom: 5px;
 }
 
 .profilform div.zadanko {
-   border: solid #000;
-   border-width: 0 1px 0 1px;
+   border: none;
+}
+
+.profilform div.zadanko div {
+    padding-right: 5px;
+    background: #ddcff3;
+    border: solid #c7aaf1;
+    border-width: 0 1px 0 0;
 }
 
 .profilform div.zadanko div.pamiec {
     font-size: 11px;
-    background: #decff4;
-    width: 90%;
-    margin: 0 auto 10px auto;
+    padding-bottom: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.termin {
+    font-size: 11px;
+    border: solid #c7aaf1;
+    border-width: 1px 1px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.jezyki {
+    font-size: 11px;
+    padding-bottom: 2px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.czas {
+    font-size: 11px;
+    padding-bottom: 2px;
     text-align: right;
 }
 
@@ -282,19 +309,48 @@ padding: 0px;
     font-size: 18px;
     margin: 10px auto 10px auto;
     text-align: center;
-    background: #decff4;
-    width: 90%;
+    background: #ddcff3 url(../images/trescDol.png) repeat-x;;
     padding: 10px 0 10px 0;
 }
 
 .profilform div.zadanko div.tresc {
     padding: 0 45px 0 45px;
+    border: none;
+    background: transparent;
 }
 
 .profilform div.zadanko div.tresc div {
     margin: 0px;
     padding: 0px;
     font: 1em Monospace;
+    border: none;
+    background: transparent;
+}
+
+.profilform div.ikona img {
+    margin: 0px;
+    padding: 0 0 10px 0;
+    float: left;
+}
+
+.profilform img {
+    border: none;
+}
+
+.profilform a.ikonka img {
+    margin: 0px;
+    padding: 0 2px 0 2px;
+    float: right;
+}
+
+.profilform table tr a {
+    display: inline-table;
+    float: left;
+}
+
+.profilform table tr a.ikonka {
+    display: inline-table;
+    float: right;
 }
 
 #content h1 {
@@ -450,18 +506,24 @@ border:1px solid #333333;
 	background-color: transparent;
 }
 
-img.lewy {
+.pagingrid a img.lewy {
     padding: 0px;
     border: none;
     float: right;
     margin: 0px auto 0px 100%;
+    text-align: right;
 }
 
-img.prawy {
+.pagingrid a img.prawy {
     padding: 0px;
     border: none;
     float: left;
     margin: 0px 100% 0px auto;
+    text-align: left;
+}
+
+.profilform table.pagingrid tr a {
+    float: none;
 }
 
 .paginator a {
