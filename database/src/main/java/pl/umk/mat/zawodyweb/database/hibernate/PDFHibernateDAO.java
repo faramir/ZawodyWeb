@@ -21,7 +21,7 @@ public class PDFHibernateDAO extends
 		AbstractHibernateDAO<PDF, Integer> implements
 		PDFDAO {
 
-
 	
+
 
 }

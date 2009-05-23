@@ -94,6 +94,7 @@ public class MainJudge {
                 logger.error("Connection to JudgeManager closed, shutting down Judge...");
                 break;
             }
+            submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
             byte[] codeText = submit.getCode();
             String filename = submit.getFilename();
             if (filename != null && !filename.isEmpty()) {

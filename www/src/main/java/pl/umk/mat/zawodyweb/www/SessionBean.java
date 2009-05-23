@@ -70,7 +70,7 @@ public class SessionBean {
         try {
             UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
             Users user = dao.findByLogin(currentUser.getLogin()).get(0);
-            if (user.getPass().equals(currentUser.getPass())) {
+            if (user.checkPass(currentUser.getPass())) {
                 loggedIn = true;
                 currentUser = user;
             }
