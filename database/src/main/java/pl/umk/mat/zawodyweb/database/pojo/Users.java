@@ -210,7 +210,7 @@ public class Users implements Serializable {
     }
 
     public String hashPass(String password) {
-         try {
+        try {
             MessageDigest md = MessageDigest.getInstance("SHA1");
             md.update(password.getBytes());
             byte[] digest = md.digest();
@@ -223,14 +223,17 @@ public class Users implements Serializable {
     }
 
     public boolean checkPass (String passToCheck) {
-        return hashPass(passToCheck).equals(pass);
+        return passToCheck.equals(pass);
+        //return hashPass(passToCheck).equals(pass);
     }
 
     /**
      * @param pass new value for pass
      */
     public void setPass(String pass) {
-            this.pass = hashPass(pass);
+        //if (pass.length()==40 && pass.matches("(?s)(a|b|c|d|e|f|0|1|2|3|4|5|6|7|8|9)*"))
+            this.pass = pass;
+          //  this.pass = hashPass(pass);
     }
 
     /* liste transiente */
