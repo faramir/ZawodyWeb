@@ -10,9 +10,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
-import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import static org.junit.Assert.*;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 
@@ -63,6 +61,7 @@ public class UsersHibernateDAOTest {
 
     /**
      * Test of Lazy Connection to Submit.
+     * Requires submit with id=8 ==> test commented
      */
     /*@Test
     public void testLazy() {

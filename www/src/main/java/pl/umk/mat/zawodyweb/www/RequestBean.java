@@ -5,9 +5,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -846,7 +844,7 @@ public class RequestBean {
             response.getOutputStream().close();
             context.responseComplete();
             return null;
-        }else{
+        } else {
             return "/error/404";
         }
     }
@@ -856,6 +854,7 @@ public class RequestBean {
             TestsDAO dao = DAOFactory.DEFAULT.buildTestsDAO();
             ProblemsDAO pdao = DAOFactory.DEFAULT.buildProblemsDAO();
 
+            editedTest.setVisibility(1); // FIXME: należy wartość pobrać ze strony!
             editedTest.setProblems(pdao.getById(temporaryProblemId));
             dao.saveOrUpdate(editedTest);
         } catch (Exception e) {
