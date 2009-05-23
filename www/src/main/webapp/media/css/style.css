@@ -284,6 +284,19 @@ padding: 0px;
     text-align: right;
 }
 
+.profilform div.zadanko div.pdf {
+    font-size: 11px;
+    padding-bottom: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.pdf img {
+    margin: -3px 0 0 0;
+    padding: 0px 0 0px 5px;
+    float: right;
+    background: #ddcff3;
+}
+
 .profilform div.zadanko div.termin {
     font-size: 11px;
     border: solid #c7aaf1;
@@ -314,7 +327,7 @@ padding: 0px;
 }
 
 .profilform div.zadanko div.tresc {
-    padding: 0 45px 0 45px;
+    padding: 5px 45px 0px 45px;
     border: none;
     background: transparent;
 }
