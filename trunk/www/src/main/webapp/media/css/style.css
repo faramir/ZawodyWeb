@@ -460,6 +460,11 @@ font: 0.8em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
     font-weight: bold;
 }
 
+.profilform .subject {
+    font-weight: bold;
+    padding: 10px 0 0 0;
+}
+
 .profilform input:focus, .profilform input:hover, .profilform textarea:focus, .profilform textarea:hover {
 border:1px solid #333333;
 }

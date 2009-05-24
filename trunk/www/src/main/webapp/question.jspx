@@ -7,27 +7,27 @@
     <ui:define name="pageContent">
         <a4j:form id="formQuestion" styleClass="profilform">
             <t:saveState id="saveid" value="#{requestBean.temporaryQuestionId}" />
-            <div>
+            <div class="subject">
                 ${messages.question_subject}:
-                <br />
-                ${requestBean.editedQuestion.subject}
-                <br />
             </div>
-            <div>
+            <div style="font-size:1.4em;text-align:center;color:#0000FF;">
+                "${requestBean.editedQuestion.subject}"
+            </div>
+            <div class="subject">
                 ${messages.question_text}:
-                <br />
+            </div>
+            <div style="padding:30px;background: #ddcff3;margin:10px;">
                 <h:outputText value="#{zw:nlToBr(requestBean.editedQuestion.question)}" escape="false" />
-                <br />
             </div>
             <c:if test="#{zw:canEditProblem(rolesBean, requestBean.editedQuestion.contests.id, requestBean.editedQuestion.problems.id)}">
-                <div>
+                <div class="subject">
                     <h:outputLabel for="text">${messages.question_answer}:</h:outputLabel>
-                    <h:inputTextarea id="text" styleClass="bigHeight" required="true" value="#{requestBean.answer}">
+                    <h:inputTextarea id="text" styleClass="bigHeight" style="width:70%;margin-right:10px;" required="true" value="#{requestBean.answer}">
                     </h:inputTextarea>
                     <h:message for="text" errorClass="error" />
                     <br class="clear" />
                 </div>
-                <div>
+                <div class="subject">
                     <h:outputLabel for="answerpub">${messages.problem_public_answer}</h:outputLabel>
                     <h:selectBooleanCheckbox id="answerpub" value="#{requestBean.publicAnswer}" styleClass="check" />
                     <br class="clear" />
