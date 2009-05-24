@@ -26,7 +26,7 @@
                     ${messages.problem_memlimit}: ${requestBean.currentProblem.memlimit} MB
                 </div>
                 <div class="pdf">
-                    PDF: <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/pdf.html" title="PDF" rendered="#{requestBean.currentProblem.PDF != null}"><h:graphicImage alt="${messages.pdf_download}" title="${messages.pdf_download}" url="/media/images/edytuj.png" /></h:outputLink>
+                    <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/pdf.html" title="PDF" rendered="#{requestBean.currentProblem.PDF != null}"><h:graphicImage alt="${messages.pdf_download}" title="${messages.pdf_download}" url="/media/images/edytuj.png" /></h:outputLink>
                 </div>
                 <div class="tresc">
                     <h:outputText value="${zw:nlToBr(requestBean.currentProblem.text)}" escape="false" />

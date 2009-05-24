@@ -32,7 +32,7 @@
                                 </h:column>
                             </t:dataTable>
                             <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editseries.html?id=#{series.id}" title="#{messages.editseries}" rendered="#{zw:canEditSeries(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.editseries}" title="#{messages.editseries}" url="/media/images/edytuj.png" /></h:outputLink>
-                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/del/#{series.id}/series.html" title="#{messages.delseries}" rendered="#{zw:canDeleteSeries(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.delseries}" title="#{messages.delseries}" url="/media/images/edytuj.png" /></h:outputLink>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/del/#{series.id}/series.html" title="#{messages.delseries}" rendered="#{zw:canDeleteSeries(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.delseries}" title="#{messages.delseries}" url="/media/images/usun.png" /></h:outputLink>
                             <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{series.id}/problem.html" title="#{messages.addproblem}" rendered="#{zw:canAddProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addproblem}" title="#{messages.addproblem}" url="/media/images/dodaj.png" /></h:outputLink>
                         </div>
                         <div class="seriaDol">
