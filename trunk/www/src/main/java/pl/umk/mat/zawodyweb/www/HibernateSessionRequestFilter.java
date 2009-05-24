@@ -9,6 +9,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import org.hibernate.SessionFactory;
 import org.hibernate.StaleObjectStateException;
+import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 
 

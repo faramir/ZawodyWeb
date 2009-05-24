@@ -839,6 +839,19 @@ public class RequestBean {
         return "/admin/editproblem";
     }
 
+    @HttpAction(name = "delproblem", pattern = "del/{id}/problem")
+    public String deleteProblem(@Param(name = "id", encode = true) int id) {
+        ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
+        Problems p = dao.getById(id);
+
+        if (p != null && rolesBean.canDeleteProblem(p.getSeries().getContests().getId(), p.getSeries().getId())) {
+            dao.delete(p);
+            return "problems";
+        } else {
+            return null;
+        }
+    }
+
     @HttpAction(name = "addtest", pattern = "add/{id}/test")
     public String goToAddtest(@Param(name = "id", encode = true) int id) {
         ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
