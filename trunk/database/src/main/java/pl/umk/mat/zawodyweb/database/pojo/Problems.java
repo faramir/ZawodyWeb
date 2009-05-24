@@ -120,7 +120,7 @@ public class Problems implements Serializable {
     /**
      * @return text
      */
-    @Basic
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "text", length = 2147483647)
     public String getText() {
         return text;
@@ -137,7 +137,7 @@ public class Problems implements Serializable {
      * @deprecated only for Hibernate. Instead, use loadProperties()
      * @return text
      */
-    @Basic
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "config", length = 2147483647)
     public String getConfig() {
         return this.config;
