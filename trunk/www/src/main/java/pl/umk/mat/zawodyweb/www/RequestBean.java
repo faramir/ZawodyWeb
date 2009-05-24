@@ -797,10 +797,33 @@ public class RequestBean {
         }
     }
 
+    @HttpAction(name = "delcontest", pattern = "del/{id}/contest")
+    public String deleteContest(@Param(name = "id", encode = true) int id) {
+        if (rolesBean.canDeleteContest(id, null)) {
+            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
+            dao.deleteById(id);
+            return "/start";
+        } else {
+            return null;
+        }
+    }
+
     @HttpAction(name = "addseries", pattern = "add/{id}/series")
     public String goToAddseries(@Param(name = "id", encode = true) int id) {
         temporaryContestId = id;
         return "/admin/editseries";
+    }
+
+    @HttpAction(name = "delseries", pattern = "del/{id}/series")
+    public String deleteSeries(@Param(name = "id", encode = true) int id) {
+        SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
+        Series s = dao.getById(id);
+        if (s != null && rolesBean.canDeleteSeries(s.getContests().getId(), id)) {
+            dao.delete(s);
+            return "problems";
+        } else {
+            return null;
+        }
     }
 
     @HttpAction(name = "addproblem", pattern = "add/{id}/problem")
