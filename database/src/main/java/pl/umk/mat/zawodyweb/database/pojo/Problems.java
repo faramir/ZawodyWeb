@@ -10,6 +10,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -190,7 +191,7 @@ public class Problems implements Serializable {
     /**
      * @return pdf
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.REMOVE)
     @JoinColumn(name = "pdfid")
     public PDF getPDF() {
         return pdfData;
@@ -271,7 +272,7 @@ public class Problems implements Serializable {
      * Get the list of LanguagesProblems
      */
     // languagesProblemsPK
-    @OneToMany(mappedBy = "problems")
+    @OneToMany(mappedBy = "problems", cascade=CascadeType.REMOVE)
     public List<LanguagesProblems> getLanguagesProblemss() {
         return this.languagesProblemss;
     }
@@ -303,7 +304,7 @@ public class Problems implements Serializable {
      * Get the list of Submits
      */
     // submitsPK
-    @OneToMany(mappedBy = "problems")
+    @OneToMany(mappedBy = "problems", cascade=CascadeType.REMOVE)
     public List<Submits> getSubmitss() {
         return this.submitss;
     }
@@ -319,7 +320,7 @@ public class Problems implements Serializable {
      * Get the list of Submits
      */
     // submitsPK
-    @OneToMany(mappedBy = "problems")
+    @OneToMany(mappedBy = "problems", cascade=CascadeType.REMOVE)
     public List<Tests> getTestss() {
         return this.testss;
     }

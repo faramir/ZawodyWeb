@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -218,7 +219,7 @@ public class Series implements Serializable {
 	 * Get the list of Problems
 	 */
 	 // problemsPK
-	 @OneToMany(mappedBy="series")
+	 @OneToMany(mappedBy="series", cascade=CascadeType.REMOVE)
 	 public List<Problems> getProblemss() {
 	 	return this.problemss;
 	 }
@@ -233,7 +234,7 @@ public class Series implements Serializable {
 	 * Get the list of Roles
 	 */
 	 // rolesPK
-	 @OneToMany(mappedBy="series")
+	 @OneToMany(mappedBy="series", cascade=CascadeType.REMOVE)
 	 public List<Roles> getRoless() {
 	 	return this.roless;
 	 }
