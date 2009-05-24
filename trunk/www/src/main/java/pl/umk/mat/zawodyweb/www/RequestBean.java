@@ -550,12 +550,13 @@ public class RequestBean {
 
         try {
             try {
+                newUser.savePass(newUser.getPass());
                 UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
                 dao.save(newUser);
             } catch (ConstraintViolationException e) {
                 String summary = messages.getString("login_exists");
                 WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formRegister:login", summary, null);
-                newUser.setPass(StringUtils.EMPTY);
+                newUser.savePass(StringUtils.EMPTY);
                 return null;
             }
         } catch (Exception e) {

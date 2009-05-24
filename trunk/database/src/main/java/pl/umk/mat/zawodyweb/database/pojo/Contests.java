@@ -87,6 +87,7 @@ public class Contests implements Serializable {
 	 * List of Series
 	 */
 	private List<Series> seriess = null;
+    private String pass;
 
 	
 	/* liste transiente */
@@ -107,7 +108,21 @@ public class Contests implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
+
+        @Basic
+    @Column(name = "pass", length = 32)
+    public String getPass() {
+        return this.pass;
+    }
+
+    /**
+     *
+     * @param config
+     */
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
 	/* liste transiente */
 	/**
 	 * @return name
