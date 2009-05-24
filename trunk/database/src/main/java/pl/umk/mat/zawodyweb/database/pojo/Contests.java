@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -230,7 +231,7 @@ public class Contests implements Serializable {
 	 * Get the list of Questions
 	 */
 	 // questionsPK
-	 @OneToMany(mappedBy="contests")
+	 @OneToMany(mappedBy="contests", cascade=CascadeType.REMOVE)
 	 public List<Questions> getQuestionss() {
 	 	return this.questionss;
 	 }
@@ -245,7 +246,7 @@ public class Contests implements Serializable {
 	 * Get the list of Roles
 	 */
 	 // rolesPK
-	 @OneToMany(mappedBy="contests")
+	 @OneToMany(mappedBy="contests", cascade=CascadeType.REMOVE)
 	 public List<Roles> getRoless() {
 	 	return this.roless;
 	 }
@@ -260,7 +261,7 @@ public class Contests implements Serializable {
 	 * Get the list of Series
 	 */
 	 // seriesPK
-	 @OneToMany(mappedBy="contests")
+	 @OneToMany(mappedBy="contests", cascade=CascadeType.REMOVE)
 	 public List<Series> getSeriess() {
 	 	return this.seriess;
 	 }

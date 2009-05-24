@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -357,7 +358,7 @@ public class Roles implements Serializable {
 	 * Get the list of UsersRoles
 	 */
 	 // usersRolesPK
-	 @OneToMany(mappedBy="roles")
+	 @OneToMany(mappedBy="roles", cascade=CascadeType.REMOVE)
 	 public List<UsersRoles> getUsersRoless() {
 	 	return this.usersRoless;
 	 }
