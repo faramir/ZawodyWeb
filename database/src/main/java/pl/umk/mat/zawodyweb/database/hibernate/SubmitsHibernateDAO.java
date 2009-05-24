@@ -3,6 +3,8 @@ package pl.umk.mat.zawodyweb.database.hibernate;
 import java.util.List;
 import java.sql.Timestamp;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 
@@ -41,6 +43,12 @@ public class SubmitsHibernateDAO extends
 		return findByCriteria(Restrictions.eq("users.usersid", usersid));
 	}
 
+
+    public int countBombs(Timestamp date) {
+        return ((Integer) getSession().createCriteria(new Submits().getClass())
+             .setProjection(Projections.rowCount()).add(Restrictions.le("sdate", date)).
+             list().get(0)).intValue();
+    }
 
 	/**
 	 * Find Submits by code
