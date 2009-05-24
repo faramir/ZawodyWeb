@@ -55,6 +55,8 @@ public interface SubmitsDAO extends GenericDAO<Submits,Integer> {
 	 */
 	public List<Submits> findByLanguagesid(Integer languagesid);
 
+
+    public int countBombs(Timestamp date);
     	/**
 	 * Find Submits by languagesid
 	 */
