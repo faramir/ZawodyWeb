@@ -46,10 +46,7 @@ public class Problems implements Serializable {
      * Attribute text.
      */
     private String text;
-    /**
-     * Attribute pdf.
-     */
-    private byte[] pdf;
+
     /**
      * Attribute abbrev.
      */
@@ -188,21 +185,6 @@ public class Problems implements Serializable {
 
     public void saveProperties(String properties) {
     this.config = properties;
-    }
-    /**
-     * @return pdf
-     */
-    @Basic
-    @Column(name = "pdf")
-    public byte[] getPdf() {
-        return pdf;
-    }
-
-    /**
-     * @param pdf new value for pdf
-     */
-    public void setPdf(byte[] pdf) {
-        this.pdf = pdf;
     }
 
     /**

@@ -48,7 +48,7 @@ public class PDF implements Serializable {
         this.pdf = pdf;
     }
 
-    @OneToMany(mappedBy = "pdf")
+    @OneToMany(mappedBy = "PDF")
     public List<Problems> getProblems() {
         return  this.problemss;
     }
