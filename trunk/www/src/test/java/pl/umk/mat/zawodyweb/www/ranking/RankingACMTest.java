@@ -1,5 +1,6 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import org.hibernate.Transaction;
 import org.junit.After;
@@ -46,7 +47,7 @@ public class RankingACMTest {
     @Test
     public void testRankingACM() {
 
-        //RankingACM.getInstance().getRanking(3, new Date(2009-1900,5-1,26,19,16,17), true);
+        new RankingACM().getRanking(3, new Timestamp(2009 - 1900, 5 - 1, 26, 19, 16, 17, 0));
 
     }
 }

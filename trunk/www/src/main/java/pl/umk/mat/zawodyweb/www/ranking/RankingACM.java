@@ -2,193 +2,127 @@ package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeSet;
 import java.util.Vector;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.ProblemsDAO;
 import pl.umk.mat.zawodyweb.database.SeriesDAO;
+import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
-import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
+import pl.umk.mat.zawodyweb.database.pojo.Tests;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
  * @version $Rev$
  * Date: $Date$
  */
-public class RankingACM {
+public class RankingACM implements RankingInteface {
 
-    static private final RankingACM instance = new RankingACM();
-
-    /**
-     * @return the instance
-     */
-    static public RankingACM getInstance() {
-        return instance;
-    }
-
-    private class MapProblems {
-
-        String problemName;
-        String problemAbbrev;
-
-        public MapProblems(String problemName, String problemAbbrev) {
-            this.problemName = problemName;
-            this.problemAbbrev = problemAbbrev;
-        }
-    }
-
-    private class ProblemSolutions implements Comparable {
-
-        int problemId;
-        int bombs;
-        long date;
-
-        public ProblemSolutions(int problemId, int bombs, long date) {
-            this.problemId = problemId;
-            this.bombs = bombs;
-            this.date = date;
-        }
-
-        @Override
-        public int compareTo(Object o) {
-            return (int) (((ProblemSolutions) o).date - this.date);
-        }
-    }
-
-    private class UserSolutions implements Comparable {
-
-        int userId;
-        int points;
-        long totalTime;
-        TreeSet<ProblemSolutions> problemsSolved;
-
-        public UserSolutions(int userId) {
-            this.userId = userId;
-            points = 0;
-            totalTime = 0;
-            problemsSolved = new TreeSet<ProblemSolutions>();
-        }
-
-        @Override
-        public int compareTo(Object o) {
-            if (this.points < ((UserSolutions) o).points) {
-                return -1;
-            }
-            if (this.points == ((UserSolutions) o).points) {
-                return (int) (this.totalTime - ((UserSolutions) o).totalTime);
-            }
-            return 1;
-        }
-    }
-
-    Vector<RankingEntry> getRanking(int contest_id, Date checkDate, boolean admin) {
+    @Override
+    public Vector<RankingEntry> getRanking(int contest_id, Timestamp checkDate) {
         Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
+
+        Timestamp checkTimestamp;
+
+        SubmitsDAO submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
         SeriesDAO seriesDAO = DAOFactory.DEFAULT.buildSeriesDAO();
         ProblemsDAO problemsDAO = DAOFactory.DEFAULT.buildProblemsDAO();
 
-        Timestamp checkTimestamp = new Timestamp(checkDate.getTime());
+        boolean allTests;
+        boolean acceptedSolution;
 
-        HashMap<Integer, MapProblems> mapProblems = new HashMap<Integer, MapProblems>();
-        HashMap<Integer, UserSolutions> mapUsers = new HashMap<Integer, UserSolutions>();
+        System.out.println("date : " + new Date());
 
-        List<Series> listSeries = seriesDAO.findByContestsid(contest_id);
+        for (Series series : seriesDAO.findByContestsid(contest_id)) {
 
-        /* dla każdej serii z zawodów */
-        for (Series series : listSeries) {
-            List<Problems> listProblems = problemsDAO.findBySeriesid(series.getId());
+            checkTimestamp = checkDate;
+            allTests = false;
 
-            /* dla każdego zadania z serii */
-            for (Problems problems : listProblems) {
-
-                HashMap<Integer, Integer> userTries = new HashMap<Integer, Integer>();
-                HashMap<Integer, Boolean> userSolved = new HashMap<Integer, Boolean>();
-
-                mapProblems.put(problems.getId(), new MapProblems(problems.getName(), problems.getAbbrev()));
-
-                /*
-                 * pobierz rozwiązania, które nastąpiły przed czasem checkDate
-                 * i wybierz z nich tylko te, które są widoczne, czyli są widoczne dla admina
-                 * albo było wysłane przed zamrożeniem rankingu lub sprawdzamy z czasem po zamrożeniu rankingu
-                 */
-                Criteria c = hibernateSession.createCriteria(Submits.class);
-                c.createCriteria("problems").add(Restrictions.eq("id", problems.getId()));
-                c.add(Restrictions.le("sdate", checkTimestamp));
-                c.addOrder(Order.asc("sdate"));
-                List<Submits> listSubmits = c.list();
-
-                /*
-                 * pobierz maksymalną ilość punktów, które aktualnie może zobaczyć user w danym teście,
-                 * czyli wszystko zawsze, jeśli jesteśmy adminem,
-                 * lub zawsze jeśli test jest widoczny, lub wszystko, gdy seria zakończona
-                 */
-
-                /*
-                 * każde rozwiązanie testujemy z testami, które należą do tego rozwiązania
-                 * jeśli wszystkie widoczne testy mają maksymalną liczbę punktów, to więcej rozwiązań
-                 * danego usera nis sprawdzamy, ale zapisujemy to rozwiązanie zadania do listy zadań rozwiązanych przez usera
-                 * z czasem rozwiązania zadania (realny czas, a nie od rozpoczęcia tury)
-                 * + czas rozwiązywania + penalty * ilość błędnych rozwiązań do tego czasu
-                 */
-                for (Submits submits : listSubmits) {
-                    if (!(admin == true || submits.getSdate().before(series.getFreezedate()) || checkDate.after(series.getUnfreezedate()))) {
-                        continue;
-                    }
-                    int user_id = submits.getUsers().getId();
-                    if (userSolved.containsKey(user_id)) {
-                        continue;
-                    }
-                    if (!userTries.containsKey(user_id)) {
-                        userTries.put(user_id, 0);
-                    }
-                    int sum = 0;
-                    boolean good = true;
-                    for (Results result : submits.getResultss()) { // FIXME: getEnddate() czy getUnfreezedate() ? 
-                        if ((admin == true || result.getTests().getVisibility().equals(1) || checkDate.after(series.getUnfreezedate())) && result.getTests().getMaxpoints().equals(result.getPoints()) == false) {
-                            good = false;
-                            break;
-                        } else {
-                            sum += result.getPoints();
-                        }
-                    }
-                    if (good) {
-                        userSolved.put(user_id, good);
-                        if (mapUsers.containsKey(user_id) == false) {
-                            mapUsers.put(user_id, new UserSolutions(user_id));
-                        }
-                        UserSolutions us = mapUsers.get(user_id);
-                        us.problemsSolved.add(new ProblemSolutions(problems.getId(), userTries.get(user_id), submits.getSdate().getTime()));
-                        us.points += sum;
-                        us.totalTime += submits.getSdate().getTime() - series.getStartdate().getTime();
-                    } else {
-                        userTries.put(user_id, userTries.get(user_id) + 1);
-                    }
-
+            if (series.getFreezedate() != null && series.getUnfreezedate() != null) {
+                if (checkDate.after(series.getFreezedate()) && checkDate.before(series.getUnfreezedate())) {
+                    checkTimestamp = new Timestamp(series.getFreezedate().getTime());
+                }
+                if (checkDate.after(series.getUnfreezedate())) {
+                    allTests = true;
                 }
             }
-        }
-        /*
-         * po przejrzeniu wszystkich serii sortujemy userów po ilości rozwiązanych zadań
-         * i całkowitym czasie rozwiązywania zadań
-         * wewnątrz usera sortujemy rozwiązania pod kątem rzeczywistej daty rozwiązania,
-         * dopisujemy gwiazdki (lub nawiasy) i wszystko zwracamy
-         */
-        for (Integer i : mapUsers.keySet()) {
-            System.out.println("" + i + ": " + mapUsers.get(i).userId);
-            System.out.println("" + i + ": " + mapUsers.get(i).points);
-            System.out.println("" + i + ": " + mapUsers.get(i).totalTime);
-            System.out.println("" + i + ": " + mapUsers.get(i).problemsSolved.size());
-        }
-        return null;
 
+            for (Problems problems : problemsDAO.findBySeriesid(series.getId())) {
+
+                // select sum(maxpoints) from tests where problemsid='7' and visibility=1
+                Number maxPoints = null;
+                if (allTests) {
+                    maxPoints = (Number) hibernateSession.createCriteria(Tests.class).setProjection(Projections.sum("maxpoints")).add(Restrictions.eq("problems.id", problems.getId())).uniqueResult();
+                } else {
+                    maxPoints = (Number) hibernateSession.createCriteria(Tests.class).setProjection(Projections.sum("maxpoints")).add(Restrictions.and(Restrictions.eq("problems.id", problems.getId()), Restrictions.eq("visibility", 1))).uniqueResult();
+                }
+                if (maxPoints == null) {
+                    maxPoints = 0; // To nie powinno się nigdy zdarzyć ;).. chyba, że nie ma testu przy zadaniu?
+                }
+                System.out.println("maxPoints = " + maxPoints);
+
+                /*
+                 * select submits.id,usersid,min(sdate)
+                 * from submits,results,tests
+                where submits.problemsid='7'
+                and submits.id=results.submitsid
+                and tests.id = results.testsid
+                and tests.visibility=1
+                group by submits.id,usersid
+                having sum(points)= maxPoints
+                 */
+                Criteria c = hibernateSession.createCriteria(Submits.class);
+                c.setProjection(Projections.min("sdate")).add(Restrictions.eq("problems.id", problems.getId()));
+                c.createCriteria("resultss").setProjection(Projections.sum("resultss.points").as("sumPoints")).add(Restrictions.eq("sumPoints", maxPoints));
+                c.createCriteria("resultss.tests").add(Restrictions.eq("visibility", "1"));
+                for (Object l : c.list()) {
+                    System.out.println("l = " + l);
+                }
+                //List<Submits> listSubmits = hibernateSession.createCriteria(Submits.class).add(Restrictions.and(Restrictions.eq("problems.id", problems.getId()), Restrictions.lt("sdate", checkTimestamp))).addOrder(Order.asc("sdate")).list();
+                /*
+                 * submitsDAO.findByCriteria(
+                 *      Restrictions.and(
+                 *      Restrictions.eq("problems.id", problems.getId()),
+                 *      Restrictions.lt("sdate", checkTimestamp)))
+                 */
+                /*for (Submits submit : listSubmits) {
+                acceptedSolution = true;
+                for (Results results : submit.getResultss()) {
+                if ((allTests == true || results.getTests().getVisibility().equals(1)) && results.getPoints().equals(results.getTests().getMaxpoints()) == false) {
+                acceptedSolution = false;
+                break;
+                }
+                }
+                if (acceptedSolution == true) {
+                }
+                }*/
+            }
+        }
+        System.out.println("date2 : " + new Date());
+
+        // 1. pobieranie userów, którzy brali udział w konkursie przd checkDate
+        // 2. pobieranie problemów, które są w seriach otwartych przed checkDate
+        // 3. stworzenie mapy wszystkich userów, gdzie kluczem jest id_user
+        // 4. dla każdego zadania wybieramy rozwiązania wszystkie z sumą punktów,
+        //    gdzie punkty są widoczne itp. to jest najtrudniejsze :/
+        //    w skrócie - wybieramy te rozwiązania, które dostały max punktów
+        //    posortowane rosnąco według czasu
+        //    a. liczymy ilość rozwiązań usera danego zadania do czasu rozwiązania
+        //       zadania i dodajemy takie dane do zmapowanej klasy
+        // 6. ze zmapowanych klas robimy wektor rozwiązań
+        // 7. i zwracamy
+        return null;
+    }
+
+    @Override
+    public Vector<RankingEntry> getRankingForAdmin(int contest_id, Timestamp checkDate) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
