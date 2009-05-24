@@ -7,13 +7,13 @@
         <a4j:form id="formRegister" styleClass="profilform">
             <fieldset>
                 <div>
-                    <h:outputLabel for="login">${messages.login}:</h:outputLabel>
+                    <h:outputLabel for="login" styleClass="required">${messages.login}:</h:outputLabel>
                     <h:inputText id="login" required="true" value="#{requestBean.newUser.login}" />
                     <h:message for="login" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
-                    <h:outputLabel for="passwd">${messages.passwd}:</h:outputLabel>
+                    <h:outputLabel for="passwd" styleClass="required">${messages.passwd}:</h:outputLabel>
                     <h:inputSecret id="passwd" required="true" value="#{requestBean.newUser.pass}">
                         <f:validateLength minimum="6" />
                     </h:inputSecret>
@@ -21,7 +21,7 @@
                     <br class="clear" />
                 </div>
                 <div>
-                    <h:outputLabel for="repPasswd">${messages.repeat_passwd}:</h:outputLabel>
+                    <h:outputLabel for="repPasswd" styleClass="required">${messages.repeat_passwd}:</h:outputLabel>
                     <h:inputSecret id="repPasswd" required="true" value="#{requestBean.repPasswd}">
                         <s:validateCompareTo for="passwd" operator="==" message="#{messages.passwords_doesnt_match}" />
                     </h:inputSecret>
@@ -29,21 +29,21 @@
                     <br class="clear" />
                 </div>
                 <div>
-                    <h:outputLabel for="email">${messages.email}:</h:outputLabel>
+                    <h:outputLabel for="email" styleClass="required">${messages.email}:</h:outputLabel>
                     <h:inputText id="email" required="true" value="#{requestBean.newUser.email}">
                     </h:inputText>
                     <h:message for="email" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
-                    <h:outputLabel for="firstname">${messages.firstname}:</h:outputLabel>
+                    <h:outputLabel for="firstname" styleClass="required">${messages.firstname}:</h:outputLabel>
                     <h:inputText id="firstname" required="true" value="#{requestBean.newUser.firstname}">
                     </h:inputText>
                     <h:message for="firstname" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
-                    <h:outputLabel for="lastname">${messages.lastname}:</h:outputLabel>
+                    <h:outputLabel for="lastname" styleClass="required">${messages.lastname}:</h:outputLabel>
                     <h:inputText id="lastname" required="true" value="#{requestBean.newUser.lastname}">
                     </h:inputText>
                     <h:message for="lastname" errorClass="error" />
@@ -74,7 +74,7 @@
                     <br class="clear" />
                 </div>
                 <div>
-                    <h:outputLabel for="captcha">${messages.text_from_picture}:</h:outputLabel>
+                    <h:outputLabel for="captcha" styleClass="required">${messages.text_from_picture}:</h:outputLabel>
                     <h:inputText id="captcha" required="true" validator="#{requestBean.validateCaptcha}" />
                     <h:message for="captcha" errorClass="error" />
                     <div class="captcha">

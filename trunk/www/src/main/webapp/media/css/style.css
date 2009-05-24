@@ -287,11 +287,17 @@ padding: 0px;
 .profilform div.zadanko div.pdf {
     font-size: 11px;
     padding-bottom: 5px;
+    margin: 0px 0 0 0;
     text-align: right;
+    display: block;
 }
 
-.profilform div.zadanko div.pdf img {
-    margin: -3px 0 0 0;
+.profilform div.zadanko div.pdf a {
+    display: inline-table;
+}
+
+.profilform div.zadanko div.pdf a img {
+    margin: 0px 0 0 0;
     padding: 0px 0 0px 5px;
     float: right;
     background: #ddcff3;
@@ -443,10 +449,15 @@ font: 0.8em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
 }
 
 .profilform .error {
-    margin-top: 20px;
+    margin-top: 15px;
     color:red;
     font-size:0.7em;
     float:right;
+    padding-right: 10px;
+}
+
+.profilform .required {
+    font-weight: bold;
 }
 
 .profilform input:focus, .profilform input:hover, .profilform textarea:focus, .profilform textarea:hover {
