@@ -44,12 +44,6 @@ public class SubmitsHibernateDAO extends
 	}
 
 
-    public int countBombs(Timestamp date) {
-        return ((Integer) getSession().createCriteria(new Submits().getClass())
-             .setProjection(Projections.rowCount()).add(Restrictions.le("sdate", date)).
-             list().get(0)).intValue();
-    }
-
 	/**
 	 * Find Submits by code
 	 */
