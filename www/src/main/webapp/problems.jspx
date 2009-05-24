@@ -21,8 +21,9 @@
                                     ${messages.problem_name}
                                     </f:facet>
                                     <zw:problem-link problem="${problem}" message="${problem.name}" type="problem" />
-                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editproblem.html?id=#{problem.id}" title="#{messages.editproblem}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.editproblem}" title="#{messages.editproblem}" url="/media/images/edytuj.png" /></h:outputLink>
+                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editproblem.html?id=#{problem.id}" title="#{messages.editproblem}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.editproblem}" title="#{messages.editproblem}" url="/media/images/usun.png" /></h:outputLink>
                                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{problem.id}/test.html" title="#{messages.addtest}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.addtest}" title="#{messages.addtest}" url="/media/images/dodaj.png" /></h:outputLink>
+                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/del/#{problem.id}/problem.html" title="#{messages.delproblem}" rendered="#{zw:canDeleteProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.delproblem}" title="#{messages.delproblem}" url="/media/images/dodaj.png" /></h:outputLink>
                                 </h:column>
                                 <h:column>
                                     <f:facet name="header">

@@ -228,6 +228,19 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
+        <display-name>delproblem_to_problems</display-name>
+        <from-view-id>/del/*</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                problems
+            </from-outcome>
+            <to-view-id>
+                /problems.jspx
+            </to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
         <display-name>ToProblem</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
