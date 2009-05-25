@@ -39,7 +39,7 @@
                 </div>
             </c:if>
             <div>
-                <zw:contest-link contest="${sessionBean.currentContest}" type="questions" message="#{messages.question_back}" />
+                <zw:contest-link_img contest="${sessionBean.currentContest}" type="questions" message="#{messages.question_back}" />
             </div>
         </a4j:form>
     </ui:define>
