@@ -11,7 +11,7 @@
                 ${messages.contest_not_choosen}
                 </c:when>
                 <c:otherwise>
-                    <t:dataTable id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" preserveDataModel="false" rows="10" rowClasses="linia2,linia1" columnClasses="col1,col2">
+                    <t:dataTable id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" preserveDataModel="false" rows="10" rowClasses="linia2,linia1" columnClasses="col2,colNazwa,col2">
                         <h:column >
                             <f:facet name="header">
                             ${messages.submission_date}
