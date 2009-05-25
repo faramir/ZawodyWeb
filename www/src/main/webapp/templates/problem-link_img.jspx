@@ -1,0 +1,5 @@
+<h:panelGroup xmlns:h="http://java.sun.com/jsf/html">
+    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/#{type}.html" rendered="#{problem == null}">
+        <h:graphicImage alt="#{message}" title="#{message}" style="margin-bottom:10px;margin-left:-50px;padding:0" url="/media/images/left_arrow.png" />
+    </h:outputLink>
+</h:panelGroup>
