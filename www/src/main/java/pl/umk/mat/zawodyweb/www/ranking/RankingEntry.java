@@ -10,13 +10,19 @@ import java.util.Vector;
 public class RankingEntry {
 
     private int place;
-    private String name;
+    private String username;
     private Vector<String> table;
 
     RankingEntry() {
         place = -1;
-        name = "";
+        username = "";
         table = new Vector<String>();
+    }
+
+    public RankingEntry(int place, String username, Vector<String> table) {
+        this.place = place;
+        this.username = username;
+        this.table = table;
     }
 
     /**
@@ -36,15 +42,15 @@ public class RankingEntry {
     /**
      * @return the name
      */
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
     /**
      * @param name the name to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**
