@@ -46,7 +46,7 @@
                             <h:graphicImage alt="${messages.addseries}" title="${messages.addseries}" url="/media/images/dodaj.png" />
                         </h:outputLink>
                     </div>
-                    <div>
+                    <div style="padding-top: 20px;">
                         <zw:problem-link_img contest="${sessionBean.currentContest}" type="start" message="#{messages.question_back}" />
                     </div>
                 </c:otherwise>
