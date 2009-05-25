@@ -32,7 +32,7 @@
                     </div>
                     <div>
                         <h:outputLabel for="text">${messages.question_text}:</h:outputLabel>
-                        <h:inputTextarea id="text" styleClass="bigHeight" required="true" value="#{requestBean.editedQuestion.question}">
+                        <h:inputTextarea id="text" styleClass="bigHeight" style="width:70%" required="true" value="#{requestBean.editedQuestion.question}">
                         </h:inputTextarea>
                         <h:message for="text" errorClass="error" />
                         <br class="clear" />
@@ -42,7 +42,7 @@
                         <h:message for="save" errorClass="error" />
                         <br class="clear" />
                     </div>
-                    <div>
+                    <div style="margin-top:30px;">
                         <t:dataTable id="questions" var="question" footerClass="paginator" value="#{requestBean.currentContestQuestions}" preserveDataModel="false" rows="10" rowClasses="linia2,linia1" columnClasses="col1,col2">
                             <h:column>
                                 <f:facet name="header">

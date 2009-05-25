@@ -517,7 +517,7 @@ border:1px solid #333333;
 
 .paginator {
 	text-align: center;
-    background: url(../images/pagin.png) center;
+    background: url(../images/pagin.png) repeat-x;
     width: 305px;
     margin: 0px auto;
     padding: 0px;
@@ -570,7 +570,7 @@ border:1px solid #333333;
 }
 
 .paginator tr:hover {
-    background: url(../images/pagin.png) center;
+    background: url(../images/pagin.png) repeat-x;
 }
 
 .pagingrid tr:hover {
@@ -834,6 +834,10 @@ tbody {
 	background-color: #224986;
 	color: #FFFFFF;
 	font-weight: bold;
+}
+
+.colNazwa {
+    width: 50%;
 }
 
 .welcomeClass{

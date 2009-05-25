@@ -6,7 +6,7 @@
     </ui:define>
     <ui:define name="pageContent">
         <a4j:form id="formSubmit" styleClass="profilform"  enctype="multipart/form-data">
-            <div>
+            <div style="padding-top:10px;">
                 <h:outputLabel for="problem">${messages.submit_problem}:</h:outputLabel>
                 <h:selectOneMenu id="problem" required="true" value="#{requestBean.temporaryProblemId}">
                     <c:forEach var="problem" items="#{requestBean.submittableProblems}">
@@ -40,9 +40,9 @@
                 <h:message for="sendfile" errorClass="error" />
                 <br class="clear" />
             </div>
-            <div>
+            <div style="margin-top:30px; border: ridge #c5a7f2; border-width: 1px 0 0 0;padding-top:30px;">
                 <h:outputLabel for="sourcecode">${messages.submit_sourcecode}:</h:outputLabel>
-                <h:inputTextarea id="sourcecode" value="#{requestBean.temporarySource}" styleClass="bigHeight" />
+                <h:inputTextarea id="sourcecode" value="#{requestBean.temporarySource}" style="width:70%;" styleClass="bigHeight" />
                 <h:message for="sourcecode" errorClass="error" />
                 <br class="clear" />
             </div>
