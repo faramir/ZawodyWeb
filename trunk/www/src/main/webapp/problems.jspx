@@ -8,7 +8,9 @@
         <a4j:form id="formProblems" styleClass="profilform">
             <c:choose>
                 <c:when test="#{sessionBean.currentContest == null}">
-                ${messages.contest_not_choosen}
+                    <div style="margin:30px;color:#0000FF;font-weight:bold">
+                        ${messages.contest_not_choosen}
+                    </div>
                 </c:when>
                 <c:otherwise>
                     <c:forEach var="series" items="#{requestBean.currentContestSeries}">
