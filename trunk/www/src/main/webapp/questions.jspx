@@ -44,7 +44,7 @@
                         <h:message for="save" errorClass="error" />
                         <br class="clear" />
                     </div>
-                    <div style="margin-top:30px;">
+                    <div style="margin-top:30px;margin-bottom:20px;">
                         <t:dataTable id="questions" var="question" footerClass="paginator" value="#{requestBean.currentContestQuestions}" preserveDataModel="false" rows="10" rowClasses="linia2,linia1" columnClasses="col1,col2">
                             <h:column>
                                 <f:facet name="header">

@@ -13,6 +13,10 @@
         <source>../../templates/contest-link.jspx</source>
     </tag>
     <tag>
+        <tag-name>contest-link_img</tag-name>
+        <source>../../templates/contest-link_img.jspx</source>
+    </tag>
+    <tag>
         <tag-name>problem-link</tag-name>
         <source>../../templates/problem-link.jspx</source>
     </tag>
