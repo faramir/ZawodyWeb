@@ -21,6 +21,10 @@
         <source>../../templates/problem-link.jspx</source>
     </tag>
     <tag>
+        <tag-name>problem-link_img</tag-name>
+        <source>../../templates/problem-link_img.jspx</source>
+    </tag>
+    <tag>
         <tag-name>question-link</tag-name>
         <source>../../templates/question-link.jspx</source>
     </tag>

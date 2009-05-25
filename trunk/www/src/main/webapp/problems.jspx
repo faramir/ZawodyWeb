@@ -46,6 +46,9 @@
                             <h:graphicImage alt="${messages.addseries}" title="${messages.addseries}" url="/media/images/dodaj.png" />
                         </h:outputLink>
                     </div>
+                    <div>
+                        <zw:problem-link_img contest="${sessionBean.currentContest}" type="start" message="#{messages.question_back}" />
+                    </div>
                 </c:otherwise>
             </c:choose>
         </a4j:form>

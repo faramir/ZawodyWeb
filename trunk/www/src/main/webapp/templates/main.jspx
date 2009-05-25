@@ -10,6 +10,7 @@
         </title>
         <link rel="shortcut icon" href="#{facesContext.externalContext.requestContextPath}/media/images/favicon.ico" type="image/x-icon" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Pragma" content="no-cache" />
         <a4j:loadStyle media="screen, projection" src="/media/css/style.css" />
         <a4j:loadScript src="resource://jquery.js"/>
         <a4j:loadStyle media="screen, projection" src="/media/css/jquery-ui-1.7.1.custom.css" />
