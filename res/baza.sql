@@ -64,7 +64,6 @@ CREATE TABLE PROBLEMS (
         id                  serial primary key,
         name                varchar(80),
         text                text,
-        pdf                 bytea,
         abbrev              varchar(5),
         memlimit            int
 );
@@ -107,11 +106,17 @@ CREATE TABLE CLASSES (
         code                bytea
 );
 
+CREATE TABLE PDF (  
+        id                  serial primary key,
+        pdf             bytea,
+);
+
 /* Powiazadania jeden do wielu */
 ALTER TABLE SERIES ADD contestsId int REFERENCES CONTESTS(id);
 ALTER TABLE QUESTIONS ADD usersId int REFERENCES USERS(id);
 ALTER TABLE QUESTIONS ADD contestsId int REFERENCES CONTESTS(id);
 ALTER TABLE PROBLEMS ADD seriesId int REFERENCES SERIES(id);
+ALTER TABLE PROBLEMS ADD pdfId int REFERENCES SERIES(id);
 ALTER TABLE RESULTS ADD submitsId int REFERENCES SUBMITS(id);
 ALTER TABLE SUBMITS ADD problemsId int REFERENCES PROBLEMS(id);
 ALTER TABLE QUESTIONS ADD tasksId int REFERENCES PROBLEMS(id);
