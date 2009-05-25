@@ -48,9 +48,6 @@
                     <zw:contest-link contest="${sessionBean.currentContest}" type="submissions" message="#{messages.submissions}" />
                 </li>
                 <li>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/harmonogram.html">${messages.timetable}</h:outputLink>
-                </li>
-                <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/regulamin.html">${messages.rules}</h:outputLink>
                 </li>
             </ul>
@@ -72,7 +69,7 @@
                     <zw:problem-link problem="${requestBean.currentProblem}" message="${messages.send_now}" type="submit" />
                 </li>
                 <li class="prawa">
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ozawodach.html">${messages.about_contest}</h:outputLink>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/oserwisie.html">${messages.about_zawodyweb}</h:outputLink>
                 </li>
                 <li class="prawa">
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/register.html">${messages.registration}</h:outputLink>
