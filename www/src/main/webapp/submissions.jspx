@@ -8,7 +8,9 @@
         <a4j:form id="formSubmissions" styleClass="profilform">
             <c:choose>
                 <c:when test="#{sessionBean.currentContest == null}">
-                ${messages.contest_not_choosen}
+                   <div style="margin:30px;color:#0000FF;font-weight:bold">
+                        ${messages.contest_not_choosen}
+                    </div>
                 </c:when>
                 <c:otherwise>
                     <t:dataTable id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" preserveDataModel="false" rows="10" rowClasses="linia2,linia1" columnClasses="col2,colNazwa,col2">
