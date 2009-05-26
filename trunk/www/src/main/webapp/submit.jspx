@@ -6,6 +6,13 @@
     </ui:define>
     <ui:define name="pageContent">
         <a4j:form id="formSubmit" styleClass="profilform"  enctype="multipart/form-data">
+            <c:choose>
+                <c:when test="#{!(sessionBean.loggedIn)}">
+                    <div class="not_choosen">
+                        Zaloguj sie :P //zrob ktos tu redirect do login :>
+                    </div>
+                </c:when>
+                <c:otherwise>
             <div style="padding-top:10px;">
                 <h:outputLabel for="problem">${messages.submit_problem}:</h:outputLabel>
                 <h:selectOneMenu id="problem" required="true" value="#{requestBean.temporaryProblemId}">
@@ -31,7 +38,7 @@
             </div>
             <div class="source">
                 <h:outputLabel for="sourcefile">${messages.submit_sourcefile}:</h:outputLabel>
-                <t:inputFileUpload id="sourcefile" value="#{requestBean.temporaryFile}" />
+                <t:inputFileUpload id="sourcefile" style="width:70%" value="#{requestBean.temporaryFile}" />
                 <h:message for="sourcefile" errorClass="error" />
                 <br class="clear" />
             </div>
@@ -51,6 +58,8 @@
                 <h:message for="sendcode" errorClass="error" />
                 <br class="clear" />
             </div>
+             </c:otherwise>
+            </c:choose>
         </a4j:form>
     </ui:define>
 </ui:composition>

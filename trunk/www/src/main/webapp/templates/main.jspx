@@ -64,7 +64,7 @@
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/start.html">${messages.contest}</h:outputLink>
                 </li>
                 <li>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/profil.html">${messages.profile}</h:outputLink>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/profil.html" rendered="#{sessionBean.loggedIn}" >${messages.profile}</h:outputLink>
                 </li>
                 <li>
                     <zw:problem-link problem="${requestBean.currentProblem}" message="${messages.send_now}" type="submit" />
@@ -73,11 +73,11 @@
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/oserwisie.html">${messages.about_zawodyweb}</h:outputLink>
                 </li>
                 <li class="prawa">
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/register.html">${messages.registration}</h:outputLink>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/register.html" rendered="#{!(sessionBean.loggedIn)}" >${messages.registration}</h:outputLink>
                 </li>
                 <li class="prawa">
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/login.html" rendered="#{!(sessionBean.loggedIn)}">${messages.log_in}</h:outputLink>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/logout.html" rendered="#{sessionBean.loggedIn}">${messages.log_out}</h:outputLink>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/login.html" rendered="#{!(sessionBean.loggedIn)}" >${messages.log_in}</h:outputLink>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/logout.html" rendered="#{sessionBean.loggedIn}" >${messages.log_out}</h:outputLink>
                 </li>
             </ul>
         </div>
