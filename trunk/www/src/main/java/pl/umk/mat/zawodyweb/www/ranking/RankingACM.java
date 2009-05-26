@@ -3,11 +3,15 @@ package pl.umk.mat.zawodyweb.www.ranking;
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.ResourceBundle;
 import java.util.Vector;
+import org.apache.commons.collections.KeyValue;
+import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.postgresql.translation.messages_cs;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.ProblemsDAO;
 import pl.umk.mat.zawodyweb.database.SeriesDAO;
@@ -26,6 +30,8 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
  */
 public class RankingACM implements RankingInteface {
 
+    private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
+    
     class SolutionACM implements Comparable {
 
         String name;
@@ -220,10 +226,10 @@ public class RankingACM implements RankingInteface {
                 points = user.points;
                 totalTime = user.totalTime;
             }
-            Vector<String> v = new Vector<String>();
-            v.add("" + user.points);
-            v.add("" + user.totalTime);
-            v.add(user.getSolutionsForRanking());
+            Vector<KeyValue> v = new Vector<KeyValue>();
+            v.add(new DefaultKeyValue(messages.getString("points"), user.points));
+            v.add(new DefaultKeyValue(messages.getString("time"), user.totalTime));
+            v.add(new DefaultKeyValue(messages.getString("solutions"), user.getSolutionsForRanking()));
 
             Users users = usersDAO.getById(user.id_user);
 

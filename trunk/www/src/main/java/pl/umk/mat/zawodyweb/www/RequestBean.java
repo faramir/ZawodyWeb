@@ -5,8 +5,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Vector;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputText;
@@ -50,6 +52,8 @@ import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 import pl.umk.mat.zawodyweb.www.datamodels.PagedDataModel;
+import pl.umk.mat.zawodyweb.www.ranking.Ranking;
+import pl.umk.mat.zawodyweb.www.ranking.RankingEntry;
 
 /**
  *
@@ -78,6 +82,7 @@ public class RequestBean {
     private List<Languages> languages = null;
     private List<Series> currentContestSeries = null;
     private List<Questions> currentContestQuestions = null;
+    private Vector<RankingEntry> currentContestRanking = null;
     private PagedDataModel submissions = null;
     private Integer temporaryContestId;
     private Integer temporarySeriesId;
@@ -250,6 +255,16 @@ public class RequestBean {
         }
 
         return currentContestQuestions;
+    }
+
+    public Vector<RankingEntry> getCurrentContestRanking() {
+        if (currentContestRanking == null && sessionBean.getCurrentContest() != null) {
+            Integer contestId = sessionBean.getCurrentContest().getId();
+            Date date = Calendar.getInstance().getTime();
+            currentContestRanking = Ranking.getInstance().getRanking(contestId, date, false);
+        }
+
+        return currentContestRanking;
     }
 
     public PagedDataModel getSubmissions() {
