@@ -11,7 +11,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.postgresql.translation.messages_cs;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.ProblemsDAO;
 import pl.umk.mat.zawodyweb.database.SeriesDAO;
@@ -31,7 +30,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
 public class RankingACM implements RankingInteface {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
-    
+
     class SolutionACM implements Comparable {
 
         String name;
@@ -115,8 +114,7 @@ public class RankingACM implements RankingInteface {
         }
     }
 
-    @Override
-    public Vector<RankingEntry> getRanking(int contest_id, Timestamp checkDate) {
+    private Vector<RankingEntry> getRankingACM(int contest_id, Timestamp checkDate, boolean admin) {
         Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
 
@@ -132,8 +130,7 @@ public class RankingACM implements RankingInteface {
         for (Series series : seriesDAO.findByContestsid(contest_id)) {
 
             checkTimestamp = checkDate;
-            allTests =
-                    false;
+            allTests = admin;
 
             if (series.getFreezedate() != null && series.getUnfreezedate() != null) {
                 if (checkDate.after(series.getFreezedate()) && checkDate.before(series.getUnfreezedate())) {
@@ -177,6 +174,7 @@ public class RankingACM implements RankingInteface {
                             " where submits.problemsid='" + problems.getId() + "' " +
                             "	and submits.id=results.submitsid " +
                             "	and tests.id = results.testsid " +
+                            "   and sdate < '"+checkTimestamp.toString()+"' " +
                             " group by submits.id,usersid " +
                             " having sum(points)='" + maxPoints + "'");
                 } else {
@@ -186,6 +184,7 @@ public class RankingACM implements RankingInteface {
                             "	and submits.id=results.submitsid " +
                             "	and tests.id = results.testsid " +
                             "	and tests.visibility=1 " +
+                            "   and sdate < '"+checkTimestamp.toString()+"' " +
                             " group by submits.id,usersid " +
                             " having sum(points)='" + maxPoints + "'");
                 }
@@ -242,7 +241,12 @@ public class RankingACM implements RankingInteface {
     }
 
     @Override
+    public Vector<RankingEntry> getRanking(int contest_id, Timestamp checkDate) {
+        return getRankingACM(contest_id, checkDate, false);
+    }
+
+    @Override
     public Vector<RankingEntry> getRankingForAdmin(int contest_id, Timestamp checkDate) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return getRankingACM(contest_id, checkDate, true);
     }
 }
