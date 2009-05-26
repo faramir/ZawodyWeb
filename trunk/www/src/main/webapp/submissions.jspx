@@ -13,47 +13,47 @@
                     </div>
                 </c:when>
                 <c:otherwise>
-            <c:choose>
-                <c:when test="#{sessionBean.currentContest == null}">
-                   <div class="not_choosen">
-                        ${messages.contest_not_choosen}
-                    </div>
-                </c:when>
-                <c:otherwise>
-                    <t:dataTable id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" preserveDataModel="false" rows="10" rowClasses="linia2,linia1" columnClasses="col2,colNazwa,col2">
-                        <h:column >
-                            <f:facet name="header">
-                            ${messages.submission_date}
-                            </f:facet>
-                            <h:outputText value="#{submit.sdate}" />
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">
-                            ${messages.submission_problem}
-                            </f:facet>
-                            <h:outputText value="#{submit.problems.name}" />
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">
-                            ${messages.submission_result}
-                            </f:facet>
-                            <h:outputText value="#{submit.result}" />
-                        </h:column>
-                    </t:dataTable>
-                    <h:panelGrid columns="1" styleClass="pagingrid" >
-                        <t:dataScroller for="submissions" paginator="true" paginatorActiveColumnClass="act" paginatorTableClass="paginator" paginatorMaxPages="9" actionListener="#{requestBean.submissionsScrollerAction}" >
-                            <f:facet name="previous" >
-                                <t:graphicImage url="/media/images/left_arrow.png" alt="" styleClass="lewy" />
-                            </f:facet>
-                            <f:facet name="next">
-                                <t:graphicImage url="/media/images/right_arrow.png" alt="" styleClass="prawy" />
-                            </f:facet>
-                        </t:dataScroller>
-                    </h:panelGrid>
+                    <c:choose>
+                        <c:when test="#{sessionBean.currentContest == null}">
+                            <div class="not_choosen">
+                                ${messages.contest_not_choosen}
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <t:dataTable id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" preserveDataModel="false" rows="10" rowClasses="linia2,linia1" columnClasses="col2,colNazwa,col2">
+                                <h:column >
+                                    <f:facet name="header">
+                                    ${messages.submission_date}
+                                    </f:facet>
+                                    <h:outputText value="#{submit.sdate}" />
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                    ${messages.submission_problem}
+                                    </f:facet>
+                                    <zw:problem-link problem="${submit.problems}" message="${submit.problems.name}" type="problem" />
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                    ${messages.submission_result}
+                                    </f:facet>
+                                    <h:outputText value="#{submit.result}" />
+                                </h:column>
+                            </t:dataTable>
+                            <h:panelGrid columns="1" styleClass="pagingrid" >
+                                <t:dataScroller for="submissions" paginator="true" paginatorActiveColumnClass="act" paginatorTableClass="paginator" paginatorMaxPages="9" actionListener="#{requestBean.submissionsScrollerAction}" >
+                                    <f:facet name="previous" >
+                                        <t:graphicImage url="/media/images/left_arrow.png" alt="" styleClass="lewy" />
+                                    </f:facet>
+                                    <f:facet name="next">
+                                        <t:graphicImage url="/media/images/right_arrow.png" alt="" styleClass="prawy" />
+                                    </f:facet>
+                                </t:dataScroller>
+                            </h:panelGrid>
+                        </c:otherwise>
+                    </c:choose>
                 </c:otherwise>
             </c:choose>
-           </c:otherwise>
-          </c:choose>
         </a4j:form>
     </ui:define>
 </ui:composition>

@@ -584,14 +584,14 @@ public class RequestBean {
     }
 
     public String saveContest() {
-        Integer id = editedContest.getId();
+        Integer id = getEditedContest().getId();
         if ((ELFunctions.isNullOrZero(id) && !rolesBean.canAddContest(null, null)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditContest(id, null))) {
             return null;
         }
 
         try {
             ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
-            dao.saveOrUpdate(editedContest);
+            dao.saveOrUpdate(getEditedContest());
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
