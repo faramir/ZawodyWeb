@@ -288,7 +288,7 @@ public class Problems implements Serializable {
      * Get the list of Questions
      */
     // questionsPK
-    @OneToMany(mappedBy = "problems")
+    @OneToMany(mappedBy = "problems", cascade=CascadeType.REMOVE)
     public List<Questions> getQuestionss() {
         return this.questionss;
     }
