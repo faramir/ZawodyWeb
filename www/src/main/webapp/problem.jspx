@@ -20,10 +20,10 @@
                     </c:forEach>
                 </div>
                 <div class="czas">
-                    ${messages.test_timelimit}: ${zw:maxLimitTime(requestBean.currentProblem)} s
+                    ${messages.test_timelimit}: ${zw:maxLimitTime(requestBean.currentProblem)/1000} s
                 </div>
                 <div class="pamiec">
-                    ${messages.problem_memlimit}: ${requestBean.currentProblem.memlimit} MB
+                    ${messages.problem_memlimit}: ${requestBean.currentProblem.memlimit} kB
                 </div>
                 <div class="pdf">
                     <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/pdf.html" title="PDF" rendered="#{requestBean.currentProblem.PDF != null}"><h:graphicImage alt="${messages.pdf_download}" title="${messages.pdf_download}" url="/media/images/edytuj.png" /></h:outputLink>
