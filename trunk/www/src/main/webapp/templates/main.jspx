@@ -70,7 +70,7 @@
                     <zw:problem-link_button problem="${requestBean.currentProblem}" message="${messages.send_now}" type="submit" />
                 </li>
                 <li class="prawa">
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/oserwisie.html">${messages.about_zawodyweb}</h:outputLink>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/about.html">${messages.about_zawodyweb}</h:outputLink>
                 </li>
                 <li class="prawa">
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/register.html" rendered="#{!(sessionBean.loggedIn)}" >${messages.registration}</h:outputLink>

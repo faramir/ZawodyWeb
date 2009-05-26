@@ -875,6 +875,28 @@ tbody {
         padding-top:30px;
 }
 
+.about img {
+    float: none;
+    margin: 10px 0;
+}
+
+.profilform div.about {
+    float: none;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.praca {
+    color: #0000FF;
+    font-weight: bold;
+    font-size: 18px;
+    background: #ddcff3 url(../images/trescGora.png) repeat-x;
+    height: 1.7em;
+    padding-top: 10px;
+    border: solid #c7aaf1;
+    border-width: 0 1px 1px 0;
+}
+
 .questions {
     margin-top:30px;
     margin-bottom:20px;
