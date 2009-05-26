@@ -16,9 +16,17 @@
         <tag-name>contest-link_img</tag-name>
         <source>../../templates/contest-link_img.jspx</source>
     </tag>
+     <tag>
+        <tag-name>contest-link_button</tag-name>
+        <source>../../templates/contest-link_button.jspx</source>
+    </tag>
     <tag>
         <tag-name>problem-link</tag-name>
         <source>../../templates/problem-link.jspx</source>
+    </tag>
+    <tag>
+        <tag-name>problem-link_button</tag-name>
+        <source>../../templates/problem-link_button.jspx</source>
     </tag>
     <tag>
         <tag-name>problem-link_img</tag-name>

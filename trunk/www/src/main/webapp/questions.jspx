@@ -13,6 +13,7 @@
                     </div>
                 </c:when>
                 <c:otherwise>
+                    <h:panelGroup rendered="#{sessionBean.loggedIn}">
                     <div>
                         <h:outputLabel for="problem">${messages.questions_problem}:</h:outputLabel>
                         <h:selectOneMenu id="problem" required="false" value="#{requestBean.temporaryProblemId}">
@@ -44,6 +45,7 @@
                         <h:message for="save" errorClass="error" />
                         <br class="clear" />
                     </div>
+                 </h:panelGroup>
                     <div class="questions">
                         <t:dataTable id="questions" var="question" footerClass="paginator" value="#{requestBean.currentContestQuestions}" preserveDataModel="false" rows="10" rowClasses="linia2,linia1" columnClasses="col1,col2">
                             <h:column>

@@ -9,7 +9,7 @@
             <c:choose>
                 <c:when test="#{!(sessionBean.loggedIn)}">
                     <div class="not_choosen">
-                        Zaloguj sie :P //zrob ktos tu redirect do login :>
+                        ${messages.login_please}
                     </div>
                 </c:when>
                 <c:otherwise>
@@ -58,7 +58,7 @@
                 <h:message for="sendcode" errorClass="error" />
                 <br class="clear" />
             </div>
-             </c:otherwise>
+                </c:otherwise>
             </c:choose>
         </a4j:form>
     </ui:define>

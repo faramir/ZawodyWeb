@@ -32,7 +32,7 @@
                     <h:outputText value="${zw:nlToBr(requestBean.currentProblem.text)}" escape="false" />
                 </div>
                 <div class="wyslij">
-                    <zw:problem-link problem="${requestBean.currentProblem}" message="${messages.send_solution}" type="submit" />
+                    <zw:problem-link_button problem="${requestBean.currentProblem}" message="${messages.send_solution}" type="submit" />
                 </div>
                 <div>
                     <zw:problem-link_img contest="${sessionBean.currentContest}" type="problems" message="#{messages.question_back}" />

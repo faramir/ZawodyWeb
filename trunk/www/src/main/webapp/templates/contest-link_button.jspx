@@ -1,0 +1,7 @@
+<h:panelGroup xmlns:h="http://java.sun.com/jsf/html" rendered="#{sessionBean.loggedIn}">
+    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/#{type}.html" rendered="#{contest == null}">${message}</h:outputLink>
+    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/#{type}/#{contest.id}/#{zw:filterUri(contest.name)}.html" rendered="#{!(contest == null)}">
+        <h:outputText value="#{message}" />
+    </h:outputLink>
+</h:panelGroup>
+
