@@ -7,6 +7,13 @@
     <ui:define name="pageContent">
         <a4j:form id="formSubmissions" styleClass="profilform">
             <c:choose>
+                <c:when test="#{!(sessionBean.loggedIn)}">
+                    <div class="not_choosen">
+                        ${messages.login_please}
+                    </div>
+                </c:when>
+                <c:otherwise>
+            <c:choose>
                 <c:when test="#{sessionBean.currentContest == null}">
                    <div class="not_choosen">
                         ${messages.contest_not_choosen}
@@ -45,6 +52,8 @@
                     </h:panelGrid>
                 </c:otherwise>
             </c:choose>
+           </c:otherwise>
+          </c:choose>
         </a4j:form>
     </ui:define>
 </ui:composition>
