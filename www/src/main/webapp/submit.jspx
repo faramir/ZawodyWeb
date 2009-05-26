@@ -29,7 +29,7 @@
                 <h:message for="language" errorClass="error" />
                 <br class="clear" />
             </div>
-            <div>
+            <div class="source">
                 <h:outputLabel for="sourcefile">${messages.submit_sourcefile}:</h:outputLabel>
                 <t:inputFileUpload id="sourcefile" value="#{requestBean.temporaryFile}" />
                 <h:message for="sourcefile" errorClass="error" />
@@ -40,7 +40,7 @@
                 <h:message for="sendfile" errorClass="error" />
                 <br class="clear" />
             </div>
-            <div style="margin-top:30px; border: ridge #c5a7f2; border-width: 1px 0 0 0;padding-top:30px;">
+            <div class="source">
                 <h:outputLabel for="sourcecode">${messages.submit_sourcecode}:</h:outputLabel>
                 <h:inputTextarea id="sourcecode" value="#{requestBean.temporarySource}" style="width:70%;" styleClass="bigHeight" />
                 <h:message for="sourcecode" errorClass="error" />

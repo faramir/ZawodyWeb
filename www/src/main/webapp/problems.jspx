@@ -8,7 +8,7 @@
         <a4j:form id="formProblems" styleClass="profilform">
             <c:choose>
                 <c:when test="#{sessionBean.currentContest == null}">
-                    <div style="margin:30px;color:#0000FF;font-weight:bold">
+                    <div class="not_choosen">
                         ${messages.contest_not_choosen}
                     </div>
                 </c:when>

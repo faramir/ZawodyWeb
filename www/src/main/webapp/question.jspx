@@ -10,13 +10,13 @@
             <div class="subject">
                 ${messages.question_subject}:
             </div>
-            <div style="font-size:1.4em;text-align:center;color:#0000FF;">
+            <div class="title">
                 "${requestBean.editedQuestion.subject}"
             </div>
             <div class="subject">
                 ${messages.question_text}:
             </div>
-            <div style="padding:30px;background: #ddcff3;margin:10px;">
+            <div class="text">
                 <h:outputText value="#{zw:nlToBr(requestBean.editedQuestion.question)}" escape="false" />
             </div>
             <c:if test="#{zw:canEditProblem(rolesBean, requestBean.editedQuestion.contests.id, requestBean.editedQuestion.problems.id)}">

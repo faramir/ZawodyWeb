@@ -849,3 +849,45 @@ tbody {
     margin-bottom: 0px;
     color:#000;
 }
+
+.contest-link_img {
+        margin-bottom:10px;
+        margin-left:-50px;
+        padding:0
+}
+
+.title {
+        font-size:1.4em;
+        text-align:center;
+        color:#0000FF;
+}
+
+.text {
+        padding:30px;
+        background: #ddcff3;
+        margin:10px;
+}
+
+.source {
+        margin-top:30px;
+        border: ridge #c5a7f2;
+        border-width: 1px 0 0 0;
+        padding-top:30px;
+}
+
+.questions {
+    margin-top:30px;
+    margin-bottom:20px;
+}
+
+.not_choosen {
+        margin:30px;
+        color:#0000FF;
+        font-weight:bold
+}
+
+.link_img {
+        margin-bottom:10px;
+        margin-left:-80px;
+        padding:0
+}
