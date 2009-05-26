@@ -9,7 +9,8 @@
                 </c:when>
                 <c:otherwise>
                     <table>
-                        <c:forEach var="entry" items="#{requestBean.currentContestRanking}" >
+                        <c:set var="itr" value="0" />
+                        <c:forEach var="entry" items="#{requestBean.currentContestRanking}">
                             <thead>
                                 <tr>
                                     <th>${messages.position}</th>
@@ -21,19 +22,22 @@
                                     </c:forEach>
                                 </tr>
                             </thead>
-                            <tr>
-                                <td>
+                            <tr class="#{itr % 2 == 0 ? 'linia2' : 'linia1'}">
+                                <td class="col1">
                                     <h:outputText value="#{entry.place}" />
                                 </td>
-                                <td>
+                                <td class="col2">
                                     <h:outputText value="#{entry.username}" />
                                 </td>
+                                <c:set var="itc" value="0" />
                                 <c:forEach var="column" items="#{entry.table}">
-                                    <td>
+                                    <td class="#{itc % 2 == 0 ? 'col1' : 'col2'}">
                                         <h:outputText value="#{column.value}" />
                                     </td>
+                                    <c:set var="itc" value="#{itc + 1}" />
                                 </c:forEach>
                             </tr>
+                            <c:set var="itr" value="#{itr + 1}" />
                         </c:forEach>
                     </table>
                 </c:otherwise>
