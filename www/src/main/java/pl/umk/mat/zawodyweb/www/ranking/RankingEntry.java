@@ -1,6 +1,7 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.util.Vector;
+import org.apache.commons.collections.KeyValue;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
@@ -11,15 +12,15 @@ public class RankingEntry {
 
     private int place;
     private String username;
-    private Vector<String> table;
+    private Vector<KeyValue> table;
 
     RankingEntry() {
         place = -1;
         username = "";
-        table = new Vector<String>();
+        table = new Vector<KeyValue>();
     }
 
-    public RankingEntry(int place, String username, Vector<String> table) {
+    public RankingEntry(int place, String username, Vector<KeyValue> table) {
         this.place = place;
         this.username = username;
         this.table = table;
@@ -56,14 +57,14 @@ public class RankingEntry {
     /**
      * @return the table
      */
-    public Vector<String> getTable() {
+    public Vector<KeyValue> getTable() {
         return table;
     }
 
     /**
      * @param table the table to set
      */
-    public void setTable(Vector<String> table) {
+    public void setTable(Vector<KeyValue> table) {
         this.table = table;
     }
 }
