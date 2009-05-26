@@ -1,0 +1,22 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
+    <ui:define name="pageTitle">
+        ${messages.about_zawodyweb}
+    </ui:define>
+    <ui:define name="pageContent">
+        <a4j:form id="formSubmit" styleClass="profilform" style="width:100%;">
+            <div class="about">
+                <div class="praca">
+                    <h:outputText value="Zespół pracujący nad serwisem:" />
+                </div>
+                <h:graphicImage alt="Zespół" url="/media/images/CRW_3238.jpg" />
+                <h:graphicImage alt="Zespół" url="/media/images/CRW_3170.jpg" />
+                <h:graphicImage alt="Zespół" url="/media/images/CRW_3177.jpg" />
+                <h:graphicImage alt="Zespół" url="/media/images/CRW_3193.jpg" />
+                <h:graphicImage alt="Zespół" url="/media/images/CRW_3220.jpg" />
+                <h:graphicImage alt="Zespół" url="/media/images/CRW_3196.jpg" />
+            </div>
+        </a4j:form>
+    </ui:define>
+</ui:composition>
