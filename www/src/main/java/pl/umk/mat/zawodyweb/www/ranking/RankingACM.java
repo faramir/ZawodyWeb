@@ -73,7 +73,7 @@ public class RankingACM implements RankingInteface {
 
         void add(int points, SolutionACM solutionACM) {
             this.points += points;
-            this.totalTime += solutionACM.time;
+            this.totalTime += solutionACM.time/1000;
             this.solutions.add(solutionACM);
         }
 
@@ -112,6 +112,19 @@ public class RankingACM implements RankingInteface {
             }
             return 0;
         }
+    }
+
+    private String parseTime(long time) {
+        long d, h, m, s;
+        d = time / (24 * 60 * 60);
+        time %= (24 * 60 * 60);
+        h = time / (60 * 60);
+        time %= (60 * 60);
+        m = time / 60;
+        time %= 60;
+        s = time;
+
+        return String.format("%dd %02d:%02d:%02d", d, h, m, s);
     }
 
     private Vector<RankingEntry> getRankingACM(int contest_id, Timestamp checkDate, boolean admin) {
@@ -174,7 +187,7 @@ public class RankingACM implements RankingInteface {
                             " where submits.problemsid='" + problems.getId() + "' " +
                             "	and submits.id=results.submitsid " +
                             "	and tests.id = results.testsid " +
-                            "   and sdate < '"+checkTimestamp.toString()+"' " +
+                            "   and sdate <= '" + checkTimestamp.toString() + "' " +
                             " group by submits.id,usersid " +
                             " having sum(points)='" + maxPoints + "'");
                 } else {
@@ -184,7 +197,7 @@ public class RankingACM implements RankingInteface {
                             "	and submits.id=results.submitsid " +
                             "	and tests.id = results.testsid " +
                             "	and tests.visibility=1 " +
-                            "   and sdate < '"+checkTimestamp.toString()+"' " +
+                            "   and sdate <= '" + checkTimestamp.toString() + "' " +
                             " group by submits.id,usersid " +
                             " having sum(points)='" + maxPoints + "'");
                 }
@@ -227,7 +240,7 @@ public class RankingACM implements RankingInteface {
             }
             Vector<KeyValue> v = new Vector<KeyValue>();
             v.add(new DefaultKeyValue(messages.getString("points"), user.points));
-            v.add(new DefaultKeyValue(messages.getString("time"), user.totalTime));
+            v.add(new DefaultKeyValue(messages.getString("time"), parseTime(user.totalTime)));
             v.add(new DefaultKeyValue(messages.getString("solutions"), user.getSolutionsForRanking()));
 
             Users users = usersDAO.getById(user.id_user);
