@@ -38,7 +38,7 @@
             </div>
             <div class="source">
                 <h:outputLabel for="sourcefile">${messages.submit_sourcefile}:</h:outputLabel>
-                <t:inputFileUpload id="sourcefile" style="width:70%" value="#{requestBean.temporaryFile}" />
+                <t:inputFileUpload id="sourcefile" value="#{requestBean.temporaryFile}" />
                 <h:message for="sourcefile" errorClass="error" />
                 <br class="clear" />
             </div>

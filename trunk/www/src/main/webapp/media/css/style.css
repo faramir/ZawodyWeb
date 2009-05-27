@@ -870,9 +870,13 @@ tbody {
 
 .source {
         margin-top:30px;
-        border: ridge #c5a7f2;
+        border: solid #c5a7f2;
         border-width: 1px 0 0 0;
         padding-top:30px;
+}
+
+.profilform div.source input {
+    width:70%;
 }
 
 .about img {
