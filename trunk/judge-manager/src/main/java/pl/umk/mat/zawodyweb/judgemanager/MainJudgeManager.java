@@ -133,7 +133,7 @@ public class MainJudgeManager {
         logger.info("Listening...");
 
         /* Listening for connection from Judges*/
-        new JudgesListener(judgeSocket, properties, submitsQueue, submitsDAO).start();
+        new JudgesListener(judgeSocket, properties, submitsQueue).start();
 
         /* Listening for connection from WWW */
         new WWWListener(wwwSocket, properties, submitsQueue).start();
