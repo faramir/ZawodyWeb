@@ -167,6 +167,10 @@ public class MainJudgeManager {
 
                     if (used == false) {
                         now.add(submit.getId());
+
+                        submit.setResult(SubmitsResultEnum.WAIT.getCode());
+                        DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
+
                         logger.info("Add submit(" + submit.getId() + ") with PROGRESS status to queue");
                     }
                 }
