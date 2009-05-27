@@ -1,6 +1,10 @@
 package pl.umk.mat.zawodyweb.www;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,6 +41,7 @@ import pl.umk.mat.zawodyweb.database.ProblemsDAO;
 import pl.umk.mat.zawodyweb.database.QuestionsDAO;
 import pl.umk.mat.zawodyweb.database.SeriesDAO;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
+import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.TestsDAO;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
@@ -95,6 +100,7 @@ public class RequestBean {
     private int temporaryPageIndex = 0;
     private String temporarySource;
     private Problems currentProblem;
+    private Submits currentSubmit;
     private String dummy;
     private List<Problems> submittableProblems;
     private UploadedFile temporaryFile;
@@ -230,8 +236,11 @@ public class RequestBean {
 
     public List<Problems> getSubmittableProblems() {
         if (submittableProblems == null) {
-            ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-            submittableProblems = dao.findAll();
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Problems.class);
+            if (sessionBean.getCurrentContest() != null) {
+                c.createCriteria("series").createCriteria("contests").add(Restrictions.eq("id", sessionBean.getCurrentContest().getId()));
+            }
+            submittableProblems = c.list();
         }
 
         return submittableProblems;
@@ -319,6 +328,10 @@ public class RequestBean {
         }
 
         return editedSubmit;
+    }
+
+    public Submits getCurrentSubmit() {
+        return currentSubmit;
     }
 
     public Questions getEditedQuestion() {
@@ -771,6 +784,19 @@ public class RequestBean {
         }
     }
 
+    @HttpAction(name = "submission", pattern = "submission/{id}/{title}")
+    public String goToSubmission(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        SubmitsDAO dao = DAOFactory.DEFAULT.buildSubmitsDAO();
+        currentSubmit = dao.getById(id);
+
+        if (currentSubmit == null) {
+            return "/error/404";
+        } else {
+            sessionBean.selectContest(currentSubmit.getProblems().getSeries().getContests().getId());
+            return "submission";
+        }
+    }
+
     @HttpAction(name = "problem", pattern = "problem/{id}/{title}")
     public String goToProblem(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
@@ -962,12 +988,19 @@ public class RequestBean {
             submit.setId(null);
             submit.setFilename(fileName);
             submit.setCode(bytes);
+            submit.setResult(SubmitsResultEnum.WAIT.getCode());
             submit.setLanguages(ldao.getById(temporaryLanguageId));
             submit.setProblems(pdao.getById(temporaryProblemId));
             submit.setSdate(new Timestamp(Calendar.getInstance().getTime().getTime()));
             submit.setUsers(udao.getById(sessionBean.getCurrentUser().getId()));
 
             dao.saveOrUpdate(submit);
+
+            /*Socket sock = new Socket(InetAddress.getByName("127.0.0.1"), Integer.parseInt("8887"));
+            DataOutputStream output = new DataOutputStream(sock.getOutputStream());
+            output.writeInt(submit.getId());
+            output.flush();*/
+
             return "submissions";
         } catch (Exception e) {
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());

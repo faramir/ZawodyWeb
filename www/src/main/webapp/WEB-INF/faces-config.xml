@@ -161,6 +161,7 @@
             <to-view-id>
                 /submissions.jspx
             </to-view-id>
+            <redirect />
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
@@ -254,6 +255,14 @@
         <navigation-case>
             <from-outcome>question</from-outcome>
             <to-view-id>/question.jspx</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <display-name>ToSubmission</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>submission</from-outcome>
+            <to-view-id>/submission.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>
 </faces-config>

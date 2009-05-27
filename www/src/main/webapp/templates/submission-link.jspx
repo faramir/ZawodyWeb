@@ -1,0 +1,5 @@
+<h:panelGroup xmlns:h="http://java.sun.com/jsf/html" xmlns:zw="http://zawodyweb.mat.umk.pl/">
+    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/submission/#{submission.id}/#{zw:filterUri(submission.problems.name)}.html" rendered="#{!(submission == null)}">
+        <h:outputText value="${zw:points(submit)} / ${zw:maxPoints(submit)}" />
+    </h:outputLink>
+</h:panelGroup>

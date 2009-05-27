@@ -16,7 +16,7 @@
         <tag-name>contest-link_img</tag-name>
         <source>../../templates/contest-link_img.jspx</source>
     </tag>
-     <tag>
+    <tag>
         <tag-name>contest-link_button</tag-name>
         <source>../../templates/contest-link_button.jspx</source>
     </tag>
@@ -36,6 +36,10 @@
         <tag-name>question-link</tag-name>
         <source>../../templates/question-link.jspx</source>
     </tag>
+    <tag>
+        <tag-name>submission-link</tag-name>
+        <source>../../templates/submission-link.jspx</source>
+    </tag>
     <function>
         <function-name>filterUri</function-name>
         <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
@@ -50,6 +54,21 @@
         <function-name>maxLimitTime</function-name>
         <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
         <function-signature>java.lang.Integer maxLimitTime(pl.umk.mat.zawodyweb.database.pojo.Problems)</function-signature>
+    </function>
+    <function>
+        <function-name>hasMaxResult</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
+        <function-signature>java.lang.Boolean hasMaxResult(pl.umk.mat.zawodyweb.database.pojo.Submits)</function-signature>
+    </function>
+    <function>
+        <function-name>maxPoints</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
+        <function-signature>java.lang.Integer maxPoints(pl.umk.mat.zawodyweb.database.pojo.Submits)</function-signature>
+    </function>
+    <function>
+        <function-name>points</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
+        <function-signature>java.lang.Integer points(pl.umk.mat.zawodyweb.database.pojo.Submits)</function-signature>
     </function>
     <function>
         <function-name>nlToBr</function-name>
