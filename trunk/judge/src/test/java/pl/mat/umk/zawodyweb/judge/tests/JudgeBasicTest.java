@@ -37,7 +37,7 @@ public class JudgeBasicTest {
                     String[] args = {configFilePath};
                     MainJudge.main(args);
                 } catch (Exception ex) {
-                    Logger.getLogger(JudgeTest.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(JudgeBasicTest.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }).start();
