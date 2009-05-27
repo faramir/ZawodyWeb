@@ -9,7 +9,7 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Logger;
 import org.hibernate.Transaction;
-import pl.umk.mat.zawodyweb.database.SubmitsDAO;
+import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
@@ -24,14 +24,12 @@ public class JudgesListener extends Thread {
     public static final Logger logger = Logger.getLogger(JudgesListener.class);
     private ServerSocket judgeSocket;
     private ConcurrentLinkedQueue<Integer> submitsQueue;
-    private SubmitsDAO submitsDAO;
     private String[] addresses;
 
-    public JudgesListener(ServerSocket judgeSocket, Properties properties, ConcurrentLinkedQueue<Integer> submitsQueue, SubmitsDAO submitsDAO) {
+    public JudgesListener(ServerSocket judgeSocket, Properties properties, ConcurrentLinkedQueue<Integer> submitsQueue) {
         super();
         this.judgeSocket = judgeSocket;
         this.submitsQueue = submitsQueue;
-        this.submitsDAO = submitsDAO;
         addresses = properties.getProperty("JUDGE_ADDRESSES").split("[ ]+");
     }
 
@@ -81,7 +79,7 @@ public class JudgesListener extends Thread {
                         try {
                             transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
-                            Submits s = submitsDAO.getById(submitId);
+                            Submits s = DAOFactory.DEFAULT.buildSubmitsDAO().getById(submitId);
 
                             if (s != null && s.getResult().equals(SubmitsResultEnum.WAIT.getCode()) == false) {
                                 out.writeInt(submitId);
