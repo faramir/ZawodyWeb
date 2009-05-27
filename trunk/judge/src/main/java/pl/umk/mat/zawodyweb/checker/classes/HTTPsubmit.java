@@ -24,6 +24,7 @@ public class HTTPsubmit implements CheckerInterface {
         result.setMemUsed(to.getMemUsed());
         result.setRuntime(to.getRuntime());
         result.setDecription(to.getResultDesc());
+        result.setPoints(to.getPoints());
         return result;
     }
 }

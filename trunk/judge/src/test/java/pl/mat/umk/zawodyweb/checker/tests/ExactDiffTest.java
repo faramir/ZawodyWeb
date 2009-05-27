@@ -31,7 +31,7 @@ public class ExactDiffTest {
         Code code = new Code(codeText, languageTXT);
         Program program = code.compile();
         CheckerResult result =
-                nd.check(program, new TestInput("", 0, 0), test);
+                nd.check(program, new TestInput("", 0, 0, 0), test);
         return result.getResult();
     }
 

@@ -16,6 +16,15 @@ public class CheckerResult {
     private String decription;
     private int memUsed;
     private int runtime;
+    private int points;
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public int getPoints() {
+        return points;
+    }
 
     public void setMemUsed(int memUsed) {
         this.memUsed = memUsed;

@@ -28,11 +28,13 @@ public class TrailingDiff implements CheckerInterface {
         try {
             if (diff(codeText, rightText) == 0) {
                 result.setResult(CheckerErrors.ACC);
+                result.setPoints(input.getMaxPoints());
             } else {
                 result.setResult(CheckerErrors.WA);
+                result.setPoints(0);
             }
         } catch (IOException ex) {
-            System.err.println("IOException at TrailingDiff." + ex.getMessage());
+            //System.err.println("IOException at TrailingDiff." + ex.getMessage());
         }
         result.setRuntime(codeOutput.getRuntime());
         result.setMemUsed(codeOutput.getMemUsed());
