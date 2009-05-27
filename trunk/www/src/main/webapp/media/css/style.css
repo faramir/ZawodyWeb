@@ -712,6 +712,94 @@ border:1px solid #333333;
 	background-color: #bb97f2;
 }
 
+.rich-calendar-tool-btn-hover {
+background-color: #f1eee9;
+color: #000000;
+border-top-width: 1px;
+border-left-width: 1px;
+border-right-width: 1px;
+border-bottom-width: 1px;
+border-top-style: solid;
+border-left-style: solid;
+border-right-style: solid;
+border-bottom-style: solid;
+border-top-color: #efeaf7;
+border-left-color: #efeaf7;
+border-right-color: #c4c0b9;
+border-bottom-color: #c4c0b9;
+padding-top: 1px;
+padding-right: 2px;
+padding-bottom: 1px;
+padding-left: 2px;
+}
+
+.rich-calendar-cell {
+border-bottom-color: #c4c0b9;
+border-right-color: #c4c0b9;
+background-color: #efeaf7;
+font-family: "Trebuchet MS", Tahoma, Arial, sans-serif;
+}
+
+.rich-calendar-toolfooter {
+height: 22px;
+padding-top: 1px;
+padding-right: 2px;
+padding-bottom: 1px;
+padding-left: 1px;
+}
+
+.rich-calendar-days {
+border-bottom-color: #c4c0b9;
+border-right-color: #c4c0b9;
+background-attachment: scroll;
+background-repeat: repeat;
+background-position: 0% 0%;
+background-color: #f1eee9;
+background-image: none;
+font-family: "Trebuchet MS", Tahoma, Arial, sans-serif;
+}
+
+.rich-calendar-editor-btn {
+width: 36px;
+text-align: center;
+cursor: pointer;
+}
+
+.profilform table td.rich-calendar-editor-btn:hover {
+background: transparent;
+}
+
+table.rich-calendar-date-layout tr:hover {
+background: transparent;
+}
+
+table.rich-calendar-editor-container tr:hover{
+    background: transparent;
+}
+
+.rich-calendar-time-btn { 
+border-top-width: 1px;
+border-left-width: 1px;
+border-right-width: 1px;
+border-bottom-width: 1px;
+border-top-style: solid;
+border-left-style: solid;
+border-right-style: solid;
+border-bottom-style: solid;
+border-top-color: #efeaf7;
+border-left-color: #efeaf7;
+border-right-color: #c4c0b9;
+border-bottom-color: #c4c0b9;
+background-attachment: scroll;
+background-repeat: repeat;
+background-position: 0% 0%;
+background-color: #f1eee9;
+background-image: none;
+white-space: nowrap;
+text-align: center;
+cursor: pointer;
+}
+
 .rich-calendar-tool {
 	vertical-align: middle;
 	text-align: center;
