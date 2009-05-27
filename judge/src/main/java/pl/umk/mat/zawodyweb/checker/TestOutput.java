@@ -18,6 +18,17 @@ public class TestOutput {
     private String resultDesc;
     private int runtime;
     private int memUsed;
+    private int points;
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+
 
     public int getMemUsed() {
         return memUsed;

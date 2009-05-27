@@ -180,8 +180,10 @@ public class LanguageOPSS implements CompilerInterface {
                 return result;
             }
             String[] col = row.split("(<td>)|(</table>)");
+            result.setPoints(0);
             if (col[6].matches(".*Program zaakceptowany.*")) {
                 result.setResult(CheckerErrors.ACC);
+                result.setPoints(input.getMaxPoints());
                 result.setRuntime(10 * Integer.parseInt(col[8].replaceAll("\\.", "")));
                 result.setMemUsed(Integer.parseInt(col[9].replaceAll("\\s", "")));
                 break;

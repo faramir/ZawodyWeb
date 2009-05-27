@@ -67,13 +67,13 @@ public class MainJudge {
         } catch (Exception ex) {
             logger.error(ex.getMessage());
         }
-        logger.debug("Connection with JudgeManager on " + properties.getProperty("HOST") +
-                ":" + properties.getProperty("PORT") + "...");
         Socket sock = new Socket(InetAddress.getByName(properties.getProperty("HOST")),
                 Integer.parseInt(properties.getProperty("PORT")));
         DataInputStream input = new DataInputStream(
                 sock.getInputStream());
         DataOutputStream output = new DataOutputStream(sock.getOutputStream());
+        logger.debug("Connection with JudgeManager on " + properties.getProperty("HOST") +
+                ":" + properties.getProperty("PORT") + "...");
         while (15 == 15) {
             int id;
             try {
@@ -121,7 +121,7 @@ public class MainJudge {
             boolean undefinedResult = false;
             logger.debug("Starting tests...");
             for (Tests test : tests) {
-                testInput = new TestInput(test.getInput(),
+                testInput = new TestInput(test.getInput(), test.getMaxpoints(),
                         test.getTimelimit(), submit.getProblems().getMemlimit());
                 testOutput = new TestOutput(test.getOutput());
                 CheckerResult result = checker.check(program, testInput, testOutput);
@@ -133,7 +133,8 @@ public class MainJudge {
                 dbResult.setMemory(result.getMemUsed());
                 dbResult.setRuntime(result.getRuntime());
                 dbResult.setNotes(result.getDecription());
-                dbResult.setPoints(result.getResult());
+                dbResult.setPoints(result.getPoints());
+                dbResult.setSubmitResult(result.getResult());
                 dbResult.setSubmits(submit);
                 dbResult.setTests(test);
                 DAOFactory.DEFAULT.buildResultsDAO().save(dbResult);
