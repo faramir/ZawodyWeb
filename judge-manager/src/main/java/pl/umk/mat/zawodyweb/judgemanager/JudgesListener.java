@@ -8,8 +8,10 @@ import java.net.Socket;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Logger;
+import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
+import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
 /**
@@ -60,9 +62,12 @@ public class JudgesListener extends Thread {
 
         @Override
         public void run() {
-            String judgeHost = judgeClient.getInetAddress().getHostAddress();
-            logger.debug("Judge connected from: " + judgeHost);
             Integer submitId;
+            Transaction transaction;
+            String judgeHost = judgeClient.getInetAddress().getHostAddress();
+
+            logger.debug("Judge connected from: " + judgeHost);
+
             try {
                 DataInputStream in = new DataInputStream(judgeClient.getInputStream());
                 DataOutputStream out = new DataOutputStream(judgeClient.getOutputStream());
@@ -71,16 +76,21 @@ public class JudgesListener extends Thread {
                     submitId = submitsQueue.poll();
                     logger.debug("submit_id from queue: " + submitId);
                     if (submitId == null) {
-                        delay(1000);
+                        delay(1000); // TODO config it
                     } else {
                         try {
+                            transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
                             Submits s = submitsDAO.getById(submitId);
+
                             if (s != null && s.getResult().equals(SubmitsResultEnum.WAIT.getCode()) == false) {
                                 out.writeInt(submitId);
                                 logger.info("Send submit(" + submitId + ") to Judge: " + judgeHost);
                                 out.flush();
                                 in.readInt();
                             }
+
+                            transaction.commit();
                         } catch (IOException ex) {
                             submitsQueue.add(submitId);
                         }
