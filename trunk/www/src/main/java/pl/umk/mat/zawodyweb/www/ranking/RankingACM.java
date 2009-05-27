@@ -240,8 +240,8 @@ public class RankingACM implements RankingInteface {
             }
             Vector<KeyValue> v = new Vector<KeyValue>();
             v.add(new DefaultKeyValue(messages.getString("points"), user.points));
-            v.add(new DefaultKeyValue(messages.getString("time"), parseTime(user.totalTime)));
             v.add(new DefaultKeyValue(messages.getString("solutions"), user.getSolutionsForRanking()));
+            v.add(new DefaultKeyValue(messages.getString("time"), parseTime(user.totalTime)));
 
             Users users = usersDAO.getById(user.id_user);
 
