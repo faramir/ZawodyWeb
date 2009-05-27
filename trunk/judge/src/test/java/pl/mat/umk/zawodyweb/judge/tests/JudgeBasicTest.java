@@ -1,12 +1,10 @@
-
 package pl.mat.umk.zawodyweb.judge.tests;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import pl.umk.mat.zawodyweb.judge.MainJudge;
 
@@ -24,10 +22,12 @@ public class JudgeBasicTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
+
     @Test
     public void basicJudgeTest() throws IOException, InterruptedException, IOException {
-        if (id==0)
+        if (id == 0) {
             return;
+        }
         ServerSocket ss = new ServerSocket(8888);
         new Thread(new Runnable() {
 
@@ -37,7 +37,7 @@ public class JudgeBasicTest {
                     String[] args = {configFilePath};
                     MainJudge.main(args);
                 } catch (Exception ex) {
-                    Logger.getLogger(JudgeBasicTest.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(JudgeBasicTest.class).fatal(null, ex);
                 }
             }
         }).start();
@@ -48,5 +48,4 @@ public class JudgeBasicTest {
         sock.close();
         ss.close();
     }
-
 }
