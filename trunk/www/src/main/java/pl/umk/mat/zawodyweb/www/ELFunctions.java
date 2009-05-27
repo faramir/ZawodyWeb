@@ -4,7 +4,10 @@
  */
 package pl.umk.mat.zawodyweb.www;
 
+import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
+import pl.umk.mat.zawodyweb.database.pojo.Results;
+import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
 
 /**
@@ -51,5 +54,43 @@ public class ELFunctions {
         } else {
             return null;
         }
+    }
+
+    public static Boolean hasMaxResult(Submits s) {
+        Integer a = maxPoints(s);
+        Integer b = points(s);
+
+        return a.equals(b) && !a.equals(-1) && !b.equals(-1);
+    }
+
+    public static Integer maxPoints(Submits s) {
+        if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().size() == 0) {
+            return -1;
+        }
+        int maxPoints = 0;
+
+        for (Results r : s.getResultss()) {
+            if (r.getTests().getVisibility().equals(1)) {
+                maxPoints += r.getTests().getMaxpoints();
+            }
+        }
+
+        return maxPoints;
+    }
+
+    public static Integer points(Submits s){
+        if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().size() == 0) {
+            return -1;
+        }
+
+        int points = 0;
+
+        for (Results r : s.getResultss()) {
+            if (r.getTests().getVisibility().equals(1)) {
+                points += r.getPoints();
+            }
+        }
+
+        return points;
     }
 }
