@@ -46,6 +46,7 @@ public class WWWListener extends Thread {
 
     @Override
     public void run() {
+        logger.info("Listening for connection from WWW...");
         while (true) {
             try {
                 Socket wwwClient = wwwSocket.accept();

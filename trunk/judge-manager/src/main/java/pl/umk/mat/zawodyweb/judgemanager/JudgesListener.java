@@ -25,12 +25,14 @@ public class JudgesListener extends Thread {
     private ServerSocket judgeSocket;
     private ConcurrentLinkedQueue<Integer> submitsQueue;
     private String[] addresses;
+    private long queueDelayTime;
 
     public JudgesListener(ServerSocket judgeSocket, Properties properties, ConcurrentLinkedQueue<Integer> submitsQueue) {
         super();
         this.judgeSocket = judgeSocket;
         this.submitsQueue = submitsQueue;
         addresses = properties.getProperty("JUDGE_ADDRESSES").split("[ ]+");
+        queueDelayTime = Long.parseLong(properties.getProperty("JUDGE_DELAY"));
     }
 
     private boolean isAccepted(String address) {
@@ -72,10 +74,10 @@ public class JudgesListener extends Thread {
 
                 while (true) {
                     submitId = submitsQueue.poll();
-                    logger.debug("submit_id from queue: " + submitId);
                     if (submitId == null) {
-                        delay(1000); // TODO config it
+                        delay(queueDelayTime);
                     } else {
+                        logger.debug("submit_id from queue: " + submitId);
                         try {
                             transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
@@ -106,6 +108,7 @@ public class JudgesListener extends Thread {
 
     @Override
     public void run() {
+        logger.info("Listening for connection from Judges...");
         while (true) {
             try {
                 Socket judgeClient = judgeSocket.accept();
