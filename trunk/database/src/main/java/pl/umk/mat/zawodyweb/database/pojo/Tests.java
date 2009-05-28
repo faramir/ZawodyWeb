@@ -64,6 +64,8 @@ public class Tests implements Serializable {
      */
     private List<Results> resultss = null;
 
+    private Integer testorder;
+
     /* liste transiente */
     /**
      * @return id
@@ -198,5 +200,15 @@ public class Tests implements Serializable {
      */
     public void setProblems(Problems problems) {
         this.problems = problems;
+    }
+
+    @Basic
+    @Column(name = "testorder")
+    public Integer getTestorder() {
+        return testorder;
+    }
+
+    public void setTestorder(Integer order) {
+        this.testorder = testorder;
     }
 }
