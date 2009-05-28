@@ -2,20 +2,22 @@
 <Scene Scope="Project" version="2">
     <Scope Scope="Faces Configuration Only"/>
     <Scope Scope="Project">
-        <Node id="&#10;                /submissions.jspx&#10;            " x="150" y="1050" zoom="true"/>
         <Node id="problems.jspx" x="650" y="600" zoom="true"/>
+        <Node id="&#10;                /submissions.jspx&#10;            " x="150" y="1050" zoom="true"/>
         <Node id="problem.jspx" x="400" y="750" zoom="true"/>
         <Node id="templates/contest-link_button.jspx" x="1650" y="300" zoom="true"/>
         <Node id="&#10;                /start.jspx&#10;            " x="150" y="450" zoom="true"/>
-        <Node id="templates/contest-link.jspx" x="400" y="450" zoom="true"/>
         <Node id="&#10;                /problems.jspx&#10;            " x="150" y="900" zoom="true"/>
+        <Node id="templates/contest-link.jspx" x="400" y="450" zoom="true"/>
         <Node id="&#10;                /submit.jspx&#10;            " x="1650" y="150" zoom="true"/>
-        <Node id="templates/main.jspx" x="650" y="150" zoom="true"/>
         <Node id="admin/editproblem.jspx" x="1400" y="150" zoom="true"/>
+        <Node id="templates/main.jspx" x="650" y="150" zoom="true"/>
         <Node id="register.jspx" x="400" y="150" zoom="true"/>
         <Node id="submit.jspx" x="150" y="300" zoom="true"/>
         <Node id="templates/problem-link_button.jspx" x="1400" y="450" zoom="true"/>
         <Node id="about.jspx" x="400" y="1050" zoom="true"/>
+        <Node id="submission.jspx" x="150" y="1200" zoom="true"/>
+        <Node id="templates/checkererror.jspx" x="1900" y="300" zoom="true"/>
         <Node id="questions.jspx" x="1400" y="300" zoom="true"/>
         <Node id="admin/editseries.jspx" x="150" y="750" zoom="true"/>
         <Node id="login.jspx" x="900" y="150" zoom="true"/>
@@ -26,8 +28,8 @@
         <Node id="&#10;                /login.jspx&#10;            " x="400" y="300" zoom="true"/>
         <Node id="*" x="150" y="600" zoom="true"/>
         <Node id="templates/problem-link_img.jspx" x="1900" y="150" zoom="true"/>
-        <Node id="question.jspx" x="650" y="750" zoom="true"/>
         <Node id="&#10;                /questions.jspx&#10;            " x="1150" y="450" zoom="true"/>
+        <Node id="question.jspx" x="650" y="750" zoom="true"/>
         <Node id="error500.jsp" x="1150" y="150" zoom="true"/>
         <Node id="admin/editcontest.jspx" x="650" y="300" zoom="true"/>
         <Node id="ranking.jspx" x="900" y="750" zoom="true"/>
@@ -35,6 +37,7 @@
         <Node id="error404.jsp" x="650" y="450" zoom="true"/>
         <Node id="error/404.jspx" x="900" y="300" zoom="true"/>
         <Node id="submissions.jspx" x="400" y="900" zoom="true"/>
+        <Node id="templates/submission-link.jspx" x="2150" y="150" zoom="true"/>
         <Node id="templates/question-link.jspx" x="900" y="600" zoom="true"/>
         <Node id="error/500.jspx" x="400" y="600" zoom="true"/>
         <Node id="start.jspx" x="14" y="316" zoom="true"/>

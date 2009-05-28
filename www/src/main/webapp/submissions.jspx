@@ -7,53 +7,49 @@
     <ui:define name="pageContent">
         <a4j:form id="formSubmissions" styleClass="profilform">
             <c:choose>
+                <c:when test="#{sessionBean.currentContest == null}">
+                    <div class="not_choosen">
+                        ${messages.contest_not_choosen}
+                    </div>
+                </c:when>
                 <c:when test="#{!(sessionBean.loggedIn)}">
                     <div class="not_choosen">
                         ${messages.login_please}
                     </div>
                 </c:when>
                 <c:otherwise>
-                    <c:choose>
-                        <c:when test="#{sessionBean.currentContest == null}">
-                            <div class="not_choosen">
-                                ${messages.contest_not_choosen}
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>${messages.submission_date}</th>
-                                        <th>${messages.submission_problem}</th>
-                                        <th>${messages.submission_result}</th>
-                                    </tr>
-                                </thead>
-                                <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="10">
-                                    <tr class="#{zw:hasMaxResult(submit) ? 'linia2' : 'linia1'}">
-                                        <td><h:outputText value="#{submit.sdate}" /></td>
-                                        <td><zw:problem-link problem="${submit.problems}" message="${submit.problems.name}" type="problem" /></td>
-                                        <td>
-                                            <h:outputText value="#{messages.waiting}" rendered="#{submit.result == 0}" />
-                                            <h:outputText value="#{messages.processing}" rendered="#{submit.result == 1}" />
-                                            <h:panelGroup rendered="#{submit.result == 2}">
-                                                <zw:submission-link submission="#{submit}" />
-                                            </h:panelGroup>
-                                        </td>
-                                    </tr>
-                                </t:dataList>
-                            </table>
-                            <h:panelGrid columns="1" styleClass="pagingrid" >
-                                <t:dataScroller for="submissions" paginator="true" paginatorActiveColumnClass="act" paginatorTableClass="paginator" paginatorMaxPages="9" actionListener="#{requestBean.submissionsScrollerAction}" >
-                                    <f:facet name="previous" >
-                                        <t:graphicImage url="/media/images/left_arrow.png" alt="" styleClass="lewy" />
-                                    </f:facet>
-                                    <f:facet name="next">
-                                        <t:graphicImage url="/media/images/right_arrow.png" alt="" styleClass="prawy" />
-                                    </f:facet>
-                                </t:dataScroller>
-                            </h:panelGrid>
-                        </c:otherwise>
-                    </c:choose>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>${messages.submission_date}</th>
+                                <th>${messages.submission_problem}</th>
+                                <th>${messages.submission_result}</th>
+                            </tr>
+                        </thead>
+                        <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="10">
+                            <tr class="#{zw:hasMaxResult(submit) ? 'linia2' : 'linia1'}">
+                                <td><h:outputText value="#{submit.sdate}" /></td>
+                                <td><zw:problem-link problem="${submit.problems}" message="${submit.problems.name}" type="problem" /></td>
+                                <td>
+                                    <h:outputText value="#{messages.waiting}" rendered="#{submit.result == 0}" />
+                                    <h:outputText value="#{messages.processing}" rendered="#{submit.result == 1}" />
+                                    <h:panelGroup rendered="#{submit.result == 2}">
+                                        <zw:submission-link submission="#{submit}" />
+                                    </h:panelGroup>
+                                </td>
+                            </tr>
+                        </t:dataList>
+                    </table>
+                    <h:panelGrid columns="1" styleClass="pagingrid" >
+                        <t:dataScroller for="submissions" paginator="true" paginatorActiveColumnClass="act" paginatorTableClass="paginator" paginatorMaxPages="9" actionListener="#{requestBean.submissionsScrollerAction}" >
+                            <f:facet name="previous" >
+                                <t:graphicImage url="/media/images/left_arrow.png" alt="" styleClass="lewy" />
+                            </f:facet>
+                            <f:facet name="next">
+                                <t:graphicImage url="/media/images/right_arrow.png" alt="" styleClass="prawy" />
+                            </f:facet>
+                        </t:dataScroller>
+                    </h:panelGrid>
                 </c:otherwise>
             </c:choose>
         </a4j:form>

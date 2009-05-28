@@ -2,23 +2,48 @@
                 xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
                 xmlns:zw="http://zawodyweb.mat.umk.pl/">
     <ui:define name="pageTitle">
-        ${messages.submissionnumber} ${requestBean.editedSubmit.id}
+        ${messages.submissionnumber} ${requestBean.currentSubmit.id}
     </ui:define>
     <ui:define name="pageContent">
         <a4j:form id="formSubmission" styleClass="profilform">
             <div class="zadanko">
-                <div class="nazwa">
-                    ${messages.submission_problem}: ${requestBean.currentSubmit.problems.name}
+                <div class="termin">
+                    ${messages.submission_problem}: ${requestBean.currentSubmit.problems.name} (${requestBean.currentSubmit.problems.abbrev})
                 </div>
                 <div class="termin">
                     ${messages.submission_date}: ${requestBean.currentSubmit.sdate}
                 </div>
                 <div class="pdf">
+                    ${messages.solution}:
                     <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentSubmit.id}/code.html" title="code"><h:graphicImage alt="${messages.solution_download}" title="${messages.solution_download}" url="/media/images/edytuj.png" /></h:outputLink>
                 </div>
                 <div class="notes">
                     <h:outputText value="${zw:nlToBr(requestBean.currentSubmit.notes)}" escape="false" />
                 </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>${messages.test}</th>
+                            <th>${messages.submission_status}</th>
+                            <th>${messages.submission_time}/${messages.submission_timelimit}</th>
+                            <th>${messages.submission_mem}/${messages.submission_memlimit}</th>
+                            <th>${messages.submission_result}</th>
+                            <th>${messages.submission_notes}</th>
+                        </tr>
+                    </thead>
+                    <t:dataList id="submissions" var="result" footerClass="paginator" value="#{requestBean.currentSubmit.resultss}">
+                        <h:panelGroup rendered="${zw:testVisible(result.tests)}">
+                            <tr>
+                                <td>${result.tests.testorder}</td>
+                                <td><zw:checkererror code="#{result.submitResult}" /></td>
+                                <td>${result.runtime}/${result.tests.timelimit}</td>
+                                <td>${result.memory}/${result.tests.problems.memlimit}</td>
+                                <td>${result.points}/${result.tests.maxpoints}</td>
+                                <td>${result.notes}</td>
+                            </tr>
+                        </h:panelGroup>
+                    </t:dataList>
+                </table>
             </div>
         </a4j:form>
     </ui:define>

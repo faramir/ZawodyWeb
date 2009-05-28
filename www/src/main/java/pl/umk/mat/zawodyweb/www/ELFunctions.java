@@ -4,6 +4,7 @@
  */
 package pl.umk.mat.zawodyweb.www;
 
+import java.util.Calendar;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
@@ -56,6 +57,11 @@ public class ELFunctions {
         }
     }
 
+    public static Boolean testVisible(Tests t){
+        return (t.getVisibility() != null && t.getVisibility().equals(1)) ||
+               (t.getProblems().getSeries().getEnddate() != null && t.getProblems().getSeries().getEnddate().before(Calendar.getInstance().getTime()));
+    }
+
     public static Boolean hasMaxResult(Submits s) {
         Integer a = maxPoints(s);
         Integer b = points(s);
@@ -70,7 +76,7 @@ public class ELFunctions {
         int maxPoints = 0;
 
         for (Results r : s.getResultss()) {
-            if (r.getTests().getVisibility().equals(1)) {
+            if (testVisible(r.getTests())) {
                 maxPoints += r.getTests().getMaxpoints();
             }
         }
@@ -86,7 +92,7 @@ public class ELFunctions {
         int points = 0;
 
         for (Results r : s.getResultss()) {
-            if (r.getTests().getVisibility().equals(1)) {
+            if (testVisible(r.getTests())) {
                 points += r.getPoints();
             }
         }
