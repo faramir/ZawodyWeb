@@ -208,7 +208,7 @@ public class Tests implements Serializable {
         return testorder;
     }
 
-    public void setTestorder(Integer order) {
+    public void setTestorder(Integer testorder) {
         this.testorder = testorder;
     }
 }
