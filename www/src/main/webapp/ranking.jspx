@@ -13,10 +13,12 @@
                             <tr>
                                 <th class="small">${messages.position}</th>
                                 <th class="big">${messages.competitor}</th>
+                                <c:set var="itc" value="0" />
                                 <c:forEach var="column" items="#{requestBean.currentContestRanking.columnsCaptions}">
-                                    <th>
+                                    <th class="${requestBean.currentContestRanking.columnsCSS[itc]}">
                                         <h:outputText value="#{column}" />
                                     </th>
+                                    <c:set var="itc" value="#{itc + 1}" />
                                 </c:forEach>
                             </tr>
                         </thead>
