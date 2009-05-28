@@ -1,0 +1,12 @@
+<h:panelGroup xmlns:h="http://java.sun.com/jsf/html">
+    <h:outputText value="#{messages.errorcode_undef}" rendered="#{code == -1}" />
+    <h:outputText value="#{messages.errorcode_acc}" rendered="#{code == 0}" />
+    <h:outputText value="#{messages.errorcode_wa}" rendered="#{code == 1}" />
+    <h:outputText value="#{messages.errorcode_tle}" rendered="#{code == 2}" />
+    <h:outputText value="#{messages.errorcode_cl}" rendered="#{code == 3}" />
+    <h:outputText value="#{messages.errorcode_re}" rendered="#{code == 4}" />
+    <h:outputText value="#{messages.errorcode_mle}" rendered="#{code == 5}" />
+    <h:outputText value="#{messages.errorcode_rv}" rendered="#{code == 6}" />
+    <h:outputText value="#{messages.errorcode_ctle}" rendered="#{code == 7}" />
+    <h:outputText value="#{messages.errorcode_unknown}" rendered="#{code == 8}" />
+</h:panelGroup>

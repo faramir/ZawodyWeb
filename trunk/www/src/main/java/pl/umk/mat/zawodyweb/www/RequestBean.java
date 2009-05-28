@@ -903,18 +903,37 @@ public class RequestBean {
         return "/admin/edittest";
     }
 
-    @HttpAction(name = "getpdf", pattern = "get/{id}/pdf")
-    public String getProblemPDF(@Param(name = "id", encode = true) int id) throws IOException {
-        ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-        Problems p = dao.getById(id);
+    @HttpAction(name = "getfile", pattern = "get/{id}/{type}")
+    public String getFile(@Param(name = "id", encode = true) int id, @Param(name = "type", encode = true) String type) throws IOException {
+        String name = StringUtils.EMPTY;
+        String mimetype = StringUtils.EMPTY;
+        byte[] content = null;
 
-        if (p != null && p.getPDF() != null) {
+        if(type.equals("pdf")) {
+            ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
+            Problems p = dao.getById(id);
+            if(p != null && p.getPDF() != null){
+                name = p.getName() + ".pdf";
+                content = p.getPDF().getPdf();
+                mimetype = "application/pdf";
+            }
+        } else if(type.equals("code")) {
+            SubmitsDAO dao = DAOFactory.DEFAULT.buildSubmitsDAO();
+            Submits s = dao.getById(id);
+            if(s != null && s.getCode() != null){
+                name = s.getFilename();
+                content = s.getCode();
+                mimetype = "application/octet-stream";
+            }
+        }
+
+        if (content != null) {
             FacesContext context = FacesContext.getCurrentInstance();
 
             HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
-            response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + p.getName() + ".pdf\"");
-            response.getOutputStream().write(p.getPDF().getPdf());
+            response.setContentType(mimetype);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + name + "\"");
+            response.getOutputStream().write(content);
             response.getOutputStream().flush();
             response.getOutputStream().close();
             context.responseComplete();
