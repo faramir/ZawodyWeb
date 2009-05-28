@@ -46,6 +46,7 @@ public class MainJudgeManager {
         properties.setProperty("JUDGE_LISTEN_ADDRESS", "");
         properties.setProperty("JUDGE_POOL", "16");
         properties.setProperty("JUDGE_ADDRESSES", "127.0.0.1 158.75.12.138");
+        properties.setProperty("JUDGE_DELAY", "2500");
 
         properties.setProperty("DELAY_PROCESS", "600000");
 
@@ -73,6 +74,7 @@ public class MainJudgeManager {
         logger.debug("JUDGE_LISTEN_ADDRESS = " + properties.getProperty("JUDGE_LISTEN_ADDRESS"));
         logger.debug("JUDGE_POOL = " + properties.getProperty("JUDGE_POOL"));
         logger.debug("JUDGE_ADDRESSES = " + properties.getProperty("JUDGE_ADDRESSES"));
+        logger.debug("JUDGE_DELAY = " + properties.getProperty("JUDGE_DELAY"));
 
         logger.debug("DELAY_PROCESS = " + properties.getProperty("DELAY_PROCESS"));
 
@@ -130,26 +132,26 @@ public class MainJudgeManager {
         }
 
         Runtime.getRuntime().addShutdownHook(new ExitHookThread(wwwSocket, judgeSocket));
-        logger.info("Listening...");
 
-        /* Listening for connection from Judges*/
+        /* Listening for connection from Judges */
         new JudgesListener(judgeSocket, properties, submitsQueue).start();
 
         /* Listening for connection from WWW */
         new WWWListener(wwwSocket, properties, submitsQueue).start();
 
-        /* Check database for unchecked solutions in state PROCESS... */
+        /* Check database for unchecked solutions in PROCESS state... */
         Integer[] prev = new Integer[0];
+        boolean used;
 
         while (true) {
             try {
                 Thread.sleep(delayProcess);
 
-                boolean used;
+                logger.info("Checking database for solutions in PROCESS state...");
 
                 transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
-                submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO(); // ! bez tego jest rzucany wyjątek org.hibernate.SessionException: Session is closed!
+                submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
 
                 Vector<Integer> now = new Vector<Integer>();
 
@@ -169,7 +171,7 @@ public class MainJudgeManager {
                         now.add(submit.getId());
 
                         submit.setResult(SubmitsResultEnum.WAIT.getCode());
-                        DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
+                        submitsDAO.saveOrUpdate(submit);
 
                         logger.info("Add submit(" + submit.getId() + ") with PROGRESS status to queue");
                     }
