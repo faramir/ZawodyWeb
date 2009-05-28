@@ -151,7 +151,6 @@ public class LanguagePAS implements CompilerInterface {
             strWithoutComments = strWithoutComments + str.charAt(i);
         }
         str = strWithoutComments;
-        System.out.println(str);
         String regexp1_on = "(?s).*\\W(" + forbiddenCalls.replaceAll(" ", "|") + ")\\W.*";
         if (str.matches(regexp1_on)) {
             compileResult = CheckerErrors.RV;
@@ -182,7 +181,15 @@ public class LanguagePAS implements CompilerInterface {
             is.write(code);
             is.close();
             System.gc();
-            Process p = new ProcessBuilder("ppc386", "-O2", "-XS", "-Xt", "-o" + compilefile, codefile).start();
+            Process p = null;
+            try{
+            p = new ProcessBuilder("ppc386", "-O2", "-XS", "-Xt", "-o" + compilefile, codefile).start();}
+            catch (Exception ex) {
+                logger.error("No ppc386 found.");
+                compileResult = CheckerErrors.UNKNOWN;
+                compileDesc = "No ppc386 found";
+                return compilefile;
+            }
             BufferedReader input =
                     new BufferedReader(new InputStreamReader(p.getInputStream()));
             Timer timer = new Timer();

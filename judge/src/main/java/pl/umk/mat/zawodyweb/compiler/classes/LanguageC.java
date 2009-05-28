@@ -179,7 +179,15 @@ public class LanguageC implements CompilerInterface {
             is.write(code);
             is.close();
             System.gc();
-            Process p = new ProcessBuilder("gcc", "-O2", "-static", "-o " + compilefile, codefile,"-lm").start();
+            Process p = null;
+            try {
+                p = new ProcessBuilder("gcc", "-O2", "-static", "-o " + compilefile, codefile, "-lm").start();
+            } catch (Exception ex) {
+                logger.error("No gcc found.");
+                compileResult = CheckerErrors.UNKNOWN;
+                compileDesc = "No gcc found";
+                return compilefile;
+            }
             BufferedReader input =
                     new BufferedReader(new InputStreamReader(p.getInputStream()));
             Timer timer = new Timer();

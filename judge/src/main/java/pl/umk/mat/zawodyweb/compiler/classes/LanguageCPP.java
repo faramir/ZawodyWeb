@@ -179,7 +179,15 @@ public class LanguageCPP implements CompilerInterface {
             is.write(code);
             is.close();
             System.gc();
-            Process p = new ProcessBuilder("g++", "-O2", "-static", "-o " + compilefile, codefile,"-lm").start();
+            Process p = null;
+            try {
+                p = new ProcessBuilder("g++", "-O2", "-static", "-o " + compilefile, codefile, "-lm").start();
+            } catch (Exception ex) {
+                logger.error("No g++ found.");
+                compileResult = CheckerErrors.UNKNOWN;
+                compileDesc = "No g++ found";
+                return compilefile;
+            }
             BufferedReader input =
                     new BufferedReader(new InputStreamReader(p.getInputStream()));
             Timer timer = new Timer();
