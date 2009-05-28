@@ -1,10 +1,6 @@
 package pl.umk.mat.zawodyweb.www;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,6 +55,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
 import pl.umk.mat.zawodyweb.www.datamodels.PagedDataModel;
 import pl.umk.mat.zawodyweb.www.ranking.Ranking;
 import pl.umk.mat.zawodyweb.www.ranking.RankingEntry;
+import pl.umk.mat.zawodyweb.www.ranking.RankingTable;
 
 /**
  *
@@ -87,7 +84,7 @@ public class RequestBean {
     private List<Languages> languages = null;
     private List<Series> currentContestSeries = null;
     private List<Questions> currentContestQuestions = null;
-    private Vector<RankingEntry> currentContestRanking = null;
+    private RankingTable currentContestRanking = null;
     private PagedDataModel submissions = null;
     private Integer temporaryContestId;
     private Integer temporarySeriesId;
@@ -266,7 +263,7 @@ public class RequestBean {
         return currentContestQuestions;
     }
 
-    public Vector<RankingEntry> getCurrentContestRanking() {
+    public RankingTable getCurrentContestRanking() {
         if (currentContestRanking == null && sessionBean.getCurrentContest() != null) {
             Integer contestId = sessionBean.getCurrentContest().getId();
             Date date = Calendar.getInstance().getTime();

@@ -25,7 +25,7 @@ public class Ranking {
         return instance;
     }
 
-    public Vector<RankingEntry> getRanking(int contest_id, Date date, boolean admin) {
+    public RankingTable getRanking(int contest_id, Date date, boolean admin) {
         ContestsDAO contestsDAO = DAOFactory.DEFAULT.buildContestsDAO();
 
         RankingInteface ranking = null;

@@ -12,15 +12,15 @@ public class RankingEntry {
 
     private int place;
     private String username;
-    private Vector<KeyValue> table;
+    private Vector<String> table;
 
     RankingEntry() {
         place = -1;
         username = "";
-        table = new Vector<KeyValue>();
+        table = new Vector<String>();
     }
 
-    public RankingEntry(int place, String username, Vector<KeyValue> table) {
+    public RankingEntry(int place, String username, Vector<String> table) {
         this.place = place;
         this.username = username;
         this.table = table;
@@ -57,14 +57,14 @@ public class RankingEntry {
     /**
      * @return the table
      */
-    public Vector<KeyValue> getTable() {
+    public Vector<String> getTable() {
         return table;
     }
 
     /**
      * @param table the table to set
      */
-    public void setTable(Vector<KeyValue> table) {
+    public void setTable(Vector<String> table) {
         this.table = table;
     }
 }
