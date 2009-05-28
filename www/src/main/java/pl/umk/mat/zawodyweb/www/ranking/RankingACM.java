@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.Vector;
-import org.apache.commons.collections.KeyValue;
-import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
@@ -73,7 +71,7 @@ public class RankingACM implements RankingInteface {
 
         void add(int points, SolutionACM solutionACM) {
             this.points += points;
-            this.totalTime += solutionACM.time/1000;
+            this.totalTime += solutionACM.time / 1000;
             this.solutions.add(solutionACM);
         }
 
@@ -127,7 +125,7 @@ public class RankingACM implements RankingInteface {
         return String.format("%dd %02d:%02d:%02d", d, h, m, s);
     }
 
-    private Vector<RankingEntry> getRankingACM(int contest_id, Timestamp checkDate, boolean admin) {
+    private RankingTable getRankingACM(int contest_id, Timestamp checkDate, boolean admin) {
         Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
 
@@ -224,10 +222,25 @@ public class RankingACM implements RankingInteface {
             }
 
         }
+
+        /* Tworzenie rankingu z danych */
         Vector<UserACM> cre = new Vector<UserACM>();
         cre.addAll(mapUserACM.values());
         Collections.sort(cre);
 
+        /* nazwy kolumn */
+        Vector<String> columnsCaptions = new Vector<String>();
+        columnsCaptions.add(messages.getString("points"));
+        columnsCaptions.add(messages.getString("time"));
+        columnsCaptions.add(messages.getString("solutions"));
+
+        /* nazwy klas css-owych dla kolumn  */
+        Vector<String> columnsCSS = new Vector<String>();
+        columnsCSS.add("small");    // points
+        columnsCSS.add("small");    // time
+        columnsCSS.add("big");      // solutions
+
+        /* tabelka z rankingiem */
         Vector<RankingEntry> vectorRankingEntry = new Vector<RankingEntry>();
         int place = 0;
         long totalTime = -1;
@@ -238,28 +251,26 @@ public class RankingACM implements RankingInteface {
                 points = user.points;
                 totalTime = user.totalTime;
             }
-            Vector<KeyValue> v = new Vector<KeyValue>();
-            v.add(new DefaultKeyValue(messages.getString("points"), user.points));
-            v.add(new DefaultKeyValue(messages.getString("solutions"), user.getSolutionsForRanking()));
-            v.add(new DefaultKeyValue(messages.getString("time"), parseTime(user.totalTime)));
+            Vector<String> v = new Vector<String>();
+            v.add(Integer.toString(user.points));
+            v.add(parseTime(user.totalTime));
+            v.add(user.getSolutionsForRanking());
 
             Users users = usersDAO.getById(user.id_user);
 
             vectorRankingEntry.add(new RankingEntry(place, users.getFirstname() + " " + users.getLastname() + " (" + users.getLogin() + ")", v));
-
-//            System.out.println(place + " : " + user.id_user + " " + usersDAO.getById(user.id_user).getLogin() + " " + " : " + user.points + " : " + user.totalTime + " : " + user.getSolutionsForRanking());
         }
 
-        return vectorRankingEntry;
+        return new RankingTable(columnsCaptions, columnsCSS, vectorRankingEntry);
     }
 
     @Override
-    public Vector<RankingEntry> getRanking(int contest_id, Timestamp checkDate) {
+    public RankingTable getRanking(int contest_id, Timestamp checkDate) {
         return getRankingACM(contest_id, checkDate, false);
     }
 
     @Override
-    public Vector<RankingEntry> getRankingForAdmin(int contest_id, Timestamp checkDate) {
+    public RankingTable getRankingForAdmin(int contest_id, Timestamp checkDate) {
         return getRankingACM(contest_id, checkDate, true);
     }
 }
