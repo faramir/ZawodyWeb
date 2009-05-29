@@ -9,6 +9,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.ProblemsDAO;
 import pl.umk.mat.zawodyweb.database.SeriesDAO;
@@ -185,6 +186,7 @@ public class RankingACM implements RankingInteface {
                             " where submits.problemsid='" + problems.getId() + "' " +
                             "	and submits.id=results.submitsid " +
                             "	and tests.id = results.testsid " +
+                            "   and results.submitresult='" + CheckerErrors.ACC + "' " +
                             "   and sdate <= '" + checkTimestamp.toString() + "' " +
                             " group by submits.id,usersid " +
                             " having sum(points)='" + maxPoints + "'");
@@ -194,6 +196,7 @@ public class RankingACM implements RankingInteface {
                             " where submits.problemsid='" + problems.getId() + "' " +
                             "	and submits.id=results.submitsid " +
                             "	and tests.id = results.testsid " +
+                            "   and results.submitresult='" + CheckerErrors.ACC + "' " +
                             "	and tests.visibility=1 " +
                             "   and sdate <= '" + checkTimestamp.toString() + "' " +
                             " group by submits.id,usersid " +
@@ -202,10 +205,12 @@ public class RankingACM implements RankingInteface {
 
                 for (Object list : query.list()) { // tu jest zwrócona lista "zaakceptowanych" w danym momencie rozwiązań zadania
                     Object[] o = (Object[]) list; // 0 - user.id, 1 - submits.id, 2 - sdate
-                    Number bombs = (Number) hibernateSession.createCriteria(Submits.class).setProjection(Projections.rowCount()).add(Restrictions.eq("problems.id", (Number) problems.getId())).add(Restrictions.eq("users.id", (Number) o[0])).add(Restrictions.lt("sdate", (Timestamp) o[2])).uniqueResult();
-
+                    Number bombs = null;
+                    if (maxPoints.intValue() > 0) {
+                        bombs = (Number) hibernateSession.createCriteria(Submits.class).setProjection(Projections.rowCount()).add(Restrictions.eq("problems.id", (Number) problems.getId())).add(Restrictions.eq("users.id", (Number) o[0])).add(Restrictions.lt("sdate", (Timestamp) o[2])).uniqueResult();
+                    }
                     if (bombs == null) {
-                        bombs = -1;
+                        bombs = 0;
                     }
 
                     UserACM user = mapUserACM.get((Integer) o[0]);
