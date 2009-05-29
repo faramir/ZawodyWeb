@@ -229,18 +229,18 @@ public class LanguageACM implements CompilerInterface {
                 result.setPoints(0);
                 if (!stat.equals("Received") && !stat.equals("Running") && !stat.equals("Sent to judge") && !stat.equals("In judge queue")) {
                     if (stat.matches(".*Accepted.*")) {
-                        result.setResult(CheckerErrors.ACC);
+                        result.setResult(CheckerErrors.OK);
                         result.setPoints(input.getMaxPoints());
                         result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
                     } else if (stat.matches(".*Compilation error.*")) {
                         result.setResult(CheckerErrors.CE);
-                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
                     } else if (stat.matches(".*Presentation error.*")) {
-                        result.setResult(CheckerErrors.ACC);
+                        result.setResult(CheckerErrors.OK);
                         result.setPoints(input.getMaxPoints());
                         result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
                     } else if (stat.matches(".*Wrong answer.*")) {
-                        result.setResult(CheckerErrors.WA);
+                        result.setResult(CheckerErrors.OK);
+                        result.setPoints(0);
                         result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
                     } else if (stat.matches(".*Time limit exceeded.*")) {
                         result.setResult(CheckerErrors.TLE);

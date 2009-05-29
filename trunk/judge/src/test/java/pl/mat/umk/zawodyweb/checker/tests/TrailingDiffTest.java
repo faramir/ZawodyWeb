@@ -31,54 +31,54 @@ public class TrailingDiffTest {
         Code code = new Code(codeText, languageTXT);
         Program program = code.compile();
         CheckerResult result =
-                nd.check(program, new TestInput("", 0, 0, 0), test);
-        return result.getResult();
+                nd.check(program, new TestInput("", 1, 0, 0), test);
+        return result.getPoints();
     }
 
     @Test
     public void exactTest() {
-        int expected = CheckerErrors.ACC;
+        int expected = 1;
         assertEquals(expected, Test("15\n", "15\n"));
     }
 
     @Test
     public void trailingTest1() {
-        int expected = CheckerErrors.ACC;
+        int expected = 1;
         assertEquals(expected, Test("   15\n", "15\n"));
     }
 
     @Test
     public void trailingTest2() {
-        int expected = CheckerErrors.WA;
+        int expected = 0;
         assertEquals(expected, Test("\n15\n", "15\n"));
     }
 
     @Test
     public void trailingTest3() {
-        int expected = CheckerErrors.ACC;
+        int expected = 1;
         assertEquals(expected, Test("15", "15\n"));
     }
 
     @Test
     public void trailingTest4() {
-        int expected = CheckerErrors.ACC;
+        int expected = 1;
         assertEquals(expected, Test("15\n", "15"));
     }
 
     @Test
     public void trailingTest5() {
-        int expected = CheckerErrors.ACC;
+        int expected = 1;
         assertEquals(expected, Test("     15 13\n\n", "15 13\n"));
     }
     @Test
     public void trailingTest6() {
-        int expected = CheckerErrors.WA;
+        int expected = 0;
         assertEquals(expected, Test("     15  13\n\n", "15 13\n"));
     }
     
     @Test
     public void trailingTest7() {
-        int expected = CheckerErrors.WA;
+        int expected = 0;
         assertEquals(expected, Test("     15\n13\n\n", "15 13\n"));
     }
     // TODO add test methods here.
