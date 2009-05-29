@@ -205,10 +205,8 @@ public class RankingACM implements RankingInteface {
 
                 for (Object list : query.list()) { // tu jest zwrócona lista "zaakceptowanych" w danym momencie rozwiązań zadania
                     Object[] o = (Object[]) list; // 0 - user.id, 1 - submits.id, 2 - sdate
-                    Number bombs = null;
-                    if (maxPoints.intValue() > 0) {
-                        bombs = (Number) hibernateSession.createCriteria(Submits.class).setProjection(Projections.rowCount()).add(Restrictions.eq("problems.id", (Number) problems.getId())).add(Restrictions.eq("users.id", (Number) o[0])).add(Restrictions.lt("sdate", (Timestamp) o[2])).uniqueResult();
-                    }
+                    Number bombs = (Number) hibernateSession.createCriteria(Submits.class).setProjection(Projections.rowCount()).add(Restrictions.eq("problems.id", (Number) problems.getId())).add(Restrictions.eq("users.id", (Number) o[0])).add(Restrictions.lt("sdate", (Timestamp) o[2])).uniqueResult();
+
                     if (bombs == null) {
                         bombs = 0;
                     }
@@ -222,7 +220,7 @@ public class RankingACM implements RankingInteface {
                     user.add(maxPoints.intValue(),
                             new SolutionACM(problems.getAbbrev(),
                             ((Timestamp) o[2]).getTime(),
-                            ((Timestamp) o[2]).getTime() - series.getStartdate().getTime() + series.getPenaltytime() * bombs.longValue(), bombs.intValue()));
+                            ((Timestamp) o[2]).getTime() - series.getStartdate().getTime() + (maxPoints.equals(0) ? 0 : series.getPenaltytime() * bombs.intValue()), bombs.intValue()));
                 }
             }
 
