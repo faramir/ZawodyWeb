@@ -220,7 +220,7 @@ public class RankingACM implements RankingInteface {
                     user.add(maxPoints.intValue(),
                             new SolutionACM(problems.getAbbrev(),
                             ((Timestamp) o[2]).getTime(),
-                            ((Timestamp) o[2]).getTime() - series.getStartdate().getTime() + (maxPoints.equals(0) ? 0 : series.getPenaltytime() * bombs.intValue()), bombs.intValue()));
+                            (maxPoints.equals(0) ? 0 :((Timestamp) o[2]).getTime() - series.getStartdate().getTime() +  series.getPenaltytime() * bombs.intValue()), bombs.intValue()));
                 }
             }
 
