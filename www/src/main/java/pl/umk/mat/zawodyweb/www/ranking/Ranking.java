@@ -2,7 +2,6 @@ package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Vector;
 import pl.umk.mat.zawodyweb.database.ContestsDAO;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 
