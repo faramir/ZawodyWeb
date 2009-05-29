@@ -2,8 +2,11 @@ package pl.mat.umk.zawodyweb.judge.tests;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import pl.umk.mat.zawodyweb.judge.MainJudge;
@@ -14,7 +17,7 @@ import pl.umk.mat.zawodyweb.judge.MainJudge;
  */
 public class JudgeBasicTest {
 
-    int id = 0; //PODAC ID SUBMITA DO SPRAWDZENIA :-)
+    int id = 1; //PODAC ID SUBMITA DO SPRAWDZENIA :-)
     String configFilePath = ""; // podac sciezke do config file -- niekoniecznie
 
     public JudgeBasicTest() {
@@ -24,28 +27,35 @@ public class JudgeBasicTest {
     //
 
     @Test
-    public void basicJudgeTest() throws IOException, InterruptedException, IOException {
-        if (id == 0) {
-            return;
-        }
-        ServerSocket ss = new ServerSocket(8888);
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    String[] args = {configFilePath};
-                    MainJudge.main(args);
-                } catch (Exception ex) {
-                    Logger.getLogger(JudgeBasicTest.class).fatal(null, ex);
-                }
+    public void basicJudgeTest() {
+        try {
+            if (id == 0) {
+                return;
             }
-        }).start();
-        Socket sock = ss.accept();
-        DataOutputStream output = new DataOutputStream(sock.getOutputStream());
-        output.writeInt(id);
-        Thread.sleep(15000);
-        sock.close();
-        ss.close();
+            ServerSocket ss = new ServerSocket(8888);
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        String[] args = {configFilePath};
+                        MainJudge.main(args);
+                    } catch (Exception ex) {
+                        Logger.getLogger(JudgeBasicTest.class).fatal(null, ex);
+                    }
+                }
+            }).start();
+            Socket sock = ss.accept();
+            //Socket sock = new Socket(InetAddress.getByName("127.0.0.1"), Integer.parseInt("8887"));
+            DataOutputStream output = new DataOutputStream(sock.getOutputStream());
+            output.writeInt(id);
+            output.flush();
+            Thread.sleep(15000);
+            sock.close();
+            ss.close();
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(JudgeBasicTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    //ss.close();
     }
 }

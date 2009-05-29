@@ -171,17 +171,17 @@ public class LanguageCPP implements CompilerInterface {
             codedir = properties.getProperty("CODE_DIR");
             codefile = codefile.replaceAll("\\.cpp$", "");
             compilefile = compilefile.replaceAll("\\.exe$", "");
-            codedir = codedir.replaceAll("\\\\$", "");
-            compileddir = compileddir.replaceAll("\\\\$", "");
-            codefile = codedir + "\\" + codefile + ".cpp";
-            compilefile = compileddir + "\\" + compilefile + ".exe";
+            codedir = codedir.replaceAll(File.separator+"$", "");
+            compileddir = compileddir.replaceAll(File.separator+"$", "");
+            codefile = codedir + File.separator + codefile + ".cpp";
+            compilefile = compileddir + File.separator + compilefile + ".exe";
             OutputStream is = new FileOutputStream(codefile);
             is.write(code);
             is.close();
             System.gc();
             Process p = null;
             try {
-                p = new ProcessBuilder("g++", "-O2", "-static", "-o " + compilefile, codefile, "-lm").start();
+                p = new ProcessBuilder("g++", "-O2", "-static", "-o", compilefile, codefile, "-lm").start();
             } catch (Exception ex) {
                 logger.error("No g++ found.");
                 compileResult = CheckerErrors.UNKNOWN;

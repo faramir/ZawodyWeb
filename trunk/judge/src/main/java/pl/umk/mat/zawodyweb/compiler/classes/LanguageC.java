@@ -171,17 +171,17 @@ public class LanguageC implements CompilerInterface {
             codedir = properties.getProperty("CODE_DIR");
             codefile = codefile.replaceAll("\\.c$", "");
             compilefile = compilefile.replaceAll("\\.exe$", "");
-            codedir = codedir.replaceAll("\\\\$", "");
-            compileddir = compileddir.replaceAll("\\\\$", "");
-            codefile = codedir + "\\" + codefile + ".c";
-            compilefile = compileddir + "\\" + compilefile + ".exe";
+            codedir = codedir.replaceAll(File.separator+"$", "");
+            compileddir = compileddir.replaceAll(File.separator+"$", "");
+            codefile = codedir + File.separator + codefile + ".c";
+            compilefile = compileddir + File.separator + compilefile + ".exe";
             OutputStream is = new FileOutputStream(codefile);
             is.write(code);
             is.close();
             System.gc();
             Process p = null;
             try {
-                p = new ProcessBuilder("gcc", "-O2", "-static", "-o " + compilefile, codefile, "-lm").start();
+                p = new ProcessBuilder("gcc", "-O2", "-static", "-o", compilefile, codefile, "-lm").start();
             } catch (Exception ex) {
                 logger.error("No gcc found.");
                 compileResult = CheckerErrors.UNKNOWN;
