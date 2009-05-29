@@ -89,7 +89,8 @@ CREATE TABLE TESTS (
         output              text,
         timeLimit           int,
         maxPoints           int,
-        visibility          int
+        visibility          int,
+	testorder	    int
 );
 
 CREATE TABLE LANGUAGES ( 
@@ -107,8 +108,13 @@ CREATE TABLE CLASSES (
 );
 
 CREATE TABLE PDF (  
-        id                  serial primary key,
-        pdf             bytea,
+        id              serial primary key,
+        pdf             bytea
+);
+
+CREATE TABLE CHECKERS (  
+        id               serial primary key,
+        code             bytea
 );
 
 /* Powiazadania jeden do wielu */
@@ -128,6 +134,7 @@ ALTER TABLE SUBMITS ADD usersId int REFERENCES USERS(id);
 ALTER TABLE TESTS ADD problemsId int REFERENCES PROBLEMS(id);
 ALTER TABLE ROLES ADD contestsId int REFERENCES CONTESTS(id);
 ALTER TABLE ROLES ADD seriesId int REFERENCES SERIES(id);
+ALTER TABLE PROBLEMS ADD checkerId int REFERENCES CHECKERS(id);
 
 
 /* Powiazania wiele do wielu */
