@@ -27,10 +27,10 @@ public class TrailingDiff implements CheckerInterface {
         String rightText = output.getText();
         try {
             if (diff(codeText, rightText) == 0) {
-                result.setResult(CheckerErrors.ACC);
+                result.setResult(CheckerErrors.OK);
                 result.setPoints(input.getMaxPoints());
             } else {
-                result.setResult(CheckerErrors.WA);
+                result.setResult(CheckerErrors.OK);
                 result.setPoints(0);
             }
         } catch (IOException ex) {

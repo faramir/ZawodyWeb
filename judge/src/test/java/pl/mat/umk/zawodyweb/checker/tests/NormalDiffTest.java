@@ -31,19 +31,19 @@ public class NormalDiffTest {
         Code code = new Code(codeText, languageTXT);
         Program program = code.compile();
         CheckerResult result =
-                nd.check(program, new TestInput("", 0, 0, 0), test);
-        return result.getResult();
+                nd.check(program, new TestInput("", 1, 0, 0), test);
+        return result.getPoints();
     }
 
     @Test
     public void exactTest() {
-        int expected = CheckerErrors.ACC;
+        int expected = 1;
         assertEquals(expected, Test("15\n", "15\n"));
     }
 
     @Test
     public void codeLongerTest() {
-        int expected = CheckerErrors.ACC;
+        int expected = 1;
         String codeText = "\n      15\n     \n";
         String rightText = "15\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -51,7 +51,7 @@ public class NormalDiffTest {
 
     @Test
     public void rightLongerTest() {
-        int expected = CheckerErrors.ACC;
+        int expected = 1;
         String codeText = "15\n";
         String rightText = "\n 15\n\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -59,7 +59,7 @@ public class NormalDiffTest {
 
     @Test
     public void whitespaceTest() {
-        int expected = CheckerErrors.ACC;
+        int expected = 1;
         String codeText = "15 13\n";
         String rightText = "\n 15\n13\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -67,7 +67,7 @@ public class NormalDiffTest {
 
     @Test
     public void differentTest1() {
-        int expected = CheckerErrors.WA;
+        int expected = 0;
         String codeText = "15 12\n";
         String rightText = "\n 15\n13\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -75,7 +75,7 @@ public class NormalDiffTest {
 
     @Test
     public void differentTest2() {
-        int expected = CheckerErrors.WA;
+        int expected = 0;
         String codeText = "1512\n";
         String rightText = "\n 15\n12\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -83,7 +83,7 @@ public class NormalDiffTest {
 
     @Test
     public void differentTest3() {
-        int expected = CheckerErrors.WA;
+        int expected = 0;
         String codeText = "151 2\n";
         String rightText = "\n 15\n12\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -91,7 +91,7 @@ public class NormalDiffTest {
 
     @Test
     public void standardDifferentTest3() {
-        int expected = CheckerErrors.WA;
+        int expected = 0;
         String codeText = "15 12\n";
         String rightText = "15 13\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -99,13 +99,13 @@ public class NormalDiffTest {
 
     @Test
     public void trailingTest3() {
-        int expected = CheckerErrors.ACC;
+        int expected = 1;
         assertEquals(expected, Test("15", "15\n"));
     }
 
     @Test
     public void trailingTest4() {
-        int expected = CheckerErrors.ACC;
+        int expected = 1;
         assertEquals(expected, Test("15\n", "15"));
     }
     // TODO add test methods here.
