@@ -1,16 +1,21 @@
 package pl.umk.mat.zawodyweb.compiler.classes;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -66,15 +71,15 @@ public class LanguageJAVA implements CompilerInterface {
         }
         BufferedReader inputStream;
         System.gc();
-        Vector<String> command = new Vector<String>(Arrays.asList("java", "-Xmx" + input.getMemoryLimit() + "k",
-                "-Xms" + input.getMemoryLimit() + "k", "-Xss" + input.getMemoryLimit() + "k"));
+        Vector<String> command = new Vector<String>(Arrays.asList("java", "-Xmx" + input.getMemoryLimit()+"k",
+                "-Xms" + input.getMemoryLimit()+"k", "-Xss" + input.getMemoryLimit()+"k"));
         if (!security.isEmpty()) {
             command.add("-Djava.security.manager");
             command.add("-Djava.security.policy=" + security);
         }
         command.add("-cp");
         command.add(path.substring(0, path.lastIndexOf(File.separator)));
-        command.add(path.substring(path.lastIndexOf(File.separator) + 1, path.lastIndexOf(".")));
+        command.add(path.substring(path.lastIndexOf(File.separator)+1,path.lastIndexOf(".")));
         try {
             Timer timer = new Timer();
             Process p = new ProcessBuilder(command).start();
@@ -132,7 +137,7 @@ public class LanguageJAVA implements CompilerInterface {
             codefile = properties.getProperty("CODE_FILENAME");
             codedir = properties.getProperty("CODE_DIR");
             codefile = codefile.replaceAll("\\.java$", "");
-            codedir = codedir.replaceAll(File.separator + "$", "");
+            codedir = codedir.replaceAll(File.separator+"$", "");
             codefile = codedir + File.separator + codefile + ".java";
             OutputStream is = new FileOutputStream(codefile);
             is.write(code);
@@ -142,10 +147,9 @@ public class LanguageJAVA implements CompilerInterface {
             ByteArrayOutputStream err = new ByteArrayOutputStream();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             if (compiler.run(new ByteArrayInputStream(new String().getBytes()),
-                    out, err, codefile) != 0) {
-                compileDesc = err.toString();
-                compileResult = CheckerErrors.CE;
-            }
+                    out, err, codefile)!=0) {
+            compileDesc = err.toString();
+                compileResult = CheckerErrors.CE;}
         } catch (Exception err) {
         }
         new File(codefile).delete();

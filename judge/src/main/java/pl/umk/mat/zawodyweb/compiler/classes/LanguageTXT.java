@@ -1,3 +1,4 @@
+
 package pl.umk.mat.zawodyweb.compiler.classes;
 
 import java.util.Properties;
@@ -9,7 +10,7 @@ import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
  *
  * @author lukash2k
  */
-public class LanguageTXT implements CompilerInterface {
+public class LanguageTXT implements CompilerInterface{
 
     public LanguageTXT() {
     }
@@ -41,4 +42,5 @@ public class LanguageTXT implements CompilerInterface {
     @Override
     public void closeProgram(String path) {
     }
+
 }
