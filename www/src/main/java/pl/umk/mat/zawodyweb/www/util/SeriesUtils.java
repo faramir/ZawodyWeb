@@ -1,4 +1,4 @@
-package pl.mat.umk.zawodyweb.www.util;
+package pl.umk.mat.zawodyweb.www.util;
 
 /**
  *
@@ -15,8 +15,7 @@ public class SeriesUtils {
         return instance;
     }
 
-    public boolean reJundge() {
-        //TODO: implements this
-        return false;
+    public void reJudge() {
+        //TODO: implement this
     }
 }
