@@ -17,7 +17,7 @@ import pl.umk.mat.zawodyweb.judge.MainJudge;
  */
 public class JudgeBasicTest {
 
-    int id = 1; //PODAC ID SUBMITA DO SPRAWDZENIA :-)
+    int id = 0; //PODAC ID SUBMITA DO SPRAWDZENIA :-)
     String configFilePath = ""; // podac sciezke do config file -- niekoniecznie
 
     public JudgeBasicTest() {
