@@ -31,37 +31,37 @@ public class ExactDiffTest {
         Code code = new Code(codeText, languageTXT);
         Program program = code.compile();
         CheckerResult result =
-                nd.check(program, new TestInput("", 1, 0, 0), test);
-        return result.getPoints();
+                nd.check(program, new TestInput("", 0, 0, 0), test);
+        return result.getResult();
     }
 
     @Test
     public void trailingTest3() {
-        int expected = 0;
+        int expected = CheckerErrors.WA;
         assertEquals(expected, Test("15", "15\n"));
     }
 
     @Test
     public void trailingTest4() {
-        int expected = 0;
+        int expected = CheckerErrors.WA;
         assertEquals(expected, Test("15\n", "15"));
     }
 
     @Test
     public void exactTest1() {
-        int expected = 1;
+        int expected = CheckerErrors.ACC;
         assertEquals(expected, Test("15", "15"));
     }
 
     @Test
     public void exactTest2() {
-        int expected = 1;
+        int expected = CheckerErrors.ACC;
         assertEquals(expected, Test("15\n", "15\n"));
     }
 
     @Test
     public void exactTest3() {
-        int expected = 0;
+        int expected = CheckerErrors.WA;
         assertEquals(expected, Test("\n15\n", "15\n"));
     }
     // TODO add test methods here.
