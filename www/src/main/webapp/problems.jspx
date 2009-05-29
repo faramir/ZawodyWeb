@@ -42,7 +42,7 @@
                         </div>
                     </c:forEach>
                     <div class="ikona" style="margin-left:-40px">
-                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{sessionBean.currentContest.id}/series.html" title="${messages.addseries}" rendered="#{zw:canEditSeries(rolesBean, sessionBean.currentContest.id, null)}">
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{sessionBean.currentContest.id}/series.html" title="${messages.addseries}" rendered="#{zw:canAddSeries(rolesBean, sessionBean.currentContest.id, null)}">
                             <h:graphicImage alt="${messages.addseries}" title="${messages.addseries}" url="/media/images/dodaj.png" />
                         </h:outputLink>
                     </div>

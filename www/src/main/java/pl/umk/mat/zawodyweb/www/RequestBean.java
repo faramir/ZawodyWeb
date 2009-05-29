@@ -657,6 +657,11 @@ public class RequestBean {
     }
 
     public String saveProblem() {
+        Integer id = getEditedProblem().getId();
+        if ((ELFunctions.isNullOrZero(id) && !rolesBean.canAddProblem(temporaryContestId, temporarySeriesId)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditProblem(temporaryContestId, temporarySeriesId))) {
+            return null;
+        }
+
         try {
             ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
             SeriesDAO sdao = DAOFactory.DEFAULT.buildSeriesDAO();
@@ -909,18 +914,18 @@ public class RequestBean {
         String mimetype = StringUtils.EMPTY;
         byte[] content = null;
 
-        if(type.equals("pdf")) {
+        if (type.equals("pdf")) {
             ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
             Problems p = dao.getById(id);
-            if(p != null && p.getPDF() != null){
+            if (p != null && p.getPDF() != null) {
                 name = p.getName() + ".pdf";
                 content = p.getPDF().getPdf();
                 mimetype = "application/pdf";
             }
-        } else if(type.equals("code")) {
+        } else if (type.equals("code")) {
             SubmitsDAO dao = DAOFactory.DEFAULT.buildSubmitsDAO();
             Submits s = dao.getById(id);
-            if(s != null && s.getCode() != null){
+            if (s != null && s.getCode() != null) {
                 name = s.getFilename();
                 content = s.getCode();
                 mimetype = "application/octet-stream";
@@ -944,6 +949,11 @@ public class RequestBean {
     }
 
     public String saveTest() {
+        Integer id = getEditedTest().getId();
+        if ((ELFunctions.isNullOrZero(id) && !rolesBean.canEditProblem(temporaryContestId, temporarySeriesId)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditProblem(temporaryContestId, temporarySeriesId))) {
+            return null;
+        }
+
         try {
             TestsDAO dao = DAOFactory.DEFAULT.buildTestsDAO();
             ProblemsDAO pdao = DAOFactory.DEFAULT.buildProblemsDAO();
