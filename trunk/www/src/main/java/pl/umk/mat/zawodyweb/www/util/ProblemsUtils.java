@@ -1,4 +1,4 @@
-package pl.mat.umk.zawodyweb.www.util;
+package pl.umk.mat.zawodyweb.www.util;
 
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
@@ -18,12 +18,11 @@ public class ProblemsUtils {
         return instance;
     }
     
-    public boolean copySolution(Problems problem, Series serie, boolean copySolution){
-        //TODO: implements this
-        return false;
+    public Problems copySolution(Problems problem, Series serie, boolean copySolution){
+        //TODO: implement this
+        return null;
     }
-    public boolean reJundge() {
-        //TODO: implements this
-        return false;
+    public void reJudge() {
+        //TODO: implement this
     }
 }

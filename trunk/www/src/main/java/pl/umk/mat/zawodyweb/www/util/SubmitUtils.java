@@ -1,4 +1,4 @@
-package pl.mat.umk.zawodyweb.www.util;
+package pl.umk.mat.zawodyweb.www.util;
 
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
@@ -17,13 +17,11 @@ public class SubmitUtils {
         return instance;
     }
 
-    public boolean reJundge() {
-        //TODO: implements this
-        return false;
+    public void reJudge() {
+        //TODO: implement this
     }
 
-    public boolean deleteSubmit(Submits submit){
-        //TODO: implements this
-        return false;
+    public void deleteSubmit(Submits submit) {
+        //TODO: implement this
     }
 }
