@@ -16,6 +16,9 @@
                 <c:when test="#{requestBean.editedTest == null}">
                 ${messages.no_test}
                 </c:when>
+                <c:when test="#{!(zw:isNullOrZero(requestBean.editedTest.id)) and !(zw:canEditProblem(rolesBean, requestBean.editedTest.problems.series.contests.id, requestBean.editedTest.problems.series.id))}">
+                ${messages.nonsufficient_privileges}
+                </c:when>
                 <c:otherwise>
                     <fieldset>
                         <t:saveState id="saveid" value="#{requestBean.temporaryTestId}" />
@@ -61,7 +64,9 @@
                             <h:selectOneMenu id="series" required="true" value="#{requestBean.temporarySeriesId}">
                                 <f:selectItem itemValue="" itemLabel="" />
                                 <c:forEach var="series" items="#{requestBean.contestsSeries}">
-                                    <f:selectItem itemValue="#{series.id}" itemLabel="#{series.name}" />
+                                    <c:if test="#{(zw:isNullOrZero(requestBean.editedTest.id) and zw:canEditProblem(rolesBean, requestBean.temporaryContestId, series.id)) or (!(zw:isNullOrZero(requestBean.editedTest.id)) and series.id == requestBean.editedTest.problems.series.id)}">
+                                        <f:selectItem itemValue="#{series.id}" itemLabel="#{series.name}" />
+                                    </c:if>
                                 </c:forEach>
                                 <t:saveState id="saveSeriesId" value="#{requestBean.temporarySeriesId}" />
                                 <a4j:support event="onchange" reRender="problem" ajaxSingle="true" />
@@ -74,7 +79,9 @@
                             <h:selectOneMenu id="problem" required="true" value="#{requestBean.temporaryProblemId}">
                                 <f:selectItem itemValue="" itemLabel="" />
                                 <c:forEach var="problem" items="#{requestBean.seriesProblems}">
-                                    <f:selectItem itemValue="#{problem.id}" itemLabel="#{problem.abbrev}" />
+                                    <c:if test="#{(zw:isNullOrZero(requestBean.editedTest.id) and zw:canEditProblem(rolesBean, requestBean.temporaryContestId, series.id)) or (!(zw:isNullOrZero(requestBean.editedTest.id)) and problem.id == requestBean.editedTest.problems.id)}">
+                                        <f:selectItem itemValue="#{problem.id}" itemLabel="#{problem.abbrev}" />
+                                    </c:if>
                                 </c:forEach>
                             </h:selectOneMenu>
                             <h:message for="problem" errorClass="error" />
