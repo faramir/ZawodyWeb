@@ -172,11 +172,11 @@ public class LanguagePAS implements CompilerInterface {
             codedir = properties.getProperty("CODE_DIR");
             codefile = codefile.replaceAll("\\.pas$", "");
             compilefile = compilefile.replaceAll("\\.exe$", "");
-            codedir = codedir.replaceAll("\\\\$", "");
-            compileddir = compileddir.replaceAll("\\\\$", "");
-            ofile = compileddir + "\\" + codefile + ".o";
-            codefile = codedir + "\\" + codefile + ".pas";
-            compilefile = compileddir + "\\" + compilefile + ".exe";
+            codedir = codedir.replaceAll(File.separator+"$", "");
+            compileddir = compileddir.replaceAll(File.separator+"$", "");
+            ofile = compileddir + File.separator + codefile + ".o";
+            codefile = codedir + File.separator + codefile + ".pas";
+            compilefile = compileddir + File.separator + compilefile + ".exe";
             OutputStream is = new FileOutputStream(codefile);
             is.write(code);
             is.close();

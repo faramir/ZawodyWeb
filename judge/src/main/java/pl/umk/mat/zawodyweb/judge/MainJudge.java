@@ -43,8 +43,8 @@ public class MainJudge {
      */
     public static void main(String[] args) throws IOException, InterruptedException, InstantiationException, IllegalAccessException {
         Properties properties = new Properties();
-        String configFile = MainJudge.class.getResource(".").getPath() +"configuration.xml";
-        if (args.length == 1) {
+        String configFile = MainJudge.class.getResource(".").getPath() + "configuration.xml";
+        if (args.length == 1 && !args[0].isEmpty()) {
             configFile = args[0];
         }
 
@@ -55,7 +55,8 @@ public class MainJudge {
         properties.setProperty("CODE_DIR", "");
         properties.setProperty("COMPILED_FILENAME", "a");
         properties.setProperty("CODE_FILENAME", "a");
-        properties.setProperty("COMPILE_TIMEOUT", "30000");
+        properties.setProperty("COMPILE_TIMEOUT", "60000");
+        properties.setProperty("JAVA_POLICY", "");
         properties.setProperty("acm_uva.login", "spamz");
         properties.setProperty("acm_uva.password", "spamz2");
         properties.setProperty("opss.login", "zawodyweb");
@@ -112,6 +113,7 @@ public class MainJudge {
             CheckerInterface checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(diffClasses.getFilename(),
                     diffClasses.getCode()).newInstance();
             Code code = new Code(codeText, compiler);
+            logger.debug("Trying to compile the code...");
             Program program = code.compile();
             logger.debug("Downloading tests...");
             List<Tests> tests = DAOFactory.DEFAULT.buildTestsDAO().
