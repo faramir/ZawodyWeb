@@ -46,20 +46,10 @@ public class ELFunctions {
     }
 
     public static String coloring(Float in) {
-        String out = Integer.toHexString((int)((1-in)*0xDF)+32);
-        String out2;
+        String out = Integer.toHexString((int)((1-in)*0x55)+0xaa);
+        String out2 = Integer.toHexString((int)((in)*0x55)+0xaa)+"aa";
 
-            out2 = Integer.toHexString((int)((in)*0xDF)+32)+"61";
-
-            while(out2.length()<4)
-                out2 = "0"+out2;
-
-        out = out + out2;
-        
-        while(out.length()<6)
-            out = "0"+out;
-
-        return "background: #"+out;
+        return "background: #"+out+out2;
     }
 
     public static Boolean isNullOrZero(Integer a) {
