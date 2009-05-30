@@ -13,6 +13,7 @@ import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.ProblemsDAO;
 import pl.umk.mat.zawodyweb.database.SeriesDAO;
+import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
@@ -159,14 +160,27 @@ public class RankingACM implements RankingInteface {
 
                 // select sum(maxpoints) from tests where problemsid='7' and visibility=1
                 Number maxPoints = null;
+                Number noTests = null;
                 if (allTests) {
-                    maxPoints = (Number) hibernateSession.createCriteria(Tests.class).setProjection(Projections.sum("maxpoints")).add(Restrictions.eq("problems.id", problems.getId())).uniqueResult();
+                    Object[] o = (Object[]) hibernateSession.createCriteria(Tests.class).setProjection(
+                            Projections.projectionList().add(Projections.sum("maxpoints")).add(Projections.rowCount())).add(Restrictions.eq("problems.id", problems.getId())).uniqueResult();
+                    maxPoints = (Number) o[0];
+                    noTests = (Number) o[1];
                 } else {
-                    maxPoints = (Number) hibernateSession.createCriteria(Tests.class).setProjection(Projections.sum("maxpoints")).add(Restrictions.and(Restrictions.eq("problems.id", problems.getId()), Restrictions.eq("visibility", 1))).uniqueResult();
+                    Object[] o = (Object[]) hibernateSession.createCriteria(Tests.class).setProjection(
+                            Projections.projectionList().add(Projections.sum("maxpoints")).add(Projections.rowCount())).add(Restrictions.and(Restrictions.eq("problems.id", problems.getId()), Restrictions.eq("visibility", 1))).uniqueResult();
+                    maxPoints = (Number) o[0];
+                    noTests = (Number) o[1];
                 }
                 if (maxPoints == null) {
                     maxPoints = 0; // To nie powinno się nigdy zdarzyć ;).. chyba, że nie ma testu przy zadaniu?
                 }
+                if (noTests == null) {
+                    noTests = 0; // To nie powinno się zdarzyć nigdy.
+                }
+                
+                //System.out.println("maxPoints = " + maxPoints);
+                //System.out.println("noTests = " + noTests);
 
                 // FIXME: wrócimy tu, gdy Hibernate będzie obsługiwał klauzulę having ;-)
                 /*
@@ -177,9 +191,11 @@ public class RankingACM implements RankingInteface {
                  * // c.add(Restrictions.sqlRestriction("1=1 having sumPoints=" + maxPoints));
                  */
                 // FIXME: BAAAAAAAAAAAAAAAAAAARDZO NIEKOSZERNIE!
+                
+                //System.out.println("problems.getId() = " + problems.getId());
+                //System.out.println("allTests = " + allTests);
+
                 Query query = null;
-                System.out.println("problems.getId() = " + problems.getId());
-                System.out.println("allTests = " + allTests);
                 if (allTests == true) {
                     query = hibernateSession.createSQLQuery("select usersid,submits.id as sid,min(sdate) as mdate " +
                             " from submits,results,tests " +
@@ -187,9 +203,11 @@ public class RankingACM implements RankingInteface {
                             "	and submits.id=results.submitsid " +
                             "	and tests.id = results.testsid " +
                             "   and results.submitresult='" + CheckerErrors.ACC + "' " +
+                            "   and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
                             "   and sdate <= '" + checkTimestamp.toString() + "' " +
                             " group by submits.id,usersid " +
-                            " having sum(points)='" + maxPoints + "'");
+                            " having sum(points)='" + maxPoints + "' " +
+                            "    and count(points)='" + noTests + "'");
                 } else {
                     query = hibernateSession.createSQLQuery("select usersid,submits.id as sid,min(sdate) as mdate " +
                             " from submits,results,tests " +
@@ -197,10 +215,12 @@ public class RankingACM implements RankingInteface {
                             "	and submits.id=results.submitsid " +
                             "	and tests.id = results.testsid " +
                             "   and results.submitresult='" + CheckerErrors.ACC + "' " +
-                            "	and tests.visibility=1 " +
+                            "   and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
                             "   and sdate <= '" + checkTimestamp.toString() + "' " +
+                            "	and tests.visibility=1 " +
                             " group by submits.id,usersid " +
-                            " having sum(points)='" + maxPoints + "'");
+                            " having sum(points)='" + maxPoints + "' " +
+                            "    and count(points)='" + noTests + "'");
                 }
 
                 for (Object list : query.list()) { // tu jest zwrócona lista "zaakceptowanych" w danym momencie rozwiązań zadania
@@ -220,7 +240,7 @@ public class RankingACM implements RankingInteface {
                     user.add(maxPoints.intValue(),
                             new SolutionACM(problems.getAbbrev(),
                             ((Timestamp) o[2]).getTime(),
-                            (maxPoints.equals(0) ? 0 :((Timestamp) o[2]).getTime() - series.getStartdate().getTime() +  series.getPenaltytime() * bombs.intValue()), bombs.intValue()));
+                            (maxPoints.equals(0) ? 0 : ((Timestamp) o[2]).getTime() - series.getStartdate().getTime() + series.getPenaltytime() * bombs.intValue()), bombs.intValue()));
                 }
             }
 
