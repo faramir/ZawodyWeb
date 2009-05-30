@@ -7,33 +7,29 @@
     <ui:define name="pageContent">
         <a4j:form id="formSubmission" styleClass="profilform">
             <div class="zadanko">
-                <div class="termin">
-                    ${messages.submission_problem}: ${requestBean.currentSubmit.problems.name} (${requestBean.currentSubmit.problems.abbrev})
+                <div class="nazwa">
+                    ${requestBean.currentSubmit.problems.name} (${requestBean.currentSubmit.problems.abbrev})
                 </div>
                 <div class="termin">
                     ${messages.submission_date}: ${requestBean.currentSubmit.sdate}
                 </div>
-                <div class="pdf">
-                    ${messages.solution}:
-                    <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentSubmit.id}/code.html" title="code"><h:graphicImage alt="${messages.solution_download}" title="${messages.solution_download}" url="/media/images/edytuj.png" /></h:outputLink>
-                </div>
                 <div class="notes">
                     <h:outputText value="${zw:nlToBr(requestBean.currentSubmit.notes)}" escape="false" />
                 </div>
-                <table>
+                <table class="submissions">
                     <thead>
                         <tr>
-                            <th>${messages.test}</th>
-                            <th>${messages.submission_status}</th>
-                            <th>${messages.submission_time}/${messages.submission_timelimit}</th>
-                            <th>${messages.submission_mem}/${messages.submission_memlimit}</th>
-                            <th>${messages.submission_result}</th>
+                            <th class="small">${messages.test}</th>
+                            <th class="small">${messages.submission_status}</th>
+                            <th class="small" nowrap="true">${messages.submission_time}/${messages.submission_timelimit}</th>
+                            <th class="small" nowrap="true">${messages.submission_mem}/${messages.submission_memlimit}</th>
+                            <th class="small">${messages.submission_result}</th>
                             <th>${messages.submission_notes}</th>
                         </tr>
                     </thead>
                     <t:dataList id="submissions" var="result" footerClass="paginator" value="#{requestBean.currentSubmit.resultss}">
                         <h:panelGroup rendered="${zw:testVisible(result.tests)}">
-                            <tr>
+                            <tr style="${zw:coloring(result.points / result.tests.maxpoints)}">
                                 <td>${result.tests.testorder}</td>
                                 <td><zw:checkererror code="#{result.submitResult}" /></td>
                                 <td>${result.runtime}/${result.tests.timelimit}</td>
@@ -44,6 +40,9 @@
                         </h:panelGroup>
                     </t:dataList>
                 </table>
+                 <div class="wyslij">
+                    <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentSubmit.id}/code.html" title="code">${messages.solution_download}</h:outputLink>
+                </div>
             </div>
         </a4j:form>
     </ui:define>

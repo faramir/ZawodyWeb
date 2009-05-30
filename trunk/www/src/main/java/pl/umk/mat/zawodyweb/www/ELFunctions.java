@@ -41,6 +41,15 @@ public class ELFunctions {
         return HtmlEscape.escape(in);
     }
 
+    public static String coloring(Float in) {
+        String out = Integer.toHexString((int)((1-in)*6619136+in*27392+10120033));
+        
+        while(out.length()<6)
+            out = "0"+out;
+
+        return "background: #"+out;
+    }
+
     public static Boolean isNullOrZero(Integer a) {
         return a == null || a == 0;
     }
