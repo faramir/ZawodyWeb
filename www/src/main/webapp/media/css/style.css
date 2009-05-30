@@ -552,6 +552,7 @@ border:1px solid #333333;
     float: right;
     margin: 0px auto 0px 100%;
     text-align: right;
+    clear:both;
 }
 
 .pagingrid a img.prawy {
@@ -560,10 +561,12 @@ border:1px solid #333333;
     float: left;
     margin: 0px 100% 0px auto;
     text-align: left;
+    clear:both;
 }
 
 .profilform table.pagingrid tr a {
     float: none;
+    width:100%;
 }
 
 .paginator a {
