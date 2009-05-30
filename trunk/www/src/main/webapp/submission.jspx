@@ -41,7 +41,10 @@
                     </t:dataList>
                 </table>
                  <div class="wyslij">
-                    <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentSubmit.id}/code.html" title="code">${messages.solution_download}</h:outputLink>
+                    <h:outputLink id="getsubmission" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentSubmit.id}/code.html" title="${messages.solution_download}">${messages.solution_download}</h:outputLink>
+                </div>
+                <div>
+                    <zw:problem-link_img contest="${sessionBean.currentContest}" type="submissions" message="#{messages.question_back}" />
                 </div>
             </div>
         </a4j:form>
