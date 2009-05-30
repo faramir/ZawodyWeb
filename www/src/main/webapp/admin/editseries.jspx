@@ -1,5 +1,5 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk">
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
     <ui:define name="pageTitle">
         <c:choose>
             <c:when test="#{param.id == '0' or param.id == null}">
@@ -45,25 +45,32 @@
                                 </div>
                                 <div>
                                     <h:outputLabel for="startdate">${messages.series_startdate}:</h:outputLabel>
-                                    <rich:calendar id="startdate" value="#{requestBean.editedSeries.startdate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
+                                    <rich:calendar id="startdate" required="true" value="#{requestBean.editedSeries.startdate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
                                     <h:message for="startdate" errorClass="error" />
                                     <br class="clear" />
                                 </div>
                                 <div>
                                     <h:outputLabel for="enddate">${messages.series_enddate}:</h:outputLabel>
-                                    <rich:calendar id="enddate" value="#{requestBean.editedSeries.enddate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
+                                    <rich:calendar id="enddate" value="#{requestBean.editedSeries.enddate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px">
+                                        <s:validateCompareTo for="startdate" operator=">" message="#{messages.date_must_be_after_startdate}"  />
+                                    </rich:calendar>
                                     <h:message for="enddate" errorClass="error" />
                                     <br class="clear" />
                                 </div>
                                 <div>
                                     <h:outputLabel for="freezedate">${messages.series_freezedate}:</h:outputLabel>
-                                    <rich:calendar id="freezedate" value="#{requestBean.editedSeries.freezedate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
+                                    <rich:calendar id="freezedate" value="#{requestBean.editedSeries.freezedate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px">
+                                        <s:validateCompareTo for="startdate" operator=">" message="#{messages.date_must_be_after_startdate}"  />
+                                    </rich:calendar>
                                     <h:message for="freezedate" errorClass="error" />
                                     <br class="clear" />
                                 </div>
                                 <div>
                                     <h:outputLabel for="unfreezedate">${messages.series_unfreezedate}:</h:outputLabel>
-                                    <rich:calendar id="unfreezedate" value="#{requestBean.editedSeries.unfreezedate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
+                                    <rich:calendar id="unfreezedate" value="#{requestBean.editedSeries.unfreezedate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px">
+                                        <s:validateCompareTo for="startdate" operator=">" message="#{messages.date_must_be_after_freezedate}"  />
+                                    </rich:calendar>
+
                                     <h:message for="unfreezedate" errorClass="error" />
                                     <br class="clear" />
                                 </div>
