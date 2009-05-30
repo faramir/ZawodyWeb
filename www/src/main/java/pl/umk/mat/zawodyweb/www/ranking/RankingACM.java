@@ -130,7 +130,6 @@ public class RankingACM implements RankingInteface {
     private RankingTable getRankingACM(int contest_id, Timestamp checkDate, boolean admin) {
         Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
-
         Timestamp checkTimestamp;
 
         UsersDAO usersDAO = DAOFactory.DEFAULT.buildUsersDAO();
@@ -178,7 +177,7 @@ public class RankingACM implements RankingInteface {
                 if (noTests == null) {
                     noTests = 0; // To nie powinno się zdarzyć nigdy.
                 }
-                
+
                 //System.out.println("maxPoints = " + maxPoints);
                 //System.out.println("noTests = " + noTests);
 
@@ -191,7 +190,7 @@ public class RankingACM implements RankingInteface {
                  * // c.add(Restrictions.sqlRestriction("1=1 having sumPoints=" + maxPoints));
                  */
                 // FIXME: BAAAAAAAAAAAAAAAAAAARDZO NIEKOSZERNIE!
-                
+
                 //System.out.println("problems.getId() = " + problems.getId());
                 //System.out.println("allTests = " + allTests);
 
@@ -260,7 +259,7 @@ public class RankingACM implements RankingInteface {
         /* nazwy klas css-owych dla kolumn  */
         Vector<String> columnsCSS = new Vector<String>();
         columnsCSS.add("small");    // points
-        columnsCSS.add("small");    // time
+        columnsCSS.add("nowrap,small");    // time
         columnsCSS.add("big");      // solutions
 
         /* tabelka z rankingiem */
