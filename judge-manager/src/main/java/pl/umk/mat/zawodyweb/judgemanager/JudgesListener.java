@@ -82,8 +82,7 @@ public class JudgesListener extends Thread {
                             transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
                             Submits s = DAOFactory.DEFAULT.buildSubmitsDAO().getById(submitId);
-
-                            if (s != null && s.getResult().equals(SubmitsResultEnum.WAIT.getCode()) == false) {
+                            if (s != null && s.getResult().equals(SubmitsResultEnum.WAIT.getCode()) == true) {
                                 out.writeInt(submitId);
                                 logger.info("Send submit(" + submitId + ") to Judge: " + judgeHost);
                                 out.flush();
