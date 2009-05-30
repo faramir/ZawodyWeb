@@ -160,18 +160,16 @@ public class MainJudgeManager {
 
                     for (Integer i : prev) {
                         if (submit.getId().equals(i)) {
+                            submit.setResult(SubmitsResultEnum.WAIT.getCode());
+                            submitsDAO.saveOrUpdate(submit);
                             submitsQueue.add(submit.getId());
                             used = true;
-
                             break;
                         }
                     }
 
                     if (used == false) {
                         now.add(submit.getId());
-
-                        submit.setResult(SubmitsResultEnum.WAIT.getCode());
-                        submitsDAO.saveOrUpdate(submit);
 
                         logger.info("Add submit(" + submit.getId() + ") with PROGRESS status to queue");
                     }
