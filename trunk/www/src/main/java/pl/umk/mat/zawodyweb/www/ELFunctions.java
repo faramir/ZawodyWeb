@@ -41,8 +41,20 @@ public class ELFunctions {
         return HtmlEscape.escape(in);
     }
 
+    public static String nlDoubler(String in) {
+        return in.replace("\n", "\n\n");
+    }
+
     public static String coloring(Float in) {
-        String out = Integer.toHexString((int)((1-in)*6619136+in*27392+10120033));
+        String out = Integer.toHexString((int)((1-in)*0xDF)+32);
+        String out2;
+
+            out2 = Integer.toHexString((int)((in)*0xDF)+32)+"61";
+
+            while(out2.length()<4)
+                out2 = "0"+out2;
+
+        out = out + out2;
         
         while(out.length()<6)
             out = "0"+out;

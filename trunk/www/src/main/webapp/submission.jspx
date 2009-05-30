@@ -35,7 +35,7 @@
                                 <td>${result.runtime}/${result.tests.timelimit}</td>
                                 <td>${result.memory}/${result.tests.problems.memlimit}</td>
                                 <td>${result.points}/${result.tests.maxpoints}</td>
-                                <td>${result.notes}</td>
+                                <td style="font-size:11px;text-align:left;"><h:outputText value="${zw:escape(zw:nlDoubler(result.notes))}" escape="false" /></td>
                             </tr>
                         </h:panelGroup>
                     </t:dataList>
