@@ -85,7 +85,12 @@
         <function-signature>java.lang.String nlToBr(java.lang.String)</function-signature>
     </function>
     <function>
-        <function-name>Escape</function-name>
+        <function-name>coloring</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
+        <function-signature>java.lang.String coloring(java.lang.Float)</function-signature>
+    </function>
+    <function>
+        <function-name>escape</function-name>
         <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
         <function-signature>java.lang.String esc(java.lang.String)</function-signature>
     </function>

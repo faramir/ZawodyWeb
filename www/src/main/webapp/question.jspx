@@ -17,7 +17,7 @@
                 ${messages.question_text}:
             </div>
             <div class="text">
-                <h:outputText value="${zw:Escape(requestBean.editedQuestion.question)}" escape="false" />
+                <h:outputText value="${zw:escape(requestBean.editedQuestion.question)}" escape="false" />
             </div>
             <c:if test="#{zw:canEditProblem(rolesBean, requestBean.editedQuestion.contests.id, requestBean.editedQuestion.problems.id)}">
                 <div class="subject">
