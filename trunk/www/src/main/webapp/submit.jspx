@@ -13,51 +13,52 @@
                     </div>
                 </c:when>
                 <c:otherwise>
-            <div style="padding-top:10px;">
-                <h:outputLabel for="problem">${messages.submit_problem}:</h:outputLabel>
-                <h:selectOneMenu id="problem" required="true" value="#{requestBean.temporaryProblemId}">
-                    <c:forEach var="problem" items="#{requestBean.submittableProblems}">
-                        <f:selectItem itemValue="#{problem.id}" itemLabel="#{problem.name}" />
-                    </c:forEach>
-                    <t:saveState id="saveProblemId" value="#{requestBean.temporaryProblemId}" />
-                    <a4j:support event="onchange" reRender="language" ajaxSingle="true" />
-                </h:selectOneMenu>
-                <h:message for="problem" errorClass="error" />
-                <br class="clear" />
-            </div>
-            <div>
-                <h:outputLabel for="language">${messages.submit_language}:</h:outputLabel>
-                <h:selectOneMenu id="language" required="true" value="#{requestBean.temporaryLanguageId}">
-                    <f:selectItem itemValue="" itemLabel="" />
-                    <c:forEach var="languagesproblems" items="#{requestBean.temporaryLanguagesProblems}">
-                        <f:selectItem itemValue="#{languagesproblems.languages.id}" itemLabel="#{languagesproblems.languages.name}" />
-                    </c:forEach>
-                </h:selectOneMenu>
-                <h:message for="language" errorClass="error" />
-                <br class="clear" />
-            </div>
-            <div class="source">
-                <h:outputLabel for="sourcefile">${messages.submit_sourcefile}:</h:outputLabel>
-                <t:inputFileUpload id="sourcefile" value="#{requestBean.temporaryFile}" />
-                <h:message for="sourcefile" errorClass="error" />
-                <br class="clear" />
-            </div>
-            <div>
-                <h:commandButton id="sendfile" styleClass="submit" type="submit" value="#{messages.submit_send_file}" action="#{requestBean.sendFile}" />
-                <h:message for="sendfile" errorClass="error" />
-                <br class="clear" />
-            </div>
-            <div class="source">
-                <h:outputLabel for="sourcecode">${messages.submit_sourcecode}:</h:outputLabel>
-                <h:inputTextarea id="sourcecode" value="#{requestBean.temporarySource}" style="width:70%;" styleClass="bigHeight" />
-                <h:message for="sourcecode" errorClass="error" />
-                <br class="clear" />
-            </div>
-            <div>
-                <h:commandButton id="sendcode" styleClass="submit" type="submit" value="#{messages.submit_send_code}" action="#{requestBean.sendCode}" />
-                <h:message for="sendcode" errorClass="error" />
-                <br class="clear" />
-            </div>
+                    <div style="padding-top:10px;">
+                        <h:outputLabel for="problem">${messages.submit_problem}:</h:outputLabel>
+                        <h:selectOneMenu id="problem" required="true" value="#{requestBean.temporaryProblemId}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <c:forEach var="problem" items="#{requestBean.submittableProblems}">
+                                <f:selectItem itemValue="#{problem.id}" itemLabel="#{problem.name}" />
+                            </c:forEach>
+                            <t:saveState id="saveProblemId" value="#{requestBean.temporaryProblemId}" />
+                            <a4j:support event="onchange" reRender="language" ajaxSingle="true" />
+                        </h:selectOneMenu>
+                        <h:message for="problem" errorClass="error" />
+                        <br class="clear" />
+                    </div>
+                    <div>
+                        <h:outputLabel for="language">${messages.submit_language}:</h:outputLabel>
+                        <h:selectOneMenu id="language" required="true" value="#{requestBean.temporaryLanguageId}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <c:forEach var="languagesproblems" items="#{requestBean.temporaryLanguagesProblems}">
+                                <f:selectItem itemValue="#{languagesproblems.languages.id}" itemLabel="#{languagesproblems.languages.name}" />
+                            </c:forEach>
+                        </h:selectOneMenu>
+                        <h:message for="language" errorClass="error" />
+                        <br class="clear" />
+                    </div>
+                    <div class="source">
+                        <h:outputLabel for="sourcefile">${messages.submit_sourcefile}:</h:outputLabel>
+                        <t:inputFileUpload id="sourcefile" value="#{requestBean.temporaryFile}" />
+                        <h:message for="sourcefile" errorClass="error" />
+                        <br class="clear" />
+                    </div>
+                    <div>
+                        <h:commandButton id="sendfile" styleClass="submit" type="submit" value="#{messages.submit_send_file}" action="#{requestBean.sendFile}" />
+                        <h:message for="sendfile" errorClass="error" />
+                        <br class="clear" />
+                    </div>
+                    <div class="source">
+                        <h:outputLabel for="sourcecode">${messages.submit_sourcecode}:</h:outputLabel>
+                        <h:inputTextarea id="sourcecode" value="#{requestBean.temporarySource}" style="width:70%;" styleClass="bigHeight" />
+                        <h:message for="sourcecode" errorClass="error" />
+                        <br class="clear" />
+                    </div>
+                    <div>
+                        <h:commandButton id="sendcode" styleClass="submit" type="submit" value="#{messages.submit_send_code}" action="#{requestBean.sendCode}" />
+                        <h:message for="sendcode" errorClass="error" />
+                        <br class="clear" />
+                    </div>
                 </c:otherwise>
             </c:choose>
         </a4j:form>
