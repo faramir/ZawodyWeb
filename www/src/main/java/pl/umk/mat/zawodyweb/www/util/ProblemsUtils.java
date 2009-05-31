@@ -68,10 +68,9 @@ public class ProblemsUtils {
             boolean nextUser = false;
             List<Submits> findByProblemsid2 = crit.list();
             for (Submits oldSubmits : findByProblemsid2) {
-                if (nextUser && actualUser == oldSubmits.getUsers().getId()){
+                if (nextUser && actualUser == oldSubmits.getUsers().getId()) {
                     continue;
-                }
-                else{
+                } else {
                     nextUser = false;
                     actualUser = oldSubmits.getUsers().getId();
                     List<Results> findBySubmitsid = DAOFactory.DEFAULT.buildResultsDAO().findBySubmitsid(oldSubmits.getId());
@@ -80,8 +79,7 @@ public class ProblemsUtils {
                         if (oldResults.getSubmitResult() != CheckerErrors.ACC) {
                             add = false;
                             break;
-                        }
-                        else {
+                        } else {
                             //tu policzyc ilosc punktów
                         }
                     }
@@ -110,10 +108,6 @@ public class ProblemsUtils {
                         }
                     }
                 }
-
-
-
-            //}
             }
         }
         transaction.commit();
