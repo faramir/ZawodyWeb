@@ -52,7 +52,7 @@ public class ResultsHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Results> findBySubmitsid(Integer submitsid) {
-		return findByCriteria(Restrictions.eq("submits.submitsid", submitsid));
+		return findByCriteria(Restrictions.eq("submits.id", submitsid));
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public class ResultsHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Results> findByTestsid(Integer testsid) {
-		return findByCriteria(Restrictions.eq("tests.testsid", testsid));
+		return findByCriteria(Restrictions.eq("tests.id", testsid));
 	}
 	
 
