@@ -196,45 +196,49 @@ public class RankingACM implements RankingInteface {
 
                 Query query = null;
                 if (allTests == true) {
-                    query = hibernateSession.createSQLQuery("select usersid,submits.id as sid,min(sdate) as mdate " +
-                            " from submits,results,tests " +
-                            " where submits.problemsid='" + problems.getId() + "' " +
-                            "	and submits.id=results.submitsid " +
-                            "	and tests.id = results.testsid " +
-                            "   and results.submitresult='" + CheckerErrors.ACC + "' " +
-                            "   and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
-                            "   and sdate <= '" + checkTimestamp.toString() + "' " +
-                            " group by submits.id,usersid " +
-                            " having sum(points)='" + maxPoints + "' " +
-                            "    and count(points)='" + noTests + "' " +
-                            " order by submits.id");
+                    query = hibernateSession.createSQLQuery("" +
+                            "select usersid, min(sdate) " + // zapytanie zewnętrzne znajduję minimalną datę wysłania poprawnego rozwiązania dla każdego usera
+                            "from submits " +
+                            "where id in (" +
+                            "    select submits.id " + // zapytanie wewnętrzne znajduje wszystkie id, które zdobyły maksa punktów
+                            "    from submits,results,tests " +
+                            "    where submits.problemsid='" + problems.getId() + "' " +
+                            " 	   and submits.id=results.submitsid " +
+                            "	   and tests.id = results.testsid " +
+                            "      and results.submitresult='" + CheckerErrors.ACC + "' " +
+                            "      and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
+                            "      and sdate <= '" + checkTimestamp.toString() + "' " +
+                            //"	   and tests.visibility=1 " +
+                            "    group by submits.id,usersid,sdate " +
+                            "    having sum(points)='" + maxPoints + "' " +
+                            "      and count(points)='" + noTests + "' " +
+                            "  ) " +
+                            "group by usersid");
                 } else {
-                    query = hibernateSession.createSQLQuery("select usersid,submits.id as sid,min(sdate) as mdate " +
-                            " from submits,results,tests " +
-                            " where submits.problemsid='" + problems.getId() + "' " +
-                            "	and submits.id=results.submitsid " +
-                            "	and tests.id = results.testsid " +
-                            "   and results.submitresult='" + CheckerErrors.ACC + "' " +
-                            "   and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
-                            "   and sdate <= '" + checkTimestamp.toString() + "' " +
-                            "	and tests.visibility=1 " +
-                            " group by submits.id,usersid " +
-                            " having sum(points)='" + maxPoints + "' " +
-                            "    and count(points)='" + noTests + "' " +
-                            " order by submits.id");
+                    query = hibernateSession.createSQLQuery("" +
+                            "select usersid, min(sdate) " +
+                            "from submits " +
+                            "where id in (" +
+                            "    select submits.id " +
+                            "    from submits,results,tests " +
+                            "    where submits.problemsid='" + problems.getId() + "' " +
+                            " 	   and submits.id=results.submitsid " +
+                            "	   and tests.id = results.testsid " +
+                            "      and results.submitresult='" + CheckerErrors.ACC + "' " +
+                            "      and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
+                            "      and sdate <= '" + checkTimestamp.toString() + "' " +
+                            "	   and tests.visibility=1 " +
+                            "    group by submits.id,usersid,sdate " +
+                            "    having sum(points)='" + maxPoints + "' " +
+                            "      and count(points)='" + noTests + "' " +
+                            "  ) " +
+                            "group by usersid");
                 }
 
-                HashMap<Object, Boolean> userSolved = new HashMap<Object, Boolean>();
                 for (Object list : query.list()) { // tu jest zwrócona lista "zaakceptowanych" w danym momencie rozwiązań zadania
-                    Object[] o = (Object[]) list; // 0 - user.id, 1 - submits.id, 2 - sdate
-                    
-                    if (userSolved.containsKey(o[0]) == true) {
-                        continue;
-                    }
+                    Object[] o = (Object[]) list; // 0 - user.id, 1 - sdate
 
-                    userSolved.put(o[0], true);
-
-                    Number bombs = (Number) hibernateSession.createCriteria(Submits.class).setProjection(Projections.rowCount()).add(Restrictions.eq("problems.id", (Number) problems.getId())).add(Restrictions.eq("users.id", (Number) o[0])).add(Restrictions.lt("sdate", (Timestamp) o[2])).uniqueResult();
+                    Number bombs = (Number) hibernateSession.createCriteria(Submits.class).setProjection(Projections.rowCount()).add(Restrictions.eq("problems.id", (Number) problems.getId())).add(Restrictions.eq("users.id", (Number) o[0])).add(Restrictions.lt("sdate", (Timestamp) o[1])).uniqueResult();
 
                     if (bombs == null) {
                         bombs = 0;
@@ -248,8 +252,8 @@ public class RankingACM implements RankingInteface {
 
                     user.add(maxPoints.intValue(),
                             new SolutionACM(problems.getAbbrev(),
-                            ((Timestamp) o[2]).getTime(),
-                            (maxPoints.equals(0) ? 0 : ((Timestamp) o[2]).getTime() - series.getStartdate().getTime() + series.getPenaltytime() * bombs.intValue()), bombs.intValue()));
+                            ((Timestamp) o[1]).getTime(),
+                            (maxPoints.equals(0) ? 0 : ((Timestamp) o[1]).getTime() - series.getStartdate().getTime() + series.getPenaltytime() * bombs.intValue()), bombs.intValue()));
                 }
             }
 
