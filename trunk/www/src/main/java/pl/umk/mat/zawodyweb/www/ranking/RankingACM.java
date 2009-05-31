@@ -48,10 +48,10 @@ public class RankingACM implements RankingInteface {
         @Override
         public int compareTo(Object o) {
             if (this.date < ((SolutionACM) o).date) {
-                return 1;
+                return -1;
             }
             if (this.date > ((SolutionACM) o).date) {
-                return -1;
+                return 1;
             }
             return 0;
         }
