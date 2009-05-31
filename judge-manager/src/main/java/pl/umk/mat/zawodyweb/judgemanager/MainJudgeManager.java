@@ -162,8 +162,13 @@ public class MainJudgeManager {
                         if (submit.getId().equals(i)) {
                             submit.setResult(SubmitsResultEnum.WAIT.getCode());
                             submitsDAO.saveOrUpdate(submit);
+
                             submitsQueue.add(submit.getId());
+
                             used = true;
+
+                            logger.info("Change submit(" + submit.getId() + ") status to WAIT and add to submitsQueue");
+
                             break;
                         }
                     }
