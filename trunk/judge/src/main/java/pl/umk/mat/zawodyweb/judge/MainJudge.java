@@ -12,6 +12,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.checker.CheckerInterface;
@@ -42,7 +43,10 @@ public class MainJudge {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException, InterruptedException, InstantiationException, IllegalAccessException {
+        Vector<ClassInfo> classes = new Vector<ClassInfo>();
         Properties properties = new Properties();
+        boolean found = false;
+                    int i;
         String configFile = MainJudge.class.getResource(".").getPath() + "configuration.xml";
         if (args.length == 1 && !args[0].isEmpty()) {
             configFile = args[0];
@@ -102,16 +106,64 @@ public class MainJudge {
                 properties.setProperty("COMPILED_FILENAME", filename);
                 properties.setProperty("CODE_FILENAME", filename);
             }
-            logger.debug("Downloading compiler class...");
             Classes compilerClasses = submit.getLanguages().getClasses();
-            CompilerInterface compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(compilerClasses.getFilename(),
-                    compilerClasses.getCode()).newInstance();
+            logger.debug("Downloading compiler class...");
+            found = false;
+            for (i = 0; i < classes.size(); i++) {
+                if (classes.get(i).getId() == compilerClasses.getId()) {
+                    found = true;
+                    break;
+                }
+            }
+            CompilerInterface compiler;
+            if (found) {
+                if (classes.get(i).getVersion() >= compilerClasses.getVersion()) {
+                    compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(i).getFilename(),
+                            classes.get(i).getCode()).newInstance();
+                } else {
+                    classes.get(i).setVersion(compilerClasses.getVersion());
+                    classes.get(i).setCode(compilerClasses.getCode());
+                    compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(i).getFilename(),
+                            classes.get(i).getCode()).newInstance();
+                }
+
+            } else {
+                classes.add(new ClassInfo(compilerClasses.getId(), compilerClasses.getFilename(),
+                        compilerClasses.getCode(), compilerClasses.getVersion()));
+                compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(compilerClasses.getFilename(),
+                        compilerClasses.getCode()).newInstance();
+
+            }
             properties.setProperty("CODEFILE_EXTENSION", submit.getLanguages().getExtension());
             compiler.setProperties(properties);
             logger.debug("Downloading diff class...");
             Classes diffClasses = submit.getProblems().getClasses();
-            CheckerInterface checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(diffClasses.getFilename(),
-                    diffClasses.getCode()).newInstance();
+            found = false;
+            for (i = 0; i < classes.size(); i++) {
+                if (classes.get(i).getId() == diffClasses.getId()) {
+                    found = true;
+                    break;
+                }
+            }
+            CheckerInterface checker;
+            if (found) {
+                if (classes.get(i).getVersion() >= diffClasses.getVersion()) {
+                    checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(i).getFilename(),
+                            classes.get(i).getCode()).newInstance();
+                } else {
+                    classes.get(i).setVersion(diffClasses.getVersion());
+                    classes.get(i).setCode(diffClasses.getCode());
+                    checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(i).getFilename(),
+                            classes.get(i).getCode()).newInstance();
+                }
+
+            } else {
+                classes.add(new ClassInfo(diffClasses.getId(), diffClasses.getFilename(),
+                        diffClasses.getCode(), diffClasses.getVersion()));
+                checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(diffClasses.getFilename(),
+                        diffClasses.getCode()).newInstance();
+
+            }
             Code code = new Code(codeText, compiler);
             logger.debug("Trying to compile the code...");
             Program program = code.compile();
