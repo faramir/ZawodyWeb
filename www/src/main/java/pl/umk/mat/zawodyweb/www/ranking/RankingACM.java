@@ -83,7 +83,7 @@ public class RankingACM implements RankingInteface {
 
             for (SolutionACM solutionACM : solutions) {
                 s += solutionACM.name;
-                if (solutionACM.bombs > 5) {
+                if (solutionACM.bombs >= 4) {
                     s += "(" + solutionACM.bombs + ")";
                 } else {
                     for (int i = 0; i < solutionACM.bombs; ++i) {
@@ -98,16 +98,16 @@ public class RankingACM implements RankingInteface {
         @Override
         public int compareTo(Object o) {
             UserACM u2 = (UserACM) o;
-            if (this.points > u2.points) {
+            if (this.points < u2.points) {
                 return 1;
             }
-            if (this.points < u2.points) {
+            if (this.points > u2.points) {
                 return -1;
             }
-            if (this.totalTime < u2.totalTime) {
+            if (this.totalTime > u2.totalTime) {
                 return 1;
             }
-            if (this.totalTime > u2.totalTime) {
+            if (this.totalTime < u2.totalTime) {
                 return -1;
             }
             return 0;
@@ -206,7 +206,8 @@ public class RankingACM implements RankingInteface {
                             "   and sdate <= '" + checkTimestamp.toString() + "' " +
                             " group by submits.id,usersid " +
                             " having sum(points)='" + maxPoints + "' " +
-                            "    and count(points)='" + noTests + "'");
+                            "    and count(points)='" + noTests + "' " +
+                            " order by submits.id");
                 } else {
                     query = hibernateSession.createSQLQuery("select usersid,submits.id as sid,min(sdate) as mdate " +
                             " from submits,results,tests " +
@@ -219,11 +220,20 @@ public class RankingACM implements RankingInteface {
                             "	and tests.visibility=1 " +
                             " group by submits.id,usersid " +
                             " having sum(points)='" + maxPoints + "' " +
-                            "    and count(points)='" + noTests + "'");
+                            "    and count(points)='" + noTests + "' " +
+                            " order by submits.id");
                 }
 
+                HashMap<Object, Boolean> userSolved = new HashMap<Object, Boolean>();
                 for (Object list : query.list()) { // tu jest zwrócona lista "zaakceptowanych" w danym momencie rozwiązań zadania
                     Object[] o = (Object[]) list; // 0 - user.id, 1 - submits.id, 2 - sdate
+                    
+                    if (userSolved.containsKey(o[0]) == true) {
+                        continue;
+                    }
+
+                    userSolved.put(o[0], true);
+
                     Number bombs = (Number) hibernateSession.createCriteria(Submits.class).setProjection(Projections.rowCount()).add(Restrictions.eq("problems.id", (Number) problems.getId())).add(Restrictions.eq("users.id", (Number) o[0])).add(Restrictions.lt("sdate", (Timestamp) o[2])).uniqueResult();
 
                     if (bombs == null) {
