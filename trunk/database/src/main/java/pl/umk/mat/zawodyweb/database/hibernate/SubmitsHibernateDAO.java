@@ -40,7 +40,7 @@ public class SubmitsHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Submits> findByUsersid(Integer usersid) {
-		return findByCriteria(Restrictions.eq("users.usersid", usersid));
+		return findByCriteria(Restrictions.eq("users.id", usersid));
 	}
 
 
@@ -70,7 +70,7 @@ public class SubmitsHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Submits> findByProblemsid(Integer problemsid) {
-		return findByCriteria(Restrictions.eq("problems.problemsid", problemsid));
+		return findByCriteria(Restrictions.eq("problems.id", problemsid));
 	}
 	
 	/**
@@ -78,7 +78,7 @@ public class SubmitsHibernateDAO extends
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Submits> findByLanguagesid(Integer languagesid) {
-		return findByCriteria(Restrictions.eq("languages.languagesid", languagesid));
+		return findByCriteria(Restrictions.eq("languages.id", languagesid));
 	}
 	
 
