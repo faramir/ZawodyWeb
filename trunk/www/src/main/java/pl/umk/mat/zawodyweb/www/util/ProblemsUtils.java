@@ -64,43 +64,53 @@ public class ProblemsUtils {
             Criteria crit = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
             crit.add(Restrictions.eq("problems.id", problem.getId()));
             crit.addOrder(Order.asc("users.id"));
-            int actualUser = 0;
+            int actualUser = -1;
+            boolean nextUser = false;
             List<Submits> findByProblemsid2 = crit.list();
-            //List<Submits> findByProblemsid2 = DAOFactory.DEFAULT.buildSubmitsDAO().findByProblemsid(problem.getId());
             for (Submits oldSubmits : findByProblemsid2) {
-                //if oldSubmits.getUsers().getId() nie zostal juz dodany{
-                List<Results> findBySubmitsid = DAOFactory.DEFAULT.buildResultsDAO().findBySubmitsid(oldSubmits.getId());
-                boolean add = true;
-                for (Results oldResults : findBySubmitsid) {
-                    if (oldResults.getSubmitResult() != CheckerErrors.ACC) {
-                        add = false;
-                        break;
-                    }
+                if (nextUser && actualUser == oldSubmits.getUsers().getId()){
+                    continue;
                 }
-                if (add) {
-                    Submits newSubmit = new Submits();
-                    newSubmit.setCode(oldSubmits.getCode());
-                    newSubmit.setFilename(oldSubmits.getFilename());
-                    newSubmit.setLanguages(oldSubmits.getLanguages());
-                    newSubmit.setNotes(oldSubmits.getNotes());
-                    newSubmit.setProblems(copyProblem);
-                    newSubmit.setResult(oldSubmits.getResult());
-                    newSubmit.setSdate(oldSubmits.getSdate());
-                    newSubmit.setUsers(oldSubmits.getUsers());
-                    DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(newSubmit);
+                else{
+                    nextUser = false;
+                    actualUser = oldSubmits.getUsers().getId();
+                    List<Results> findBySubmitsid = DAOFactory.DEFAULT.buildResultsDAO().findBySubmitsid(oldSubmits.getId());
+                    boolean add = true;
                     for (Results oldResults : findBySubmitsid) {
-                        Results newResults = new Results();
-                        newResults.setMemory(oldResults.getMemory());
-                        newResults.setNotes(oldResults.getNotes());
-                        newResults.setPoints(oldResults.getPoints());
-                        newResults.setRuntime(oldResults.getRuntime());
-                        newResults.setSubmitResult(oldResults.getSubmitResult());
-                        newResults.setSubmits(newSubmit);
-                        newResults.setTests(oldResults.getTests());
-                        DAOFactory.DEFAULT.buildResultsDAO().save(newResults);
+                        if (oldResults.getSubmitResult() != CheckerErrors.ACC) {
+                            add = false;
+                            break;
+                        }
+                        else {
+                            //tu policzyc ilosc punktów
+                        }
                     }
-                // dodac oldSubmits.getUsers().getId() do zaakceptowanych uzytkownikow
+                    if (add) {
+                        nextUser = true;
+                        Submits newSubmit = new Submits();
+                        newSubmit.setCode(oldSubmits.getCode());
+                        newSubmit.setFilename(oldSubmits.getFilename());
+                        newSubmit.setLanguages(oldSubmits.getLanguages());
+                        newSubmit.setNotes(oldSubmits.getNotes());
+                        newSubmit.setProblems(copyProblem);
+                        newSubmit.setResult(oldSubmits.getResult());
+                        newSubmit.setSdate(oldSubmits.getSdate());
+                        newSubmit.setUsers(oldSubmits.getUsers());
+                        DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(newSubmit);
+                        for (Results oldResults : findBySubmitsid) {
+                            Results newResults = new Results();
+                            newResults.setMemory(oldResults.getMemory());
+                            newResults.setNotes(oldResults.getNotes());
+                            newResults.setPoints(oldResults.getPoints());
+                            newResults.setRuntime(oldResults.getRuntime());
+                            newResults.setSubmitResult(oldResults.getSubmitResult());
+                            newResults.setSubmits(newSubmit);
+                            newResults.setTests(oldResults.getTests());
+                            DAOFactory.DEFAULT.buildResultsDAO().save(newResults);
+                        }
+                    }
                 }
+
 
 
             //}
