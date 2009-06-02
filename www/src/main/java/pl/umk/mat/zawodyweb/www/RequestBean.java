@@ -3,7 +3,6 @@ package pl.umk.mat.zawodyweb.www;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -268,7 +267,7 @@ public class RequestBean {
         if (currentContestRanking == null && getCurrentContest() != null) {
             Integer contests_id = getCurrentContest().getId();
             Integer type = getCurrentContest().getType();
-            Date date = Calendar.getInstance().getTime(); // FIXME: usuń jeśli się mylę, ale czy nie lepiej dać od razu jako parametr "new Date()"?
+            Date date = new Date();
             currentContestRanking = Ranking.getInstance().getRanking(contests_id, type, date, false);
         }
 
@@ -889,7 +888,7 @@ public class RequestBean {
         if (rolesBean.canDeleteContest(id, null)) {
             ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
             dao.deleteById(id);
-            if(sessionBean.getCurrentContestId()!= null && sessionBean.getCurrentContestId().equals(id)){
+            if (sessionBean.getCurrentContestId() != null && sessionBean.getCurrentContestId().equals(id)) {
                 currentContest = null;
                 sessionBean.setCurrentContestId(null);
             }
@@ -1061,6 +1060,12 @@ public class RequestBean {
         SubmitsDAO dao = DAOFactory.DEFAULT.buildSubmitsDAO();
         UsersDAO udao = DAOFactory.DEFAULT.buildUsersDAO();
 
+        fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
+        if (temporaryLanguageId.equals(-1)) {
+            // TODO: tutaj należałoby dodać obliczanie temporaryLanguageId z nazwy pliku
+            // a do submit.jspx dodać "< auto >" i "-1" jako wartość lub inaczej to rozwiązać (np. puste i nie required)
+        }
+
         try {
             Submits submit = new Submits();
 
@@ -1070,7 +1075,7 @@ public class RequestBean {
             submit.setResult(SubmitsResultEnum.WAIT.getCode());
             submit.setLanguages(ldao.getById(temporaryLanguageId));
             submit.setProblems(pdao.getById(temporaryProblemId));
-            submit.setSdate(new Timestamp(Calendar.getInstance().getTime().getTime()));
+            submit.setSdate(new Timestamp(System.currentTimeMillis()));
             submit.setUsers(udao.getById(sessionBean.getCurrentUser().getId()));
 
             dao.saveOrUpdate(submit);

@@ -31,7 +31,7 @@
                         <h:selectOneMenu id="language" required="true" value="#{requestBean.temporaryLanguageId}">
                             <f:selectItem itemValue="" itemLabel="" />
                             <c:forEach var="languagesproblems" items="#{requestBean.temporaryLanguagesProblems}">
-                                <f:selectItem itemValue="#{languagesproblems.languages.id}" itemLabel="#{languagesproblems.languages.name}" />
+                                <f:selectItem itemValue="#{languagesproblems.languages.id}" itemLabel="#{languagesproblems.languages.extension}" />
                             </c:forEach>
                         </h:selectOneMenu>
                         <h:message for="language" errorClass="error" />
