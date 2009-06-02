@@ -1,1 +1,1 @@
-<%=new java.util.Date()%>
+<%=(new java.util.Date()).getTime()%>
