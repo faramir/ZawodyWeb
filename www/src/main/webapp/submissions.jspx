@@ -7,7 +7,7 @@
     <ui:define name="pageContent">
         <a4j:form id="formSubmissions" styleClass="profilform">
             <c:choose>
-                <c:when test="#{sessionBean.currentContest == null}">
+                <c:when test="#{requestBean.currentContest == null}">
                     <div class="not_choosen">
                         ${messages.contest_not_choosen}
                     </div>
@@ -18,6 +18,12 @@
                     </div>
                 </c:when>
                 <c:otherwise>
+                    <c:if test="#{zw:canRateAnySeries(rolesBean, requestBean.currentContest)}">
+                        <div>
+                            <t:saveState id="saveid" value="#{requestBean.showOnlyMySubmissions}" />
+                            <h:commandButton id="switch" value="#{requestBean.showOnlyMySubmissions ? messages.show_all_submissions : messages.show_only_my_submissions}" action="#{requestBean.switchShowOnlyMy}" />
+                        </div>
+                    </c:if>
                     <table>
                         <thead>
                             <tr>

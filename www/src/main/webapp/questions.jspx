@@ -7,7 +7,7 @@
     <ui:define name="pageContent">
         <a4j:form id="formQuestions" styleClass="profilform">
             <c:choose>
-                <c:when test="#{sessionBean.currentContest == null}">
+                <c:when test="#{requestBean.currentContest == null}">
                     <div class="not_choosen">
                         ${messages.contest_not_choosen}
                     </div>

@@ -29,7 +29,7 @@ public class SessionBean {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
     private Users currentUser = new Users();
-    private Contests currentContest;
+    private Integer currentContestId;
     private boolean loggedIn;
     private Boolean rememberMe;
 
@@ -40,11 +40,12 @@ public class SessionBean {
         return currentUser;
     }
 
-    /**
-     * @return the currentContest
-     */
-    public Contests getCurrentContest() {
-        return currentContest;
+    public Integer getCurrentContestId() {
+        return currentContestId;
+    }
+
+    public void setCurrentContestId(Integer id) {
+        currentContestId = id;
     }
 
     /**
@@ -53,6 +54,8 @@ public class SessionBean {
     public boolean isLoggedIn() {
         return loggedIn;
     }
+
+    
 
     public String logIn() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -93,13 +96,6 @@ public class SessionBean {
         loggedIn = false;
 
         return "start";
-    }
-
-    public void selectContest(int id) {
-        if (currentContest == null || !currentContest.getId().equals(id)) {
-            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
-            currentContest = dao.getById(id);
-        }
     }
 
     private Cookie getLoginCookie() {

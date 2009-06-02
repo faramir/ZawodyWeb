@@ -30,8 +30,8 @@
         <h2>${messages.uni}</h2>
         <div id="page">
             <h1>
-                <c:if test="#{sessionBean.currentContest != null}">
-                    ${sessionBean.currentContest.name}
+                <c:if test="#{requestBean.currentContest != null}">
+                    ${requestBean.currentContest.name}
                 </c:if>
             </h1>
         </div>
@@ -41,16 +41,16 @@
         <div id="left_menu">
             <ul>
                 <li>
-                    <zw:contest-link contest="${sessionBean.currentContest}" type="problems" message="#{messages.problems}" />
+                    <zw:contest-link contest="${requestBean.currentContest}" type="problems" message="#{messages.problems}" />
                 </li>
                 <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ranking.html">${messages.ranking}</h:outputLink>
                 </li>
                 <li>
-                    <zw:contest-link contest="${sessionBean.currentContest}" type="questions" message="#{messages.questions}" />
+                    <zw:contest-link contest="${requestBean.currentContest}" type="questions" message="#{messages.questions}" />
                 </li>
                 <li>
-                    <zw:contest-link_button contest="${sessionBean.currentContest}" type="submissions" message="#{messages.submissions}" />
+                    <zw:contest-link_button contest="${requestBean.currentContest}" type="submissions" message="#{messages.submissions}" />
                 </li>
                 <li>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/regulamin.html">${messages.rules}</h:outputLink>

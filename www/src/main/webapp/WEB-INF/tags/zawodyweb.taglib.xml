@@ -100,6 +100,11 @@
         <function-signature>java.lang.String esc(java.lang.String)</function-signature>
     </function>
     <function>
+        <function-name>canRateAnySeries</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
+        <function-signature>java.lang.Boolean canRateAnySeries(pl.umk.mat.zawodyweb.www.RolesBean, pl.umk.mat.zawodyweb.database.pojo.Contests)</function-signature>
+    </function>
+    <function>
         <function-name>canAddContest</function-name>
         <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
         <function-signature>java.lang.Boolean canAddContest(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
