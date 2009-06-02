@@ -21,6 +21,7 @@
         <a4j:loadScript src="/media/javascript/script.js" />
     </head>
     <body id="home">
+        <h:graphicImage alt="graph" class="graph" url="/media/images/graph1.png" />
         <h:graphicImage alt="logo" url="/media/images/logo.png" />
         <p id="jclock" class="jclock">
         </p>

@@ -1,8 +1,7 @@
 body {
 	margin: 0; padding: 0;
 	font: 1em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
-	background: #efeaf7 url(../images/backgr3.png);
-        background-repeat: no-repeat;
+	background: #efeaf7 url(../images/backgr1.png) repeat;
 	color: #0000FF;	
 	text-align: left;		
 }
@@ -51,6 +50,13 @@ a:visited, a:link {
         position: absolute;
         left: 90px;
         top: 8px;
+}
+
+.graph {
+        position: absolute;
+        left: -45px;
+        top: -29px;
+        z-index: -1;
 }
 
 #content {
