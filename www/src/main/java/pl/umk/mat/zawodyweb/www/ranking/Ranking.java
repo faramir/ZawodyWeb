@@ -45,4 +45,26 @@ public class Ranking {
             return ranking.getRanking(contest_id, new Timestamp(date.getTime()));
         }
     }
+
+    public RankingTable getRankingForSeries(int contest_id, int series_id, Date date, boolean admin) {
+        ContestsDAO contestsDAO = DAOFactory.DEFAULT.buildContestsDAO();
+
+        RankingInteface ranking = null;
+
+        if (contestsDAO.getById(contest_id).getType().equals(0)) {
+            ranking = new RankingACM();
+        } else if (contestsDAO.getById(contest_id).getType().equals(1)) {
+            ranking = new RankingACM();
+        }
+
+        if (ranking == null) {
+            return null;
+        }
+
+        if (admin == true) {
+            return ranking.getRankingForAdmin(contest_id, new Timestamp(date.getTime()));
+        } else {
+            return ranking.getRanking(contest_id, new Timestamp(date.getTime()));
+        }
+    }
 }

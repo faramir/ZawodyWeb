@@ -79,4 +79,14 @@ public class RankingKI implements RankingInteface {
     public RankingTable getRankingForAdmin(int contest_id, Timestamp checkDate) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public RankingTable getRankingForSeries(int contest_id, int series_id, Timestamp checkDate) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public RankingTable getRankingForSeriesForAdmin(int contest_id, int series_id, Timestamp checkDate) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
