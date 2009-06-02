@@ -12,7 +12,7 @@
 
     // options
     var opts = $.extend({}, $.fn.jclock.defaults, options);
-       
+
     return this.each(function() {
       $this = $(this);
       $this.timerID = null;
@@ -81,18 +81,30 @@
       $this.monthsFullNames[10] = "listopada";
       $this.monthsFullNames[11] = "grudnia";
 
-        $this.pobrane = false;
-        $this.pobrana = "0";
-        $this.roznica = 0;
+      $this.pobrane = false;
+      $this.roznica = 0;
 
       $.fn.jclock.startClock($this);
 
     });
   };
-       
+
   $.fn.jclock.startClock = function(el) {
     $.fn.jclock.stopClock(el);
-    $.fn.jclock.displayTime(el);
+    el.pobrane = false;
+    el.roznica = 0;
+    sendRequest("get", "Time",
+        function(el) {
+            return function() {
+                if(http.readyState == 4 && http.status == 200){
+                    el.roznica = new Date().getTime() - Number(http.responseText);
+                    el.pobrane = true;
+                    $.fn.jclock.displayTime(el);
+                }
+            };
+        }(el)
+    );
+
   }
 
   $.fn.jclock.stopClock = function(el) {
@@ -108,35 +120,9 @@
     el.timerID = setTimeout(function(){$.fn.jclock.displayTime(el)},1000);
   }
 
-  $.fn.jclock.handleResponse = function() {
-      
-  }
-
   $.fn.jclock.getTime = function(el) {
-    if(typeof(el.seedTime) == 'undefined') {
-      // Seed time not being used, use current time
-      var now = new Date();
-    } else {
-      // Otherwise, use seed time with increment
-      el.increment += new Date().getTime() - el.lastCalled;
-      var now = new Date(el.seedTime + el.increment);
-      el.lastCalled = new Date().getTime();
-    }
+    now = new Date(new Date().getTime() - el.roznica);
 
-    if(el.pobrane == false){
-    var res = null;
-
-    res=sendRequest("get", "time.jsp");
-    if(res != null){
-        el.pobrane = true;
-        el.pobrana = new Date(Number(res));
-
-        el.roznica = now.getTime() - el.pobrana.getTime();
-    }
-    }else{
-        now = new Date(now.getTime() - el.roznica);
-    }
-    
     if(el.utc == true) {
       var localTime = now.getTime();
       var localOffset = now.getTimezoneOffset() * 60000;
@@ -156,10 +142,10 @@
       // modifier flag
       //switch (el.format.charAt(index++)) {
       //}
-      
+
       var property = $.fn.jclock.getProperty(now, el, el.format.charAt(index));
       index++;
-      
+
       //switch (switchCase) {
       //}
 
@@ -192,7 +178,7 @@
       case "M": // minute as a decimal number
           return ((dateObject.getMinutes() <  10) ? "0" : "") + dateObject.getMinutes();
       case "p": // either `am' or `pm' according to the given time value,
-		// or the corresponding strings for the current locale
+                // or the corresponding strings for the current locale
           return (dateObject.getHours() < 12 ? "am" : "pm");
       case "S": // second as a decimal number
           return ((dateObject.getSeconds() <  10) ? "0" : "") + dateObject.getSeconds();
@@ -205,10 +191,10 @@
     }
 
   }
-       
+
   // plugin defaults (24-hour)
   $.fn.jclock.defaults = {
-    format: '%H:%M:%S', 
+    format: '%H:%M:%S',
     utc_offset: 0,
     utc: false,
     fontFamily: '',
@@ -218,3 +204,4 @@
   };
 
 })(jQuery);
+
