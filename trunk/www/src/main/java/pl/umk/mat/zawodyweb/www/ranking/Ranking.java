@@ -62,9 +62,9 @@ public class Ranking {
         }
 
         if (admin == true) {
-            return ranking.getRankingForAdmin(contest_id, new Timestamp(date.getTime()));
+            return ranking.getRankingForSeriesForAdmin(contest_id, series_id, new Timestamp(date.getTime()));
         } else {
-            return ranking.getRanking(contest_id, new Timestamp(date.getTime()));
+            return ranking.getRankingForSeries(contest_id, series_id, new Timestamp(date.getTime()));
         }
     }
 }
