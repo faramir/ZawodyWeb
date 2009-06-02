@@ -1,7 +1,6 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.util.Vector;
-import org.apache.commons.collections.KeyValue;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>

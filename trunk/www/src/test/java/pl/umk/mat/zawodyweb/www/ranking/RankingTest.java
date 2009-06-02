@@ -1,6 +1,5 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
-import java.sql.Timestamp;
 import org.hibernate.Transaction;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -61,7 +60,7 @@ public class RankingTest {
      */
     @Test
     public void testRankingACM() {
-        //RankingTable rankingTable = new RankingACM().getRanking(3, new Timestamp(2009 - 1900, 6 - 1, 26, 19, 16, 17, 0));
+        //RankingTable rankingTable = new RankingACM().getRanking(3, new java.sql.Timestamp(2009 - 1900, 6 - 1, 26, 19, 16, 17, 0));
         //display(rankingTable, "rankingACM");
     }
 
@@ -71,7 +70,7 @@ public class RankingTest {
      */
     @Test
     public void testRankingKI() {
-        //RankingTable rankingTable = new RankingKI().getRanking(3, new Timestamp(2009 - 1900, 6 - 1, 26, 19, 16, 17, 0));
+        //RankingTable rankingTable = new RankingKI().getRanking(3, new java.sql.Timestamp(2009 - 1900, 6 - 1, 26, 19, 16, 17, 0));
         //display(rankingTable, "rankingKI");
     }
 }
