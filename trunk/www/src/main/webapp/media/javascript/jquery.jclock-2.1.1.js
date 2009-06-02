@@ -134,7 +134,7 @@
         el.roznica = now.getTime() - el.pobrana.getTime();
     }
     }else{
-        now = new Date(now.getTime() + el.roznica);
+        now = new Date(now.getTime() - el.roznica);
     }
     
     if(el.utc == true) {
