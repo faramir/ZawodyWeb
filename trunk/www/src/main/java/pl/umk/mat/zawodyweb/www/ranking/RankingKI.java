@@ -84,8 +84,7 @@ public class RankingKI implements RankingInteface {
         }
     }
 
-    @Override
-    public RankingTable getRanking(int contest_id, Timestamp checkDate) {
+    private RankingTable getRankingKI(int contest_id, Timestamp checkDate, boolean admin, Integer series_id) {
         Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
         Timestamp checkTimestamp;
@@ -100,8 +99,12 @@ public class RankingKI implements RankingInteface {
 
         for (Series series : seriesDAO.findByContestsid(contest_id)) {
 
+            if (series_id != null && series.getId() != series_id) {
+                continue;
+            }
+
             checkTimestamp = checkDate;
-            allTests = false;
+            allTests = admin;
 
             if (series.getFreezedate() != null && series.getUnfreezedate() != null) {
                 if (checkDate.after(series.getFreezedate()) && checkDate.before(series.getUnfreezedate())) {
@@ -169,8 +172,6 @@ public class RankingKI implements RankingInteface {
             }
         }
 
-
-
         /* Tworzenie rankingu z danych */
         Vector<UserKI> cre = new Vector<UserKI>();
         cre.addAll(mapUserKI.values());
@@ -217,17 +218,22 @@ public class RankingKI implements RankingInteface {
     }
 
     @Override
+    public RankingTable getRanking(int contest_id, Timestamp checkDate) {
+        return getRankingKI(contest_id, checkDate, false, null);
+    }
+
+    @Override
     public RankingTable getRankingForAdmin(int contest_id, Timestamp checkDate) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return getRankingKI(contest_id, checkDate, true, null);
     }
 
     @Override
     public RankingTable getRankingForSeries(int contest_id, int series_id, Timestamp checkDate) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return getRankingKI(contest_id, checkDate, false, series_id);
     }
 
     @Override
     public RankingTable getRankingForSeriesForAdmin(int contest_id, int series_id, Timestamp checkDate) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return getRankingKI(contest_id, checkDate, true, series_id);
     }
 }

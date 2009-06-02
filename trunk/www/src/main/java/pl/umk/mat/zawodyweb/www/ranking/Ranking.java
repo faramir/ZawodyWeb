@@ -32,7 +32,7 @@ public class Ranking {
         if (contestsDAO.getById(contest_id).getType().equals(0)) {
             ranking = new RankingACM();
         } else if (contestsDAO.getById(contest_id).getType().equals(1)) {
-            ranking = new RankingACM();
+            ranking = new RankingKI();
         }
 
         if (ranking == null) {
