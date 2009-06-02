@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Vector;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputText;
@@ -54,7 +53,6 @@ import pl.umk.mat.zawodyweb.database.pojo.Tests;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 import pl.umk.mat.zawodyweb.www.datamodels.PagedDataModel;
 import pl.umk.mat.zawodyweb.www.ranking.Ranking;
-import pl.umk.mat.zawodyweb.www.ranking.RankingEntry;
 import pl.umk.mat.zawodyweb.www.ranking.RankingTable;
 
 /**
@@ -163,8 +161,9 @@ public class RequestBean {
 
     public List<Contests> getContests() {
         if (contests == null) {
-            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
-            contests = dao.findAll();
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Contests.class);
+            c.addOrder(Order.desc("startdate")); // FIXME: check this!
+            contests = c.list();
         }
 
         return contests;
@@ -200,7 +199,7 @@ public class RequestBean {
             if (temporaryContestId == null) {
                 temporaryContestId = getTemporaryContestId();
             }
-            contestsSeries = dao.findByContestsid(temporaryContestId);
+            contestsSeries = dao.findByContestsid(temporaryContestId); // FIXME: sort by startdate
         }
 
         return contestsSeries;
@@ -209,7 +208,7 @@ public class RequestBean {
     public List<Problems> getSeriesProblems() {
         if (seriesProblems == null) {
             ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-            seriesProblems = dao.findBySeriesid(temporarySeriesId);
+            seriesProblems = dao.findBySeriesid(temporarySeriesId); // FIXME: sort by abbrev
         }
 
         return seriesProblems;
@@ -265,9 +264,8 @@ public class RequestBean {
 
     public RankingTable getCurrentContestRanking() {
         if (currentContestRanking == null && sessionBean.getCurrentContest() != null) {
-            Integer contestId = sessionBean.getCurrentContest().getId();
-            Date date = Calendar.getInstance().getTime();
-            currentContestRanking = Ranking.getInstance().getRanking(contestId, date, false);
+            Date date = Calendar.getInstance().getTime(); // FIXME: usuń jeśli się mylę, ale czy nie lepiej dać od razu jako parametr "new Date()"?
+            currentContestRanking = Ranking.getInstance().getRanking(sessionBean.getCurrentContest(), date, false);
         }
 
         return currentContestRanking;

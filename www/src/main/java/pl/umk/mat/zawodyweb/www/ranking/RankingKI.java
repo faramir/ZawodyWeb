@@ -159,7 +159,6 @@ public class RankingKI implements RankingInteface {
 
                 for (Object list : query.list()) {
                     Object[] o = (Object[]) list; // 0 - user.id, 1 - sum(points)
-                    System.out.println("u = " + o[0] + ", p = " + o[1]);
 
                     UserKI user = mapUserKI.get((Integer) o[0]);
                     if (user == null) {
