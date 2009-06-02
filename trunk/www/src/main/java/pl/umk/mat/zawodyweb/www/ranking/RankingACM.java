@@ -127,7 +127,7 @@ public class RankingACM implements RankingInteface {
         return String.format("%dd %02d:%02d:%02d", d, h, m, s);
     }
 
-    private RankingTable getRankingACM(int contest_id, Timestamp checkDate, boolean admin) {
+    private RankingTable getRankingACM(int contest_id, Timestamp checkDate, boolean admin, Integer series_id) {
         Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
         Timestamp checkTimestamp;
@@ -140,6 +140,10 @@ public class RankingACM implements RankingInteface {
         boolean allTests;
 
         for (Series series : seriesDAO.findByContestsid(contest_id)) {
+
+            if (series_id != null && series.getId() != series_id) {
+                continue;
+            }
 
             checkTimestamp = checkDate;
             allTests = admin;
@@ -302,11 +306,22 @@ public class RankingACM implements RankingInteface {
 
     @Override
     public RankingTable getRanking(int contest_id, Timestamp checkDate) {
-        return getRankingACM(contest_id, checkDate, false);
+        return getRankingACM(contest_id, checkDate, false, null);
     }
 
     @Override
     public RankingTable getRankingForAdmin(int contest_id, Timestamp checkDate) {
-        return getRankingACM(contest_id, checkDate, true);
+        return getRankingACM(contest_id, checkDate, true, null);
     }
+
+    @Override
+    public RankingTable getRankingForSeries(int contest_id, int series_id, Timestamp checkDate) {
+        return getRankingACM(contest_id, checkDate, false, series_id);
+    }
+
+    @Override
+    public RankingTable getRankingForSeriesForAdmin(int contest_id, int series_id, Timestamp checkDate) {
+        return getRankingACM(contest_id, checkDate, true, series_id);
+    }
+
 }
