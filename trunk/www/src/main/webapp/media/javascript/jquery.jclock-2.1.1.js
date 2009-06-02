@@ -1,4 +1,4 @@
-﻿/*
+/*
  * jQuery jclock - Clock plugin - v 2.1.1
  * http://plugins.jquery.com/project/jclock
  *
@@ -7,13 +7,12 @@
  *   http://www.opensource.org/licenses/mit-license.php
  */
 (function($) {
-
   $.fn.jclock = function(options) {
     var version = '2.1.1';
 
     // options
     var opts = $.extend({}, $.fn.jclock.defaults, options);
-         
+       
     return this.each(function() {
       $this = $(this);
       $this.timerID = null;
@@ -82,6 +81,10 @@
       $this.monthsFullNames[10] = "listopada";
       $this.monthsFullNames[11] = "grudnia";
 
+        $this.pobrane = false;
+        $this.pobrana = "0";
+        $this.roznica = 0;
+
       $.fn.jclock.startClock($this);
 
     });
@@ -90,26 +93,6 @@
   $.fn.jclock.startClock = function(el) {
     $.fn.jclock.stopClock(el);
     $.fn.jclock.displayTime(el);
-  }
-
-  function createRequestObject(){
-
-	var req;
-
-	if(window.XMLHttpRequest){
-	//For Firefox, Safari, Opera
-	req = new XMLHttpRequest();
-	}
-	else if(window.ActiveXObject){
-	//For IE 5+
-	req = new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	else{
-	//Error for an old browser
-	alert('Your browser is not IE 5 or higher, or Firefox or Safari or Opera');
-	}
-
-	return req;
   }
 
   $.fn.jclock.stopClock = function(el) {
@@ -125,42 +108,42 @@
     el.timerID = setTimeout(function(){$.fn.jclock.displayTime(el)},1000);
   }
 
-  $.fn.jclock.getTime = function(el) {
-    var now = new Date();
+  $.fn.jclock.handleResponse = function() {
+      
+  }
 
+  $.fn.jclock.getTime = function(el) {
+    if(typeof(el.seedTime) == 'undefined') {
+      // Seed time not being used, use current time
+      var now = new Date();
+    } else {
+      // Otherwise, use seed time with increment
+      el.increment += new Date().getTime() - el.lastCalled;
+      var now = new Date(el.seedTime + el.increment);
+      el.lastCalled = new Date().getTime();
+    }
+
+    if(el.pobrane == false){
+    var res = null;
+
+    res=sendRequest("get", "time.jsp");
+    if(res != null){
+        el.pobrane = true;
+        el.pobrana = new Date(Number(res));
+
+        el.roznica = now.getTime() - el.pobrana.getTime();
+    }
+    }else{
+        now = new Date(now.getTime() + el.roznica);
+    }
+    
     if(el.utc == true) {
       var localTime = now.getTime();
       var localOffset = now.getTimezoneOffset() * 60000;
       var utc = localTime + localOffset;
       var utcTime = utc + (3600000 * el.utc_offset);
 
-      var req;
-
-	if(window.XMLHttpRequest){
-	//For Firefox, Safari, Opera
-	req = new XMLHttpRequest();
-	}
-	else if(window.ActiveXObject){
-	//For IE 5+
-	req = new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	else{
-	//Error for an old browser
-	alert('Your browser is not IE 5 or higher, or Firefox or Safari or Opera');
-	}
-
-      //Make the XMLHttpRequest Object
-      var http = req;
-
-	http.open("GET","time.jsp");
-		if(http.readyState == 4 && http.status == 200){
-			var response = http.responseText;
-		}      
-	http.send(null);
-      
-
-      if(responde)
-	      now = new Date(responde);
+      now = new Date(utcTime);
     }
 
     var timeNow = "";

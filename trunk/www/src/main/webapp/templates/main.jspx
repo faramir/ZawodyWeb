@@ -19,6 +19,7 @@
         <a4j:loadScript src="/media/javascript/jquery.jclock-2.1.1.js" />
         <a4j:loadScript src="/media/javascript/jquery.alerts.js" />
         <a4j:loadScript src="/media/javascript/script.js" />
+        <a4j:loadScript src="/media/javascript/getter.js" />
     </head>
     <body id="home">
         <h:graphicImage alt="graph" class="graph" url="/media/images/graph1.png" />
