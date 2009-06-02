@@ -2,9 +2,6 @@ package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import pl.umk.mat.zawodyweb.database.ContestsDAO;
-import pl.umk.mat.zawodyweb.database.DAOFactory;
-import pl.umk.mat.zawodyweb.database.pojo.Contests;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
@@ -25,12 +22,12 @@ public class Ranking {
         return instance;
     }
 
-    public RankingTable getRanking(Contests contest, Date date, boolean admin) {
+    public RankingTable getRanking(int contest_id, int type, Date date, boolean admin) {
         RankingInteface ranking = null;
 
-        if (contest.getType().equals(0)) {
+        if (type == 0) {
             ranking = new RankingACM();
-        } else if (contest.getType().equals(1)) {
+        } else if (type == 1) {
             ranking = new RankingKI();
         }
 
@@ -39,18 +36,18 @@ public class Ranking {
         }
 
         if (admin == true) {
-            return ranking.getRankingForAdmin(contest.getId(), new Timestamp(date.getTime()));
+            return ranking.getRankingForAdmin(contest_id, new Timestamp(date.getTime()));
         } else {
-            return ranking.getRanking(contest.getId(), new Timestamp(date.getTime()));
+            return ranking.getRanking(contest_id, new Timestamp(date.getTime()));
         }
     }
 
-    public RankingTable getRankingForSeries(Contests contest, int series_id, Date date, boolean admin) {
+    public RankingTable getRankingForSeries(int contest_id, int series_id, int type, Date date, boolean admin) {
         RankingInteface ranking = null;
 
-        if (contest.getType().equals(0)) {
+        if (type == 0) {
             ranking = new RankingACM();
-        } else if (contest.getType().equals(1)) {
+        } else if (type == 1) {
             ranking = new RankingKI();
         }
 
@@ -59,9 +56,9 @@ public class Ranking {
         }
 
         if (admin == true) {
-            return ranking.getRankingForSeriesForAdmin(contest.getId(), series_id, new Timestamp(date.getTime()));
+            return ranking.getRankingForSeriesForAdmin(contest_id, series_id, new Timestamp(date.getTime()));
         } else {
-            return ranking.getRankingForSeries(contest.getId(), series_id, new Timestamp(date.getTime()));
+            return ranking.getRankingForSeries(contest_id, series_id, new Timestamp(date.getTime()));
         }
     }
 }

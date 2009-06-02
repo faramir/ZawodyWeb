@@ -264,8 +264,10 @@ public class RequestBean {
 
     public RankingTable getCurrentContestRanking() {
         if (currentContestRanking == null && sessionBean.getCurrentContest() != null) {
+            Integer contests_id = sessionBean.getCurrentContest().getId();
+            Integer type = sessionBean.getCurrentContest().getType();
             Date date = Calendar.getInstance().getTime(); // FIXME: usuń jeśli się mylę, ale czy nie lepiej dać od razu jako parametr "new Date()"?
-            currentContestRanking = Ranking.getInstance().getRanking(sessionBean.getCurrentContest(), date, false);
+            currentContestRanking = Ranking.getInstance().getRanking(contests_id, type, date, false);
         }
 
         return currentContestRanking;

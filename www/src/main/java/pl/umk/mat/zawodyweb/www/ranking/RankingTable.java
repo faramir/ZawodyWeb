@@ -8,6 +8,7 @@ import java.util.Vector;
  * Date: $Date$
  */
 public class RankingTable {
+
     private Vector<String> columnsCaptions;
     private Vector<String> columnsCSS;
     private Vector<RankingEntry> table;
