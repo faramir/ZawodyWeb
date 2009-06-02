@@ -31,7 +31,7 @@ public class RankingACM implements RankingInteface {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
 
-    class SolutionACM implements Comparable {
+    private class SolutionACM implements Comparable {
 
         String name;
         long date;
@@ -57,7 +57,7 @@ public class RankingACM implements RankingInteface {
         }
     }
 
-    class UserACM implements Comparable {
+    private class UserACM implements Comparable {
 
         int id_user;
         int points;
@@ -323,5 +323,4 @@ public class RankingACM implements RankingInteface {
     public RankingTable getRankingForSeriesForAdmin(int contest_id, int series_id, Timestamp checkDate) {
         return getRankingACM(contest_id, checkDate, true, series_id);
     }
-
 }
