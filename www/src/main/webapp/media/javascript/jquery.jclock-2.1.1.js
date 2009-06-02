@@ -92,6 +92,26 @@
     $.fn.jclock.displayTime(el);
   }
 
+  function createRequestObject(){
+
+	var req;
+
+	if(window.XMLHttpRequest){
+	//For Firefox, Safari, Opera
+	req = new XMLHttpRequest();
+	}
+	else if(window.ActiveXObject){
+	//For IE 5+
+	req = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	else{
+	//Error for an old browser
+	alert('Your browser is not IE 5 or higher, or Firefox or Safari or Opera');
+	}
+
+	return req;
+  }
+
   $.fn.jclock.stopClock = function(el) {
     if(el.running) {
       clearTimeout(el.timerID);
@@ -113,7 +133,34 @@
       var localOffset = now.getTimezoneOffset() * 60000;
       var utc = localTime + localOffset;
       var utcTime = utc + (3600000 * el.utc_offset);
-      now = new Date(utcTime);
+
+      var req;
+
+	if(window.XMLHttpRequest){
+	//For Firefox, Safari, Opera
+	req = new XMLHttpRequest();
+	}
+	else if(window.ActiveXObject){
+	//For IE 5+
+	req = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	else{
+	//Error for an old browser
+	alert('Your browser is not IE 5 or higher, or Firefox or Safari or Opera');
+	}
+
+      //Make the XMLHttpRequest Object
+      var http = req;
+
+	http.open("GET","time.jsp");
+		if(http.readyState == 4 && http.status == 200){
+			var response = http.responseText;
+		}      
+	http.send(null);
+      
+
+      if(responde)
+	      now = new Date(responde);
     }
 
     var timeNow = "";
