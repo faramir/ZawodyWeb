@@ -34,6 +34,20 @@
                 <div class="wyslij">
                     <zw:problem-link_button problem="${requestBean.currentProblem}" message="${messages.send_solution}" type="submit" />
                 </div>
+                <div style="background: transparent;border:none;padding-top:30px;">
+                    <t:dataTable rendered="#{zw:canAddProblem(rolesBean, series.contests.id, series.id)}" id="problems#{series.id}" var="problem" styleClass="seria" value="#{series.problemss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
+                                <h:column>
+                                    <f:facet name="header">
+                                    ${messages.test_number}
+                                    </f:facet>
+                                    <zw:problem-link problem="${problem}" message="${problem.name}" type="problem" />
+                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{problem.id}/test.html" title="#{messages.addtest}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.addtest}" title="#{messages.addtest}" url="/media/images/dodaj.png" /></h:outputLink>
+                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editproblem.html?id=#{problem.id}" title="#{messages.editproblem}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.editproblem}" title="#{messages.editproblem}" url="/media/images/edytuj.png" /></h:outputLink>
+                                    <h:outputLink value="#" title="#{messages.delproblem}" rendered="#{zw:canDeleteProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka" onclick="confirm(this,{nazwa:'zadanie #{problem.name}',link:'#{facesContext.externalContext.requestContextPath}/del/#{problem.id}/problem.html'})"><h:graphicImage alt="#{messages.delproblem}" title="#{messages.delproblem}" url="/media/images/usun.png" /></h:outputLink>
+                                </h:column>
+                            </t:dataTable>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{series.id}/problem.html" title="#{messages.addtest}" rendered="#{zw:canAddProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addtest}" title="#{messages.addtest}" url="/media/images/dodaj.png" /></h:outputLink>
+                </div>
                 <div>
                     <zw:problem-link_img contest="${sessionBean.currentContest}" type="problems" message="#{messages.question_back}" />
                 </div>
