@@ -25,8 +25,7 @@ a:visited, a:link {
 		padding: 0 20px 80px 0;
 	}
 
-#home h1 {	font-size: 1.4em;
-        font-family: 'Georgia';
+#home h1 {	font-size: 1.3em;
 		color: #0000bb;
 		margin: 0 0 0 0;
 		padding: 20px 0 0 0;
@@ -34,7 +33,6 @@ a:visited, a:link {
 	}
 
 #home h2 {	font-size: 1em;
-        font-family: 'Georgia';
 		margin: 0;
 		padding: 0;
 		color: #0000bb;
@@ -345,16 +343,16 @@ padding: 0px;
 
 .profilform div.zadanko div.wyslij {
     font-size: 18px;
-    margin: 10px auto 10px auto;
+    margin: 0px auto 10px auto;
     text-align: center;
     background: #ddcff3 url(../images/trescDol.png) repeat-x;;
     padding: 10px 0 10px 0;
 }
 
 .profilform div.zadanko div.tresc {
-    padding: 5px 45px 0px 45px;
+    padding: 10px 45px 10px 45px;
     border: none;
-    background: transparent;
+    background: #efeaf7;
 }
 
 .profilform div.zadanko div.tresc div {
