@@ -68,6 +68,7 @@ public class RequestBean {
     private Users newUser = new Users();
     private String repPasswd;
     private Contests editedContest;
+    private Contests currentContest;
     private Series editedSeries;
     private Problems editedProblem;
     private Tests editedTest;
@@ -102,6 +103,7 @@ public class RequestBean {
     private String answer;
     private boolean publicAnswer;
     private boolean deletePdf;
+    private boolean showOnlyMySubmissions = true;
 
     /**
      * @return the sessionBean
@@ -215,10 +217,10 @@ public class RequestBean {
     }
 
     public List<Problems> getContestsProblems() {
-        if (contestsProblems == null && sessionBean.getCurrentContest() != null) {
+        if (contestsProblems == null && getCurrentContest() != null) {
             SeriesDAO sdao = DAOFactory.DEFAULT.buildSeriesDAO();
 
-            List<Series> series = sdao.findByContestsid(sessionBean.getCurrentContest().getId());
+            List<Series> series = sdao.findByContestsid(getCurrentContest().getId());
             if (series != null) {
                 contestsProblems = new ArrayList<Problems>();
                 for (Series s : series) {
@@ -233,8 +235,8 @@ public class RequestBean {
     public List<Problems> getSubmittableProblems() {
         if (submittableProblems == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Problems.class);
-            if (sessionBean.getCurrentContest() != null) {
-                c.createCriteria("series").createCriteria("contests").add(Restrictions.eq("id", sessionBean.getCurrentContest().getId()));
+            if (getCurrentContest() != null) {
+                c.createCriteria("series").createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
             }
             submittableProblems = c.list();
         }
@@ -245,7 +247,7 @@ public class RequestBean {
     public List<Series> getCurrentContestSeries() {
         if (currentContestSeries == null) {
             SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
-            currentContestSeries = dao.findByContestsid(sessionBean.getCurrentContest().getId());
+            currentContestSeries = dao.findByContestsid(getCurrentContest().getId());
             Collections.reverse(currentContestSeries);
         }
 
@@ -255,7 +257,7 @@ public class RequestBean {
     public List<Questions> getCurrentContestQuestions() {
         if (currentContestQuestions == null) {
             QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
-            currentContestQuestions = dao.findByCriteria(Restrictions.eq("contests.id", sessionBean.getCurrentContest().getId()),
+            currentContestQuestions = dao.findByCriteria(Restrictions.eq("contests.id", getCurrentContest().getId()),
                     Restrictions.or(Restrictions.eq("qtype", 1), Restrictions.eq("users.id", sessionBean.getCurrentUser().getId())));
         }
 
@@ -263,9 +265,9 @@ public class RequestBean {
     }
 
     public RankingTable getCurrentContestRanking() {
-        if (currentContestRanking == null && sessionBean.getCurrentContest() != null) {
-            Integer contests_id = sessionBean.getCurrentContest().getId();
-            Integer type = sessionBean.getCurrentContest().getType();
+        if (currentContestRanking == null && getCurrentContest() != null) {
+            Integer contests_id = getCurrentContest().getId();
+            Integer type = getCurrentContest().getType();
             Date date = Calendar.getInstance().getTime(); // FIXME: usuń jeśli się mylę, ale czy nie lepiej dać od razu jako parametr "new Date()"?
             currentContestRanking = Ranking.getInstance().getRanking(contests_id, type, date, false);
         }
@@ -275,15 +277,37 @@ public class RequestBean {
 
     public PagedDataModel getSubmissions() {
         if (submissions == null) {
+            List<Integer> ratableSeries = null;
+
+            if (!isShowOnlyMySubmissions()) {
+                ratableSeries = new ArrayList<Integer>();
+                for (Series s : getCurrentContest().getSeriess()) {
+                    if (rolesBean.canRate(getCurrentContest().getId(), s.getId())) {
+                        ratableSeries.add(s.getId());
+                    }
+                }
+            }
+
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
             c.setProjection(Projections.rowCount());
-            c.createCriteria("problems").createCriteria("series").createCriteria("contests").add(Restrictions.eq("id", sessionBean.getCurrentContest().getId()));
-            c.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
+            Criteria criteriaSeries = c.createCriteria("problems").createCriteria("series");
+            criteriaSeries.createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
+
+            if (isShowOnlyMySubmissions()) {
+                c.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
+            } else {
+                criteriaSeries.add(Restrictions.in("id", ratableSeries));
+            }
             Number number = (Number) c.uniqueResult();
 
             Criteria c2 = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
-            c2.createCriteria("problems").createCriteria("series").createCriteria("contests").add(Restrictions.eq("id", sessionBean.getCurrentContest().getId()));
-            c2.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
+            Criteria criteria2Series = c2.createCriteria("problems").createCriteria("series");
+            criteria2Series.createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
+            if (isShowOnlyMySubmissions()) {
+                c2.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
+            } else {
+                criteria2Series.add(Restrictions.in("id", ratableSeries));
+            }
             c2.addOrder(Order.desc("sdate"));
             c2.setFirstResult(temporaryPageIndex * 10);
             c2.setMaxResults(10);
@@ -317,6 +341,17 @@ public class RequestBean {
         }
 
         return editedContest;
+    }
+
+    public Contests getCurrentContest() {
+        if (currentContest == null) {
+            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
+            if (sessionBean.getCurrentContestId() != null) {
+                currentContest = dao.getById(sessionBean.getCurrentContestId());
+            }
+        }
+
+        return currentContest;
     }
 
     public Submits getEditedSubmit() {
@@ -456,6 +491,14 @@ public class RequestBean {
 
     public void setPublicAnswer(boolean publicAnswer) {
         this.publicAnswer = publicAnswer;
+    }
+
+    public boolean isShowOnlyMySubmissions() {
+        return showOnlyMySubmissions;
+    }
+
+    public void setShowOnlyMySubmissions(boolean showOnlyMySubmissions) {
+        this.showOnlyMySubmissions = showOnlyMySubmissions;
     }
 
     public String getTemporarySource() {
@@ -713,7 +756,7 @@ public class RequestBean {
             return null;
         }
 
-        sessionBean.selectContest(editedProblem.getSeries().getContests().getId());
+        selectContest(editedProblem.getSeries().getContests().getId());
         return "problems";
     }
 
@@ -723,7 +766,7 @@ public class RequestBean {
             ProblemsDAO pdao = DAOFactory.DEFAULT.buildProblemsDAO();
             UsersDAO udao = DAOFactory.DEFAULT.buildUsersDAO();
 
-            getEditedQuestion().setContests(sessionBean.getCurrentContest());
+            getEditedQuestion().setContests(getCurrentContest());
             getEditedQuestion().setProblems(pdao.getById(temporaryProblemId));
             getEditedQuestion().setQtype(0);
             getEditedQuestion().setUsers(sessionBean.getCurrentUser());
@@ -758,8 +801,8 @@ public class RequestBean {
 
     @HttpAction(name = "problems", pattern = "problems/{id}/{title}")
     public String goToProblems(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
-        sessionBean.selectContest(id);
-        if (sessionBean.getCurrentContest() == null) {
+        selectContest(id);
+        if (getCurrentContest() == null) {
             return "/error/404";
         } else {
             return "problems";
@@ -768,8 +811,8 @@ public class RequestBean {
 
     @HttpAction(name = "questions", pattern = "questions/{id}/{title}")
     public String goToQuestions(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
-        sessionBean.selectContest(id);
-        if (sessionBean.getCurrentContest() == null) {
+        selectContest(id);
+        if (getCurrentContest() == null) {
             return "/error/404";
         } else {
             return "questions";
@@ -778,8 +821,8 @@ public class RequestBean {
 
     @HttpAction(name = "submissions", pattern = "submissions/{id}/{title}")
     public String goToSubmissions(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
-        sessionBean.selectContest(id);
-        if (sessionBean.getCurrentContest() == null) {
+        selectContest(id);
+        if (getCurrentContest() == null) {
             return "/error/404";
         } else {
             return "submissions";
@@ -794,7 +837,7 @@ public class RequestBean {
         if (currentSubmit == null) {
             return "/error/404";
         } else {
-            sessionBean.selectContest(currentSubmit.getProblems().getSeries().getContests().getId());
+            selectContest(currentSubmit.getProblems().getSeries().getContests().getId());
             return "submission";
         }
     }
@@ -807,7 +850,7 @@ public class RequestBean {
         if (currentProblem == null) {
             return "/error/404";
         } else {
-            sessionBean.selectContest(currentProblem.getSeries().getContests().getId());
+            selectContest(currentProblem.getSeries().getContests().getId());
             return "problem";
         }
     }
@@ -822,7 +865,7 @@ public class RequestBean {
             return "/error/404";
         } else {
             publicAnswer = editedQuestion.getQtype() == 1;
-            sessionBean.selectContest(editedQuestion.getContests().getId());
+            selectContest(editedQuestion.getContests().getId());
             return "question";
         }
     }
@@ -835,7 +878,7 @@ public class RequestBean {
         if (currentProblem == null) {
             return "/error/404";
         } else {
-            sessionBean.selectContest(currentProblem.getSeries().getContests().getId());
+            selectContest(currentProblem.getSeries().getContests().getId());
             temporaryProblemId = id;
             return "submit";
         }
@@ -846,6 +889,10 @@ public class RequestBean {
         if (rolesBean.canDeleteContest(id, null)) {
             ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
             dao.deleteById(id);
+            if(sessionBean.getCurrentContestId()!= null && sessionBean.getCurrentContestId().equals(id)){
+                currentContest = null;
+                sessionBean.setCurrentContestId(null);
+            }
             return "/start";
         } else {
             return null;
@@ -971,6 +1018,12 @@ public class RequestBean {
         return "problems";
     }
 
+    public String switchShowOnlyMy() {
+        showOnlyMySubmissions = !showOnlyMySubmissions;
+        submissions = null;
+        return null;
+    }
+
     /**
      * Validates component with captcha text entered.
      *
@@ -1033,7 +1086,13 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, controlId, summary, null);
             return null;
         }
+    }
 
+    private void selectContest(int id) {
+        if (getCurrentContest() == null || !getCurrentContest().getId().equals(id)) {
+            sessionBean.setCurrentContestId(id);
+            currentContest = null;
+        }
     }
 
     /**

@@ -49,7 +49,7 @@
                             <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{series.id}/problem.html" title="#{messages.addtest}" rendered="#{zw:canAddProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addtest}" title="#{messages.addtest}" url="/media/images/dodaj.png" /></h:outputLink>
                 </div>
                 <div>
-                    <zw:problem-link_img contest="${sessionBean.currentContest}" type="problems" message="#{messages.question_back}" />
+                    <zw:problem-link_img contest="${requestBean.currentContest}" type="problems" message="#{messages.question_back}" />
                 </div>
             </div>
         </a4j:form>

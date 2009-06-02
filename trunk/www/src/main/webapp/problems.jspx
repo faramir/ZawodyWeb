@@ -7,7 +7,7 @@
     <ui:define name="pageContent">
         <a4j:form id="formProblems" styleClass="profilform">
             <c:choose>
-                <c:when test="#{sessionBean.currentContest == null}">
+                <c:when test="#{requestBean.currentContest == null}">
                     <div class="not_choosen">
                         ${messages.contest_not_choosen}
                     </div>
@@ -42,12 +42,12 @@
                         </div>
                     </c:forEach>
                     <div class="ikona" style="margin-left:-40px">
-                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{sessionBean.currentContest.id}/series.html" title="${messages.addseries}" rendered="#{zw:canAddSeries(rolesBean, sessionBean.currentContest.id, null)}">
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{requestBean.currentContest.id}/series.html" title="${messages.addseries}" rendered="#{zw:canAddSeries(rolesBean, requestBean.currentContest.id, null)}">
                             <h:graphicImage alt="${messages.addseries}" title="${messages.addseries}" url="/media/images/dodaj.png" />
                         </h:outputLink>
                     </div>
                     <div style="padding-top: 20px;">
-                        <zw:problem-link_img contest="${sessionBean.currentContest}" type="start" message="#{messages.question_back}" />
+                        <zw:problem-link_img contest="${requestBean.currentContest}" type="start" message="#{messages.question_back}" />
                     </div>
                 </c:otherwise>
             </c:choose>

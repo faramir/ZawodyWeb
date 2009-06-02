@@ -3,7 +3,9 @@ package pl.umk.mat.zawodyweb.www;
 import java.util.List;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.UsersRolesDAO;
+import pl.umk.mat.zawodyweb.database.pojo.Contests;
 import pl.umk.mat.zawodyweb.database.pojo.Roles;
+import pl.umk.mat.zawodyweb.database.pojo.Series;
 import pl.umk.mat.zawodyweb.database.pojo.UsersRoles;
 
 /**
@@ -40,6 +42,19 @@ public class RolesBean {
     private Boolean isOk(Roles role, Integer contestId, Integer seriesId) {
         return (role.getContests() == null || role.getContests().getId().equals(contestId)) &&
                 (role.getSeries() == null || role.getSeries().getId().equals(seriesId));
+    }
+
+    public Boolean canRateAnySeries(Contests contest) {
+        if (contest == null) {
+            return false;
+        }
+
+        for (Series s : contest.getSeriess()) {
+            if (canRate(contest.getId(), s.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Boolean canAddContest(Integer contestId, Integer seriesId) {

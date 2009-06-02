@@ -1,10 +1,15 @@
 package pl.umk.mat.zawodyweb.www;
 
+import pl.umk.mat.zawodyweb.database.pojo.Contests;
+
 /**
  *
  * @author slawek
  */
 public class RolesELFunctions {
+    public static Boolean canRateAnySeries(RolesBean rolesBean, Contests contest){
+        return rolesBean.canRateAnySeries(contest);
+    }
 
     public static Boolean canAddContest(RolesBean rolesBean, Integer contestId, Integer seriesId) {
         return rolesBean.canAddContest(contestId, seriesId);
