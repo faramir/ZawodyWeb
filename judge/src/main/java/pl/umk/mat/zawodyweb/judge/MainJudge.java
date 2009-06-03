@@ -37,7 +37,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Tests;
  */
 public class MainJudge {
 
-    public static final org.apache.log4j.Logger logger = Logger.getLogger(MainJudge.class);
+    private static final org.apache.log4j.Logger logger = Logger.getLogger(MainJudge.class);
     private static Vector<ClassInfo> classes = new Vector<ClassInfo>();
     private static Properties properties = new Properties();
     private static long delayConnect;

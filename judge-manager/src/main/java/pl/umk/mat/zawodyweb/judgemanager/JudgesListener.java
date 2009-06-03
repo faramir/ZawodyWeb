@@ -21,7 +21,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Submits;
  */
 public class JudgesListener extends Thread {
 
-    public static final Logger logger = Logger.getLogger(JudgesListener.class);
+    private static final Logger logger = Logger.getLogger(JudgesListener.class);
     private ServerSocket judgeSocket;
     private ConcurrentLinkedQueue<Integer> submitsQueue;
     private String[] addresses;

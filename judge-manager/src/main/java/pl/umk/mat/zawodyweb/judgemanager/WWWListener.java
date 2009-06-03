@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
  */
 public class WWWListener extends Thread {
 
-    public static final Logger logger = Logger.getLogger(WWWListener.class);
+    private static final Logger logger = Logger.getLogger(WWWListener.class);
     private ServerSocket wwwSocket;
     private ConcurrentLinkedQueue<Integer> submitsQueue;
     private String[] addresses;

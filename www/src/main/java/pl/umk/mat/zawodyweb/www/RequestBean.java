@@ -1119,12 +1119,9 @@ public class RequestBean {
                 submit.setUsers(usersDAO.getById(sessionBean.getCurrentUser().getId()));
                 selectContest(problem.getSeries().getContests().getId());
                 submitsDAO.saveOrUpdate(submit);
-            }
 
-            /*Socket sock = new Socket(InetAddress.getByName("127.0.0.1"), Integer.parseInt("8887"));
-            DataOutputStream output = new DataOutputStream(sock.getOutputStream());
-            output.writeInt(submit.getId());
-            output.flush();*/
+                JudgeManagerConnector.getInstance().sentToJudgeManager(submit.getId());
+            }
 
             return "submissions";
         } catch (Exception e) {

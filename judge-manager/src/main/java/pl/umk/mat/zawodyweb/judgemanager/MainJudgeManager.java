@@ -25,8 +25,8 @@ import pl.umk.mat.zawodyweb.database.pojo.Submits;
  */
 public class MainJudgeManager {
 
-    public static final Logger logger = Logger.getLogger(MainJudgeManager.class);
-    public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final Logger logger = Logger.getLogger(MainJudgeManager.class);
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public static ConcurrentLinkedQueue<Integer> submitsQueue;
 
     public static void main(String[] args) {

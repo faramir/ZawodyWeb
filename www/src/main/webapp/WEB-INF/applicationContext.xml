@@ -7,7 +7,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
-    
+
+    <bean id="judgeManagerConnector" class="pl.umk.mat.zawodyweb.www.JudgeManagerConnector">
+        <property name="host" value="127.0.0.1"/>
+        <property name="port" value="8087"/>
+    </bean>
     <!--bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
           p:location="/WEB-INF/jdbc.properties" />
