@@ -1,5 +1,8 @@
 package pl.umk.mat.zawodyweb.www.util;
 
+import org.hibernate.Transaction;
+import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
 /**
@@ -21,7 +24,10 @@ public class SubmitUtils {
         //TODO: implement this
     }
 
-    public void deleteSubmit(Submits submit) {
-        //TODO: implement this
+    public boolean deleteSubmit(Submits submit) {
+        Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        DAOFactory.DEFAULT.buildSubmitsDAO().delete(submit);
+        transaction.commit();
+        return true;
     }
 }
