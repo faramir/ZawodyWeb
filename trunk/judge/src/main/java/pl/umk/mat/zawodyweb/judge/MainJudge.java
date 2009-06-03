@@ -46,10 +46,10 @@ public class MainJudge {
         Socket sock = null;
         /* connecting to JudgeManager */
         try {
-            sock = new Socket(InetAddress.getByName(properties.getProperty("HOST")), Integer.parseInt(properties.getProperty("PORT")));
+            sock = new Socket(InetAddress.getByName(properties.getProperty("JUDGEMANAGER_HOST")), Integer.parseInt(properties.getProperty("JUDGEMANAGER_PORT")));
             DataInputStream input = new DataInputStream(sock.getInputStream());
             DataOutputStream output = new DataOutputStream(sock.getOutputStream());
-            logger.debug("Connection with JudgeManager on " + properties.getProperty("HOST") + ":" + properties.getProperty("PORT") + "...");
+            logger.debug("Connection with JudgeManager on " + properties.getProperty("JUDGEMANAGER_HOST") + ":" + properties.getProperty("JUDGEMANAGER_PORT") + "...");
 
             while (15 == 15) {
                 /* receiving submit_id */
