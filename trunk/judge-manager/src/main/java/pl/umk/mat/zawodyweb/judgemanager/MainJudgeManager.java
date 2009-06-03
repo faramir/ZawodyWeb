@@ -36,13 +36,13 @@ public class MainJudgeManager {
         /* getting properties */
         Properties properties = new Properties();
 
-        properties.setProperty("WWW_PORT", "8887");
+        properties.setProperty("WWW_PORT", "8087");
         properties.setProperty("WWW_LISTEN_ADDRESS", "127.0.0.1");
         properties.setProperty("WWW_POOL", "8");
         properties.setProperty("WWW_ADDRESSES", "127.0.0.1");
         properties.setProperty("WWW_TIMEOUT", "10000");
 
-        properties.setProperty("JUDGE_PORT", "8888");
+        properties.setProperty("JUDGE_PORT", "8088");
         properties.setProperty("JUDGE_LISTEN_ADDRESS", "");
         properties.setProperty("JUDGE_POOL", "16");
         properties.setProperty("JUDGE_ADDRESSES", "127.0.0.1 158.75.12.138");
@@ -52,7 +52,7 @@ public class MainJudgeManager {
 
         try {
             String configFile = MainJudgeManager.class.getResource(".").getPath() + "configuration.xml";
-            if (args.length == 1) {
+            if (args.length == 1 && !args[0].isEmpty()) {
                 configFile = args[0];
             }
             logger.info("Reading configuration file: " + configFile);
