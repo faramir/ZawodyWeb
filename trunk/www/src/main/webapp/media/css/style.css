@@ -384,6 +384,14 @@ padding: 0px;
     float: left;
 }
 
+.profilform table tr div.item {
+    display: inline-table;
+    float: left;
+    background: transparent;
+    border: none;
+    text-align: center;
+}
+
 .profilform table tr a.ikonka {
     display: inline-table;
     float: right;
@@ -1064,4 +1072,15 @@ tbody {
 
 .nowrap {
     white-space: nowrap;
+}
+
+.profilform div.subm_switch input {
+    float: none;
+    margin: 0px auto 10px auto;
+}
+
+.profilform div.subm_switch{
+    float: none;
+    text-align: center;
+    margin: 10px auto;
 }

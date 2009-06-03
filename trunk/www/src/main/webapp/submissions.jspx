@@ -19,7 +19,7 @@
                 </c:when>
                 <c:otherwise>
                     <c:if test="#{zw:canRateAnySeries(rolesBean, requestBean.currentContest)}">
-                        <div>
+                        <div class="subm_switch">
                             <t:saveState id="saveid" value="#{requestBean.showOnlyMySubmissions}" />
                             <h:commandButton id="switch" value="#{requestBean.showOnlyMySubmissions ? messages.show_all_submissions : messages.show_only_my_submissions}" action="#{requestBean.switchShowOnlyMy}" />
                         </div>
