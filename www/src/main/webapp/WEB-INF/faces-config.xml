@@ -118,6 +118,18 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
+        <display-name>goToRanking</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                ranking
+            </from-outcome>
+            <to-view-id>
+                /ranking.jspx
+            </to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
         <display-name>questions_to_questions</display-name>
         <from-view-id>/questions.jspx</from-view-id>
         <navigation-case>
