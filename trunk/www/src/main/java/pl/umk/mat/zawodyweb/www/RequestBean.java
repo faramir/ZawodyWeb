@@ -33,6 +33,7 @@ import pl.umk.mat.zawodyweb.database.LanguagesProblemsDAO;
 import pl.umk.mat.zawodyweb.database.PDFDAO;
 import pl.umk.mat.zawodyweb.database.ProblemsDAO;
 import pl.umk.mat.zawodyweb.database.QuestionsDAO;
+import pl.umk.mat.zawodyweb.database.ResultsDAO;
 import pl.umk.mat.zawodyweb.database.SeriesDAO;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
@@ -46,6 +47,7 @@ import pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems;
 import pl.umk.mat.zawodyweb.database.pojo.PDF;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Questions;
+import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
@@ -60,8 +62,21 @@ import pl.umk.mat.zawodyweb.www.ranking.RankingTable;
  */
 @Instance("#{requestBean}")
 public class RequestBean {
-
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
+    
+    private SubmitsDAO submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
+    private ClassesDAO classesDAO = DAOFactory.DEFAULT.buildClassesDAO();
+    private LanguagesDAO languagesDAO = DAOFactory.DEFAULT.buildLanguagesDAO();
+    private LanguagesProblemsDAO languagesProblemsDAO = DAOFactory.DEFAULT.buildLanguagesProblemsDAO();
+    private SeriesDAO seriesDAO = DAOFactory.DEFAULT.buildSeriesDAO();
+    private ProblemsDAO problemsDAO = DAOFactory.DEFAULT.buildProblemsDAO();
+    private QuestionsDAO questionsDAO = DAOFactory.DEFAULT.buildQuestionsDAO();
+    private ContestsDAO contestsDAO = DAOFactory.DEFAULT.buildContestsDAO();
+    private ResultsDAO resultsDAO = DAOFactory.DEFAULT.buildResultsDAO();
+    private TestsDAO testsDAO = DAOFactory.DEFAULT.buildTestsDAO();
+    private UsersDAO usersDAO = DAOFactory.DEFAULT.buildUsersDAO();
+    private PDFDAO pdfDAO = DAOFactory.DEFAULT.buildPDFDAO();
+
     private SessionBean sessionBean;
     private RolesBean rolesBean;
     private Users newUser = new Users();
@@ -73,6 +88,7 @@ public class RequestBean {
     private Tests editedTest;
     private Submits editedSubmit;
     private Questions editedQuestion;
+    private Results editedResult;
     private List<LanguagesProblems> temporaryLanguagesProblems = null;
     private List<Contests> contests = null;
     private List<Series> contestsSeries = null;
@@ -175,11 +191,8 @@ public class RequestBean {
 
     public List<Classes> getDiffClasses() {
         if (diffClasses == null) {
-            ClassesDAO dao = DAOFactory.DEFAULT.buildClassesDAO();
-            LanguagesDAO ldao = DAOFactory.DEFAULT.buildLanguagesDAO();
-
-            diffClasses = dao.findAll();
-            List<Languages> tmp = ldao.findAll();
+            diffClasses = classesDAO.findAll();
+            List<Languages> tmp = languagesDAO.findAll();
             for (Languages l : tmp) {
                 diffClasses.remove(l.getClasses());
             }
@@ -190,8 +203,7 @@ public class RequestBean {
 
     public List<Languages> getLanguages() {
         if (languages == null) {
-            LanguagesDAO dao = DAOFactory.DEFAULT.buildLanguagesDAO();
-            languages = dao.findAll();
+            languages = languagesDAO.findAll();
         }
 
         return languages;
@@ -199,11 +211,10 @@ public class RequestBean {
 
     public List<Series> getContestsSeries() {
         if (contestsSeries == null) {
-            SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
             if (temporaryContestId == null) {
                 temporaryContestId = getTemporaryContestId();
             }
-            contestsSeries = dao.findByContestsid(temporaryContestId); // FIXME: sort by startdate
+            contestsSeries = seriesDAO.findByContestsid(temporaryContestId); // FIXME: sort by startdate
         }
 
         return contestsSeries;
@@ -211,8 +222,7 @@ public class RequestBean {
 
     public List<Problems> getSeriesProblems() {
         if (seriesProblems == null) {
-            ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-            seriesProblems = dao.findBySeriesid(temporarySeriesId); // FIXME: sort by abbrev
+            seriesProblems = problemsDAO.findBySeriesid(temporarySeriesId); // FIXME: sort by abbrev
         }
 
         return seriesProblems;
@@ -220,9 +230,7 @@ public class RequestBean {
 
     public List<Problems> getContestsProblems() {
         if (contestsProblems == null && getCurrentContest() != null) {
-            SeriesDAO sdao = DAOFactory.DEFAULT.buildSeriesDAO();
-
-            List<Series> series = sdao.findByContestsid(getCurrentContest().getId());
+            List<Series> series = seriesDAO.findByContestsid(getCurrentContest().getId());
             if (series != null) {
                 contestsProblems = new ArrayList<Problems>();
                 for (Series s : series) {
@@ -248,8 +256,7 @@ public class RequestBean {
 
     public List<Series> getCurrentContestSeries() {
         if (currentContestSeries == null) {
-            SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
-            currentContestSeries = dao.findByContestsid(getCurrentContest().getId());
+            currentContestSeries = seriesDAO.findByContestsid(getCurrentContest().getId());
             Collections.reverse(currentContestSeries);
         }
 
@@ -258,8 +265,7 @@ public class RequestBean {
 
     public List<Questions> getCurrentContestQuestions() {
         if (currentContestQuestions == null) {
-            QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
-            currentContestQuestions = dao.findByCriteria(Restrictions.eq("contests.id", getCurrentContest().getId()),
+            currentContestQuestions = questionsDAO.findByCriteria(Restrictions.eq("contests.id", getCurrentContest().getId()),
                     Restrictions.or(Restrictions.eq("qtype", 1), Restrictions.eq("users.id", sessionBean.getCurrentUser().getId())));
         }
 
@@ -337,19 +343,25 @@ public class RequestBean {
             if (ELFunctions.isNullOrZero(temporaryContestId)) {
                 editedContest = new Contests();
             } else {
-                ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
-                editedContest = dao.getById(temporaryContestId);
+                editedContest = contestsDAO.getById(temporaryContestId);
             }
         }
 
         return editedContest;
     }
 
+    public Results getEditedResult() {
+        if (editedResult == null && !ELFunctions.isNullOrZero(temporaryResultId)) {
+            editedResult = resultsDAO.getById(temporaryResultId);
+        }
+
+        return editedResult;
+    }
+
     public Contests getCurrentContest() {
         if (currentContest == null) {
-            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
             if (sessionBean.getCurrentContestId() != null) {
-                currentContest = dao.getById(sessionBean.getCurrentContestId());
+                currentContest = contestsDAO.getById(sessionBean.getCurrentContestId());
             }
         }
 
@@ -366,8 +378,7 @@ public class RequestBean {
 
     public Submits getCurrentSubmit() {
         if (currentSubmit == null) {
-            SubmitsDAO dao = DAOFactory.DEFAULT.buildSubmitsDAO();
-            currentSubmit = dao.getById(temporarySubmitId);
+            currentSubmit = submitsDAO.getById(temporarySubmitId);
         }
         return currentSubmit;
     }
@@ -387,8 +398,7 @@ public class RequestBean {
             if (ELFunctions.isNullOrZero(temporaryQuestionId)) {
                 editedQuestion = new Questions();
             } else {
-                QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
-                editedQuestion = dao.getById(temporaryQuestionId);
+                editedQuestion = questionsDAO.getById(temporaryQuestionId);
                 if (editedQuestion != null && !WWWHelper.isPost(context)) {
                     publicAnswer = editedQuestion.getQtype().equals(1);
                 }
@@ -400,8 +410,7 @@ public class RequestBean {
 
     public List<LanguagesProblems> getTemporaryLanguagesProblems() {
         if (temporaryLanguagesProblems == null) {
-            LanguagesProblemsDAO dao = DAOFactory.DEFAULT.buildLanguagesProblemsDAO();
-            temporaryLanguagesProblems = dao.findByProblemsid(temporaryProblemId);
+            temporaryLanguagesProblems = languagesProblemsDAO.findByProblemsid(temporaryProblemId);
         }
 
         return temporaryLanguagesProblems;
@@ -561,8 +570,7 @@ public class RequestBean {
             if (ELFunctions.isNullOrZero(temporarySeriesId)) {
                 editedSeries = new Series();
             } else {
-                SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
-                editedSeries = dao.getById(temporarySeriesId);
+                editedSeries = seriesDAO.getById(temporarySeriesId);
 
                 if (!WWWHelper.isPost(context) && editedSeries.getContests() != null) {
                     temporaryContestId = editedSeries.getContests().getId();
@@ -588,8 +596,7 @@ public class RequestBean {
             if (ELFunctions.isNullOrZero(temporaryProblemId)) {
                 editedProblem = new Problems();
             } else {
-                ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-                editedProblem = dao.getById(temporaryProblemId);
+                editedProblem = problemsDAO.getById(temporaryProblemId);
 
                 if (!WWWHelper.isPost(context)) {
                     if (editedProblem.getSeries() != null) {
@@ -627,8 +634,7 @@ public class RequestBean {
             if (ELFunctions.isNullOrZero(temporaryTestId)) {
                 editedTest = new Tests();
             } else {
-                TestsDAO dao = DAOFactory.DEFAULT.buildTestsDAO();
-                editedTest = dao.getById(temporaryTestId);
+                editedTest = testsDAO.getById(temporaryTestId);
 
                 if (!WWWHelper.isPost(context)) {
                     if (editedTest.getProblems() != null) {
@@ -649,8 +655,7 @@ public class RequestBean {
         try {
             try {
                 newUser.savePass(newUser.getPass());
-                UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
-                dao.save(newUser);
+                usersDAO.save(newUser);
             } catch (ConstraintViolationException e) {
                 String summary = messages.getString("login_exists");
                 WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formRegister:login", summary, null);
@@ -673,8 +678,7 @@ public class RequestBean {
         }
 
         try {
-            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
-            dao.saveOrUpdate(getEditedContest());
+            contestsDAO.saveOrUpdate(getEditedContest());
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -692,11 +696,8 @@ public class RequestBean {
         }
 
         try {
-            ContestsDAO cdao = DAOFactory.DEFAULT.buildContestsDAO();
-            editedSeries.setContests(cdao.getById(temporaryContestId));
-
-            SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
-            dao.saveOrUpdate(editedSeries);
+            editedSeries.setContests(contestsDAO.getById(temporaryContestId));
+            seriesDAO.saveOrUpdate(editedSeries);
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -736,13 +737,6 @@ public class RequestBean {
         }
 
         try {
-            ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-            SeriesDAO sdao = DAOFactory.DEFAULT.buildSeriesDAO();
-            LanguagesDAO ldao = DAOFactory.DEFAULT.buildLanguagesDAO();
-            LanguagesProblemsDAO lpdao = DAOFactory.DEFAULT.buildLanguagesProblemsDAO();
-            ClassesDAO cdao = DAOFactory.DEFAULT.buildClassesDAO();
-            PDFDAO pdao = DAOFactory.DEFAULT.buildPDFDAO();
-
             if (temporaryFile != null) {
                 PDF current = getEditedProblem().getPDF();
                 if (current == null) {
@@ -750,35 +744,35 @@ public class RequestBean {
                 }
 
                 current.setPdf(temporaryFile.getBytes());
-                pdao.saveOrUpdate(current);
+                pdfDAO.saveOrUpdate(current);
                 getEditedProblem().setPDF(current);
             }
 
             if (deletePdf) {
                 PDF tmp = getEditedProblem().getPDF();
                 getEditedProblem().setPDF(null);
-                pdao.delete(tmp);
+                pdfDAO.delete(tmp);
             }
 
-            getEditedProblem().setSeries(sdao.getById(temporarySeriesId));
-            getEditedProblem().setClasses(cdao.getById(temporaryClassId));
+            getEditedProblem().setSeries(seriesDAO.getById(temporarySeriesId));
+            getEditedProblem().setClasses(classesDAO.getById(temporaryClassId));
 
-            List<LanguagesProblems> tmpList = lpdao.findByProblemsid(getEditedProblem().getId());
+            List<LanguagesProblems> tmpList = languagesProblemsDAO.findByProblemsid(getEditedProblem().getId());
 
             if (tmpList != null) {
                 for (LanguagesProblems lp : tmpList) {
-                    lpdao.delete(lp);
+                    languagesProblemsDAO.delete(lp);
                 }
             }
 
             for (Integer lid : temporaryLanguagesIds) {
                 LanguagesProblems lp = new LanguagesProblems();
-                lp.setLanguages(ldao.getById(lid));
+                lp.setLanguages(languagesDAO.getById(lid));
                 lp.setProblems(getEditedProblem());
-                lpdao.saveOrUpdate(lp);
+                languagesProblemsDAO.saveOrUpdate(lp);
             }
 
-            dao.saveOrUpdate(getEditedProblem());
+            problemsDAO.saveOrUpdate(getEditedProblem());
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -792,16 +786,12 @@ public class RequestBean {
 
     public String addQuestion() {
         try {
-            QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
-            ProblemsDAO pdao = DAOFactory.DEFAULT.buildProblemsDAO();
-            UsersDAO udao = DAOFactory.DEFAULT.buildUsersDAO();
-
             getEditedQuestion().setContests(getCurrentContest());
-            getEditedQuestion().setProblems(pdao.getById(temporaryProblemId));
+            getEditedQuestion().setProblems(problemsDAO.getById(temporaryProblemId));
             getEditedQuestion().setQtype(0);
             getEditedQuestion().setUsers(sessionBean.getCurrentUser());
 
-            dao.save(getEditedQuestion());
+            questionsDAO.save(getEditedQuestion());
 
             return "questions";
         } catch (Exception e) {
@@ -814,12 +804,11 @@ public class RequestBean {
 
     public String saveAnswer() {
         try {
-            QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
             String tmp = getEditedQuestion().getQuestion().replaceAll("\n", "\n> ");
             tmp = ">".concat(tmp).concat("\n\n").concat(answer);
             getEditedQuestion().setQuestion(tmp);
             getEditedQuestion().setQtype(publicAnswer ? 1 : 0);
-            dao.saveOrUpdate(getEditedQuestion());
+            questionsDAO.saveOrUpdate(getEditedQuestion());
             return "questions";
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -827,6 +816,11 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formQuestion:save", summary, null);
             return null;
         }
+    }
+
+    public String saveResult() {
+        resultsDAO.update(getEditedResult());
+        return null;
     }
 
     @HttpAction(name = "problems", pattern = "problems/{id}/{title}")
@@ -861,8 +855,7 @@ public class RequestBean {
 
     @HttpAction(name = "submission", pattern = "submission/{id}/{title}")
     public String goToSubmission(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
-        SubmitsDAO dao = DAOFactory.DEFAULT.buildSubmitsDAO();
-        currentSubmit = dao.getById(id);
+        currentSubmit = submitsDAO.getById(id);
 
         if (currentSubmit == null) {
             return "/error/404";
@@ -885,8 +878,7 @@ public class RequestBean {
 
     @HttpAction(name = "problem", pattern = "problem/{id}/{title}")
     public String goToProblem(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
-        ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-        currentProblem = dao.getById(id);
+        currentProblem = problemsDAO.getById(id);
 
         if (currentProblem == null) {
             return "/error/404";
@@ -898,9 +890,8 @@ public class RequestBean {
 
     @HttpAction(name = "question", pattern = "question/{id}/{title}")
     public String goToQuestion(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
-        QuestionsDAO dao = DAOFactory.DEFAULT.buildQuestionsDAO();
         temporaryQuestionId = id;
-        editedQuestion = dao.getById(id);
+        editedQuestion = questionsDAO.getById(id);
 
         if (editedQuestion == null) {
             return "/error/404";
@@ -913,8 +904,7 @@ public class RequestBean {
 
     @HttpAction(name = "submit", pattern = "submit/{id}/{title}")
     public String goToSubmit(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
-        ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-        currentProblem = dao.getById(id);
+        currentProblem = problemsDAO.getById(id);
 
         if (currentProblem == null) {
             return "/error/404";
@@ -928,8 +918,7 @@ public class RequestBean {
     @HttpAction(name = "delcontest", pattern = "del/{id}/contest")
     public String deleteContest(@Param(name = "id", encode = true) int id) {
         if (rolesBean.canDeleteContest(id, null)) {
-            ContestsDAO dao = DAOFactory.DEFAULT.buildContestsDAO();
-            dao.deleteById(id);
+            contestsDAO.deleteById(id);
             if (sessionBean.getCurrentContestId() != null && sessionBean.getCurrentContestId().equals(id)) {
                 currentContest = null;
                 sessionBean.setCurrentContestId(null);
@@ -948,10 +937,9 @@ public class RequestBean {
 
     @HttpAction(name = "delseries", pattern = "del/{id}/series")
     public String deleteSeries(@Param(name = "id", encode = true) int id) {
-        SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
-        Series s = dao.getById(id);
+        Series s = seriesDAO.getById(id);
         if (s != null && rolesBean.canDeleteSeries(s.getContests().getId(), id)) {
-            dao.delete(s);
+            seriesDAO.delete(s);
             return "problems";
         } else {
             return null;
@@ -960,8 +948,7 @@ public class RequestBean {
 
     @HttpAction(name = "addproblem", pattern = "add/{id}/problem")
     public String goToAddproblem(@Param(name = "id", encode = true) int id) {
-        SeriesDAO dao = DAOFactory.DEFAULT.buildSeriesDAO();
-        Series s = dao.getById(id);
+        Series s = seriesDAO.getById(id);
         if (s != null) {
             temporarySeriesId = id;
             temporaryContestId = s.getContests().getId();
@@ -972,11 +959,10 @@ public class RequestBean {
 
     @HttpAction(name = "delproblem", pattern = "del/{id}/problem")
     public String deleteProblem(@Param(name = "id", encode = true) int id) {
-        ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-        Problems p = dao.getById(id);
+        Problems p = problemsDAO.getById(id);
 
         if (p != null && rolesBean.canDeleteProblem(p.getSeries().getContests().getId(), p.getSeries().getId())) {
-            dao.delete(p);
+            problemsDAO.delete(p);
             return "problems";
         } else {
             return null;
@@ -985,8 +971,7 @@ public class RequestBean {
 
     @HttpAction(name = "addtest", pattern = "add/{id}/test")
     public String goToAddtest(@Param(name = "id", encode = true) int id) {
-        ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-        Problems p = dao.getById(id);
+        Problems p = problemsDAO.getById(id);
         if (p != null) {
             temporaryProblemId = id;
             temporarySeriesId = p.getSeries().getId();
@@ -1003,16 +988,14 @@ public class RequestBean {
         byte[] content = null;
 
         if (type.equals("pdf")) {
-            ProblemsDAO dao = DAOFactory.DEFAULT.buildProblemsDAO();
-            Problems p = dao.getById(id);
+            Problems p = problemsDAO.getById(id);
             if (p != null && p.getPDF() != null) {
                 name = p.getName() + ".pdf";
                 content = p.getPDF().getPdf();
                 mimetype = "application/pdf";
             }
         } else if (type.equals("code")) {
-            SubmitsDAO dao = DAOFactory.DEFAULT.buildSubmitsDAO();
-            Submits s = dao.getById(id);
+            Submits s = submitsDAO.getById(id);
             if (s != null && s.getCode() != null) {
                 name = s.getFilename();
                 content = s.getCode();
@@ -1043,12 +1026,9 @@ public class RequestBean {
         }
 
         try {
-            TestsDAO dao = DAOFactory.DEFAULT.buildTestsDAO();
-            ProblemsDAO pdao = DAOFactory.DEFAULT.buildProblemsDAO();
-
             editedTest.setVisibility(1); // FIXME: należy wartość pobrać ze strony!
-            editedTest.setProblems(pdao.getById(temporaryProblemId));
-            dao.saveOrUpdate(editedTest);
+            editedTest.setProblems(problemsDAO.getById(temporaryProblemId));
+            testsDAO.saveOrUpdate(editedTest);
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -1097,11 +1077,6 @@ public class RequestBean {
     private String sendSolution(byte[] bytes, String fileName, String controlId) {
         FacesContext context = FacesContext.getCurrentInstance();
 
-        LanguagesDAO ldao = DAOFactory.DEFAULT.buildLanguagesDAO();
-        ProblemsDAO pdao = DAOFactory.DEFAULT.buildProblemsDAO();
-        SubmitsDAO dao = DAOFactory.DEFAULT.buildSubmitsDAO();
-        UsersDAO udao = DAOFactory.DEFAULT.buildUsersDAO();
-
         fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
         if (temporaryLanguageId.equals(-1)) {
             // TODO: tutaj należałoby dodać obliczanie temporaryLanguageId z nazwy pliku
@@ -1111,16 +1086,17 @@ public class RequestBean {
         try {
             Submits submit = new Submits();
 
+            Problems problem = problemsDAO.getById(temporaryProblemId);
             submit.setId(null);
             submit.setFilename(fileName);
             submit.setCode(bytes);
             submit.setResult(SubmitsResultEnum.WAIT.getCode());
-            submit.setLanguages(ldao.getById(temporaryLanguageId));
-            submit.setProblems(pdao.getById(temporaryProblemId));
+            submit.setLanguages(languagesDAO.getById(temporaryLanguageId));
+            submit.setProblems(problem);
             submit.setSdate(new Timestamp(System.currentTimeMillis()));
-            submit.setUsers(udao.getById(sessionBean.getCurrentUser().getId()));
-
-            dao.saveOrUpdate(submit);
+            submit.setUsers(usersDAO.getById(sessionBean.getCurrentUser().getId()));
+            selectContest(problem.getSeries().getContests().getId());
+            submitsDAO.saveOrUpdate(submit);
 
             /*Socket sock = new Socket(InetAddress.getByName("127.0.0.1"), Integer.parseInt("8887"));
             DataOutputStream output = new DataOutputStream(sock.getOutputStream());

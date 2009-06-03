@@ -2,64 +2,110 @@
                 xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
                 xmlns:zw="http://zawodyweb.mat.umk.pl/">
     <ui:define name="pageTitle">
-        ${messages.submissionnumber} ${requestBean.currentSubmit.id}
+        <c:choose>
+            <c:when test="#{!(requestBean.currentSubmit == null)}">
+            ${messages.no_submission}
+            </c:when>
+            <c:otherwise>
+            ${messages.submissionnumber} ${requestBean.currentSubmit.id}
+            </c:otherwise>
+        </c:choose>
     </ui:define>
     <ui:define name="pageContent">
         <a4j:form id="formSubmission" styleClass="profilform">
-            <t:saveState id="saveid" value="#{requestBean.temporarySubmitId}" />
-            <t:saveState id="saveratingmode" value="#{requestBean.ratingMode}" />
-            <c:set var="canrate" value="#{requestBean.ratingMode and zw:canRate(rolesBean, requestBean.currentSubmit.problems.id, requestBean.currentSubmit.problems.series.id)}" />
-            <div class="zadanko">
-                <div class="nazwa">
-                    ${requestBean.currentSubmit.problems.name} (${requestBean.currentSubmit.problems.abbrev})
-                </div>
-                <div class="termin">
-                    ${messages.submission_date}: ${requestBean.currentSubmit.sdate}
-                </div>
-                <div class="notes">
-                    <h:outputText value="${zw:nlToBr(requestBean.currentSubmit.notes)}" escape="false" />
-                </div>
-                <table class="submissions">
-                    <thead>
-                        <tr>
-                            <th class="small">${messages.test}</th>
-                            <th class="small">${messages.submission_status}</th>
-                            <th class="small" nowrap="true">${messages.submission_time}/${messages.submission_timelimit}</th>
-                            <th class="small" nowrap="true">${messages.submission_mem}/${messages.submission_memlimit}</th>
-                            <th class="small">${messages.submission_result}</th>
-                            <th>${messages.submission_notes}</th>
-                            <th>
-
-                            </th>
-                        </tr>
-                    </thead>
-                    <t:dataList id="submissions" var="result" footerClass="paginator" value="#{requestBean.currentSubmit.resultss}">
-                        <h:panelGroup rendered="${zw:testVisible(result.tests)}">
-                            <tr style="${zw:coloring(result.points / result.tests.maxpoints)}">
-                                <td>${result.tests.testorder}</td>
-                                <td><zw:checkererror code="#{result.submitResult}" /></td>
-                                <td>${result.runtime}/${result.tests.timelimit}</td>
-                                <td>${result.memory}/${result.tests.problems.memlimit}</td>
-                                <td>${result.points}/${result.tests.maxpoints}</td>
-                                <td style="font-size:11px;text-align:left;"><h:outputText value="${zw:escape(zw:nlDoubler(result.notes))}" escape="false" /></td>
-                                <c:if test="#{canrate}">
-                                    <td>
-                                        <h:commandLink id="rateresult" value="${messages.edit}">
-                                            <f:param name="temporaryResultId" value="#{result.id}" />
-                                        </h:commandLink>
-                                    </td>
-                                </c:if>
-                            </tr>
-                        </h:panelGroup>
-                    </t:dataList>
-                </table>
-                <div class="wyslij">
-                    <h:outputLink id="getsubmission" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentSubmit.id}/code.html" title="${messages.solution_download}">${messages.solution_download}</h:outputLink>
-                </div>
-                <div>
-                    <zw:problem-link_img contest="${requestBean.currentContest}" type="submissions" message="#{messages.question_back}" />
-                </div>
-            </div>
+            <c:choose>
+                <c:when test="#{requestBean.currentSubmit == null}">
+                ${messages.no_submission}
+                </c:when>
+                <c:when test="#{!(requestBean.currentSubmit.users.id == sessionBean.currentUser.id) and !zw:canRate(rolesBean, requestBean.currentSubmit.problems.series.contests.id, requestBean.currentSubmit.problems.series.id)}">
+                ${messages.nonsufficient_privileges}
+                </c:when>
+                <c:otherwise>
+                    <t:saveState id="saveid" value="#{requestBean.temporarySubmitId}" />
+                    <t:saveState id="saveratingmode" value="#{requestBean.ratingMode}" />
+                    <c:set var="canrate" value="#{requestBean.ratingMode and zw:canRate(rolesBean, requestBean.currentSubmit.problems.id, requestBean.currentSubmit.problems.series.id)}" />
+                    <div class="zadanko">
+                        <div class="nazwa">
+                            ${requestBean.currentSubmit.problems.name} (${requestBean.currentSubmit.problems.abbrev})
+                        </div>
+                        <div class="termin">
+                            ${messages.submission_date}: ${requestBean.currentSubmit.sdate}
+                        </div>
+                        <div class="notes">
+                            <h:outputText value="${zw:nlToBr(requestBean.currentSubmit.notes)}" escape="false" />
+                        </div>
+                        <table class="submissions">
+                            <thead>
+                                <tr>
+                                    <th class="small">${messages.test}</th>
+                                    <th class="small">${messages.submission_status}</th>
+                                    <th class="small" nowrap="true">${messages.submission_time}/${messages.submission_timelimit}</th>
+                                    <th class="small" nowrap="true">${messages.submission_mem}/${messages.submission_memlimit}</th>
+                                    <th class="small">${messages.submission_result}</th>
+                                    <th>${messages.submission_notes}</th>
+                                    <c:if test="#{canrate}">
+                                        <th></th>
+                                    </c:if>
+                                </tr>
+                            </thead>
+                            <t:dataList id="submissions" var="result" footerClass="paginator" value="#{requestBean.currentSubmit.resultss}" preserveRowStates="true">
+                                <h:panelGroup rendered="${zw:testVisible(result.tests)}">
+                                    <tr style="${zw:coloring(result.points / result.tests.maxpoints)}">
+                                        <h:panelGroup rendered="#{result.id == requestBean.temporaryResultId}">
+                                            <td>${result.tests.testorder}</td>
+                                            <td>
+                                                <h:selectOneMenu value="#{requestBean.editedResult.submitResult}" style="width:50px">
+                                                    <f:selectItem itemLabel="#{messages.errorcode_acc}" itemValue="0" />
+                                                    <f:selectItem itemLabel="#{messages.errorcode_wa}" itemValue="1" />
+                                                    <f:selectItem itemLabel="#{messages.errorcode_tle}" itemValue="2" />
+                                                    <f:selectItem itemLabel="#{messages.errorcode_ce}" itemValue="3" />
+                                                    <f:selectItem itemLabel="#{messages.errorcode_re}" itemValue="4" />
+                                                    <f:selectItem itemLabel="#{messages.errorcode_mle}" itemValue="5" />
+                                                    <f:selectItem itemLabel="#{messages.errorcode_rv}" itemValue="6" />
+                                                    <f:selectItem itemLabel="#{messages.errorcode_ctle}" itemValue="7" />
+                                                    <f:selectItem itemLabel="#{messages.errorcode_unknown}" itemValue="8" />
+                                                </h:selectOneMenu>
+                                            </td>
+                                            <td><h:inputText value="#{requestBean.editedResult.runtime}" style="width:50px" />/${requestBean.editedResult.tests.timelimit}</td>
+                                            <td><h:inputText value="#{requestBean.editedResult.memory}" style="width:50px" />/${requestBean.editedResult.tests.problems.memlimit}</td>
+                                            <td><h:inputText value="#{requestBean.editedResult.points}" style="width:50px" />/${requestBean.editedResult.tests.maxpoints}</td>
+                                            <td style="font-size:11px;text-align:left;">
+                                                <h:inputText value="#{result.notes}" />
+                                            </td>
+                                            <td>
+                                                <a4j:commandLink id="save" value="${messages.save}" action="#{requestBean.saveResult}" />
+                                            </td>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{!(result.id == requestBean.temporaryResultId)}">
+                                            <td>${result.tests.testorder}</td>
+                                            <td><zw:checkererror code="#{result.submitResult}" /></td>
+                                            <td>${result.runtime}/${result.tests.timelimit}</td>
+                                            <td>${result.memory}/${result.tests.problems.memlimit}</td>
+                                            <td>${result.points}/${result.tests.maxpoints}</td>
+                                            <td style="font-size:11px;text-align:left;">
+                                                <h:outputText value="${zw:escape(zw:nlDoubler(result.notes))}" escape="false" />
+                                            </td>
+                                            <c:if test="#{canrate}">
+                                                <td>
+                                                    <h:commandLink id="rateresult" value="${messages.edit}">
+                                                        <f:param name="temporaryResultId" value="#{result.id}" />
+                                                    </h:commandLink>
+                                                </td>
+                                            </c:if>
+                                        </h:panelGroup>
+                                    </tr>
+                                </h:panelGroup>
+                            </t:dataList>
+                        </table>
+                        <div class="wyslij">
+                            <h:outputLink id="getsubmission" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentSubmit.id}/code.html" title="${messages.solution_download}">${messages.solution_download}</h:outputLink>
+                        </div>
+                        <div>
+                            <zw:problem-link_img contest="${requestBean.currentContest}" type="submissions" message="#{messages.question_back}" />
+                        </div>
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </a4j:form>
     </ui:define>
 </ui:composition>
