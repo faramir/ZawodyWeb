@@ -6,6 +6,9 @@
     </ui:define>
     <ui:define name="pageContent">
         <a4j:form id="formSubmission" styleClass="profilform">
+            <t:saveState id="saveid" value="#{requestBean.temporarySubmitId}" />
+            <t:saveState id="saveratingmode" value="#{requestBean.ratingMode}" />
+            <c:set var="canrate" value="#{requestBean.ratingMode and zw:canRate(rolesBean, requestBean.currentSubmit.problems.id, requestBean.currentSubmit.problems.series.id)}" />
             <div class="zadanko">
                 <div class="nazwa">
                     ${requestBean.currentSubmit.problems.name} (${requestBean.currentSubmit.problems.abbrev})
@@ -25,6 +28,9 @@
                             <th class="small" nowrap="true">${messages.submission_mem}/${messages.submission_memlimit}</th>
                             <th class="small">${messages.submission_result}</th>
                             <th>${messages.submission_notes}</th>
+                            <th>
+
+                            </th>
                         </tr>
                     </thead>
                     <t:dataList id="submissions" var="result" footerClass="paginator" value="#{requestBean.currentSubmit.resultss}">
@@ -36,11 +42,18 @@
                                 <td>${result.memory}/${result.tests.problems.memlimit}</td>
                                 <td>${result.points}/${result.tests.maxpoints}</td>
                                 <td style="font-size:11px;text-align:left;"><h:outputText value="${zw:escape(zw:nlDoubler(result.notes))}" escape="false" /></td>
+                                <c:if test="#{canrate}">
+                                    <td>
+                                        <h:commandLink id="rateresult" value="${messages.edit}">
+                                            <f:param name="temporaryResultId" value="#{result.id}" />
+                                        </h:commandLink>
+                                    </td>
+                                </c:if>
                             </tr>
                         </h:panelGroup>
                     </t:dataList>
                 </table>
-                 <div class="wyslij">
+                <div class="wyslij">
                     <h:outputLink id="getsubmission" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentSubmit.id}/code.html" title="${messages.solution_download}">${messages.solution_download}</h:outputLink>
                 </div>
                 <div>

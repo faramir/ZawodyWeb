@@ -35,6 +35,10 @@
             <property-name>rolesBean</property-name>
             <value>#{rolesBean}</value>
         </managed-property>
+        <managed-property>
+            <property-name>temporaryResultId</property-name>
+            <value>#{param.temporaryResultId}</value>
+        </managed-property>
     </managed-bean>
     <navigation-rule>
         <display-name>register_to_login</display-name>

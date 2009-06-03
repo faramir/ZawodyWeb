@@ -30,6 +30,9 @@
                                 <th>${messages.submission_date}</th>
                                 <th>${messages.submission_problem}</th>
                                 <th>${messages.submission_result}</th>
+                                <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
+                                    <th></th>
+                                </c:if>
                             </tr>
                         </thead>
                         <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="10" >
@@ -40,9 +43,14 @@
                                     <h:outputText value="#{messages.waiting}" rendered="#{submit.result == 0}" />
                                     <h:outputText value="#{messages.processing}" rendered="#{submit.result == 1}" />
                                     <h:panelGroup rendered="#{submit.result == 2}">
-                                        <zw:submission-link submission="#{submit}" />
+                                        <zw:submission-link submission="#{submit}" type="submission" />
                                     </h:panelGroup>
                                 </td>
+                                <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
+                                    <td>
+                                        <zw:submission-link submission="#{submit}" type="rate" message="#{messages.submission_rate}" />
+                                    </td>
+                                </c:if>
                             </tr>
                         </t:dataList>
                     </table>

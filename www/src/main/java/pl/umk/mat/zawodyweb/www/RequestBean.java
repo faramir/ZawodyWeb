@@ -87,11 +87,13 @@ public class RequestBean {
     private Integer temporaryContestId;
     private Integer temporarySeriesId;
     private Integer temporaryProblemId;
+    private Integer temporarySubmitId;
     private Integer temporaryClassId;
     private Integer temporaryTestId;
     private Integer temporaryQuestionId;
     private Integer[] temporaryLanguagesIds;
     private Integer temporaryLanguageId;
+    private Integer temporaryResultId;
     private int temporaryPageIndex = 0;
     private String temporarySource;
     private Problems currentProblem;
@@ -103,6 +105,7 @@ public class RequestBean {
     private boolean publicAnswer;
     private boolean deletePdf;
     private boolean showOnlyMySubmissions = true;
+    private boolean ratingMode = false;
 
     /**
      * @return the sessionBean
@@ -362,6 +365,10 @@ public class RequestBean {
     }
 
     public Submits getCurrentSubmit() {
+        if (currentSubmit == null) {
+            SubmitsDAO dao = DAOFactory.DEFAULT.buildSubmitsDAO();
+            currentSubmit = dao.getById(temporarySubmitId);
+        }
         return currentSubmit;
     }
 
@@ -468,6 +475,22 @@ public class RequestBean {
         this.temporaryLanguageId = temporaryLanguageId;
     }
 
+    public Integer getTemporaryResultId() {
+        return temporaryResultId;
+    }
+
+    public void setTemporaryResultId(Integer temporaryResultId) {
+        this.temporaryResultId = temporaryResultId;
+    }
+
+    public Integer getTemporarySubmitId() {
+        return temporarySubmitId;
+    }
+
+    public void setTemporarySubmitId(Integer temporarySubmitId) {
+        this.temporarySubmitId = temporarySubmitId;
+    }
+
     public UploadedFile getTemporaryFile() {
         return temporaryFile;
     }
@@ -498,6 +521,14 @@ public class RequestBean {
 
     public void setShowOnlyMySubmissions(boolean showOnlyMySubmissions) {
         this.showOnlyMySubmissions = showOnlyMySubmissions;
+    }
+
+    public boolean isRatingMode() {
+        return ratingMode;
+    }
+
+    public void setRatingMode(boolean ratingMode) {
+        this.ratingMode = ratingMode;
     }
 
     public String getTemporarySource() {
@@ -837,8 +868,19 @@ public class RequestBean {
             return "/error/404";
         } else {
             selectContest(currentSubmit.getProblems().getSeries().getContests().getId());
+            temporarySubmitId = id;
             return "submission";
         }
+    }
+
+    @HttpAction(name = "rate", pattern = "rate/{id}/{title}")
+    public String goToRate(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        String res = goToSubmission(id, dummy);
+        if (res.equals("submission")) {
+            ratingMode = true;
+        }
+
+        return res;
     }
 
     @HttpAction(name = "problem", pattern = "problem/{id}/{title}")
