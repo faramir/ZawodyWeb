@@ -44,6 +44,43 @@ public class WWWListener extends Thread {
         return false;
     }
 
+    private class WWWWaiter extends Thread {
+
+        Socket wwwClient;
+
+        public WWWWaiter(Socket wwwClient) {
+            super();
+            this.wwwClient = wwwClient;
+        }
+
+        @Override
+        public void run() {
+            try {
+                wwwClient.setSoTimeout(soTimeout);
+
+                logger.debug("WWW connected from: " + wwwClient.getInetAddress().getHostAddress());
+
+                DataInputStream in = new DataInputStream(wwwClient.getInputStream());
+                DataOutputStream out = new DataOutputStream(wwwClient.getOutputStream());
+
+                int submitId = in.readInt();
+
+                logger.info("WWW gets submit_id = " + submitId);
+
+                submitsQueue.add(submitId);
+
+                out.writeInt(submitId);
+                out.flush();
+            } catch (IOException ex) {
+            } finally {
+                try {
+                    wwwClient.close();
+                } catch (IOException ex) {
+                }
+            }
+        }
+    }
+
     @Override
     public void run() {
         logger.info("Listening for connection from WWW...");
@@ -57,23 +94,8 @@ public class WWWListener extends Thread {
 
                     continue;
                 }
-                wwwClient.setSoTimeout(soTimeout);
 
-                logger.debug("WWW connected from: " + wwwClient.getInetAddress().getHostAddress());
-
-                DataInputStream in = new DataInputStream(wwwClient.getInputStream());
-                DataOutputStream out = new DataOutputStream(wwwClient.getOutputStream());
-
-                int submitId = in.readInt();
-
-                logger.debug("WWW gets submit_id = " + submitId);
-
-                submitsQueue.add(submitId);
-
-                out.writeInt(submitId);
-                out.flush();
-
-                wwwClient.close();
+                new WWWWaiter(wwwClient).start();
             } catch (IOException ex) {
                 logger.error("Exception occurs: ", ex);
             }
