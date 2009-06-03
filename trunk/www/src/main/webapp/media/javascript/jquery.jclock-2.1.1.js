@@ -23,6 +23,7 @@
       $this.format = o.format;
       $this.utc = o.utc;
       $this.utc_offset = o.utc_offset;
+      $this.path = o.path;
 
       $this.css({
         fontFamily: o.fontFamily,
@@ -93,7 +94,7 @@
     $.fn.jclock.stopClock(el);
     el.pobrane = false;
     el.roznica = 0;
-    sendRequest("get", "Time",
+    sendRequest("get", el.path+"/Time",
         function(el) {
             return function() {
                 if(http.readyState == 4 && http.status == 200){
@@ -200,7 +201,8 @@
     fontFamily: '',
     fontSize: '',
     foreground: '',
-    background: ''
+    background: '',
+    path: ''
   };
 
 })(jQuery);
