@@ -853,6 +853,16 @@ public class RequestBean {
         }
     }
 
+    @HttpAction(name = "ranking", pattern = "ranking/{id}/{title}")
+    public String goToRanking(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        selectContest(id);
+        if (getCurrentContest() == null) {
+            return "/error/404";
+        } else {
+            return "ranking";
+        }
+    }
+
     @HttpAction(name = "submissions", pattern = "submissions/{id}/{title}")
     public String goToSubmissions(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);

@@ -5,6 +5,7 @@
 package pl.umk.mat.zawodyweb.www;
 
 import java.util.Calendar;
+import java.util.Date;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
@@ -109,5 +110,9 @@ public class ELFunctions {
         }
 
         return points;
+    }
+
+    public static Boolean submitDateOk(Problems p) {
+        return p.getSeries().getEnddate() == null || p.getSeries().getEnddate().after(new Date());
     }
 }
