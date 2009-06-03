@@ -62,8 +62,8 @@ import pl.umk.mat.zawodyweb.www.ranking.RankingTable;
  */
 @Instance("#{requestBean}")
 public class RequestBean {
+
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
-    
     private SubmitsDAO submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
     private ClassesDAO classesDAO = DAOFactory.DEFAULT.buildClassesDAO();
     private LanguagesDAO languagesDAO = DAOFactory.DEFAULT.buildLanguagesDAO();
@@ -76,7 +76,6 @@ public class RequestBean {
     private TestsDAO testsDAO = DAOFactory.DEFAULT.buildTestsDAO();
     private UsersDAO usersDAO = DAOFactory.DEFAULT.buildUsersDAO();
     private PDFDAO pdfDAO = DAOFactory.DEFAULT.buildPDFDAO();
-
     private SessionBean sessionBean;
     private RolesBean rolesBean;
     private Users newUser = new Users();
@@ -182,7 +181,7 @@ public class RequestBean {
     public List<Contests> getContests() {
         if (contests == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Contests.class);
-            c.addOrder(Order.desc("startdate")); // FIXME: check this!
+            c.addOrder(Order.desc("startdate"));
             contests = c.list();
         }
 
@@ -214,7 +213,11 @@ public class RequestBean {
             if (temporaryContestId == null) {
                 temporaryContestId = getTemporaryContestId();
             }
-            contestsSeries = seriesDAO.findByContestsid(temporaryContestId); // FIXME: sort by startdate
+
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Series.class);
+            c.createCriteria("contests").add(Restrictions.eq("id", temporaryContestId));
+            c.addOrder(Order.asc("startdate"));
+            contestsSeries = c.list();
         }
 
         return contestsSeries;
@@ -222,7 +225,10 @@ public class RequestBean {
 
     public List<Problems> getSeriesProblems() {
         if (seriesProblems == null) {
-            seriesProblems = problemsDAO.findBySeriesid(temporarySeriesId); // FIXME: sort by abbrev
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Problems.class);
+            c.createCriteria("series").add(Restrictions.eq("id", temporarySeriesId));
+            c.addOrder(Order.asc("abbrev"));
+            seriesProblems = c.list();
         }
 
         return seriesProblems;
@@ -245,9 +251,12 @@ public class RequestBean {
     public List<Problems> getSubmittableProblems() {
         if (submittableProblems == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Problems.class);
+            Criteria s = c.createCriteria("series");
+
             if (getCurrentContest() != null) {
-                c.createCriteria("series").createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
+                s.createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
             }
+            s.add(Restrictions.or(Restrictions.isNull("enddate"), Restrictions.gt("enddate", new Date())));
             submittableProblems = c.list();
         }
 
@@ -1096,19 +1105,21 @@ public class RequestBean {
         }
 
         try {
-            Submits submit = new Submits();
-
             Problems problem = problemsDAO.getById(temporaryProblemId);
-            submit.setId(null);
-            submit.setFilename(fileName);
-            submit.setCode(bytes);
-            submit.setResult(SubmitsResultEnum.WAIT.getCode());
-            submit.setLanguages(languagesDAO.getById(temporaryLanguageId));
-            submit.setProblems(problem);
-            submit.setSdate(new Timestamp(System.currentTimeMillis()));
-            submit.setUsers(usersDAO.getById(sessionBean.getCurrentUser().getId()));
-            selectContest(problem.getSeries().getContests().getId());
-            submitsDAO.saveOrUpdate(submit);
+            if (problem.getSeries().getEnddate().after(new Date())) {
+                Submits submit = new Submits();
+
+                submit.setId(null);
+                submit.setFilename(fileName);
+                submit.setCode(bytes);
+                submit.setResult(SubmitsResultEnum.WAIT.getCode());
+                submit.setLanguages(languagesDAO.getById(temporaryLanguageId));
+                submit.setProblems(problem);
+                submit.setSdate(new Timestamp(System.currentTimeMillis()));
+                submit.setUsers(usersDAO.getById(sessionBean.getCurrentUser().getId()));
+                selectContest(problem.getSeries().getContests().getId());
+                submitsDAO.saveOrUpdate(submit);
+            }
 
             /*Socket sock = new Socket(InetAddress.getByName("127.0.0.1"), Integer.parseInt("8887"));
             DataOutputStream output = new DataOutputStream(sock.getOutputStream());
