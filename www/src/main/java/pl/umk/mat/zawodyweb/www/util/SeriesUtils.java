@@ -1,5 +1,12 @@
 package pl.umk.mat.zawodyweb.www.util;
 
+import java.util.List;
+import org.hibernate.Transaction;
+import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
+import pl.umk.mat.zawodyweb.database.pojo.Problems;
+import pl.umk.mat.zawodyweb.database.pojo.Series;
+
 /**
  *
  * @author Jakub Prabucki
@@ -15,7 +22,12 @@ public class SeriesUtils {
         return instance;
     }
 
-    public void reJudge() {
-        //TODO: implement this
+    public void reJudge(Series serie) {
+        Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        List<Problems> findBySeriesid = DAOFactory.DEFAULT.buildProblemsDAO().findBySeriesid(serie.getId());
+        for (Problems problem : findBySeriesid){
+            ProblemsUtils.getInstance().reJudge(problem);
+        }
+        transaction.commit();
     }
 }

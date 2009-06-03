@@ -2,6 +2,7 @@ package pl.umk.mat.zawodyweb.www.util;
 
 import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
@@ -20,8 +21,13 @@ public class SubmitUtils {
         return instance;
     }
 
-    public void reJudge() {
-        //TODO: implement this
+    public void reJudge(Submits submit) {
+        Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        submit.setResult(SubmitsResultEnum.WAIT.getCode());
+        DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
+        DAOFactory.DEFAULT.buildResultsDAO().deleteById(submit.getId());
+        transaction.commit();
+        //poinformować JM
     }
 
     public boolean deleteSubmit(Submits submit) {

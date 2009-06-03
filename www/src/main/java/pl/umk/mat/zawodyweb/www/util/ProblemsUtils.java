@@ -111,7 +111,7 @@ public class ProblemsUtils {
                         newResults.setSubmits(newSubmit);
                         newResults.setTests(oldResults.getTests());
                         DAOFactory.DEFAULT.buildResultsDAO().save(newResults);
-                    }          
+                    }
                 }
             }
         }
@@ -119,7 +119,12 @@ public class ProblemsUtils {
         return copyProblem;
     }
 
-    public void reJudge() {
-        //TODO: implement this
+    public void reJudge(Problems problem) {
+        Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        List<Submits> findByProblemsid = DAOFactory.DEFAULT.buildSubmitsDAO().findByProblemsid(problem.getId());
+        for (Submits submit : findByProblemsid) {
+            SubmitUtils.getInstance().reJudge(submit);
+        }
+        transaction.commit();
     }
 }
