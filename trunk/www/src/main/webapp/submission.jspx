@@ -2,14 +2,8 @@
                 xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
                 xmlns:zw="http://zawodyweb.mat.umk.pl/">
     <ui:define name="pageTitle">
-        <c:choose>
-            <c:when test="#{!(requestBean.currentSubmit == null)}">
-            ${messages.no_submission}
-            </c:when>
-            <c:otherwise>
-            ${messages.submissionnumber} ${requestBean.currentSubmit.id}
-            </c:otherwise>
-        </c:choose>
+        <h:outputText value="${messages.no_submission}" rendered="#{requestBean.currentSubmit == null}" />
+        <h:outputText value="${messages.submissionnumber} ${requestBean.currentSubmit.id}" rendered="#{requestBean.currentSubmit != null}" />
     </ui:define>
     <ui:define name="pageContent">
         <a4j:form id="formSubmission" styleClass="profilform">
@@ -55,6 +49,7 @@
                                             <td>${result.tests.testorder}</td>
                                             <td>
                                                 <h:selectOneMenu value="#{requestBean.editedResult.submitResult}" style="width:50px">
+                                                    <f:selectItem itemLabel="" itemValue="" />
                                                     <f:selectItem itemLabel="#{messages.errorcode_acc}" itemValue="0" />
                                                     <f:selectItem itemLabel="#{messages.errorcode_wa}" itemValue="1" />
                                                     <f:selectItem itemLabel="#{messages.errorcode_tle}" itemValue="2" />
@@ -73,7 +68,9 @@
                                                 <h:inputText value="#{result.notes}" />
                                             </td>
                                             <td>
-                                                <a4j:commandLink id="save" value="${messages.save}" action="#{requestBean.saveResult}" />
+                                                <h:commandLink id="saverating" value="${messages.save}" action="#{requestBean.saveResult}">
+                                                    <f:param name="temporaryResultId" value="#{result.id}" />
+                                                </h:commandLink>
                                             </td>
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{!(result.id == requestBean.temporaryResultId)}">
