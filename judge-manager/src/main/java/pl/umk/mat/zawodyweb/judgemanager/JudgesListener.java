@@ -66,15 +66,16 @@ public class JudgesListener extends Thread {
             Transaction transaction;
             String judgeHost = judgeClient.getInetAddress().getHostAddress();
 
-            logger.debug("Judge connected from: " + judgeHost);
-
+            logger.info("Judge connected from: " + judgeHost);
             try {
                 DataInputStream in = new DataInputStream(judgeClient.getInputStream());
                 DataOutputStream out = new DataOutputStream(judgeClient.getOutputStream());
 
                 while (true) {
                     submitId = submitsQueue.poll();
+
                     if (submitId == null) {
+                        out.writeInt(0); // FIXME: brzydkie, bo brzydkie... ciąg dalszy opisu w Judge
                         delay(queueDelayTime);
                     } else {
                         logger.debug("submit_id from queue: " + submitId);
@@ -98,7 +99,9 @@ public class JudgesListener extends Thread {
             } catch (IOException ex) {
             } finally {
                 try {
+                    logger.info("Judge disconnected: " + judgeHost);
                     judgeClient.close();
+
                 } catch (IOException ex) {
                 }
             }

@@ -56,6 +56,9 @@ public class MainJudge {
                 int id;
                 try {
                     id = input.readInt();
+                    if (id == 0) {
+                        continue; // FIXME: brzydkie, bo brzydkie, ale przynajmniej w ten sposób można sprawdzić, czy połączenie jest utrzymane...
+                    }
                     logger.info("Received submit id: " + id);
                 } catch (IOException ex) {
                     logger.error("Connection to JudgeManager closed, shutting down Judge...");
