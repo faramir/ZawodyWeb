@@ -1,12 +1,15 @@
 package pl.umk.mat.zawodyweb.www.util;
 
 import java.util.List;
+import java.util.Vector;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
@@ -62,51 +65,53 @@ public class ProblemsUtils {
         }
         if (copySolution) {
             Criteria crit = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
-            crit.add(Restrictions.eq("problems.id", problem.getId()));
-            crit.addOrder(Order.asc("users.id"));
-            int actualUser = -1;
-            boolean nextUser = false;
-            List<Submits> findByProblemsid2 = crit.list();
-            for (Submits oldSubmits : findByProblemsid2) {
-                if (nextUser && actualUser == oldSubmits.getUsers().getId()) {
-                    continue;
-                } else {
-                    nextUser = false;
-                    actualUser = oldSubmits.getUsers().getId();
+            Query query = HibernateUtil.getSessionFactory().getCurrentSession().createSQLQuery("" +
+                    "SELECT DISTINCT on (submits.usersid) " +
+                    "submits.id, submits.usersid, sum(results.points) as suma " +
+                    "from submits, results " +
+                    "where submits.problemsid ='" + problem.getId() + "' " +
+                    "and submits.id = results.submitsid " +
+                    "and results.submitresult = '" + CheckerErrors.ACC + "' " +
+                    "and submits.result = '" + SubmitsResultEnum.DONE.getCode() + "' " +
+                    "group by " +
+                    "submits.id, submits.usersid " +
+                    "order by " +
+                    "submits.usersid ASC, suma DESC");
+            Vector<Criterion> vCrit = new Vector<Criterion>();
+            for (Object list : query.list()) {
+                Object[] o = (Object[]) list;
+                vCrit.add(Restrictions.eq("id", o[0]));
+            }
+            if (vCrit.size() != 0) {
+                Criterion c = vCrit.remove(0);
+                for (Criterion criterion : vCrit) {
+                    c = Restrictions.or(c, criterion);
+                }
+                crit.add(c);
+                List<Submits> lista = crit.list();
+                for (Submits oldSubmits : lista) {
+                    Submits newSubmit = new Submits();
+                    newSubmit.setCode(oldSubmits.getCode());
+                    newSubmit.setFilename(oldSubmits.getFilename());
+                    newSubmit.setLanguages(oldSubmits.getLanguages());
+                    newSubmit.setNotes(oldSubmits.getNotes());
+                    newSubmit.setProblems(copyProblem);
+                    newSubmit.setResult(oldSubmits.getResult());
+                    newSubmit.setSdate(oldSubmits.getSdate());
+                    newSubmit.setUsers(oldSubmits.getUsers());
+                    DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(newSubmit);
                     List<Results> findBySubmitsid = DAOFactory.DEFAULT.buildResultsDAO().findBySubmitsid(oldSubmits.getId());
-                    boolean add = true;
                     for (Results oldResults : findBySubmitsid) {
-                        if (oldResults.getSubmitResult() != CheckerErrors.ACC) {
-                            add = false;
-                            break;
-                        } else {
-                            //tu policzyc ilosc punktów
-                        }
-                    }
-                    if (add) {
-                        nextUser = true;
-                        Submits newSubmit = new Submits();
-                        newSubmit.setCode(oldSubmits.getCode());
-                        newSubmit.setFilename(oldSubmits.getFilename());
-                        newSubmit.setLanguages(oldSubmits.getLanguages());
-                        newSubmit.setNotes(oldSubmits.getNotes());
-                        newSubmit.setProblems(copyProblem);
-                        newSubmit.setResult(oldSubmits.getResult());
-                        newSubmit.setSdate(oldSubmits.getSdate());
-                        newSubmit.setUsers(oldSubmits.getUsers());
-                        DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(newSubmit);
-                        for (Results oldResults : findBySubmitsid) {
-                            Results newResults = new Results();
-                            newResults.setMemory(oldResults.getMemory());
-                            newResults.setNotes(oldResults.getNotes());
-                            newResults.setPoints(oldResults.getPoints());
-                            newResults.setRuntime(oldResults.getRuntime());
-                            newResults.setSubmitResult(oldResults.getSubmitResult());
-                            newResults.setSubmits(newSubmit);
-                            newResults.setTests(oldResults.getTests());
-                            DAOFactory.DEFAULT.buildResultsDAO().save(newResults);
-                        }
-                    }
+                        Results newResults = new Results();
+                        newResults.setMemory(oldResults.getMemory());
+                        newResults.setNotes(oldResults.getNotes());
+                        newResults.setPoints(oldResults.getPoints());
+                        newResults.setRuntime(oldResults.getRuntime());
+                        newResults.setSubmitResult(oldResults.getSubmitResult());
+                        newResults.setSubmits(newSubmit);
+                        newResults.setTests(oldResults.getTests());
+                        DAOFactory.DEFAULT.buildResultsDAO().save(newResults);
+                    }          
                 }
             }
         }

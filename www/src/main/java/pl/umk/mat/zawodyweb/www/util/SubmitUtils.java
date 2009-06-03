@@ -25,9 +25,13 @@ public class SubmitUtils {
     }
 
     public boolean deleteSubmit(Submits submit) {
-        Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-        DAOFactory.DEFAULT.buildSubmitsDAO().delete(submit);
-        transaction.commit();
-        return true;
+        try {
+            Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+            DAOFactory.DEFAULT.buildSubmitsDAO().delete(submit);
+            transaction.commit();
+            return true;
+        } catch (Exception ex){
+            return false;
+        }
     }
 }
