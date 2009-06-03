@@ -377,7 +377,7 @@ public class RequestBean {
     }
 
     public Submits getCurrentSubmit() {
-        if (currentSubmit == null) {
+        if (currentSubmit == null && !ELFunctions.isNullOrZero(temporarySubmitId)) {
             currentSubmit = submitsDAO.getById(temporarySubmitId);
         }
         return currentSubmit;
@@ -820,6 +820,7 @@ public class RequestBean {
 
     public String saveResult() {
         resultsDAO.update(getEditedResult());
+        temporaryResultId = null;
         return null;
     }
 
