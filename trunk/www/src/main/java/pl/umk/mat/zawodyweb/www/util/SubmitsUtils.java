@@ -5,19 +5,20 @@ import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
+import pl.umk.mat.zawodyweb.www.JudgeManagerConnector;
 
 /**
  *
  * @author Jakub Prabucki
  */
-public class SubmitUtils {
+public class SubmitsUtils {
 
-    static private final SubmitUtils instance = new SubmitUtils();
+    static private final SubmitsUtils instance = new SubmitsUtils();
 
-    private SubmitUtils() {
+    private SubmitsUtils() {
     }
 
-    public static SubmitUtils getInstance() {
+    public static SubmitsUtils getInstance() {
         return instance;
     }
 
@@ -27,7 +28,8 @@ public class SubmitUtils {
         DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
         DAOFactory.DEFAULT.buildResultsDAO().deleteById(submit.getId());
         transaction.commit();
-        //poinformować JM
+
+        JudgeManagerConnector.getInstance().sentToJudgeManager(submit.getId());
     }
 
     public boolean deleteSubmit(Submits submit) {
@@ -36,7 +38,7 @@ public class SubmitUtils {
             DAOFactory.DEFAULT.buildSubmitsDAO().delete(submit);
             transaction.commit();
             return true;
-        } catch (Exception ex){
+        } catch (Exception ex) {
             return false;
         }
     }

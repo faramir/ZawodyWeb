@@ -123,7 +123,7 @@ public class ProblemsUtils {
         Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         List<Submits> findByProblemsid = DAOFactory.DEFAULT.buildSubmitsDAO().findByProblemsid(problem.getId());
         for (Submits submit : findByProblemsid) {
-            SubmitUtils.getInstance().reJudge(submit);
+            SubmitsUtils.getInstance().reJudge(submit);
         }
         transaction.commit();
     }
