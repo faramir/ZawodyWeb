@@ -130,6 +130,18 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
+        <display-name>goToRules</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                rules
+            </from-outcome>
+            <to-view-id>
+                /rules.jspx
+            </to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
         <display-name>questions_to_questions</display-name>
         <from-view-id>/questions.jspx</from-view-id>
         <navigation-case>

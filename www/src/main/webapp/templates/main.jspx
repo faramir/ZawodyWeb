@@ -54,7 +54,7 @@
                     <zw:contest-link_button contest="${requestBean.currentContest}" type="submissions" message="#{messages.submissions}" />
                 </li>
                 <li>
-                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/regulamin.html">${messages.rules}</h:outputLink>
+                     <zw:contest-link contest="${requestBean.currentContest}" type="rules" message="#{messages.rules}" />
                 </li>
             </ul>
         </div>
