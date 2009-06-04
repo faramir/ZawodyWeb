@@ -92,17 +92,17 @@ public class RankingKI implements RankingInteface {
             }
 
             int r;
-            r = this.lastname.compareTo(u2.lastname);
+            r = this.lastname.compareToIgnoreCase(u2.lastname);
             if (r != 0) {
                 return r;
             }
 
-            r = this.firstname.compareTo(u2.firstname);
+            r = this.firstname.compareToIgnoreCase(u2.firstname);
             if (r != 0) {
                 return r;
             }
 
-            return this.login.compareTo(u2.login);
+            return this.login.compareToIgnoreCase(u2.login);
         }
     }
 
@@ -150,11 +150,11 @@ public class RankingKI implements RankingInteface {
                             "where submits.problemsid='" + problems.getId() + "' " +
                             "  and submits.id=results.submitsid " +
                             "  and tests.id=results.testsid" +
-                            "  and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
                             "  and sdate in ( " +
                             "        select max(sdate) " +
                             "	     from submits " +
                             "        where submits.problemsid='" + problems.getId() + "' " +
+                            "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
                             "          and sdate <= '" + checkTimestamp.toString() + "' " +
                             //"	       and tests.visibility=1 " +
                             "	     group by usersid " +
@@ -167,11 +167,11 @@ public class RankingKI implements RankingInteface {
                             "where submits.problemsid='" + problems.getId() + "' " +
                             "  and submits.id=results.submitsid " +
                             "  and tests.id=results.testsid" +
-                            "  and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
                             "  and sdate in ( " +
                             "        select max(sdate) " +
                             "	     from submits " +
                             "        where submits.problemsid='" + problems.getId() + "' " +
+                            "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
                             "          and sdate <= '" + checkTimestamp.toString() + "' " +
                             "	       and tests.visibility=1 " +
                             "	     group by usersid " +

@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Logger;
@@ -84,7 +85,7 @@ public class WWWListener extends Thread {
     @Override
     public void run() {
         logger.info("Listening for connection from WWW...");
-        while (true) {
+        while (wwwSocket.isClosed() == false) {
             try {
                 Socket wwwClient = wwwSocket.accept();
                 if (isAccepted(wwwClient.getInetAddress().getHostAddress()) == false) {
@@ -96,6 +97,8 @@ public class WWWListener extends Thread {
                 }
 
                 new WWWWaiter(wwwClient).start();
+            } catch (SocketException ex) {
+                logger.info("WWWListener: " + ex.getMessage());
             } catch (IOException ex) {
                 logger.error("Exception occurs: ", ex);
             }

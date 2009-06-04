@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Logger;
@@ -111,7 +112,7 @@ public class JudgesListener extends Thread {
     @Override
     public void run() {
         logger.info("Listening for connection from Judges...");
-        while (true) {
+        while (judgeSocket.isClosed() == false) {
             try {
                 Socket judgeClient = judgeSocket.accept();
                 if (isAccepted(judgeClient.getInetAddress().getHostAddress()) == false) {
@@ -123,6 +124,8 @@ public class JudgesListener extends Thread {
                 }
 
                 new JudgeWaiter(judgeClient).start();
+            } catch (SocketException ex) {
+                logger.info("JudgesListener: " + ex.getMessage());
             } catch (IOException ex) {
                 logger.error("Exception occurs: ", ex);
             }

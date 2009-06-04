@@ -1173,7 +1173,7 @@ public class RequestBean {
 
         try {
             Problems problem = problemsDAO.getById(temporaryProblemId);
-            if (problem.getSeries().getEnddate().after(new Date())) {
+            if (problem.getSeries().getEnddate() == null || problem.getSeries().getEnddate().after(new Date())) {
                 Submits submit = new Submits();
 
                 submit.setId(null);
