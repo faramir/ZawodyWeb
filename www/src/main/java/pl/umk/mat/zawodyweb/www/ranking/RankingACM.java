@@ -123,17 +123,17 @@ public class RankingACM implements RankingInteface {
             }
 
             int r;
-            r = this.lastname.compareTo(u2.lastname);
+            r = this.lastname.compareToIgnoreCase(u2.lastname);
             if (r != 0) {
                 return r;
             }
 
-            r = this.firstname.compareTo(u2.firstname);
+            r = this.firstname.compareToIgnoreCase(u2.firstname);
             if (r != 0) {
                 return r;
             }
 
-            return this.login.compareTo(u2.login);
+            return this.login.compareToIgnoreCase(u2.login);
         }
     }
 
