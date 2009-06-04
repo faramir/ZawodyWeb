@@ -46,7 +46,12 @@ public class ELFunctions {
         return in.replace("\n", "\n\n");
     }
 
-    public static String coloring(Float in) {
+    public static String coloring(Integer in1, Integer in2) {
+        if(in2 == 0){
+            in1=1;
+            in2=1;
+        }
+        Float in = (float)in1/(float)in2;
         String out = Integer.toHexString((int)((1-in)*0x55)+0xaa);
         String out2 = Integer.toHexString((int)((in)*0x55)+0xaa)+"aa";
 
