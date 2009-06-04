@@ -21,7 +21,7 @@
             </div>
             <c:if test="#{zw:canEditProblem(rolesBean, requestBean.editedQuestion.contests.id, requestBean.editedQuestion.problems.id)}">
                 <div class="subject">
-                    <h:outputLabel for="text">${messages.question_answer}:</h:outputLabel>
+                    <h:outputLabel styleClass="required" for="text">${messages.question_answer}:</h:outputLabel>
                     <h:inputTextarea id="text" styleClass="bigHeight" style="width:70%;margin-right:10px;" required="true" value="#{requestBean.answer}">
                     </h:inputTextarea>
                     <h:message for="text" errorClass="error" />

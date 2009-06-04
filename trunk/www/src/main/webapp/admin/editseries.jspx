@@ -25,7 +25,7 @@
                             <fieldset>
                                 <t:saveState id="saveid" value="#{requestBean.temporarySeriesId}" />
                                 <div>
-                                    <h:outputLabel for="contest">${messages.series_contest}:</h:outputLabel>
+                                    <h:outputLabel styleClass="required" for="contest">${messages.series_contest}:</h:outputLabel>
                                     <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}">
                                         <f:selectItem itemValue="" itemLabel="" />
                                         <c:forEach var="contest" items="#{requestBean.contests}">
@@ -38,13 +38,13 @@
                                     <br class="clear" />
                                 </div>
                                 <div>
-                                    <h:outputLabel for="name">${messages.series_name}:</h:outputLabel>
+                                    <h:outputLabel styleClass="required" for="name">${messages.series_name}:</h:outputLabel>
                                     <h:inputText id="name" required="true" value="#{requestBean.editedSeries.name}" />
                                     <h:message for="name" errorClass="error" />
                                     <br class="clear" />
                                 </div>
                                 <div>
-                                    <h:outputLabel for="startdate">${messages.series_startdate}:</h:outputLabel>
+                                    <h:outputLabel styleClass="required" for="startdate">${messages.series_startdate}:</h:outputLabel>
                                     <rich:calendar id="startdate" required="true" value="#{requestBean.editedSeries.startdate}" datePattern="yyyy.MM.dd HH:mm" showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
                                     <h:message for="startdate" errorClass="error" />
                                     <br class="clear" />
@@ -75,7 +75,7 @@
                                     <br class="clear" />
                                 </div>
                                 <div>
-                                    <h:outputLabel for="penaltytime">${messages.series_penaltytime}:</h:outputLabel>
+                                    <h:outputLabel styleClass="required" for="penaltytime">${messages.series_penaltytime}:</h:outputLabel>
                                     <h:inputText id="penaltytime" required="true" value="#{requestBean.editedSeries.penaltytime}" />
                                     <h:message for="penaltytime" errorClass="error" />
                                     <br class="clear" />

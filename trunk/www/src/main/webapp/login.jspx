@@ -7,13 +7,13 @@
         <a4j:form id="formLogin" styleClass="profilform">
             <fieldset>
                 <div>
-                    <h:outputLabel for="login">${messages.login}:</h:outputLabel>
+                    <h:outputLabel styleClass="required" for="login">${messages.login}:</h:outputLabel>
                     <h:inputText id="login" required="true" value="#{sessionBean.login}" />
                     <h:message for="login" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
-                    <h:outputLabel for="passwd">${messages.passwd}:</h:outputLabel>
+                    <h:outputLabel styleClass="required" for="passwd">${messages.passwd}:</h:outputLabel>
                     <h:inputSecret id="passwd" required="true" value="#{sessionBean.currentUser.pass}" />
                     <h:message for="passwd" errorClass="error" />
                     <br class="clear" />
