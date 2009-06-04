@@ -21,6 +21,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.GenerationType;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.OrderBy;
 
 /**
  * <p>Pojo mapping TABLE public.series</p>
@@ -220,6 +221,7 @@ public class Series implements Serializable {
 	 */
 	 // problemsPK
 	 @OneToMany(mappedBy="series", cascade=CascadeType.REMOVE)
+     @OrderBy(clause="abbrev")
 	 public List<Problems> getProblemss() {
 	 	return this.problemss;
 	 }
