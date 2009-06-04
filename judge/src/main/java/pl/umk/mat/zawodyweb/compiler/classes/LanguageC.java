@@ -18,6 +18,7 @@ import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.judge.InterruptThread;
 
 /**
  *
@@ -30,20 +31,6 @@ public class LanguageC implements CompilerInterface {
     int compileResult = CheckerErrors.UNDEF;
     String compileDesc = new String();
 
-    public class InterruptThread extends TimerTask {
-
-        private Thread thread;
-
-        public InterruptThread(Thread thread) {
-            this.thread = thread;
-        }
-
-        @Override
-        public void run() {
-            thread.interrupt();
-        }
-    }
-
     @Override
     public void setProperties(Properties properties) {
         this.properties = properties;
@@ -51,7 +38,7 @@ public class LanguageC implements CompilerInterface {
 
     @Override
     public TestOutput runTest(String path, TestInput input) {
-        TestOutput output = new TestOutput(null);
+        TestOutput output = new TestOutput(new String());
         if (compileResult != CheckerErrors.UNDEF) {
             output.setResult(compileResult);
             if (!compileDesc.isEmpty()) {
@@ -89,6 +76,7 @@ public class LanguageC implements CompilerInterface {
             }
             long currentTime = new Date().getTime();
             timer.cancel();
+            p.destroy();
             if (p.exitValue() != 0) {
                 output.setResult(CheckerErrors.RE);
                 output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
@@ -134,17 +122,17 @@ public class LanguageC implements CompilerInterface {
         String strWithoutComments = new String();
         int len = str.length() - 1;
         for (int i = 0; i < len; i++) {
-            if (str.charAt(i) == '{') {
-                while (str.charAt(i) != '}') {
+            if (str.charAt(i) == '/' && str.charAt(i) == '*') {
+                while (str.charAt(i) != '*' || str.charAt(i+1) != '/') {
+                    i++;
+                }
+                i+= 2;
+            }
+            if (str.charAt(i) == '/' && str.charAt(i + 1) == '/') {
+                while (str.charAt(i) != '\n') {
                     i++;
                 }
                 i++;
-            }
-            if (str.charAt(i) == '(' && str.charAt(i + 1) == '*') {
-                while (str.charAt(i) != '*' || str.charAt(i + 1) != ')') {
-                    i++;
-                }
-                i += 2;
             }
             strWithoutComments = strWithoutComments + str.charAt(i);
         }
@@ -189,7 +177,7 @@ public class LanguageC implements CompilerInterface {
                 return compilefile;
             }
             BufferedReader input =
-                    new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    new BufferedReader(new InputStreamReader(p.getErrorStream()));
             Timer timer = new Timer();
             timer.schedule(new InterruptThread(Thread.currentThread()),
                     Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
@@ -201,15 +189,12 @@ public class LanguageC implements CompilerInterface {
                 return compilefile;
             }
             timer.cancel();
+            p.destroy();
             if (p.exitValue() != 0) {
 
                 compileResult = CheckerErrors.CE;
-                int i = 1;
                 while ((line = input.readLine()) != null) {
-                    if (i > 4) {
                         compileDesc = compileDesc + line + "\n";
-                    }
-                    i++;
                 }
                 input.close();
             }

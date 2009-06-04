@@ -18,6 +18,7 @@ import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.judge.InterruptThread;
 
 /**
  *
@@ -29,20 +30,6 @@ public class LanguageCPP implements CompilerInterface {
     Properties properties;
     int compileResult = CheckerErrors.UNDEF;
     String compileDesc = new String();
-
-    public class InterruptThread extends TimerTask {
-
-        private Thread thread;
-
-        public InterruptThread(Thread thread) {
-            this.thread = thread;
-        }
-
-        @Override
-        public void run() {
-            thread.interrupt();
-        }
-    }
 
     @Override
     public void setProperties(Properties properties) {
@@ -89,6 +76,7 @@ public class LanguageCPP implements CompilerInterface {
             }
             long currentTime = new Date().getTime();
             timer.cancel();
+            p.destroy();
             if (p.exitValue() != 0) {
                 output.setResult(CheckerErrors.RE);
                 output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
@@ -201,6 +189,7 @@ public class LanguageCPP implements CompilerInterface {
                 return compilefile;
             }
             timer.cancel();
+            p.destroy();
             if (p.exitValue() != 0) {
 
                 compileResult = CheckerErrors.CE;
