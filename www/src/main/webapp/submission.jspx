@@ -47,8 +47,8 @@
                                     <tr style="${zw:coloring(result.points / result.tests.maxpoints)}">
                                         <h:panelGroup rendered="#{result.id == requestBean.temporaryResultId}">
                                             <td>${result.tests.testorder}</td>
-                                            <td>
-                                                <h:selectOneMenu value="#{requestBean.editedResult.submitResult}" style="width:50px">
+                                            <td style="text-align:center;">
+                                                <h:selectOneMenu value="#{requestBean.editedResult.submitResult}" style="width:70%;">
                                                     <f:selectItem itemLabel="" itemValue="" />
                                                     <f:selectItem itemLabel="#{messages.errorcode_acc}" itemValue="0" />
                                                     <f:selectItem itemLabel="#{messages.errorcode_wa}" itemValue="1" />
@@ -61,11 +61,11 @@
                                                     <f:selectItem itemLabel="#{messages.errorcode_unknown}" itemValue="8" />
                                                 </h:selectOneMenu>
                                             </td>
-                                            <td><h:inputText value="#{requestBean.editedResult.runtime}" style="width:50px" />/${requestBean.editedResult.tests.timelimit}</td>
-                                            <td><h:inputText value="#{requestBean.editedResult.memory}" style="width:50px" />/${requestBean.editedResult.tests.problems.memlimit}</td>
-                                            <td><h:inputText value="#{requestBean.editedResult.points}" style="width:50px" />/${requestBean.editedResult.tests.maxpoints}</td>
-                                            <td style="font-size:11px;text-align:left;">
-                                                <h:inputText value="#{result.notes}" />
+                                            <td style="text-align:center;"><h:inputText value="#{requestBean.editedResult.runtime}" style="width:70%;" />/${requestBean.editedResult.tests.timelimit}</td>
+                                            <td style="text-align:center;"><h:inputText value="#{requestBean.editedResult.memory}" style="width:70%;" />/${requestBean.editedResult.tests.problems.memlimit}</td>
+                                            <td style="text-align:center;"><h:inputText value="#{requestBean.editedResult.points}" style="width:50%;" />/${requestBean.editedResult.tests.maxpoints}</td>
+                                            <td style="font-size:11px;text-align:center;">
+                                                <h:inputText value="#{result.notes}" style="width:70%;" />
                                             </td>
                                             <td>
                                                 <h:commandLink id="saverating" value="${messages.save}" action="#{requestBean.saveResult}">
