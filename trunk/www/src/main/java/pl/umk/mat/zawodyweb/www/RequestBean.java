@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlInputSecret;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -80,6 +81,7 @@ public class RequestBean {
     private RolesBean rolesBean;
     private Users newUser = new Users();
     private String repPasswd;
+    private String actualPasswd;
     private Contests editedContest;
     private Contests currentContest;
     private Series editedSeries;
@@ -165,18 +167,20 @@ public class RequestBean {
         return newUser;
     }
 
-    /**
-     * @return the repPasswd
-     */
     public String getRepPasswd() {
         return repPasswd;
     }
 
-    /**
-     * @param repPasswd the repPasswd to set
-     */
     public void setRepPasswd(String repPasswd) {
         this.repPasswd = repPasswd;
+    }
+
+    public String getActualPasswd() {
+        return actualPasswd;
+    }
+
+    public void setActualPasswd(String actualPasswd) {
+        this.actualPasswd = actualPasswd;
     }
 
     public List<Contests> getContests() {
@@ -739,6 +743,20 @@ public class RequestBean {
         return "start";
     }
 
+    public String updateUsersPasswd() {
+        try {
+            editedUser.savePass(editedUser.getPass());
+            usersDAO.saveOrUpdate(editedUser);
+        } catch (Exception e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formPasswd:save", summary, null);
+            return null;
+        }
+
+        return "profil";
+    }
+
     public String sendFile() throws IOException {
         FacesContext context = FacesContext.getCurrentInstance();
 
@@ -1118,7 +1136,14 @@ public class RequestBean {
             String summary = messages.getString("bad_captcha");
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, component, summary, null);
         }
+    }
 
+    public void validatePasswd(FacesContext context, UIComponent component, Object obj) {
+        if (!sessionBean.getCurrentUser().checkPass((String) obj)) {
+            ((HtmlInputSecret) component).setValid(false);
+            String summary = messages.getString("incorrect_passwd");
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, component, summary, null);
+        }
     }
 
     public void submissionsScrollerAction(ActionEvent event) {

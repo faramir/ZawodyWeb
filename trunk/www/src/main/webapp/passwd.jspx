@@ -1,0 +1,47 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
+    <ui:define name="pageTitle">
+        ${messages.profile}
+    </ui:define>
+    <ui:define name="pageContent">
+        <a4j:form id="formPasswd" styleClass="profilform">
+            <c:choose>
+                <c:when test="#{!(sessionBean.loggedIn)}">
+                    <div class="not_choosen">
+                        ${messages.login_please}
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <fieldset>
+                        <div>
+                            <h:outputLabel for="apasswd" styleClass="required">${messages.actual_passwd}:</h:outputLabel>
+                            <h:inputSecret id="apasswd" required="true" value="#{requestBean.actualPasswd}" validator="#{requestBean.validatePasswd}">
+                            </h:inputSecret>
+                            <h:message for="apasswd" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="passwd" styleClass="required">${messages.passwd}:</h:outputLabel>
+                            <h:inputSecret id="passwd" required="true" value="#{requestBean.editedUser.pass}">
+                                <f:validateLength minimum="6" />
+                            </h:inputSecret>
+                            <h:message for="passwd" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="repPasswd" styleClass="required">${messages.repeat_passwd}:</h:outputLabel>
+                            <h:inputSecret id="repPasswd" required="true" value="#{requestBean.repPasswd}">
+                                <s:validateCompareTo for="passwd" operator="==" message="#{messages.passwords_doesnt_match}" />
+                            </h:inputSecret>
+                            <h:message for="repPasswd" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <a4j:commandButton id="save_profile" reRender="formPasswd" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.updateUsersPasswd}" />
+                        </div>
+                    </fieldset>
+                </c:otherwise>
+            </c:choose>
+        </a4j:form>
+    </ui:define>
+</ui:composition>
