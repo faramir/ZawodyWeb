@@ -994,6 +994,12 @@ tbody {
     width:70%;
 }
 
+.profilform div.source input.submit {
+	margin: 10px 40%;
+	float: none;
+	width: 100px;
+}
+
 .about img {
     float: none;
     margin: 10px 0;
