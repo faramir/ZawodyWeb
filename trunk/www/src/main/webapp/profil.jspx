@@ -1,10 +1,17 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
     <ui:define name="pageTitle">
         ${messages.profile}
     </ui:define>
     <ui:define name="pageContent">
         <a4j:form id="formProfile" styleClass="profilform">
+            <c:choose>
+                <c:when test="#{!(sessionBean.loggedIn)}">
+                    <div class="not_choosen">
+                        ${messages.login_please}
+                    </div>
+                </c:when>
+                <c:otherwise>
             <fieldset>
                 <div>
                     <h:outputLabel for="email_profile" styleClass="required">${messages.email}:</h:outputLabel>
@@ -55,6 +62,8 @@
                     <a4j:commandButton id="save_profile" reRender="formProfile" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.updateUser}" />
                 </div>
             </fieldset>
+            </c:otherwise>
+            </c:choose>
         </a4j:form>
     </ui:define>
 </ui:composition>
