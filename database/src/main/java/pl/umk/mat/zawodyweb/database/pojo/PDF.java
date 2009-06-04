@@ -3,6 +3,7 @@ package pl.umk.mat.zawodyweb.database.pojo;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -48,7 +49,7 @@ public class PDF implements Serializable {
         this.pdf = pdf;
     }
 
-    @OneToMany(mappedBy = "PDF")
+    @OneToMany(mappedBy = "PDF", cascade=CascadeType.REMOVE)
     public List<Problems> getProblems() {
         return  this.problemss;
     }
