@@ -4,6 +4,8 @@
  */
 package pl.umk.mat.zawodyweb.www;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
@@ -47,15 +49,15 @@ public class ELFunctions {
     }
 
     public static String coloring(Integer in1, Integer in2) {
-        if(in2 == 0){
-            in1=1;
-            in2=1;
+        if (in2 == 0) {
+            in1 = 1;
+            in2 = 1;
         }
-        Float in = (float)in1/(float)in2;
-        String out = Integer.toHexString((int)((1-in)*0x55)+0xaa);
-        String out2 = Integer.toHexString((int)((in)*0x55)+0xaa)+"aa";
+        Float in = (float) in1 / (float) in2;
+        String out = Integer.toHexString((int) ((1 - in) * 0x55) + 0xaa);
+        String out2 = Integer.toHexString((int) ((in) * 0x55) + 0xaa) + "aa";
 
-        return "background: #"+out+out2;
+        return "background: #" + out + out2;
     }
 
     public static Boolean isNullOrZero(Integer a) {
@@ -74,9 +76,9 @@ public class ELFunctions {
         }
     }
 
-    public static Boolean testVisible(Tests t){
+    public static Boolean testVisible(Tests t) {
         return (t.getVisibility() != null && t.getVisibility().equals(1)) ||
-               (t.getProblems().getSeries().getEnddate() != null && t.getProblems().getSeries().getEnddate().before(Calendar.getInstance().getTime()));
+                (t.getProblems().getSeries().getEnddate() != null && t.getProblems().getSeries().getEnddate().before(Calendar.getInstance().getTime()));
     }
 
     public static Boolean hasMaxResult(Submits s) {
@@ -101,7 +103,7 @@ public class ELFunctions {
         return maxPoints;
     }
 
-    public static Integer points(Submits s){
+    public static Integer points(Submits s) {
         if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().size() == 0) {
             return -1;
         }
@@ -119,5 +121,9 @@ public class ELFunctions {
 
     public static Boolean submitDateOk(Problems p) {
         return p.getSeries().getEnddate() == null || p.getSeries().getEnddate().after(new Date());
+    }
+
+    public static String dateAndHour(Timestamp t) {
+        return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(t);
     }
 }
