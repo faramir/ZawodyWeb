@@ -112,10 +112,6 @@ CREATE TABLE PDF (
         pdf             bytea
 );
 
-CREATE TABLE CHECKERS (  
-        id               serial primary key,
-        code             bytea
-);
 
 /* Powiazadania jeden do wielu */
 ALTER TABLE SERIES ADD contestsId int REFERENCES CONTESTS(id);
@@ -134,7 +130,6 @@ ALTER TABLE SUBMITS ADD usersId int REFERENCES USERS(id);
 ALTER TABLE TESTS ADD problemsId int REFERENCES PROBLEMS(id);
 ALTER TABLE ROLES ADD contestsId int REFERENCES CONTESTS(id);
 ALTER TABLE ROLES ADD seriesId int REFERENCES SERIES(id);
-ALTER TABLE PROBLEMS ADD checkerId int REFERENCES CHECKERS(id);
 
 
 /* Powiazania wiele do wielu */
