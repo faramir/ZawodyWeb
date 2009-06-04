@@ -1,0 +1,60 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
+    <ui:define name="pageTitle">
+        ${messages.profile}
+    </ui:define>
+    <ui:define name="pageContent">
+        <a4j:form id="formProfile" styleClass="profilform">
+            <fieldset>
+                <div>
+                    <h:outputLabel for="email_profile" styleClass="required">${messages.email}:</h:outputLabel>
+                    <h:inputText id="email_profile" required="true" value="#{requestBean.editedUser.email}">
+                    </h:inputText>
+                    <h:message for="email_profile" errorClass="error" />
+                    <br class="clear" />
+                </div>
+                <div>
+                    <h:outputLabel for="firstname_profile" styleClass="required">${messages.firstname}:</h:outputLabel>
+                    <h:inputText id="firstname_profile" required="true" value="#{requestBean.editedUser.firstname}">
+                    </h:inputText>
+                    <h:message for="firstname_profile" errorClass="error" />
+                    <br class="clear" />
+                </div>
+                <div>
+                    <h:outputLabel for="lastname_profile" styleClass="required">${messages.lastname}:</h:outputLabel>
+                    <h:inputText id="lastname_profile" required="true" value="#{requestBean.editedUser.lastname}">
+                    </h:inputText>
+                    <h:message for="lastname_profile" errorClass="error" />
+                    <br class="clear" />
+                </div>
+                <div>
+                    <h:outputLabel for="birthdate_profile">${messages.birthdate}:</h:outputLabel>
+                    <rich:calendar id="birthdate_profile" value="#{requestBean.editedUser.birthdate}" todayControlMode="hidden" datePattern="yyyy.MM.dd" cellWidth="31px" cellHeight="22px" style="width:250px" />
+                    <h:message for="birthdate_profile" errorClass="error" />
+                    <br class="clear" />
+                </div>
+                <div>
+                    <h:outputLabel for="homeaddress_profile">${messages.homeaddress}:</h:outputLabel>
+                    <h:inputTextarea id="homeaddress_profile" styleClass="smaHeight" required="false" value="#{sessionBean.currentUser.address}">
+                    </h:inputTextarea>
+                    <br class="clear" />
+                </div>
+                <div>
+                    <h:outputLabel for="school_profile">${messages.school}:</h:outputLabel>
+                    <h:inputText id="school_profile" required="false" value="#{requestBean.editedUser.school}">
+                    </h:inputText>
+                    <br class="clear" />
+                </div>
+                <div>
+                    <h:outputLabel for="tutor_profile">${messages.tutor}:</h:outputLabel>
+                    <h:inputText id="tutor_profile" required="false" value="#{requestBean.editedUser.tutor}">
+                    </h:inputText>
+                    <br class="clear" />
+                </div>
+                <div>
+                    <a4j:commandButton id="save_profile" reRender="formProfile" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.updateUser}" />
+                </div>
+            </fieldset>
+        </a4j:form>
+    </ui:define>
+</ui:composition>

@@ -84,6 +84,7 @@ public class RequestBean {
     private Contests currentContest;
     private Series editedSeries;
     private Problems editedProblem;
+    private Users editedUser;
     private Tests editedTest;
     private Submits editedSubmit;
     private Questions editedQuestion;
@@ -365,6 +366,14 @@ public class RequestBean {
         }
 
         return editedResult;
+    }
+
+    public Users getEditedUser() {
+        if (editedUser == null) {
+            editedUser = usersDAO.getById(sessionBean.getCurrentUser().getId());
+        }
+
+        return editedUser;
     }
 
     public Contests getCurrentContest() {
@@ -711,6 +720,19 @@ public class RequestBean {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditSeries:save", summary, null);
+            return null;
+        }
+
+        return "start";
+    }
+
+    public String updateUser() {
+        try {
+            usersDAO.saveOrUpdate(editedUser);
+        } catch (Exception e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formProfile:save", summary, null);
             return null;
         }
 
