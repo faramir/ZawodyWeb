@@ -35,6 +35,12 @@
                             <br class="clear" />
                         </div>
                         <div>
+                            <h:outputLabel for="passwd_profile">${messages.passwd}:</h:outputLabel>
+                            <h:commandButton value="${messages.change_passwd}" style="width:254px;" id="passwd_profile" action="goToPasswd" />
+                            <h:message for="passwd_profile" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
                             <h:outputLabel for="birthdate_profile">${messages.birthdate}:</h:outputLabel>
                             <rich:calendar id="birthdate_profile" value="#{requestBean.editedUser.birthdate}" todayControlMode="hidden" datePattern="yyyy.MM.dd" cellWidth="31px" cellHeight="22px" style="width:250px" />
                             <h:message for="birthdate_profile" errorClass="error" />
@@ -60,9 +66,6 @@
                         </div>
                         <div>
                             <a4j:commandButton id="save_profile" reRender="formProfile" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.updateUser}" />
-                        </div>
-                        <div class="source">
-                            <h:commandButton value="${messages.change_passwd}" id="change_pass_btn" styleClass="submit" action="goToPasswd" />
                         </div>
                     </fieldset>
                 </c:otherwise>
