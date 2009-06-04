@@ -59,16 +59,27 @@ public class RankingACM implements RankingInteface {
 
     private class UserACM implements Comparable {
 
+        String login;
+        String firstname;
+        String lastname;
         int id_user;
         int points;
         long totalTime;
         Vector<SolutionACM> solutions;
 
-        public UserACM(int id_user) {
+        public UserACM(int id_user, Users users) {
             this.id_user = id_user;
             this.points = 0;
             this.totalTime = 0;
             this.solutions = new Vector<SolutionACM>();
+
+            this.login = users.getLogin();
+            this.firstname = users.getFirstname();
+            this.lastname = users.getLastname();
+        }
+
+        String formatName() {
+            return String.format("%s %s (%s)", firstname, lastname, login);
         }
 
         void add(int points, SolutionACM solutionACM) {
@@ -110,7 +121,19 @@ public class RankingACM implements RankingInteface {
             if (this.totalTime < u2.totalTime) {
                 return -1;
             }
-            return 0;
+
+            int r;
+            r = this.lastname.compareTo(u2.lastname);
+            if (r != 0) {
+                return r;
+            }
+
+            r = this.firstname.compareTo(u2.firstname);
+            if (r != 0) {
+                return r;
+            }
+
+            return this.login.compareTo(u2.login);
         }
     }
 
@@ -250,7 +273,10 @@ public class RankingACM implements RankingInteface {
 
                     UserACM user = mapUserACM.get((Integer) o[0]);
                     if (user == null) {
-                        user = new UserACM((Integer) o[0]);
+                        Integer user_id = (Integer) o[0];
+                        Users users = usersDAO.getById(user_id);
+
+                        user = new UserACM(user_id, users);
                         mapUserACM.put((Integer) o[0], user);
                     }
 
@@ -296,9 +322,7 @@ public class RankingACM implements RankingInteface {
             v.add(parseTime(user.totalTime));
             v.add(user.getSolutionsForRanking());
 
-            Users users = usersDAO.getById(user.id_user);
-
-            vectorRankingEntry.add(new RankingEntry(place, users.getFirstname() + " " + users.getLastname() + " (" + users.getLogin() + ")", v));
+            vectorRankingEntry.add(new RankingEntry(place, user.formatName(), v));
         }
 
         return new RankingTable(columnsCaptions, columnsCSS, vectorRankingEntry);
