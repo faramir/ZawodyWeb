@@ -4,7 +4,10 @@ import java.util.List;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import java.util.Collections;
+import java.util.Comparator;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -18,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.persistence.Embeddable;
 import javax.persistence.GenerationType;
+import org.hibernate.annotations.OrderBy;
 
 /**
  * <p>Pojo mapping TABLE public.submits</p>
@@ -219,7 +223,8 @@ public class Submits implements Serializable {
      * Get the list of Results
      */
     // resultsPK
-    @OneToMany(mappedBy = "submits")
+    @OneToMany(mappedBy = "submits", cascade=CascadeType.REMOVE)
+    @OrderBy(clause="id asc")
     public List<Results> getResultss() {
         return this.resultss;
     }
