@@ -124,6 +124,9 @@ public class ELFunctions {
     }
 
     public static String dateAndHour(Timestamp t) {
+        if (t == null) {
+            return "";
+        }
         return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(t);
     }
 }
