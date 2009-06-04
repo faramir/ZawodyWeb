@@ -18,7 +18,7 @@ import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
-import pl.umk.mat.zawodyweb.judge.InterruptThread;
+import pl.umk.mat.zawodyweb.judge.InterruptTimer;
 
 /**
  *
@@ -55,17 +55,15 @@ public class LanguageC implements CompilerInterface {
             logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
         }
         try {
-            Timer timer = new Timer();
+            InterruptTimer timer = new InterruptTimer();
             Process p = new ProcessBuilder(command).start();
             long time = new Date().getTime();
-            timer.schedule(new InterruptThread(Thread.currentThread()),
-                    input.getTimeLimit());
+            timer.schedule(Thread.currentThread(), input.getTimeLimit());
             try {
-                inputStream =
-                        new BufferedReader(new InputStreamReader(p.getInputStream()));
+                inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
                 outputStream.write(input.getText());
-                outputStream.flush();
+                //outputStream.flush();
                 outputStream.close();
                 logger.debug("Waiting for program after " + (new Date().getTime() - time) + "ms.");
                 p.waitFor();
@@ -76,7 +74,7 @@ public class LanguageC implements CompilerInterface {
             }
             long currentTime = new Date().getTime();
             timer.cancel();
-            p.destroy();
+
             if (p.exitValue() != 0) {
                 output.setResult(CheckerErrors.RE);
                 output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
@@ -123,10 +121,10 @@ public class LanguageC implements CompilerInterface {
         int len = str.length() - 1;
         for (int i = 0; i < len; i++) {
             if (str.charAt(i) == '/' && str.charAt(i) == '*') {
-                while (str.charAt(i) != '*' || str.charAt(i+1) != '/') {
+                while (str.charAt(i) != '*' || str.charAt(i + 1) != '/') {
                     i++;
                 }
-                i+= 2;
+                i += 2;
             }
             if (str.charAt(i) == '/' && str.charAt(i + 1) == '/') {
                 while (str.charAt(i) != '\n') {
@@ -159,8 +157,8 @@ public class LanguageC implements CompilerInterface {
             codedir = properties.getProperty("CODE_DIR");
             codefile = codefile.replaceAll("\\.c$", "");
             compilefile = compilefile.replaceAll("\\.exe$", "");
-            codedir = codedir.replaceAll(File.separator+"$", "");
-            compileddir = compileddir.replaceAll(File.separator+"$", "");
+            codedir = codedir.replaceAll(File.separator + "$", "");
+            compileddir = compileddir.replaceAll(File.separator + "$", "");
             codefile = codedir + File.separator + codefile + ".c";
             compilefile = compileddir + File.separator + compilefile + ".exe";
             OutputStream is = new FileOutputStream(codefile);
@@ -176,11 +174,9 @@ public class LanguageC implements CompilerInterface {
                 compileDesc = "No gcc found";
                 return compilefile;
             }
-            BufferedReader input =
-                    new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            Timer timer = new Timer();
-            timer.schedule(new InterruptThread(Thread.currentThread()),
-                    Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
+            BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            InterruptTimer timer = new InterruptTimer();
+            timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
             try {
                 p.waitFor();
             } catch (InterruptedException ex) {
@@ -189,12 +185,12 @@ public class LanguageC implements CompilerInterface {
                 return compilefile;
             }
             timer.cancel();
-            p.destroy();
+
             if (p.exitValue() != 0) {
 
                 compileResult = CheckerErrors.CE;
                 while ((line = input.readLine()) != null) {
-                        compileDesc = compileDesc + line + "\n";
+                    compileDesc = compileDesc + line + "\n";
                 }
                 input.close();
             }

@@ -18,7 +18,7 @@ import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
-import pl.umk.mat.zawodyweb.judge.InterruptThread;
+import pl.umk.mat.zawodyweb.judge.InterruptTimer;
 
 /**
  *
@@ -55,17 +55,15 @@ public class LanguageCPP implements CompilerInterface {
             logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
         }
         try {
-            Timer timer = new Timer();
+            InterruptTimer timer = new InterruptTimer();
             Process p = new ProcessBuilder(command).start();
             long time = new Date().getTime();
-            timer.schedule(new InterruptThread(Thread.currentThread()),
-                    input.getTimeLimit());
+            timer.schedule(Thread.currentThread(), input.getTimeLimit());
             try {
-                inputStream =
-                        new BufferedReader(new InputStreamReader(p.getInputStream()));
+                inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
                 outputStream.write(input.getText());
-                outputStream.flush();
+                //outputStream.flush();
                 outputStream.close();
                 logger.debug("Waiting for program after " + (new Date().getTime() - time) + "ms.");
                 p.waitFor();
@@ -76,7 +74,7 @@ public class LanguageCPP implements CompilerInterface {
             }
             long currentTime = new Date().getTime();
             timer.cancel();
-            p.destroy();
+            
             if (p.exitValue() != 0) {
                 output.setResult(CheckerErrors.RE);
                 output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
@@ -176,11 +174,9 @@ public class LanguageCPP implements CompilerInterface {
                 compileDesc = "No g++ found";
                 return compilefile;
             }
-            BufferedReader input =
-                    new BufferedReader(new InputStreamReader(p.getInputStream()));
-            Timer timer = new Timer();
-            timer.schedule(new InterruptThread(Thread.currentThread()),
-                    Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
+            BufferedReader input =   new BufferedReader(new InputStreamReader(p.getInputStream()));
+            InterruptTimer timer = new InterruptTimer();
+            timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
             try {
                 p.waitFor();
             } catch (InterruptedException ex) {
@@ -189,7 +185,7 @@ public class LanguageCPP implements CompilerInterface {
                 return compilefile;
             }
             timer.cancel();
-            p.destroy();
+
             if (p.exitValue() != 0) {
 
                 compileResult = CheckerErrors.CE;
