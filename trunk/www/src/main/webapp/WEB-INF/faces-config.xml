@@ -118,6 +118,18 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
+        <display-name>goToPasswd</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                goToPasswd
+            </from-outcome>
+            <to-view-id>
+                /passwd.jspx
+            </to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
         <display-name>goToRanking</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>

@@ -61,6 +61,9 @@
                         <div>
                             <a4j:commandButton id="save_profile" reRender="formProfile" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.updateUser}" />
                         </div>
+                        <div class="source">
+                            <h:commandButton value="${messages.change_passwd}" id="change_pass_btn" styleClass="submit" action="goToPasswd" />
+                        </div>
                     </fieldset>
                 </c:otherwise>
             </c:choose>
