@@ -55,13 +55,24 @@ public class RankingKI implements RankingInteface {
 
     private class UserKI implements Comparable {
 
+        String lastname;
+        String firstname;
+        String login;
         int id_user;
         int points;
         HashMap<Integer, Integer> solutions;
 
-        public UserKI(int id_user) {
+        public UserKI(int id_user, Users users) {
             this.id_user = id_user;
             this.solutions = new HashMap<Integer, Integer>();
+
+            this.login = users.getLogin();
+            this.firstname = users.getFirstname();
+            this.lastname = users.getLastname();
+        }
+
+        String formatName() {
+            return String.format("%s %s (%s)", firstname, lastname, login);
         }
 
         void add(int problem_id, int points) {
@@ -80,7 +91,18 @@ public class RankingKI implements RankingInteface {
                 return -1;
             }
 
-            return 0;
+            int r;
+            r = this.lastname.compareTo(u2.lastname);
+            if (r != 0) {
+                return r;
+            }
+
+            r = this.firstname.compareTo(u2.firstname);
+            if (r != 0) {
+                return r;
+            }
+
+            return this.login.compareTo(u2.login);
         }
     }
 
@@ -162,7 +184,9 @@ public class RankingKI implements RankingInteface {
 
                     UserKI user = mapUserKI.get((Integer) o[0]);
                     if (user == null) {
-                        user = new UserKI((Integer) o[0]);
+                        Integer user_id = (Integer) o[0];
+                        Users users = usersDAO.getById(user_id);
+                        user = new UserKI(user_id, users);
                         mapUserKI.put((Integer) o[0], user);
                     }
 
@@ -208,9 +232,7 @@ public class RankingKI implements RankingInteface {
             }
             v.add(Integer.toString(user.points));
 
-            Users users = usersDAO.getById(user.id_user);
-
-            vectorRankingEntry.add(new RankingEntry(place, users.getFirstname() + " " + users.getLastname() + " (" + users.getLogin() + ")", v));
+            vectorRankingEntry.add(new RankingEntry(place, user.formatName(), v));
         }
 
         return new RankingTable(columnsCaptions, columnsCSS, vectorRankingEntry);
