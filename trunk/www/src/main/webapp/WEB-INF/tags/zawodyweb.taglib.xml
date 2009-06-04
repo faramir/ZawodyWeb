@@ -92,7 +92,7 @@
     <function>
         <function-name>coloring</function-name>
         <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
-        <function-signature>java.lang.String coloring(java.lang.Float)</function-signature>
+        <function-signature>java.lang.String coloring(java.lang.Integer, java.lang.Integer)</function-signature>
     </function>
     <function>
         <function-name>nlDoubler</function-name>
