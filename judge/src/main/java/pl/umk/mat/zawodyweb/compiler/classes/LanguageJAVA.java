@@ -1,24 +1,17 @@
 package pl.umk.mat.zawodyweb.compiler.classes;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.Vector;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
@@ -27,7 +20,7 @@ import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
-import pl.umk.mat.zawodyweb.judge.InterruptThread;
+import pl.umk.mat.zawodyweb.judge.InterruptTimer;
 
 /**
  *
@@ -58,27 +51,25 @@ public class LanguageJAVA implements CompilerInterface {
         }
         BufferedReader inputStream;
         System.gc();
-        Vector<String> command = new Vector<String>(Arrays.asList("java", "-Xmx" + input.getMemoryLimit()+"k",
-                "-Xms" + input.getMemoryLimit()+"k", "-Xss" + input.getMemoryLimit()+"k"));
+        Vector<String> command = new Vector<String>(Arrays.asList("java", "-Xmx" + input.getMemoryLimit() + "k",
+                "-Xms" + input.getMemoryLimit() + "k", "-Xss" + input.getMemoryLimit() + "k"));
         if (!security.isEmpty()) {
             command.add("-Djava.security.manager");
             command.add("-Djava.security.policy=" + security);
         }
         command.add("-cp");
         command.add(path.substring(0, path.lastIndexOf(File.separator)));
-        command.add(path.substring(path.lastIndexOf(File.separator)+1,path.lastIndexOf(".")));
+        command.add(path.substring(path.lastIndexOf(File.separator) + 1, path.lastIndexOf(".")));
         try {
-            Timer timer = new Timer();
+            InterruptTimer timer = new InterruptTimer();
             Process p = new ProcessBuilder(command).start();
             long time = new Date().getTime();
-            timer.schedule(new InterruptThread(Thread.currentThread()),
-                    input.getTimeLimit());
+            timer.schedule(Thread.currentThread(), input.getTimeLimit());
             try {
-                inputStream =
-                        new BufferedReader(new InputStreamReader(p.getInputStream()));
+                inputStream =new BufferedReader(new InputStreamReader(p.getInputStream()));
                 BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
                 outputStream.write(input.getText());
-                outputStream.flush();
+                //outputStream.flush();
                 outputStream.close();
                 logger.debug("Waiting for program after " + (new Date().getTime() - time) + "ms.");
                 p.waitFor();
@@ -90,7 +81,7 @@ public class LanguageJAVA implements CompilerInterface {
             }
             long currentTime = new Date().getTime();
             timer.cancel();
-            p.destroy();
+
             if (p.exitValue() != 0) {
                 output.setResult(CheckerErrors.RE);
                 output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
@@ -125,7 +116,7 @@ public class LanguageJAVA implements CompilerInterface {
             codefile = properties.getProperty("CODE_FILENAME");
             codedir = properties.getProperty("CODE_DIR");
             codefile = codefile.replaceAll("\\.java$", "");
-            codedir = codedir.replaceAll(File.separator+"$", "");
+            codedir = codedir.replaceAll(File.separator + "$", "");
             codefile = codedir + File.separator + codefile + ".java";
             OutputStream is = new FileOutputStream(codefile);
             is.write(code);
@@ -135,9 +126,10 @@ public class LanguageJAVA implements CompilerInterface {
             ByteArrayOutputStream err = new ByteArrayOutputStream();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             if (compiler.run(new ByteArrayInputStream(new String().getBytes()),
-                    out, err, codefile)!=0) {
-            compileDesc = err.toString();
-                compileResult = CheckerErrors.CE;}
+                    out, err, codefile) != 0) {
+                compileDesc = err.toString();
+                compileResult = CheckerErrors.CE;
+            }
         } catch (Exception err) {
         }
         new File(codefile).delete();
