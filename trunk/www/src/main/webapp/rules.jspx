@@ -8,24 +8,26 @@
                     </div>
                 </c:when>
                 <c:otherwise>
+                  <div style="margin: 0 50px;">
                     <div>
                         <h1>${messages.contest_about}</h1>
-                        <div>
+                        <div class="text">
                             ${requestBean.currentContest.about}
                         </div>
                     </div>
                     <div>
                         <h1>${messages.contest_rules}</h1>
-                        <div>
+                        <div class="text">
                             ${requestBean.currentContest.rules}
                         </div>
                     </div>
                     <div>
                         <h1>${messages.contest_tech}</h1>
-                        <div>
+                        <div class="text">
                             ${requestBean.currentContest.tech}
                         </div>
                     </div>
+                   </div>
                 </c:otherwise>
             </c:choose>
         </a4j:form>
