@@ -1,0 +1,33 @@
+<ui:composition template="/templates/main.jspx" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich"  xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:zw="http://zawodyweb.mat.umk.pl/" xmlns:c="http://java.sun.com/jstl/core">
+    <ui:define name="pageContent">
+        <a4j:form id="formRules" styleClass="profilform" style="width:100%">
+            <c:choose>
+                <c:when test="#{requestBean.currentContest == null}">
+                    <div class="not_choosen">
+                        ${messages.contest_not_choosen}
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <div>
+                        <h1>${messages.contest_about}</h1>
+                        <div>
+                            ${requestBean.currentContest.about}
+                        </div>
+                    </div>
+                    <div>
+                        <h1>${messages.contest_rules}</h1>
+                        <div>
+                            ${requestBean.currentContest.rules}
+                        </div>
+                    </div>
+                    <div>
+                        <h1>${messages.contest_tech}</h1>
+                        <div>
+                            ${requestBean.currentContest.tech}
+                        </div>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+        </a4j:form>
+    </ui:define>
+</ui:composition>
