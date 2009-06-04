@@ -30,7 +30,7 @@
                             </tr>
                         </thead>
                         <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="10" >
-                            <tr style="#{(submit.result==2)?zw:coloring(zw:points(submit) / zw:maxPoints(submit)):'background: #e1d4f6'}">
+                            <tr style="#{(submit.result==2)?zw:coloring(zw:points(submit), zw:maxPoints(submit)):'background: #e1d4f6'}">
                                 <td><h:outputText value="#{submit.sdate}" /></td>
                                 <td><zw:problem-link problem="${submit.problems}" message="${submit.problems.name}" type="problem" /></td>
                                 <td>
