@@ -281,5 +281,18 @@
             <to-view-id>/submission.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <display-name>passwd_to_profil</display-name>
+        <from-view-id>/passwd.jspx</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                profil
+            </from-outcome>
+            <to-view-id>
+                /profil.jspx
+            </to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
 </faces-config>
 
