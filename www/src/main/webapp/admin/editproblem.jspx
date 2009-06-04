@@ -23,13 +23,13 @@
                     <fieldset>
                         <t:saveState id="saveid" value="#{requestBean.temporaryProblemId}" />
                         <div>
-                            <h:outputLabel for="name">${messages.problem_name}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="name">${messages.problem_name}:</h:outputLabel>
                             <h:inputText id="name" required="true" value="#{requestBean.editedProblem.name}" />
                             <h:message for="name" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="text">${messages.problem_text}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="text">${messages.problem_text}:</h:outputLabel>
                             <h:inputTextarea id="text" styleClass="bigHeight" required="true" value="#{requestBean.editedProblem.text}">
                             </h:inputTextarea>
                             <h:message for="text" errorClass="error" />
@@ -58,19 +58,19 @@
                             </div>
                         </c:if>
                         <div>
-                            <h:outputLabel for="abbrev">${messages.problem_abbrev}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="abbrev">${messages.problem_abbrev}:</h:outputLabel>
                             <h:inputText id="abbrev" required="true" value="#{requestBean.editedProblem.abbrev}" />
                             <h:message for="abbrev" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="memlimit">${messages.problem_memlimit}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="memlimit">${messages.problem_memlimit}:</h:outputLabel>
                             <h:inputText id="memlimit" required="true" value="#{requestBean.editedProblem.memlimit}" />
                             <h:message for="memlimit" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="contest">${messages.problem_contest}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="contest">${messages.problem_contest}:</h:outputLabel>
                             <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}">
                                 <f:selectItem itemValue="" itemLabel="" />
                                 <c:forEach var="contest" items="#{requestBean.contests}">
@@ -83,7 +83,7 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="series">${messages.problem_series}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="series">${messages.problem_series}:</h:outputLabel>
                             <h:selectOneMenu id="series" required="true" value="#{requestBean.temporarySeriesId}">
                                 <f:selectItem itemValue="" itemLabel="" />
                                 <c:forEach var="series" items="#{requestBean.contestsSeries}">
@@ -96,7 +96,7 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="languages">${messages.problem_languages}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="languages">${messages.problem_languages}:</h:outputLabel>
                             <h:selectManyListbox id="languages" styleClass="bigHeight" required="true" value="#{requestBean.temporaryLanguagesIds}">
                                 <c:forEach var="language" items="#{requestBean.languages}">
                                     <f:selectItem itemValue="#{language.id}" itemLabel="#{language.name}" />
@@ -106,7 +106,7 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="class">${messages.problem_class}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="class">${messages.problem_class}:</h:outputLabel>
                             <h:selectOneMenu id="class" required="true" value="#{requestBean.temporaryClassId}">
                                 <f:selectItem itemValue="" itemLabel="" />
                                 <c:forEach var="class" items="#{requestBean.diffClasses}">

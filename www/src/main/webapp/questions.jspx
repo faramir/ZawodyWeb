@@ -27,14 +27,14 @@
                         <br class="clear" />
                     </div>
                     <div>
-                        <h:outputLabel for="subject">${messages.question_subject}:</h:outputLabel>
+                        <h:outputLabel styleClass="required" for="subject">${messages.question_subject}:</h:outputLabel>
                         <h:inputText id="subject" maxlength="50" required="true" value="#{requestBean.editedQuestion.subject}">
                         </h:inputText>
                         <h:message for="subject" errorClass="error" />
                         <br class="clear" />
                     </div>
                     <div>
-                        <h:outputLabel for="text">${messages.question_text}:</h:outputLabel>
+                        <h:outputLabel styleClass="required" for="text">${messages.question_text}:</h:outputLabel>
                         <h:inputTextarea id="text" styleClass="bigHeight" style="width:70%" required="true" value="#{requestBean.editedQuestion.question}">
                         </h:inputTextarea>
                         <h:message for="text" errorClass="error" />

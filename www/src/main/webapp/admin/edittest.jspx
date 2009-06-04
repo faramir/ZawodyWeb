@@ -23,31 +23,31 @@
                     <fieldset>
                         <t:saveState id="saveid" value="#{requestBean.temporaryTestId}" />
                         <div>
-                            <h:outputLabel for="input">${messages.test_input}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="input">${messages.test_input}:</h:outputLabel>
                             <h:inputTextarea id="input" styleClass="bigHeight" required="true" value="#{requestBean.editedTest.input}">
                             </h:inputTextarea>
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="output">${messages.test_output}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="output">${messages.test_output}:</h:outputLabel>
                             <h:inputTextarea id="output" styleClass="bigHeight" required="true" value="#{requestBean.editedTest.output}">
                             </h:inputTextarea>
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="timelimit">${messages.test_timelimit}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="timelimit">${messages.test_timelimit}:</h:outputLabel>
                             <h:inputText id="timelimit" required="true" value="#{requestBean.editedTest.timelimit}" />
                             <h:message for="timelimit" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="maxpoints">${messages.test_maxpoints}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="maxpoints">${messages.test_maxpoints}:</h:outputLabel>
                             <h:inputText id="maxpoints" required="true" value="#{requestBean.editedTest.maxpoints}" />
                             <h:message for="maxpoints" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="contest">${messages.test_contest}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="contest">${messages.test_contest}:</h:outputLabel>
                             <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}">
                                 <f:selectItem itemValue="" itemLabel="" />
                                 <c:forEach var="contest" items="#{requestBean.contests}">
@@ -60,7 +60,7 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="series">${messages.test_series}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="series">${messages.test_series}:</h:outputLabel>
                             <h:selectOneMenu id="series" required="true" value="#{requestBean.temporarySeriesId}">
                                 <f:selectItem itemValue="" itemLabel="" />
                                 <c:forEach var="series" items="#{requestBean.contestsSeries}">
@@ -75,7 +75,7 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="problem">${messages.test_problem}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="problem">${messages.test_problem}:</h:outputLabel>
                             <h:selectOneMenu id="problem" required="true" value="#{requestBean.temporaryProblemId}">
                                 <f:selectItem itemValue="" itemLabel="" />
                                 <c:forEach var="problem" items="#{requestBean.seriesProblems}">
