@@ -776,7 +776,7 @@ public class RequestBean {
             return null;
         }
 
-        return sendSolution(temporarySource.getBytes(), "source", "formSubmit:sendcode");
+        return sendSolution(temporarySource.getBytes(), null, "formSubmit:sendcode");
     }
 
     public String saveProblem() {
@@ -1080,7 +1080,7 @@ public class RequestBean {
             if (s != null && s.getCode() != null) {
                 name = s.getFilename();
                 content = s.getCode();
-                mimetype = "application/octet-stream";
+                mimetype = "application/force-download";
             }
         }
 
@@ -1088,8 +1088,11 @@ public class RequestBean {
             FacesContext context = FacesContext.getCurrentInstance();
 
             HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+            response.setContentLength(content.length);
             response.setContentType(mimetype);
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + name + "\"");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + name + "\"");
+            response.setHeader("Content-Description", "File Transfer");
+            response.setHeader("Content-Transfer-Encoding", "binary");
             response.getOutputStream().write(content);
             response.getOutputStream().flush();
             response.getOutputStream().close();
@@ -1165,13 +1168,21 @@ public class RequestBean {
     private String sendSolution(byte[] bytes, String fileName, String controlId) {
         FacesContext context = FacesContext.getCurrentInstance();
 
-        fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
-        if (temporaryLanguageId.equals(-1)) {
-            // TODO: tutaj należałoby dodać obliczanie temporaryLanguageId z nazwy pliku
-            // a do submit.jspx dodać "< auto >" i "-1" jako wartość lub inaczej to rozwiązać (np. puste i nie required)
-        }
-
         try {
+            Languages language = null;
+            if (fileName == null) {
+                language = languagesDAO.getById(temporaryLanguageId);
+                fileName = "source." + language.getExtension();
+            } else {
+                fileName = fileName.substring(fileName.lastIndexOf(java.io.File.separator) + 1);
+                if (temporaryLanguageId.equals(-1)) {
+                    // TODO: tutaj należałoby dodać obliczanie temporaryLanguageId z nazwy pliku
+                    // a do submit.jspx dodać "< auto >" i "-1" jako wartość lub inaczej to rozwiązać (np. puste i nie required)
+                }
+                language = languagesDAO.getById(temporaryLanguageId);
+            }
+
+
             Problems problem = problemsDAO.getById(temporaryProblemId);
             if (problem.getSeries().getEnddate() == null || problem.getSeries().getEnddate().after(new Date())) {
                 Submits submit = new Submits();
@@ -1180,7 +1191,7 @@ public class RequestBean {
                 submit.setFilename(fileName);
                 submit.setCode(bytes);
                 submit.setResult(SubmitsResultEnum.WAIT.getCode());
-                submit.setLanguages(languagesDAO.getById(temporaryLanguageId));
+                submit.setLanguages(language);
                 submit.setProblems(problem);
                 submit.setSdate(new Timestamp(System.currentTimeMillis()));
                 submit.setUsers(usersDAO.getById(sessionBean.getCurrentUser().getId()));
