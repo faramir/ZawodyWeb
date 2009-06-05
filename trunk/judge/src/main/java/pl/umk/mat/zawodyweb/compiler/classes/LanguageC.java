@@ -39,6 +39,7 @@ public class LanguageC implements CompilerInterface {
     @Override
     public TestOutput runTest(String path, TestInput input) {
         TestOutput output = new TestOutput(new String());
+        String outputText = new String();
         if (compileResult != CheckerErrors.UNDEF) {
             output.setResult(compileResult);
             if (!compileDesc.isEmpty()) {
@@ -70,6 +71,7 @@ public class LanguageC implements CompilerInterface {
             } catch (InterruptedException ex) {
                 p.destroy();
                 output.setResult(CheckerErrors.TLE);
+                logger.debug("TLE after " + (new Date().getTime() - time) + "ms.");
                 return output;
             }
             long currentTime = new Date().getTime();
@@ -81,12 +83,12 @@ public class LanguageC implements CompilerInterface {
                 return output;
             }
             output.setRuntime((int) (currentTime - time));
-            String outputText = new String();
             String line;
             while ((line = inputStream.readLine()) != null) {
                 outputText = outputText + line + "\n";
             }
             output.setText(outputText);
+            p.destroy();
         } catch (Exception ex) {
             logger.error(ex.getMessage());
         }
@@ -96,9 +98,6 @@ public class LanguageC implements CompilerInterface {
     @Override
     public byte[] precompile(byte[] code) {
         String str = new String(code);
-        if (str.matches(".*uses\\s+crt.*")) {
-            compileResult = CheckerErrors.RV;
-        }
         String forbiddenCalls = "__asm__ __asm asm access acct alarm brk chdir chown chroot clearerr clearerr_unlocked close" +
                 "confstr crypt ctermid daemon dup2 dup encrypt endusershell euidaccess execl execle execlp" +
                 "execv execve execvp _exit fchdir fchown fcloseall fclose fdatasync fdopen feof feof_unlocked" +
@@ -135,7 +134,6 @@ public class LanguageC implements CompilerInterface {
             strWithoutComments = strWithoutComments + str.charAt(i);
         }
         str = strWithoutComments;
-        System.out.println(str);
         String regexp1_on = "(?s).*\\W(" + forbiddenCalls.replaceAll(" ", "|") + ")\\W.*";
         if (str.matches(regexp1_on)) {
             compileResult = CheckerErrors.RV;
@@ -190,11 +188,13 @@ public class LanguageC implements CompilerInterface {
 
                 compileResult = CheckerErrors.CE;
                 while ((line = input.readLine()) != null) {
+                    line = line.replaceAll("^.*"+codefile, properties.getProperty("CODE_FILENAME"));
                     compileDesc = compileDesc + line + "\n";
                 }
                 input.close();
             }
             new File(codefile).delete();
+            p.destroy();
         } catch (Exception err) {
             err.printStackTrace();
         }

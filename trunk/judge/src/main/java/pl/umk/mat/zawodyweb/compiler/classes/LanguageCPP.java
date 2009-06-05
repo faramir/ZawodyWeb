@@ -74,7 +74,7 @@ public class LanguageCPP implements CompilerInterface {
             }
             long currentTime = new Date().getTime();
             timer.cancel();
-            
+
             if (p.exitValue() != 0) {
                 output.setResult(CheckerErrors.RE);
                 output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
@@ -87,6 +87,7 @@ public class LanguageCPP implements CompilerInterface {
                 outputText = outputText + line + "\n";
             }
             output.setText(outputText);
+            p.destroy();
         } catch (Exception ex) {
             logger.error(ex.getMessage());
         }
@@ -96,9 +97,6 @@ public class LanguageCPP implements CompilerInterface {
     @Override
     public byte[] precompile(byte[] code) {
         String str = new String(code);
-        if (str.matches(".*uses\\s+crt.*")) {
-            compileResult = CheckerErrors.RV;
-        }
         String forbiddenCalls = "__asm__ __asm asm access acct alarm brk chdir chown chroot clearerr clearerr_unlocked close" +
                 "confstr crypt ctermid daemon dup2 dup encrypt endusershell euidaccess execl execle execlp" +
                 "execv execve execvp _exit fchdir fchown fcloseall fclose fdatasync fdopen feof feof_unlocked" +
@@ -120,21 +118,22 @@ public class LanguageCPP implements CompilerInterface {
         String strWithoutComments = new String();
         int len = str.length() - 1;
         for (int i = 0; i < len; i++) {
-            if (str.charAt(i) == '{') {
-                while (str.charAt(i) != '}') {
-                    i++;
-                }
-                i++;
-            }
-            if (str.charAt(i) == '(' && str.charAt(i + 1) == '*') {
-                while (str.charAt(i) != '*' || str.charAt(i + 1) != ')') {
+            if (str.charAt(i) == '/' && str.charAt(i) == '*') {
+                while (str.charAt(i) != '*' || str.charAt(i + 1) != '/') {
                     i++;
                 }
                 i += 2;
             }
+            if (str.charAt(i) == '/' && str.charAt(i + 1) == '/') {
+                while (str.charAt(i) != '\n') {
+                    i++;
+                }
+                i++;
+            }
             strWithoutComments = strWithoutComments + str.charAt(i);
         }
         str = strWithoutComments;
+
         System.out.println(str);
         String regexp1_on = "(?s).*\\W(" + forbiddenCalls.replaceAll(" ", "|") + ")\\W.*";
         if (str.matches(regexp1_on)) {
@@ -157,8 +156,8 @@ public class LanguageCPP implements CompilerInterface {
             codedir = properties.getProperty("CODE_DIR");
             codefile = codefile.replaceAll("\\.cpp$", "");
             compilefile = compilefile.replaceAll("\\.exe$", "");
-            codedir = codedir.replaceAll(File.separator+"$", "");
-            compileddir = compileddir.replaceAll(File.separator+"$", "");
+            codedir = codedir.replaceAll(File.separator + "$", "");
+            compileddir = compileddir.replaceAll(File.separator + "$", "");
             codefile = codedir + File.separator + codefile + ".cpp";
             compilefile = compileddir + File.separator + compilefile + ".exe";
             OutputStream is = new FileOutputStream(codefile);
@@ -174,7 +173,7 @@ public class LanguageCPP implements CompilerInterface {
                 compileDesc = "No g++ found";
                 return compilefile;
             }
-            BufferedReader input =   new BufferedReader(new InputStreamReader(p.getInputStream()));
+            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             InterruptTimer timer = new InterruptTimer();
             timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
             try {
@@ -189,16 +188,14 @@ public class LanguageCPP implements CompilerInterface {
             if (p.exitValue() != 0) {
 
                 compileResult = CheckerErrors.CE;
-                int i = 1;
                 while ((line = input.readLine()) != null) {
-                    if (i > 4) {
-                        compileDesc = compileDesc + line + "\n";
-                    }
-                    i++;
+                    line = line.replaceAll("^.*" + codefile, properties.getProperty("CODE_FILENAME"));
+                    compileDesc = compileDesc + line + "\n";
                 }
                 input.close();
             }
             new File(codefile).delete();
+            p.destroy();
         } catch (Exception err) {
             err.printStackTrace();
         }
