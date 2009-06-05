@@ -133,8 +133,6 @@ public class LanguageCPP implements CompilerInterface {
             strWithoutComments = strWithoutComments + str.charAt(i);
         }
         str = strWithoutComments;
-
-        System.out.println(str);
         String regexp1_on = "(?s).*\\W(" + forbiddenCalls.replaceAll(" ", "|") + ")\\W.*";
         if (str.matches(regexp1_on)) {
             compileResult = CheckerErrors.RV;
@@ -173,7 +171,7 @@ public class LanguageCPP implements CompilerInterface {
                 compileDesc = "No g++ found";
                 return compilefile;
             }
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             InterruptTimer timer = new InterruptTimer();
             timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
             try {
