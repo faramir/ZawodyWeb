@@ -88,6 +88,7 @@ public class LanguagePAS implements CompilerInterface {
                 outputText = outputText + line + "\n";
             }
             output.setText(outputText);
+            p.destroy();
         } catch (Exception ex) {
             logger.error(ex.getMessage());
         }
@@ -169,7 +170,7 @@ public class LanguagePAS implements CompilerInterface {
             System.gc();
             Process p = null;
             try {
-                p = new ProcessBuilder("ppc386", "-O2", "-XS", "-Xt", "-o" + compilefile, codefile).start();
+                p = new ProcessBuilder("fpc", "-O2", "-XS", "-Xt", "-o" + compilefile, codefile).start();
             } catch (Exception ex) {
                 logger.error("No ppc386 found.");
                 compileResult = CheckerErrors.UNKNOWN;
@@ -201,6 +202,7 @@ public class LanguagePAS implements CompilerInterface {
                 input.close();
             }
             new File(codefile).delete();
+            p.destroy();
         } catch (Exception err) {
             err.printStackTrace();
         }
