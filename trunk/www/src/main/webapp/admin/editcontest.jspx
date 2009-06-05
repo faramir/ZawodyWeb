@@ -51,7 +51,7 @@
                                     <br class="clear" />
                                 </div>
                                 <div>
-                                    <h:outputLabel for="about">:</h:outputLabel>
+                                    <h:outputLabel for="about">${messages.contest_about}:</h:outputLabel>
                                     <h:inputTextarea id="about" styleClass="bigHeight" required="false" value="#{requestBean.editedContest.about}">
                                     </h:inputTextarea>
                                     <br class="clear" />
