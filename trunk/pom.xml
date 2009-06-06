@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pl.umk.mat.zawodyweb</groupId>
     <artifactId>zawodyweb</artifactId>
-    <name>ZawodyWEB</name>
-    <version>3.0.0-masi</version>
+    <name>ZawodyWeb</name>
+    <version>3.0.1-SNAPSHOT</version>
     <description>System for handling competitions.</description>
     <packaging>pom</packaging>
     <!-- -->
