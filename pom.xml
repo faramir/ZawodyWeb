@@ -4,7 +4,7 @@
     <groupId>pl.umk.mat.zawodyweb</groupId>
     <artifactId>zawodyweb</artifactId>
     <name>ZawodyWEB</name>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0.0-masi</version>
     <description>System for handling competitions.</description>
     <packaging>pom</packaging>
     <!-- -->

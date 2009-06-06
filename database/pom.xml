@@ -4,7 +4,7 @@
     <groupId>pl.umk.mat.zawodyweb</groupId>
     <artifactId>database</artifactId>
     <name>database</name>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0.0-masi</version>
     <description>Database handler for ZawodyWEB</description>
     <packaging>jar</packaging>
     <!-- -->

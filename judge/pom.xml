@@ -4,7 +4,7 @@
     <groupId>pl.umk.mat.zawodyweb</groupId>
     <artifactId>judge</artifactId>
     <name>judge</name>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0.0-masi</version>
     <description>Judge for ZawodyWEB</description>
     <packaging>jar</packaging>
     <!-- -->
