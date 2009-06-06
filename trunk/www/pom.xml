@@ -4,7 +4,7 @@
     <groupId>pl.umk.mat.zawodyweb</groupId>
     <artifactId>www</artifactId>
     <name>www</name>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0.0-masi</version>
     <description>WWW of ZawodyWEB</description>
     <packaging>war</packaging>
     <!-- -->
