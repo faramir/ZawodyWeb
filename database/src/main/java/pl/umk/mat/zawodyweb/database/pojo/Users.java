@@ -206,7 +206,7 @@ public class Users implements Serializable {
      * @return pass hash of the password (<b>NOT</b> plaintext password)
      */
     @Basic
-    @Column(name = "pass", length = 32)
+    @Column(name = "pass", length = 40)
     public String getPass() {
         return pass;
     }
