@@ -36,7 +36,7 @@
                 </c:if>
             </h1>
         </div>
-        <div class="logo">
+        <div class="logo" style="z-index:-1">
             <h:graphicImage alt="logo" url="/media/images/logo1.png" />
         </div>
         <div id="left_menu">
