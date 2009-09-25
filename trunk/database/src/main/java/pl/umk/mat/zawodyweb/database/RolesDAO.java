@@ -26,6 +26,11 @@ public interface RolesDAO extends GenericDAO<Roles,Integer> {
 	public List<Roles> findByName(String name);
 
 	/**
+	 * Find Roles by edituser
+	 */
+	public List<Roles> findByEdituser(Boolean edituser);
+
+        /**
 	 * Find Roles by addcontest
 	 */
 	public List<Roles> findByAddcontest(Boolean addcontest);

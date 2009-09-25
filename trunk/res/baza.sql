@@ -17,6 +17,7 @@ CREATE TABLE USERS (
 CREATE TABLE ROLES (  
         id                  serial primary key,
         name                varchar(40) unique,
+	editUser            boolean,
         addContest          boolean,
         editContest         boolean,
         delContest          boolean,
@@ -66,11 +67,13 @@ CREATE TABLE PROBLEMS (
         name                varchar(80),
         text                text,
         abbrev              varchar(5),
-        memlimit            int
+        memlimit            int,
+        config              text
 );
 
 CREATE TABLE QUESTIONS ( 
         id                  serial primary key,
+        subject             varchar(50),
         question            text,
         visibility          int,
         qtype               int
@@ -81,7 +84,8 @@ CREATE TABLE RESULTS (
         points              int,
         runTime             int,
         memory              int,
-        notes               text
+        notes               text,
+	submitresult        int
 );
 
 CREATE TABLE TESTS (   

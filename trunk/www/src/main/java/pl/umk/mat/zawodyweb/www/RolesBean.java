@@ -44,6 +44,16 @@ public class RolesBean {
                 (role.getSeries() == null || role.getSeries().getId().equals(seriesId));
     }
 
+    public Boolean canEditUsers() {
+        for (UsersRoles ur : getUserRoles()) {
+            if (ur.getRoles().getEdituser()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public Boolean canRateAnySeries(Contests contest) {
         if (contest == null) {
             return false;

@@ -1,18 +1,17 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
     <ui:define name="pageTitle">
-        ${messages.profile}
+        ${messages.users}
     </ui:define>
     <ui:define name="pageContent">
         <a4j:form id="formProfile" styleClass="profilform">
             <c:choose>
-                <c:when test="#{!(sessionBean.loggedIn)}">
-                    <div class="not_choosen">
-                        ${messages.login_please}
-                    </div>
+                <c:when test="#{!(zw:canEditUsers(rolesBean))}">
+                    ${messages.nonsufficient_privileges}
                 </c:when>
                 <c:otherwise>
                     <fieldset>
+                        <t:saveState id="saveid" value="#{requestBean.temporaryUserId}" />
                         <div>
                             <h:outputLabel for="email_profile" styleClass="required">${messages.email}:</h:outputLabel>
                             <h:inputText id="email_profile" required="true" value="#{requestBean.editedUser.email}">
@@ -36,7 +35,8 @@
                         </div>
                         <div>
                             <h:outputLabel for="passwd_profile">${messages.passwd}:</h:outputLabel>
-                            <h:commandButton value="#{messages.change_passwd}" style="width:254px;" id="passwd_profile" action="goToPasswd" />
+                            <h:inputSecret id="passwd_profile" required="false" value="#{requestBean.repPasswd}">
+                            </h:inputSecret>
                             <h:message for="passwd_profile" errorClass="error" />
                             <br class="clear" />
                         </div>
@@ -65,7 +65,17 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <a4j:commandButton id="save_profile" reRender="formProfile" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.updateUser}" />
+                            <h:outputLabel for="roles">${messages.roles}:</h:outputLabel>
+                            <h:selectManyListbox id="roles" styleClass="bigHeight" required="false" value="#{requestBean.temporaryUserRolesIds}">
+                                <c:forEach var="role" items="#{requestBean.roles}">
+                                    <f:selectItem itemValue="#{role.id}" itemLabel="#{role.name}" />
+                                </c:forEach>
+                            </h:selectManyListbox>
+                            <h:message for="roles" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <a4j:commandButton id="save_profile" reRender="formProfile" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.updateUserByAdmin}" />
                         </div>
                     </fieldset>
                 </c:otherwise>

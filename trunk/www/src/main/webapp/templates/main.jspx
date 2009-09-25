@@ -6,7 +6,7 @@
     <f:loadBundle basename="pl.umk.mat.zawodyweb.www.Messages" var="messages" />
     <head>
         <title>
-            <ui:insert name="pageTitle" />
+            <ui:insert name="pageTitle" /> :: ${messages.title}
         </title>
         <link rel="shortcut icon" href="#{facesContext.externalContext.requestContextPath}/media/images/favicon.ico" type="image/x-icon" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -45,7 +45,7 @@
                     <zw:contest-link contest="${requestBean.currentContest}" type="problems" message="#{messages.problems}" />
                 </li>
                 <li>
-                   <zw:contest-link contest="${requestBean.currentContest}" type="ranking" message="#{messages.ranking}" />
+                    <zw:contest-link contest="${requestBean.currentContest}" type="ranking" message="#{messages.ranking}" />
                 </li>
                 <li>
                     <zw:contest-link contest="${requestBean.currentContest}" type="questions" message="#{messages.questions}" />
@@ -54,8 +54,13 @@
                     <zw:contest-link_button contest="${requestBean.currentContest}" type="submissions" message="#{messages.submissions}" />
                 </li>
                 <li>
-                     <zw:contest-link contest="${requestBean.currentContest}" type="rules" message="#{messages.rules}" />
+                    <zw:contest-link contest="${requestBean.currentContest}" type="rules" message="#{messages.rules}" />
                 </li>
+                <c:if test="#{zw:canEditUsers(rolesBean)}">
+                    <li>
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/listusers.html">${messages.users}</h:outputLink>
+                    </li>
+                </c:if>
             </ul>
         </div>
         <c:if test="#{sessionBean.loggedIn}">
@@ -87,6 +92,7 @@
             </ul>
         </div>
         <div id="content">
+            <h1 id="pageTitle"><ui:insert name="pageTitle" /></h1>
             <ui:insert name="pageContent" />
         </div>
     </body>

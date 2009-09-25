@@ -25,7 +25,14 @@ public class RolesHibernateDAO extends
 	public List<Roles> findByName(String name) {
 		return findByCriteria(Restrictions.eq("name", name));
 	}
-	
+
+        /**
+	 * Find Roles by addcontest
+	 */
+	public List<Roles> findByEdituser(Boolean edituser) {
+		return findByCriteria(Restrictions.eq("edituser", edituser));
+	}
+
 	/**
 	 * Find Roles by addcontest
 	 */

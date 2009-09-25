@@ -7,6 +7,10 @@ import pl.umk.mat.zawodyweb.database.pojo.Contests;
  * @author slawek
  */
 public class RolesELFunctions {
+    public static Boolean canEditUsers(RolesBean rolesBean) {
+        return rolesBean.canEditUsers();
+    }
+
     public static Boolean canRateAnySeries(RolesBean rolesBean, Contests contest){
         return rolesBean.canRateAnySeries(contest);
     }
