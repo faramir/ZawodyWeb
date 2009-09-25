@@ -35,11 +35,13 @@ import pl.umk.mat.zawodyweb.database.PDFDAO;
 import pl.umk.mat.zawodyweb.database.ProblemsDAO;
 import pl.umk.mat.zawodyweb.database.QuestionsDAO;
 import pl.umk.mat.zawodyweb.database.ResultsDAO;
+import pl.umk.mat.zawodyweb.database.RolesDAO;
 import pl.umk.mat.zawodyweb.database.SeriesDAO;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.TestsDAO;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
+import pl.umk.mat.zawodyweb.database.UsersRolesDAO;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Classes;
 import pl.umk.mat.zawodyweb.database.pojo.Contests;
@@ -49,10 +51,12 @@ import pl.umk.mat.zawodyweb.database.pojo.PDF;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Questions;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
+import pl.umk.mat.zawodyweb.database.pojo.Roles;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
+import pl.umk.mat.zawodyweb.database.pojo.UsersRoles;
 import pl.umk.mat.zawodyweb.www.datamodels.PagedDataModel;
 import pl.umk.mat.zawodyweb.www.ranking.Ranking;
 import pl.umk.mat.zawodyweb.www.ranking.RankingTable;
@@ -76,6 +80,8 @@ public class RequestBean {
     private ResultsDAO resultsDAO = DAOFactory.DEFAULT.buildResultsDAO();
     private TestsDAO testsDAO = DAOFactory.DEFAULT.buildTestsDAO();
     private UsersDAO usersDAO = DAOFactory.DEFAULT.buildUsersDAO();
+    private RolesDAO rolesDAO = DAOFactory.DEFAULT.buildRolesDAO();
+    private UsersRolesDAO usersRolesDAO = DAOFactory.DEFAULT.buildUsersRolesDAO();
     private PDFDAO pdfDAO = DAOFactory.DEFAULT.buildPDFDAO();
     private SessionBean sessionBean;
     private RolesBean rolesBean;
@@ -100,6 +106,8 @@ public class RequestBean {
     private List<Languages> languages = null;
     private List<Series> currentContestSeries = null;
     private List<Questions> currentContestQuestions = null;
+    private List<Users> users = null;
+    private List<Roles> roles = null;
     private RankingTable currentContestRanking = null;
     private PagedDataModel submissions = null;
     private Integer temporaryContestId;
@@ -109,6 +117,8 @@ public class RequestBean {
     private Integer temporaryClassId;
     private Integer temporaryTestId;
     private Integer temporaryQuestionId;
+    private Integer temporaryUserId;
+    private Integer[] temporaryUserRolesIds;
     private Integer[] temporaryLanguagesIds;
     private Integer temporaryLanguageId;
     private Integer temporaryResultId;
@@ -191,6 +201,13 @@ public class RequestBean {
         }
 
         return contests;
+    }
+
+    public List<Roles> getRoles() {
+        if (roles == null) {
+            roles = rolesDAO.findAll();
+        }
+        return roles;
     }
 
     public List<Classes> getDiffClasses() {
@@ -374,7 +391,27 @@ public class RequestBean {
 
     public Users getEditedUser() {
         if (editedUser == null) {
-            editedUser = usersDAO.getById(sessionBean.getCurrentUser().getId());
+            FacesContext context = FacesContext.getCurrentInstance();
+
+            if (!WWWHelper.isPost(context)) {
+                try {
+                    temporaryUserId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+                } catch (Exception e) {
+                    temporaryUserId = 0;
+                }
+            }
+
+            if (ELFunctions.isNullOrZero(temporaryUserId)) {
+                editedUser = usersDAO.getById(sessionBean.getCurrentUser().getId());
+            } else {
+                editedUser = usersDAO.getById(temporaryUserId);
+            }
+
+            temporaryUserRolesIds = new Integer[editedUser.getUsersRoless().size()];
+            for (int i = 0; i < editedUser.getUsersRoless().size(); ++i) {
+                temporaryUserRolesIds[i] = editedUser.getUsersRoless().get(i).getRoles().getId();
+            }
+
         }
 
         return editedUser;
@@ -490,6 +527,14 @@ public class RequestBean {
         this.temporaryQuestionId = temporaryQuestionId;
     }
 
+    public Integer[] getTemporaryUserRolesIds() {
+        return temporaryUserRolesIds;
+    }
+
+    public void setTemporaryUserRolesIds(Integer[] temporaryUserRolesIds) {
+        this.temporaryUserRolesIds = temporaryUserRolesIds;
+    }
+
     public Integer[] getTemporaryLanguagesIds() {
         return temporaryLanguagesIds;
     }
@@ -520,6 +565,14 @@ public class RequestBean {
 
     public void setTemporarySubmitId(Integer temporarySubmitId) {
         this.temporarySubmitId = temporarySubmitId;
+    }
+
+    public Integer getTemporaryUserId() {
+        return temporaryUserId;
+    }
+
+    public void setTemporaryUserId(Integer temporaryUserId) {
+        this.temporaryUserId = temporaryUserId;
     }
 
     public UploadedFile getTemporaryFile() {
@@ -730,6 +783,39 @@ public class RequestBean {
         return "start";
     }
 
+    public String updateUserByAdmin() {
+        try {
+            if (repPasswd != null && repPasswd.length() > 0) {
+                editedUser.savePass(repPasswd);
+            }
+
+
+            List<UsersRoles> tmpList = usersRolesDAO.findByUsersid(editedUser.getId());
+
+            if (tmpList != null) {
+                for (UsersRoles role : tmpList) {
+                    usersRolesDAO.delete(role);
+                }
+            }
+
+            for (Integer rid : temporaryUserRolesIds) {
+                UsersRoles usersRoles = new UsersRoles();
+                usersRoles.setRoles(rolesDAO.getById(rid));
+                usersRoles.setUsers(editedUser);
+                usersRolesDAO.saveOrUpdate(usersRoles);
+            }
+
+            usersDAO.saveOrUpdate(editedUser);
+        } catch (Exception e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formProfile:save", summary, null);
+            return null;
+        }
+
+        return "/admin/listusers";
+    }
+
     public String updateUser() {
         try {
             usersDAO.saveOrUpdate(editedUser);
@@ -747,6 +833,7 @@ public class RequestBean {
         try {
             editedUser.savePass(editedUser.getPass());
             usersDAO.saveOrUpdate(editedUser);
+            sessionBean.getCurrentUser().setPass(editedUser.getPass());
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -1062,6 +1149,13 @@ public class RequestBean {
         return "/admin/edittest";
     }
 
+    @HttpAction(name = "edituser", pattern = "edit/{id}/user")
+    public String goToEdituser(@Param(name = "id", encode = true) int id) {
+        temporaryUserId = id;
+
+        return "/admin/edituser";
+    }
+
     @HttpAction(name = "getfile", pattern = "get/{id}/{type}")
     public String getFile(@Param(name = "id", encode = true) int id, @Param(name = "type", encode = true) String type) throws IOException {
         String name = StringUtils.EMPTY;
@@ -1228,5 +1322,20 @@ public class RequestBean {
      */
     public void setDummy(String dummy) {
         this.dummy = dummy;
+    }
+
+    /**
+     * @return the users
+     */
+    public List<Users> getUsers() {
+        if (users == null) {
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Users.class);
+            c.addOrder(Order.asc("lastname"));
+            c.addOrder(Order.asc("firstname"));
+            c.addOrder(Order.asc("login"));
+            users = c.list();
+        }
+        return users;
+
     }
 }

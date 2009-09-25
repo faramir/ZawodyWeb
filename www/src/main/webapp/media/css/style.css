@@ -397,6 +397,10 @@ padding: 0px;
     float: right;
 }
 
+#content #pageTitle {
+    text-align: center;
+}
+
 #content h1 {
     text-align: left;
     font-size: 20px;
@@ -549,6 +553,12 @@ border:1px solid #333333;
 .col2 {
 	width: 50px;
     margin: 0px 1px 0px 1px;
+}
+
+.cols {
+    text-align: left;
+    margin: 0px 1px 0px 1px;
+    padding-left: 5px;
 }
 
 .paginator {

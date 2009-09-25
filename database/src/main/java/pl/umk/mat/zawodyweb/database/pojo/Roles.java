@@ -42,6 +42,11 @@ public class Roles implements Serializable {
 	private String name;
 	
 	/**
+	 * Attribute edituser.
+	 */
+	private Boolean edituser;
+
+        /**
 	 * Attribute addcontest.
 	 */
 	private Boolean addcontest;
@@ -147,6 +152,22 @@ public class Roles implements Serializable {
 	}
 	
 	/**
+	 * @return addcontest
+	 */
+	@Basic
+	@Column(name = "edituser")
+		public Boolean getEdituser() {
+		return edituser;
+	}
+
+	/**
+	 * @param addcontest new value for addcontest
+	 */
+	public void setEdituser(Boolean edituser) {
+		this.edituser = edituser;
+	}
+
+        /**
 	 * @return addcontest
 	 */
 	@Basic
