@@ -331,5 +331,18 @@
             <redirect />
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <display-name>edit_class_to_listclasses</display-name>
+        <from-view-id>/admin/editclass.jspx</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                listclasses
+            </from-outcome>
+            <to-view-id>
+                /admin/listclasses.jspx
+            </to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
 </faces-config>
 

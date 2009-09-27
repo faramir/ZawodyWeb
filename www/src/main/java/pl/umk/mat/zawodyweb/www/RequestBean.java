@@ -97,6 +97,7 @@ public class RequestBean {
     private Submits editedSubmit;
     private Questions editedQuestion;
     private Results editedResult;
+    private Classes editedClass;
     private List<LanguagesProblems> temporaryLanguagesProblems = null;
     private List<Contests> contests = null;
     private List<Series> contestsSeries = null;
@@ -108,6 +109,7 @@ public class RequestBean {
     private List<Questions> currentContestQuestions = null;
     private List<Users> users = null;
     private List<Roles> roles = null;
+    private List<Classes> allClasses = null;
     private RankingTable currentContestRanking = null;
     private PagedDataModel submissions = null;
     private Integer temporaryContestId;
@@ -208,6 +210,13 @@ public class RequestBean {
             roles = rolesDAO.findAll();
         }
         return roles;
+    }
+
+    public List<Classes> getAllClasses() {
+        if (allClasses == null) {
+            allClasses = classesDAO.findAll();
+        }
+        return allClasses;
     }
 
     public List<Classes> getDiffClasses() {
@@ -389,6 +398,28 @@ public class RequestBean {
         return editedResult;
     }
 
+    public Classes getEditedClass() {
+        if (editedClass == null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+
+            if (!WWWHelper.isPost(context)) {
+                try {
+                    temporaryClassId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+                } catch (Exception e) {
+                    temporaryClassId = 0;
+                }
+            }
+
+            if (ELFunctions.isNullOrZero(temporaryClassId)) {
+                editedClass = new Classes();
+            } else {
+                editedClass = classesDAO.getById(temporaryClassId);
+            }
+        }
+
+        return editedClass;
+    }
+
     public Users getEditedUser() {
         if (editedUser == null) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -411,7 +442,6 @@ public class RequestBean {
             for (int i = 0; i < editedUser.getUsersRoless().size(); ++i) {
                 temporaryUserRolesIds[i] = editedUser.getUsersRoless().get(i).getRoles().getId();
             }
-
         }
 
         return editedUser;
@@ -844,6 +874,33 @@ public class RequestBean {
         return "profil";
     }
 
+    public String sendClassFile() throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        if (temporaryFile == null) {
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit::classfile", messages.getString("javax.faces.component.UIInput.REQUIRED"), null);
+            return null;
+        }
+
+        try {
+            editedClass.setCode(temporaryFile.getBytes());
+            if (editedClass.getVersion() == null) {
+                editedClass.setVersion(1);
+            } else {
+                editedClass.setVersion(editedClass.getVersion() + 1);
+            }
+
+            classesDAO.saveOrUpdate(editedClass);
+
+            return "listclasses";
+        } catch (Exception e) {
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit::classfile", summary, null);
+            return null;
+        }
+
+    }
+
     public String sendFile() throws IOException {
         FacesContext context = FacesContext.getCurrentInstance();
 
@@ -1086,6 +1143,16 @@ public class RequestBean {
         }
     }
 
+    @HttpAction(name = "delclass", pattern = "del/{id}/class")
+    public String deleteClasses(@Param(name = "id", encode = true) int id) {
+        if (rolesBean.canEditAnyProblem()) {
+            classesDAO.deleteById(id);
+            return "/admin/listclasses";
+        } else {
+            return null;
+        }
+    }
+
     @HttpAction(name = "addseries", pattern = "add/{id}/series")
     public String goToAddseries(@Param(name = "id", encode = true) int id) {
         temporaryContestId = id;
@@ -1156,6 +1223,13 @@ public class RequestBean {
         return "/admin/edituser";
     }
 
+    @HttpAction(name = "editclass", pattern = "edit/{id}/class")
+    public String goToEditclass(@Param(name = "id", encode = true) int id) {
+        temporaryClassId = id;
+
+        return "/admin/edituser";
+    }
+
     @HttpAction(name = "getfile", pattern = "get/{id}/{type}")
     public String getFile(@Param(name = "id", encode = true) int id, @Param(name = "type", encode = true) String type) throws IOException {
         String name = StringUtils.EMPTY;
@@ -1174,6 +1248,13 @@ public class RequestBean {
             if (s != null && s.getCode() != null) {
                 name = s.getFilename();
                 content = s.getCode();
+                mimetype = "application/force-download";
+            }
+        } else if (type.equals("class")) {
+            Classes c = classesDAO.getById(id);
+            if (c != null && c.getCode() != null) {
+                name = c.getFilename() + ".class";
+                content = c.getCode();
                 mimetype = "application/force-download";
             }
         }

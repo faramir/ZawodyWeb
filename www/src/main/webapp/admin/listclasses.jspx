@@ -1,0 +1,45 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk">
+    <ui:define name="pageTitle">
+        ${messages.classes}
+    </ui:define>
+    <ui:define name="pageContent">
+        <a4j:form id="formEditContest" styleClass="profilform">
+            <c:choose>
+                <c:when test="#{!(zw:canEditAnyProblem(rolesBean))}">
+                    ${messages.nonsufficient_privileges}
+                </c:when>
+                <c:otherwise>
+                    <t:dataTable id="classes" var="class" styleClass="seria" value="#{requestBean.allClasses}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols">
+                        <h:column>
+                            <f:facet name="header">
+                                ${messages.description}
+                            </f:facet>
+                            <h:outputText value="#{class.description}" styleClass="nowrap"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                ${messages.classname}
+                            </f:facet>
+                            <h:outputText value="#{class.filename}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                ${messages.version}
+                            </f:facet>
+                            <h:outputText value="#{class.version}"/>
+                        </h:column>
+                        <h:column>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{class.id}/class.html" title="#{messages.class_download}" styleClass="ikonka"><h:graphicImage alt="#{messages.class_download}" title="#{messages.class_download}" url="/media/images/pobierz.png"/></h:outputLink>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editclass.html?id=#{class.id}" title="#{messages.editclass}" styleClass="ikonka"><h:graphicImage alt="#{messages.editclass}" title="#{messages.editclass}" url="/media/images/edytuj.png" /></h:outputLink>
+                            <h:outputLink value="#" title="#{messages.delclass}" styleClass="ikonka" onclick="confirm(this,{nazwa:'klasę #{class.description}',link:'#{facesContext.externalContext.requestContextPath}/del/#{class.id}/class.html'})"><h:graphicImage alt="#{messages.delclass}" title="#{messages.delclass}" url="/media/images/usun.png" /></h:outputLink>
+                        </h:column>
+                    </t:dataTable>
+                    <div class="ikona" style="margin-left:-40px">
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editclass.html" title="#{messages.addclass}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addclass}" title="#{messages.addclass}" url="/media/images/dodaj.png" /></h:outputLink>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+        </a4j:form>
+    </ui:define>
+</ui:composition>

@@ -1,12 +1,13 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk">
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
     <ui:define name="pageTitle">
         <c:choose>
             <c:when test="#{param.id == '0' or param.id == null}">
-            ${messages.problem_adding}
+                ${messages.problem_adding}
             </c:when>
             <c:otherwise>
-            ${messages.problem_editing}
+                ${messages.problem_editing}
             </c:otherwise>
         </c:choose>
     </ui:define>
@@ -14,10 +15,10 @@
         <a4j:form id="formEditProblem" styleClass="profilform" enctype="multipart/form-data">
             <c:choose>
                 <c:when test="#{requestBean.editedProblem == null}">
-                ${messages.no_problem}
+                    ${messages.no_problem}
                 </c:when>
                 <c:when test="#{!(zw:isNullOrZero(requestBean.editedProblem.id)) and !(zw:canEditProblem(rolesBean, requestBean.editedProblem.series.contests.id, requestBean.editedProblem.series.id))}">
-                ${messages.nonsufficient_privileges}
+                    ${messages.nonsufficient_privileges}
                 </c:when>
                 <c:otherwise>
                     <fieldset>
@@ -39,10 +40,10 @@
                             <h:outputLabel for="pdf">
                                 <c:choose>
                                     <c:when test="#{requestBean.editedProblem.PDF == null}">
-                                    ${messages.problem_pdf}:
+                                        ${messages.problem_pdf}:
                                     </c:when>
                                     <c:otherwise>
-                                    ${messages.problem_change_pdf}:
+                                        ${messages.problem_change_pdf}:
                                     </c:otherwise>
                                 </c:choose>
                             </h:outputLabel>

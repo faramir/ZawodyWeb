@@ -10,27 +10,27 @@
                     ${messages.nonsufficient_privileges}
                 </c:when>
                 <c:otherwise>
-                            <t:dataTable id="users" var="user" styleClass="seria" value="#{requestBean.users}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols">
-                                <h:column>
-                                    <f:facet name="header">
-                                    ${messages.lastname}
-                                    </f:facet>
-                                    <h:outputText value="#{user.lastname}" />
-                                </h:column>
-                                <h:column>
-                                    <f:facet name="header">
-                                    ${messages.firstname}
-                                    </f:facet>
-                                    <h:outputText value="#{user.firstname}" />
-                                </h:column>
-                                <h:column>
-                                    <f:facet name="header">
-                                    ${messages.login}
-                                    </f:facet>
-                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/edituser.html?id=#{user.id}" title="#{messages.edituser}" styleClass="ikonka"><h:graphicImage alt="#{messages.editproblem}" title="#{messages.edituser}" url="/media/images/edytuj.png" /></h:outputLink>
-                                    <h:outputText value="#{user.login}"/>
-                                </h:column>
-                            </t:dataTable>
+                    <t:dataTable id="users" var="user" styleClass="seria" value="#{requestBean.users}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols">
+                        <h:column>
+                            <f:facet name="header">
+                                ${messages.lastname}
+                            </f:facet>
+                            <h:outputText value="#{user.lastname}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                ${messages.firstname}
+                            </f:facet>
+                            <h:outputText value="#{user.firstname}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                ${messages.login}
+                            </f:facet>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/edituser.html?id=#{user.id}" title="#{messages.edituser}" styleClass="ikonka"><h:graphicImage alt="#{messages.edituser}" title="#{messages.edituser}" url="/media/images/edytuj.png" /></h:outputLink>
+                            <h:outputText value="#{user.login}"/>
+                        </h:column>
+                    </t:dataTable>
                 </c:otherwise>
             </c:choose>
         </a4j:form>
