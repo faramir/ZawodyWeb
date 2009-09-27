@@ -4,6 +4,7 @@
  */
 package pl.umk.mat.zawodyweb.www;
 
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -13,12 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.restfaces.annotation.HttpAction;
 import org.restfaces.annotation.Instance;
-import org.restfaces.annotation.Param;
-import pl.umk.mat.zawodyweb.database.ContestsDAO;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
-import pl.umk.mat.zawodyweb.database.pojo.Contests;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
+import pl.umk.mat.zawodyweb.olat.User;
+import pl.umk.mat.zawodyweb.olat.jdbc.Connector;
 
 /**
  *
@@ -55,14 +55,12 @@ public class SessionBean {
         return loggedIn;
     }
 
-    
-
     public String logIn() {
         FacesContext context = FacesContext.getCurrentInstance();
 
         Cookie cookie = new Cookie("login", currentUser.getLogin());
         if (rememberMe) {
-            cookie.setMaxAge(999);
+            cookie.setMaxAge(60 * 60 * 24 * 30);
         } else {
             cookie.setMaxAge(0);
         }
@@ -72,10 +70,32 @@ public class SessionBean {
 
         try {
             UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
-            Users user = dao.findByLogin(currentUser.getLogin()).get(0);
-            if (user.checkPass(currentUser.getPass())) {
+            List<Users> users = dao.findByLogin(currentUser.getLogin());
+            if (users.isEmpty() || "OLAT".equals(users.get(0).getPass())) {
+                if (Connector.getInstance().checkPassword(currentUser.getLogin(), currentUser.getPass())) {
+                    Users user;
+                    if (users.isEmpty()) {
+                        user = new Users();
+                    } else {
+                        user = users.get(0);
+                    }
+
+                    User olatUser = Connector.getInstance().getUser(currentUser.getLogin());
+
+                    user.setLogin(olatUser.getLogin());
+                    user.setFirstname(olatUser.getFirstname());
+                    user.setLastname(olatUser.getLastname());
+                    user.setEmail(olatUser.getEmail());
+                    user.setPass("OLAT");
+
+                    dao.saveOrUpdate(user);
+
+                    loggedIn = true;
+                    currentUser = user;
+                }
+            } else if (users.get(0).checkPass(currentUser.getPass())) {
                 loggedIn = true;
-                currentUser = user;
+                currentUser = users.get(0);
             }
         } catch (Exception e) {
             loggedIn = false;
@@ -103,10 +123,11 @@ public class SessionBean {
         String viewId = context.getViewRoot().getViewId();
         if (viewId.equals("/login.jspx")) {
             HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-
-            for (Cookie cookie : request.getCookies()) {
-                if (cookie.getName().equals("login")) {
-                    return cookie;
+            if (request.getCookies() != null) {
+                for (Cookie cookie : request.getCookies()) {
+                    if (cookie.getName().equals("login")) {
+                        return cookie;
+                    }
                 }
             }
         }

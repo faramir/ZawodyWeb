@@ -813,7 +813,7 @@ public class RequestBean {
             return null;
         }
 
-        return "/admin/listusers";
+        return "listusers";
     }
 
     public String updateUser() {
