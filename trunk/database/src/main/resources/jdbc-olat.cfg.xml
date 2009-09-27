@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="connection.url">jdbc:postgresql://localhost:5432/olat</entry>
+    <entry key="connection.username">olat</entry>
+    <entry key="connection.password">c0rEJee5</entry>
+    <entry key="connection.driver_class">org.postgresql.Driver</entry>
+</properties>
+

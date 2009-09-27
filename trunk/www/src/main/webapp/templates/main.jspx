@@ -92,7 +92,9 @@
             </ul>
         </div>
         <div id="content">
-            <h1 id="pageTitle"><ui:insert name="pageTitle" /></h1>
+            <ui:remove>
+                <h1 id="pageTitle"><ui:insert name="pageTitle" /></h1>
+            </ui:remove>
             <ui:insert name="pageContent" />
         </div>
     </body>
