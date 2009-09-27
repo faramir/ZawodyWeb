@@ -45,6 +45,10 @@ public class RolesBean {
     }
 
     public Boolean canEditUsers() {
+        if (getUserRoles() == null) {
+            return false;
+        }
+
         for (UsersRoles ur : getUserRoles()) {
             if (ur.getRoles().getEdituser()) {
                 return true;
@@ -229,6 +233,19 @@ public class RolesBean {
             }
         }
 
+        return false;
+    }
+
+    public Boolean canEditAnyProblem() {
+        if (getUserRoles() == null) {
+            return false;
+        }
+
+        for (UsersRoles ur : getUserRoles()) {
+            if (ur.getRoles().getEditproblem()) {
+                return true;
+            }
+        }
         return false;
     }
 }

@@ -5,7 +5,7 @@
         ${messages.send_solution}
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formSubmit" styleClass="profilform"  enctype="multipart/form-data">
+        <a4j:form id="formSubmit" styleClass="profilform" enctype="multipart/form-data">
             <c:choose>
                 <c:when test="#{!(sessionBean.loggedIn)}">
                     <div class="not_choosen">

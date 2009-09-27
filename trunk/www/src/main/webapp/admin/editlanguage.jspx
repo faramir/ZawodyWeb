@@ -1,0 +1,46 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
+    <ui:define name="pageTitle">
+        ${messages.classes}
+    </ui:define>
+    <ui:define name="pageContent">
+        <a4j:form id="formSubmit" styleClass="profilform" enctype="multipart/form-data">
+            <c:choose>
+                <c:when test="#{!(zw:canEditAnyProblem(rolesBean))}">
+                    ${messages.nonsufficient_privileges}
+                </c:when>
+                <c:otherwise>
+                    <fieldset>
+                        <t:saveState id="saveid" value="#{requestBean.temporaryClassId}" />
+                        <div>
+                            <h:outputLabel for="description_class" styleClass="required">${messages.description}:</h:outputLabel>
+                            <h:inputText id="description_class" required="true" value="#{requestBean.editedClass.description}">
+                            </h:inputText>
+                            <h:message for="description_class" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="classname_class" styleClass="required">${messages.classname}:</h:outputLabel>
+                            <h:inputText id="classname_class" required="true" value="#{requestBean.editedClass.filename}">
+                            </h:inputText>
+                            <h:message for="classname_class" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="classfile" styleClass="required">${messages.classfile}:</h:outputLabel>
+                            <t:inputFileUpload id="classfile" value="#{requestBean.temporaryFile}" storage="file" accept="Pliki .class (*.class)|*.class"/>
+                            <h:message for="classfile" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:commandButton id="sendfile" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.sendClassFile}" />
+                            <h:message for="sendfile" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                    </fieldset>
+                </c:otherwise>
+            </c:choose>
+        </a4j:form>
+    </ui:define>
+</ui:composition>

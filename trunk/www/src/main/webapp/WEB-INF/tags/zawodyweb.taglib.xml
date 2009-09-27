@@ -160,6 +160,11 @@
         <function-signature>java.lang.Boolean canEditProblem(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
     </function>
     <function>
+        <function-name>canEditAnyProblem</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
+        <function-signature>java.lang.Boolean canEditAnyProblem(pl.umk.mat.zawodyweb.www.RolesBean)</function-signature>
+    </function>
+    <function>
         <function-name>canDeleteProblem</function-name>
         <function-class>pl.umk.mat.zawodyweb.www.RolesELFunctions</function-class>
         <function-signature>java.lang.Boolean canDeleteProblem(pl.umk.mat.zawodyweb.www.RolesBean, java.lang.Integer, java.lang.Integer)</function-signature>
