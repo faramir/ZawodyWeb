@@ -57,15 +57,16 @@
                     <zw:contest-link contest="${requestBean.currentContest}" type="rules" message="#{messages.rules}" />
                 </li>
                 <c:if test="#{zw:canEditUsers(rolesBean)}">
-                    <br/>
                     <li>
                         <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/listusers.html">${messages.users}</h:outputLink>
                     </li>
                 </c:if>
                 <c:if test="${zw:canEditAnyProblem(rolesBean)}">
-                    <br/>
                     <li>
                         <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/listclasses.html">${messages.classes}</h:outputLink>
+                    </li>
+                    <li>
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/listlanguages.html">${messages.languages}</h:outputLink>
                     </li>
                 </c:if>
             </ul>

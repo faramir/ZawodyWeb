@@ -10,33 +10,32 @@
                     ${messages.nonsufficient_privileges}
                 </c:when>
                 <c:otherwise>
-                    <t:dataTable id="classes" var="class" styleClass="seria" value="#{requestBean.allClasses}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols">
+                    <t:dataTable id="languages" var="language" styleClass="seria" value="#{requestBean.languages}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols">
                         <h:column>
                             <f:facet name="header">
-                                ${messages.description}
+                                ${messages.language_name}
                             </f:facet>
-                            <h:outputText value="#{class.description}" styleClass="nowrap"/>
+                            <h:outputText value="#{language.name}" styleClass="nowrap"/>
                         </h:column>
                         <h:column>
                             <f:facet name="header">
-                                ${messages.classname}
+                                ${messages.extension}
                             </f:facet>
-                            <h:outputText value="#{class.filename}" />
+                            <h:outputText value="#{language.extension}" />
                         </h:column>
                         <h:column>
                             <f:facet name="header">
-                                ${messages.version}
+                                ${messages.class_used}
                             </f:facet>
-                            <h:outputText value="#{class.version}"/>
+                            <h:outputText value="#{language.classes.description}"/>
                         </h:column>
                         <h:column>
-                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{class.id}/class.html" title="#{messages.class_download}" styleClass="ikonka"><h:graphicImage alt="#{messages.class_download}" title="#{messages.class_download}" url="/media/images/pobierz.png"/></h:outputLink>
-                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editclass.html?id=#{class.id}" title="#{messages.editclass}" styleClass="ikonka"><h:graphicImage alt="#{messages.editclass}" title="#{messages.editclass}" url="/media/images/edytuj.png" /></h:outputLink>
-                            <h:outputLink value="#" title="#{messages.delclass}" styleClass="ikonka" onclick="confirm(this,{nazwa:'klasę #{class.name}',link:'#{facesContext.externalContext.requestContextPath}/del/#{problem.id}/class.html'})"><h:graphicImage alt="#{messages.delclass}" title="#{messages.delclass}" url="/media/images/usun.png" /></h:outputLink>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editlanguage.html?id=#{language.id}" title="#{messages.editlanguage}" styleClass="ikonka"><h:graphicImage alt="#{messages.editlanguage}" title="#{messages.editlanguage}" url="/media/images/edytuj.png" /></h:outputLink>
+                            <h:outputLink value="#" title="#{messages.dellanguage}" styleClass="ikonka" onclick="confirm(this,{nazwa:'język #{language.name}',link:'#{facesContext.externalContext.requestContextPath}/del/#{language.id}/language.html'})"><h:graphicImage alt="#{messages.dellanguage}" title="#{messages.dellanguage}" url="/media/images/usun.png" /></h:outputLink>
                         </h:column>
                     </t:dataTable>
                     <div class="ikona" style="margin-left:-40px">
-                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editclass.html" title="#{messages.addclass}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addclass}" title="#{messages.addclass}" url="/media/images/dodaj.png" /></h:outputLink>
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editlanguage.html" title="#{messages.addlanguage}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addlanguage}" title="#{messages.addlanguage}" url="/media/images/dodaj.png" /></h:outputLink>
                     </div>
                 </c:otherwise>
             </c:choose>
