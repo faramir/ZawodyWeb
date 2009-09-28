@@ -98,6 +98,7 @@ public class RequestBean {
     private Questions editedQuestion;
     private Results editedResult;
     private Classes editedClass;
+    private Languages editedLanguage;
     private List<LanguagesProblems> temporaryLanguagesProblems = null;
     private List<Contests> contests = null;
     private List<Series> contestsSeries = null;
@@ -396,6 +397,29 @@ public class RequestBean {
         }
 
         return editedResult;
+    }
+
+    public Languages getEditedLanguage() {
+        if (editedLanguage == null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+
+            if (!WWWHelper.isPost(context)) {
+                try {
+                    temporaryLanguageId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+                } catch (Exception e) {
+                    temporaryLanguageId = 0;
+                }
+            }
+
+            if (ELFunctions.isNullOrZero(temporaryLanguageId)) {
+                editedLanguage = new Languages();
+                temporaryClassId = null;
+            } else {
+                editedLanguage = languagesDAO.getById(temporaryLanguageId);
+                temporaryClassId = editedLanguage.getClasses().getId();
+            }
+        }
+        return editedLanguage;
     }
 
     public Classes getEditedClass() {
@@ -776,6 +800,24 @@ public class RequestBean {
         return "login";
     }
 
+    public String saveLanguage() {
+        if (!rolesBean.canEditAnyProblem()) {
+            return null;
+        }
+
+        try {
+            getEditedLanguage().setClasses(classesDAO.getById(temporaryClassId));
+            languagesDAO.saveOrUpdate(getEditedLanguage());
+        } catch (Exception e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditLanguage:save", summary, null);
+            return null;
+        }
+
+        return "listlanguages";
+    }
+
     public String saveContest() {
         Integer id = getEditedContest().getId();
         if ((ELFunctions.isNullOrZero(id) && !rolesBean.canAddContest(null, null)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditContest(id, null))) {
@@ -814,11 +856,14 @@ public class RequestBean {
     }
 
     public String updateUserByAdmin() {
+        if (!rolesBean.canEditUsers()) {
+            return null;
+        }
+
         try {
             if (repPasswd != null && repPasswd.length() > 0) {
                 editedUser.savePass(repPasswd);
             }
-
 
             List<UsersRoles> tmpList = usersRolesDAO.findByUsersid(editedUser.getId());
 
@@ -876,6 +921,9 @@ public class RequestBean {
 
     public String sendClassFile() throws IOException {
         FacesContext context = FacesContext.getCurrentInstance();
+        if (!rolesBean.canEditAnyProblem()) {
+            return null;
+        }
 
         if (temporaryFile == null) {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit::classfile", messages.getString("javax.faces.component.UIInput.REQUIRED"), null);
@@ -1138,6 +1186,16 @@ public class RequestBean {
                 sessionBean.setCurrentContestId(null);
             }
             return "/start";
+        } else {
+            return null;
+        }
+    }
+
+    @HttpAction(name = "dellanguage", pattern = "del/{id}/language")
+    public String deleteLanguage(@Param(name = "id", encode = true) int id) {
+        if (rolesBean.canEditAnyProblem()) {
+            languagesDAO.deleteById(id);
+            return "/admin/listlanguages";
         } else {
             return null;
         }

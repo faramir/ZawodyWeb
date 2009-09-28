@@ -319,7 +319,7 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
-        <display-name>edit_user_to_listuser</display-name>
+        <display-name>edit_user_to_listusers</display-name>
         <from-view-id>/admin/edituser.jspx</from-view-id>
         <navigation-case>
             <from-outcome>
@@ -344,5 +344,17 @@
             <redirect />
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <display-name>edit_language_to_listlanguages</display-name>
+        <from-view-id>/admin/editlanguage.jspx</from-view-id>
+        <navigation-case>
+            <from-outcome>
+                listlanguages
+            </from-outcome>
+            <to-view-id>
+                /admin/listlanguages.jspx
+            </to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
 </faces-config>
-
