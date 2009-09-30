@@ -101,7 +101,7 @@ CREATE TABLE TESTS (
 CREATE TABLE LANGUAGES ( 
         id                  serial primary key,
         name                varchar(40) unique,
-        extension           varchar(8) unique
+        extension           varchar(8)
 );
 
 CREATE TABLE CLASSES ( 

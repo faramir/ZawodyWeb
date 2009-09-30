@@ -1,5 +1,6 @@
 package pl.umk.mat.zawodyweb.www;
 
+import java.util.ArrayList;
 import java.util.List;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.UsersRolesDAO;
@@ -29,7 +30,7 @@ public class RolesBean {
     private List<UsersRoles> getUserRoles() {
         if (!rolesRead) {
             UsersRolesDAO dao = DAOFactory.DEFAULT.buildUsersRolesDAO();
-            if (sessionBean.getCurrentUser() != null) {
+            if (sessionBean.getCurrentUser() != null && sessionBean.getCurrentUser().getId() != null) {
                 userRoles = dao.findByUsersid(sessionBean.getCurrentUser().getId());
             }
 

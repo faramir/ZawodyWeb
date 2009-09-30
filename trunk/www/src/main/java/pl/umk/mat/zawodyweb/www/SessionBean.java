@@ -11,6 +11,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import org.restfaces.annotation.HttpAction;
 import org.restfaces.annotation.Instance;
@@ -112,6 +113,10 @@ public class SessionBean {
 
     @HttpAction(name = "logout", pattern = "logout")
     public String logOut() {
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+//        session.invalidate();
+
         currentUser = new Users();
         loggedIn = false;
 
