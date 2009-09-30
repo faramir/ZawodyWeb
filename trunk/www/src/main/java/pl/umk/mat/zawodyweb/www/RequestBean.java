@@ -1211,6 +1211,18 @@ public class RequestBean {
         }
     }
 
+    @HttpAction(name = "delsubmit", pattern = "del/{id}/submit")
+    public String deleteSubmit(@Param(name = "id", encode = true) int id) {
+        Submits s = submitsDAO.getById(id);
+
+        if (rolesBean.canAddProblem(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
+            submitsDAO.deleteById(id);
+            return "/submissions";
+        } else {
+            return null;
+        }
+    }
+
     @HttpAction(name = "addseries", pattern = "add/{id}/series")
     public String goToAddseries(@Param(name = "id", encode = true) int id) {
         temporaryContestId = id;
