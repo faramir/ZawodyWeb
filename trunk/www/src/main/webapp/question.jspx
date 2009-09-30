@@ -11,7 +11,7 @@
                 ${messages.question_subject}:
             </div>
             <div class="title">
-                "${requestBean.editedQuestion.subject}"
+                ${requestBean.editedQuestion.subject}
             </div>
             <div class="subject">
                 ${messages.question_text}:

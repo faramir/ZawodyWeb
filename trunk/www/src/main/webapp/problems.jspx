@@ -15,7 +15,7 @@
                 <c:otherwise>
                     <c:forEach var="series" items="#{requestBean.currentContestSeries}">
                         <div class="seria">
-                            <h:outputLabel for="problems#{series.id}" styleClass="seria">${series.name}:</h:outputLabel>
+                            <h:outputLabel for="problems#{series.id}" styleClass="seria">${series.name} (<h:outputText value="#{zw:formatDateAndHour(series.startdate)}" />):</h:outputLabel>
                             <br />
                             <t:dataTable id="problems#{series.id}" var="problem" styleClass="seria" value="#{series.problemss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
                                 <h:column>
