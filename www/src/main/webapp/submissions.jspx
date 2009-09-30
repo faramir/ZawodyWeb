@@ -22,9 +22,15 @@
                         <thead>
                             <tr>
                                 <th>${messages.submission_date}</th>
+                                <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
+                                    <th>${messages.submission_user}</th>
+                                </c:if>
                                 <th>${messages.submission_problem}</th>
                                 <th>${messages.submission_result}</th>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
+                                    <th></th>
+                                </c:if>
+                                <c:if test="#{!(requestBean.showOnlyMySubmissions) and zw:canAddProblem(rolesBean, series.contests.id, series.id)}">
                                     <th></th>
                                 </c:if>
                             </tr>
@@ -32,19 +38,29 @@
                         <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="10" >
                             <tr style="#{(submit.result==2)?zw:coloring(zw:points(submit), zw:maxPoints(submit)):'background: #e1d4f6'}">
                                 <td><h:outputText value="#{zw:dateAndHour(submit.sdate)}" /></td>
-                                <td><zw:problem-link problem="${submit.problems}" message="${submit.problems.name}" type="problem" /></td>
+                            <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                                 <td>
-                                    <h:outputText value="#{messages.waiting}" rendered="#{submit.result == 0}" />
-                                    <h:outputText value="#{messages.processing}" rendered="#{submit.result == 1}" />
-                                    <h:panelGroup rendered="#{submit.result == 2}">
-                                        <zw:submission-link submission="#{submit}" type="submission" />
-                                    </h:panelGroup>
+                                ${submit.users.login}
                                 </td>
-                                <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
-                                    <td>
-                                        <zw:submission-link submission="#{submit}" type="rate" message="#{messages.submission_rate}" />
-                                    </td>
-                                </c:if>
+                            </c:if>
+                                <td><zw:problem-link problem="${submit.problems}" message="${submit.problems.name}" type="problem" /></td>
+                            <td>
+                                <h:outputText value="#{messages.waiting}" rendered="#{submit.result == 0}" />
+                                <h:outputText value="#{messages.processing}" rendered="#{submit.result == 1}" />
+                                <h:panelGroup rendered="#{submit.result == 2}">
+                                <zw:submission-link submission="#{submit}" type="submission" />
+                            </h:panelGroup>
+                            </td>
+                            <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
+                                <td>
+                                <zw:submission-link submission="#{submit}" type="rate" message="#{messages.submission_rate}" />
+                                </td>
+                            </c:if>
+                            <c:if test="#{!(requestBean.showOnlyMySubmissions) and zw:canAddProblem(rolesBean, series.contests.id, series.id)}">
+                                <td>
+                                    <h:outputLink value="#" title="#{messages.delsubmit}" styleClass="ikonka" onclick="confirm(this,{nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/del/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.delsubmit}" title="#{messages.delproblem}" url="/media/images/usun.png" /></h:outputLink>
+                                </td>
+                            </c:if>
                             </tr>
                         </t:dataList>
                     </table>
