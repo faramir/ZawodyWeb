@@ -24,13 +24,13 @@
                         <t:saveState id="saveid" value="#{requestBean.temporaryTestId}" />
                         <div>
                             <h:outputLabel styleClass="required" for="input">${messages.test_input}:</h:outputLabel>
-                            <h:inputTextarea id="input" styleClass="bigHeight" required="true" value="#{requestBean.editedTest.input}">
+                            <h:inputTextarea id="input" styleClass="bigHeight" value="#{requestBean.editedTest.input}">
                             </h:inputTextarea>
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel styleClass="required" for="output">${messages.test_output}:</h:outputLabel>
-                            <h:inputTextarea id="output" styleClass="bigHeight" required="true" value="#{requestBean.editedTest.output}">
+                            <h:inputTextarea id="output" styleClass="bigHeight" value="#{requestBean.editedTest.output}">
                             </h:inputTextarea>
                             <br class="clear" />
                         </div>

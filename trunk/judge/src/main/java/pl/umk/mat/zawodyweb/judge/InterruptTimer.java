@@ -23,7 +23,13 @@ public class InterruptTimer extends Timer {
         }
     }
 
-    public void schedule(Thread thread, int timelimit) {
-        this.schedule(new InterruptThread(Thread.currentThread()), timelimit);
+    /**
+     * Kills thread after specified amount of time
+     *
+     * @param thread thread to be killed
+     * @param timelimit delay in milliseconds before task is to be killed.
+     */
+    public void schedule(Thread thread, long timelimit) {
+        this.schedule(new InterruptThread(thread), timelimit);
     }
 }
