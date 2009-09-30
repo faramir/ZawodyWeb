@@ -37,14 +37,14 @@
                     </h:panelGroup>
                 </div>
                 <div style="background: transparent;border:none;padding-top:30px;">
-                    <t:dataTable rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" id="test#{tests.id}" var="problem" styleClass="seria" value="#{requestBean.currentProblem.testss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
+                    <t:dataTable rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" id="test" var="test" styleClass="seria" value="#{requestBean.currentProblem.testss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
                         <h:column>
                             <f:facet name="header">
                             ${messages.test_number}
                             </f:facet>
-                            <div class="item">${problem.testorder}</div>
-                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/edittest.html?id=#{problem.id}" title="#{messages.edittest}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.edittest}" title="#{messages.edittest}" url="/media/images/edytuj.png" /></h:outputLink>
-                            <h:outputLink value="#" title="#{messages.deltest}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka" onclick="confirm(this,{nazwa:'test #{problem.testorder}',link:'#{facesContext.externalContext.requestContextPath}/del/#{problem.id}/test.html'})"><h:graphicImage alt="#{messages.deltest}" title="#{messages.deltest}" url="/media/images/usun.png" /></h:outputLink>
+                            <div class="item">${test.testorder}</div>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/edittest.html?id=#{test.id}" title="#{messages.edittest}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.edittest}" title="#{messages.edittest}" url="/media/images/edytuj.png" /></h:outputLink>
+                            <h:outputLink value="#" title="#{messages.deltest}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka" onclick="confirm(this,{nazwa:'test #{test.testorder}',link:'#{facesContext.externalContext.requestContextPath}/del/#{test.id}/test.html'})"><h:graphicImage alt="#{messages.deltest}" title="#{messages.deltest}" url="/media/images/usun.png" /></h:outputLink>
                         </h:column>
                     </t:dataTable>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{requestBean.currentProblem.id}/test.html" title="#{messages.addtest}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addtest}" title="#{messages.addtest}" url="/media/images/dodaj.png" /></h:outputLink>

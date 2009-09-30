@@ -25,9 +25,11 @@ public class Ranking {
     public RankingTable getRanking(int contest_id, int type, Date date, boolean admin) {
         RankingInteface ranking = null;
 
-        if (type == 0) {
+        if (type == 0) { // ACM
             ranking = new RankingACM();
-        } else if (type == 1) {
+        } else if (type == 1) { // FIXME: Tu powinien być ranking PA
+            ranking = new RankingKI();
+        } else if (type == 2) { // KI
             ranking = new RankingKI();
         }
 
