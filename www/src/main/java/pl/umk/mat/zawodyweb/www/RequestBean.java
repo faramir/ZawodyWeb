@@ -3,7 +3,6 @@ package pl.umk.mat.zawodyweb.www;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -289,6 +288,7 @@ public class RequestBean {
                 s.createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
             }
             s.add(Restrictions.or(Restrictions.isNull("enddate"), Restrictions.gt("enddate", new Date())));
+            s.add(Restrictions.lt("startdate", new Date()));
             submittableProblems = c.list();
         }
 
@@ -297,8 +297,16 @@ public class RequestBean {
 
     public List<Series> getCurrentContestSeries() {
         if (currentContestSeries == null) {
-            currentContestSeries = seriesDAO.findByContestsid(getCurrentContest().getId());
-            Collections.reverse(currentContestSeries);
+//            currentContestSeries = seriesDAO.findByContestsid(getCurrentContest().getId());
+//            Collections.reverse(currentContestSeries);
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Series.class);
+            c.addOrder(Order.desc("startdate"));
+            c.addOrder(Order.asc("enddate"));
+            c.add(Restrictions.eq("contests.id", getCurrentContest().getId()));
+            if (!rolesBean.canAddProblem(getCurrentContest().getId(), null)) {
+                c.add(Restrictions.lt("startdate", new Date()));
+            }
+            currentContestSeries = c.list();
         }
 
         return currentContestSeries;
@@ -1142,6 +1150,10 @@ public class RequestBean {
     public String goToProblem(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         currentProblem = problemsDAO.getById(id);
 
+        if (currentProblem!=null && currentProblem.getSeries().getStartdate().after(new Date()) && !rolesBean.canAddProblem(currentProblem.getSeries().getContests().getId(), null)) {
+            currentProblem = null;
+        }
+
         if (currentProblem == null) {
             return "/error/404";
         } else {
@@ -1429,7 +1441,7 @@ public class RequestBean {
 
 
             Problems problem = problemsDAO.getById(temporaryProblemId);
-            if (problem.getSeries().getEnddate() == null || problem.getSeries().getEnddate().after(new Date())) {
+            if (problem.getSeries().getStartdate().before(new Date()) && (problem.getSeries().getEnddate() == null || problem.getSeries().getEnddate().after(new Date()))) {
                 Submits submit = new Submits();
 
                 submit.setId(null);

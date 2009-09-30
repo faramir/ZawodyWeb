@@ -37,7 +37,7 @@
                         </thead>
                         <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="10" >
                             <tr style="#{(submit.result==2)?zw:coloring(zw:points(submit), zw:maxPoints(submit)):'background: #e1d4f6'}">
-                                <td><h:outputText value="#{zw:dateAndHour(submit.sdate)}" /></td>
+                                <td><h:outputText value="#{zw:formatDateAndHour(submit.sdate)}" /></td>
                             <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                                 <td>
                                 ${submit.users.login}

@@ -113,9 +113,9 @@ public class SessionBean {
 
     @HttpAction(name = "logout", pattern = "logout")
     public String logOut() {
-//        FacesContext context = FacesContext.getCurrentInstance();
-//        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-//        session.invalidate();
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        session.invalidate();
 
         currentUser = new Users();
         loggedIn = false;

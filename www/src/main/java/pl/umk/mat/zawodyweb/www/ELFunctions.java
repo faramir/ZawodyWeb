@@ -6,6 +6,7 @@ package pl.umk.mat.zawodyweb.www;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
@@ -120,7 +121,7 @@ public class ELFunctions {
     }
 
     public static Boolean submitDateOk(Problems p) {
-        return p.getSeries().getEnddate() == null || p.getSeries().getEnddate().after(new Date());
+        return p.getSeries().getStartdate().before(new Date()) && (p.getSeries().getEnddate() == null || p.getSeries().getEnddate().after(new Date()));
     }
 
     public static String dateAndHour(Timestamp t) {
@@ -128,5 +129,10 @@ public class ELFunctions {
             return "";
         }
         return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(t);
+    }
+
+    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    public static String formatDateAndTime(Date d) {
+        return sdf.format(d);
     }
 }
