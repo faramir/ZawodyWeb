@@ -251,6 +251,12 @@ img {
     background: transparent;
 }
 
+.profilform div.daty {
+    text-align: center;
+    font-size: 10pt;
+    font-weight: normal;
+}
+
 .profilform div.seria {
     border: solid;
     border-color: #dfd1f4;
