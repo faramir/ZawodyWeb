@@ -12,14 +12,16 @@ public class RankingTable {
     private Vector<String> columnsCaptions;
     private Vector<String> columnsCSS;
     private Vector<RankingEntry> table;
+    private Boolean frozenRanking;
 
     public RankingTable() {
     }
 
-    public RankingTable(Vector<String> columnsCaptions, Vector<String> columnsCSS, Vector<RankingEntry> table) {
+    public RankingTable(Vector<String> columnsCaptions, Vector<String> columnsCSS, Vector<RankingEntry> table, Boolean frozenRanking) {
         this.columnsCaptions = columnsCaptions;
         this.columnsCSS = columnsCSS;
         this.table = table;
+        this.frozenRanking = frozenRanking;
     }
 
     /**
@@ -62,5 +64,12 @@ public class RankingTable {
      */
     public void setTable(Vector<RankingEntry> table) {
         this.table = table;
+    }
+
+    /**
+     * @return the frozenRanking
+     */
+    public Boolean getFrozenRanking() {
+        return frozenRanking;
     }
 }
