@@ -112,6 +112,7 @@ public class RequestBean {
     private List<Classes> allClasses = null;
     private RankingTable currentContestRanking = null;
     private PagedDataModel submissions = null;
+    private Boolean temporaryAdminBoolean;
     private Integer temporaryContestId;
     private Integer temporarySeriesId;
     private Integer temporaryProblemId;
@@ -326,7 +327,11 @@ public class RequestBean {
             Integer contests_id = getCurrentContest().getId();
             Integer type = getCurrentContest().getType();
             Date date = new Date();
-            currentContestRanking = Ranking.getInstance().getRanking(contests_id, type, date, false);
+            if (temporarySeriesId == null) {
+                currentContestRanking = Ranking.getInstance().getRanking(contests_id, type, date, temporaryAdminBoolean);
+            } else {
+                currentContestRanking = Ranking.getInstance().getRankingForSeries(contests_id, temporarySeriesId, type, date, temporaryAdminBoolean);
+            }
         }
 
         return currentContestRanking;
@@ -1099,6 +1104,33 @@ public class RequestBean {
         if (getCurrentContest() == null) {
             return "/error/404";
         } else {
+            if ("__admin__".equals(dummy) && rolesBean.canAddProblem(getCurrentContest().getId(), null))  {
+                temporaryAdminBoolean = true;
+            } else {
+                temporaryAdminBoolean = false;
+            }
+            return "ranking";
+        }
+    }
+
+    @HttpAction(name = "ranking_seria", pattern = "ranking_seria/{id}/{title}")
+    public String goToRankingSeria(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        Series s = seriesDAO.getById(id);
+        if (s==null) {
+            return "/error/404";
+        }
+
+        selectContest(s.getContests().getId());
+
+        if (getCurrentContest() == null) {
+            return "/error/404";
+        } else {
+            temporarySeriesId = id;
+            if ("__admin__".equals(dummy) && rolesBean.canAddProblem(getCurrentContest().getId(), id))  {
+                temporaryAdminBoolean = true;
+            } else {
+                temporaryAdminBoolean = false;
+            }
             return "ranking";
         }
     }
@@ -1150,7 +1182,7 @@ public class RequestBean {
     public String goToProblem(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         currentProblem = problemsDAO.getById(id);
 
-        if (currentProblem!=null && currentProblem.getSeries().getStartdate().after(new Date()) && !rolesBean.canAddProblem(currentProblem.getSeries().getContests().getId(), null)) {
+        if (currentProblem != null && currentProblem.getSeries().getStartdate().after(new Date()) && !rolesBean.canAddProblem(currentProblem.getSeries().getContests().getId(), null)) {
             currentProblem = null;
         }
 
