@@ -118,6 +118,7 @@ public class RankingKI implements RankingInteface {
         Vector<ProblemsKI> vectorProblemsKI = new Vector<ProblemsKI>();
 
         boolean allTests;
+        boolean frozenRanking = false;
 
         for (Series series : seriesDAO.findByContestsid(contest_id)) {
 
@@ -131,6 +132,7 @@ public class RankingKI implements RankingInteface {
             if (!admin && series.getFreezedate() != null) {
                 if (checkDate.after(series.getFreezedate()) && (series.getUnfreezedate() == null || checkDate.before(series.getUnfreezedate()))) {
                     checkTimestamp = new Timestamp(series.getFreezedate().getTime());
+                    frozenRanking = true;
                 }
             }
 
@@ -237,7 +239,7 @@ public class RankingKI implements RankingInteface {
             vectorRankingEntry.add(new RankingEntry(place, user.formatName(), v));
         }
 
-        return new RankingTable(columnsCaptions, columnsCSS, vectorRankingEntry);
+        return new RankingTable(columnsCaptions, columnsCSS, vectorRankingEntry, frozenRanking);
     }
 
     @Override

@@ -11,6 +11,11 @@
                     </div>
                 </c:when>
                 <c:otherwise>
+                    <c:if test="#{requestBean.currentContestRanking.frozenRanking}">
+                        <div class="ranking_frozen">
+                            <h:outputText value="#{messages.ranking_frozen}"/>
+                        </div>
+                    </c:if>
                     <table class="ranking">
                         <thead>
                             <tr>
