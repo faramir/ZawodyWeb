@@ -15,7 +15,8 @@
                 <c:otherwise>
                     <c:forEach var="series" items="#{requestBean.currentContestSeries}">
                         <div class="seria">
-                            <h:outputLabel for="problems#{series.id}" styleClass="seria">${series.name}:
+                            <h:outputLabel for="problems#{series.id}" styleClass="seria">
+                                <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ranking_seria/#{series.id}/#{zw:filterUri(series.name)}.html">${series.name}</h:outputLink>:
                                 <div class="daty">
                                     (<h:outputText value="#{zw:formatDateAndHour(series.startdate)}" />
                                     <c:if test="#{series.enddate!=null}">

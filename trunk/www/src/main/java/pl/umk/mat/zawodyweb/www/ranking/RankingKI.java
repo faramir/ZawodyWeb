@@ -128,7 +128,7 @@ public class RankingKI implements RankingInteface {
             checkTimestamp = checkDate;
             allTests = admin;
 
-            if (series.getFreezedate() != null) {
+            if (!admin && series.getFreezedate() != null) {
                 if (checkDate.after(series.getFreezedate()) && (series.getUnfreezedate() == null || checkDate.before(series.getUnfreezedate()))) {
                     checkTimestamp = new Timestamp(series.getFreezedate().getTime());
                 }
