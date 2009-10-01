@@ -15,12 +15,19 @@
                 <c:otherwise>
                     <c:forEach var="series" items="#{requestBean.currentContestSeries}">
                         <div class="seria">
-                            <h:outputLabel for="problems#{series.id}" styleClass="seria">${series.name} (<h:outputText value="#{zw:formatDateAndHour(series.startdate)}" />):</h:outputLabel>
+                            <h:outputLabel for="problems#{series.id}" styleClass="seria">${series.name}:
+                                <div class="daty">
+                                    (<h:outputText value="#{zw:formatDateAndHour(series.startdate)}" />
+                                    <c:if test="#{series.enddate!=null}">
+                                        <h:outputText value=" - #{zw:formatDateAndHour(series.enddate)}" />
+                                    </c:if>)
+                                </div>
+                            </h:outputLabel>
                             <br />
                             <t:dataTable id="problems#{series.id}" var="problem" styleClass="seria" value="#{series.problemss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
                                 <h:column>
                                     <f:facet name="header">
-                                    ${messages.problem_name}
+                                        ${messages.problem_name}
                                     </f:facet>
                                     <zw:problem-link problem="${problem}" message="${problem.name}" type="problem" />
                                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{problem.id}/test.html" title="#{messages.addtest}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.addtest}" title="#{messages.addtest}" url="/media/images/dodaj.png" /></h:outputLink>
@@ -29,7 +36,7 @@
                                 </h:column>
                                 <h:column>
                                     <f:facet name="header">
-                                    ${messages.problem_abbrev}
+                                        ${messages.problem_abbrev}
                                     </f:facet>
                                     <h:outputText value="#{problem.abbrev}" />
                                 </h:column>
