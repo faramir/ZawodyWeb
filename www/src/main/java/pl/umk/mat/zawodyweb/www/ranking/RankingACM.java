@@ -36,14 +36,16 @@ public class RankingACM implements RankingInteface {
         String abbrev;
         long date;
         long time;
+        long time_from_bombs;
         int bombs;
         String name;
         boolean frozen;
 
-        public SolutionACM(String abbrev, long date, long time, int bombs, String name, boolean frozen) {
+        public SolutionACM(String abbrev, long date, long time, long time_from_bombs, int bombs, String name, boolean frozen) {
             this.abbrev = abbrev;
             this.date = date;
             this.time = time;
+            this.time_from_bombs = time_from_bombs;
             this.bombs = bombs;
             this.name = name;
             this.frozen = frozen;
@@ -88,25 +90,27 @@ public class RankingACM implements RankingInteface {
 
         void add(int points, SolutionACM solutionACM) {
             this.points += points;
-            this.totalTime += solutionACM.time / 1000;
+            this.totalTime += solutionACM.time+solutionACM.time_from_bombs;
             this.solutions.add(solutionACM);
         }
 
         String getSolutionsForRanking() {
             String r = "";
-            String s;
+            String text;
             Collections.sort(this.solutions);
 
             for (SolutionACM solutionACM : solutions) {
-                s = solutionACM.abbrev;
+                text = solutionACM.abbrev;
                 if (solutionACM.bombs >= 4) {
-                    s += "(" + solutionACM.bombs + ")";
+                    text += "(" + solutionACM.bombs + ")";
                 } else {
                     for (int i = 0; i < solutionACM.bombs; ++i) {
-                        s += "*";
+                        text += "*";
                     }
                 }
-                r += RankingUtils.formatText(s, solutionACM.name, solutionACM.frozen ? "frozen" : null) + " ";
+                r += RankingUtils.formatText(text,
+                        solutionACM.name+" ["+parseTime(solutionACM.time)+(solutionACM.time_from_bombs==0?"":"+"+parseTime(solutionACM.time_from_bombs)+"]"),
+                        solutionACM.frozen ? "frozen" : null) + " ";
             }
             return r.trim();
         }
@@ -152,7 +156,13 @@ public class RankingACM implements RankingInteface {
         time %= 60;
         s = time;
 
-        return String.format("%dd %02d:%02d:%02d", d, h, m, s);
+        if (d > 0) {
+            return String.format("%dd %02d:%02d:%02d", d, h, m, s);
+        } else if (h > 0) {
+            return String.format("%d:%02d:%02d", h, m, s);
+        } else {
+            return String.format("%d:%02d", m, s);
+        }
     }
 
     private RankingTable getRankingACM(int contest_id, Timestamp checkDate, boolean admin, Integer series_id) {
@@ -297,7 +307,9 @@ public class RankingACM implements RankingInteface {
                     user.add(maxPoints.intValue(),
                             new SolutionACM(problems.getAbbrev(),
                             ((Timestamp) o[1]).getTime(),
-                            (maxPoints.equals(0) ? 0 : ((Timestamp) o[1]).getTime() - series.getStartdate().getTime() + series.getPenaltytime() * bombs.intValue()), bombs.intValue(),
+                            (maxPoints.equals(0) ? 0 : ((Timestamp) o[1]).getTime() - series.getStartdate().getTime())/ 1000,
+                            series.getPenaltytime() * bombs.intValue(),
+                            bombs.intValue(),
                             problems.getName(),
                             frozenSeria));
                 }
