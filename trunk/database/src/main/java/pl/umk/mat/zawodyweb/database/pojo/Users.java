@@ -214,7 +214,7 @@ public class Users implements Serializable {
     public String hashPass(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA1");
-            md.update(password.getBytes());
+            md.update((login+"+"+password).getBytes());
             byte[] digest = md.digest();
             org.apache.commons.codec.binary.Hex hex = new Hex();
             return new String(hex.encode(digest));

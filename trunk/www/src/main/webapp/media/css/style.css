@@ -1132,3 +1132,13 @@ tbody {
     text-align: center;
     margin: 10px auto;
 }
+
+#mailto {
+    font-size: 10pt;
+    color: #0000FF;
+    text-align: center;
+    border: ridge #c5a7f2;
+    border-width: 1px 0 0 0;
+    width:70%;
+    margin: 0 auto 0 auto;
+}
