@@ -5,14 +5,14 @@
         ${messages.problems}
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formProblems" styleClass="profilform">
-            <c:choose>
-                <c:when test="#{requestBean.currentContest == null}">
-                    <div class="not_choosen">
-                        ${messages.contest_not_choosen}
-                    </div>
-                </c:when>
-                <c:otherwise>
+        <c:choose>
+            <c:when test="#{requestBean.currentContest == null}">
+                <div class="not_choosen">
+                    ${messages.contest_not_choosen}
+                </div>
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formProblems" styleClass="profilform">
                     <c:forEach var="series" items="#{requestBean.currentContestSeries}">
                         <div class="seria">
                             <h:outputLabel for="problems#{series.id}" styleClass="seria">
@@ -57,8 +57,8 @@
                     <div style="padding-top: 20px;">
                         <zw:problem-link_img contest="${requestBean.currentContest}" type="start" message="#{messages.question_back}" />
                     </div>
-                </c:otherwise>
-            </c:choose>
-        </a4j:form>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
     </ui:define>
 </ui:composition>

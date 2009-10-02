@@ -2,15 +2,25 @@
                 xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox"
                 xmlns:zw="http://zawodyweb.mat.umk.pl/">
     <ui:define name="pageTitle">
-        ${messages.languages}
+        <c:choose>
+            <c:when test="#{param.id == '0' or param.id == null}">
+                ${messages.language_adding}
+            </c:when>
+            <c:otherwise>
+                ${messages.language_editing}
+            </c:otherwise>
+        </c:choose>
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formEditLanguage" styleClass="profilform">
-            <c:choose>
-                <c:when test="#{!(zw:canEditAnyProblem(rolesBean))}">
-                    ${messages.nonsufficient_privileges}
-                </c:when>
-                <c:otherwise>
+        <c:choose>
+            <c:when test="#{requestBean.editedLanguage == null}">
+                ${messages.no_language}
+            </c:when>
+            <c:when test="#{!(zw:canEditAnyProblem(rolesBean))}">
+                ${messages.nonsufficient_privileges}
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formEditLanguage" styleClass="profilform">
                     <fieldset>
                         <t:saveState id="saveid" value="#{requestBean.temporaryLanguageId}" />
                         <div>
@@ -44,8 +54,8 @@
                             <br class="clear" />
                         </div>
                     </fieldset>
-                </c:otherwise>
-            </c:choose>
-        </a4j:form>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
     </ui:define>
 </ui:composition>

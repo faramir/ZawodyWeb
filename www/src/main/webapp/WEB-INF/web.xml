@@ -19,7 +19,7 @@
     </context-param>
     <context-param>
         <param-name>org.ajax4jsf.VIEW_HANDLERS</param-name>
-        <param-value>com.sun.facelets.FaceletViewHandler</param-value>
+        <param-value>pl.umk.mat.zawodyweb.www.FaceletErrorHandler</param-value>
     </context-param>
     <context-param>
         <param-name>facelets.LIBRARIES</param-name>
@@ -106,6 +106,10 @@
     </error-page>
     <error-page>
         <error-code>500</error-code>
+        <location>/error500.jsp</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type>
         <location>/error500.jsp</location>
     </error-page>
 </web-app>

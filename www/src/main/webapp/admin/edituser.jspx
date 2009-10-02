@@ -1,15 +1,19 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
     <ui:define name="pageTitle">
-        ${messages.users}
+        ${messages.user_editing}
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formProfile" styleClass="profilform">
-            <c:choose>
-                <c:when test="#{!(zw:canEditUsers(rolesBean))}">
-                    ${messages.nonsufficient_privileges}
-                </c:when>
-                <c:otherwise>
+        <c:choose>
+            <c:when test="#{requestBean.editedUser == null}">
+                ${messages.no_user}
+            </c:when>
+            <c:when test="#{!(zw:canEditUsers(rolesBean))}">
+                ${messages.nonsufficient_privileges}
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formProfile" styleClass="profilform">
                     <fieldset>
                         <t:saveState id="saveid" value="#{requestBean.temporaryUserId}" />
                         <div>
@@ -78,8 +82,8 @@
                             <a4j:commandButton id="save_profile" reRender="formProfile" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.updateUserByAdmin}" />
                         </div>
                     </fieldset>
-                </c:otherwise>
-            </c:choose>
-        </a4j:form>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
     </ui:define>
 </ui:composition>

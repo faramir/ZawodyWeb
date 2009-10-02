@@ -8,7 +8,7 @@ INSERT INTO roles (id, name, edituser, addcontest, editcontest, delcontest, adds
 
 -- users
 
-INSERT INTO users (id, firstname, lastname, email, birthdate, login, pass, address, school, tutor, emailnotification) VALUES (default, 'Administrator', 'Administracyjny', 'konkinf@mat.umk.pl', '1986-01-05 00:00:00', 'admin', '2a203e804c2bf23bf0043b31fa56488743cd780b', '', '', '', NULL); -- C0lours
+INSERT INTO users (id, firstname, lastname, email, birthdate, login, pass, address, school, tutor, emailnotification) VALUES (default, 'Administrator', 'Administracyjny', 'konkinf@mat.umk.pl', '1986-01-05 00:00:00', 'admin', 'OLAT', '', '', '', NULL);
 
 -- user <--> roles
 

@@ -8,15 +8,17 @@
         <a4j:form id="formProblem" styleClass="profilform">
             <div class="zadanko">
                 <div class="nazwa">
-                    ${requestBean.currentProblem.name}
+                    [${requestBean.currentProblem.abbrev}] ${requestBean.currentProblem.name}
                 </div>
-                <div class="termin">
-                    ${requestBean.currentProblem.series.enddate}
-                </div>
+                <c:if test="#{requestBean.currentProblem.series.enddate!=null}">
+                    <div class="termin">
+                        ${requestBean.currentProblem.series.enddate}
+                    </div>
+                </c:if>
                 <div class="jezyki">
                     ${messages.languages}:
                     <c:forEach var="languageproblem" items="#{requestBean.currentProblem.languagesProblemss}">
-                    ${languageproblem.languages.extension}
+                        ${languageproblem.languages.extension}
                     </c:forEach>
                 </div>
                 <div class="czas">
@@ -40,7 +42,7 @@
                     <t:dataTable rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" id="test" var="test" styleClass="seria" value="#{requestBean.currentProblem.testss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
                         <h:column>
                             <f:facet name="header">
-                            ${messages.test_number}
+                                ${messages.test_number}
                             </f:facet>
                             <div class="item">${test.testorder}</div>
                             <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/edittest.html?id=#{test.id}" title="#{messages.edittest}" rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.edittest}" title="#{messages.edittest}" url="/media/images/edytuj.png" /></h:outputLink>

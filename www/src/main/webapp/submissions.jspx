@@ -5,19 +5,19 @@
         ${messages.submissions}
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formSubmissions" styleClass="profilform">
-            <c:choose>
-                <c:when test="#{requestBean.currentContest == null}">
-                    <div class="not_choosen">
-                        ${messages.contest_not_choosen}
-                    </div>
-                </c:when>
-                <c:when test="#{!(sessionBean.loggedIn)}">
-                    <div class="not_choosen">
-                        ${messages.login_please}
-                    </div>
-                </c:when>
-                <c:otherwise>
+        <c:choose>
+            <c:when test="#{requestBean.currentContest == null}">
+                <div class="not_choosen">
+                    ${messages.contest_not_choosen}
+                </div>
+            </c:when>
+            <c:when test="#{!(sessionBean.loggedIn)}">
+                <div class="not_choosen">
+                    ${messages.login_please}
+                </div>
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formSubmissions" styleClass="profilform">
                     <table>
                         <thead>
                             <tr>
@@ -38,11 +38,11 @@
                         <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="10" >
                             <tr style="#{(submit.result==2)?zw:coloring(zw:points(submit), zw:maxPoints(submit)):'background: #e1d4f6'}">
                                 <td><h:outputText value="#{zw:formatDateAndHour(submit.sdate)}" /></td>
-                            <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
-                                <td>
-                                ${submit.users.login}
-                                </td>
-                            </c:if>
+                                <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
+                                    <td>
+                                        ${submit.users.login}
+                                    </td>
+                                </c:if>
                                 <td><zw:problem-link problem="${submit.problems}" message="${submit.problems.name}" type="problem" /></td>
                             <td>
                                 <h:outputText value="#{messages.waiting}" rendered="#{submit.result == 0}" />
@@ -80,8 +80,8 @@
                             <h:commandButton id="switch" value="#{requestBean.showOnlyMySubmissions ? messages.show_all_submissions : messages.show_only_my_submissions}" action="#{requestBean.switchShowOnlyMy}" />
                         </div>
                     </c:if>
-                </c:otherwise>
-            </c:choose>
-        </a4j:form>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
     </ui:define>
 </ui:composition>

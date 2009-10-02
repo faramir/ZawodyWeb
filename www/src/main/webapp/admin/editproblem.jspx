@@ -12,15 +12,15 @@
         </c:choose>
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formEditProblem" styleClass="profilform" enctype="multipart/form-data">
-            <c:choose>
-                <c:when test="#{requestBean.editedProblem == null}">
-                    ${messages.no_problem}
-                </c:when>
-                <c:when test="#{!(zw:isNullOrZero(requestBean.editedProblem.id)) and !(zw:canEditProblem(rolesBean, requestBean.editedProblem.series.contests.id, requestBean.editedProblem.series.id))}">
-                    ${messages.nonsufficient_privileges}
-                </c:when>
-                <c:otherwise>
+        <c:choose>
+            <c:when test="#{requestBean.editedProblem == null}">
+                ${messages.no_problem}
+            </c:when>
+            <c:when test="#{!(zw:isNullOrZero(requestBean.editedProblem.id)) and !(zw:canEditProblem(rolesBean, requestBean.editedProblem.series.contests.id, requestBean.editedProblem.series.id))}">
+                ${messages.nonsufficient_privileges}
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formEditProblem" styleClass="profilform" enctype="multipart/form-data">
                     <fieldset>
                         <t:saveState id="saveid" value="#{requestBean.temporaryProblemId}" />
                         <div>
@@ -122,8 +122,8 @@
                             <h:message for="save" errorClass="error" />
                         </div>
                     </fieldset>
-                </c:otherwise>
-            </c:choose>
-        </a4j:form>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
     </ui:define>
 </ui:composition>
