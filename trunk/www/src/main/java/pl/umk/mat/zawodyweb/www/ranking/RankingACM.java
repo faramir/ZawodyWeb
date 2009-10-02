@@ -109,7 +109,7 @@ public class RankingACM implements RankingInteface {
                     }
                 }
                 r += RankingUtils.formatText(text,
-                        solutionACM.name+" ["+parseTime(solutionACM.time)+(solutionACM.time_from_bombs==0?"":"+"+parseTime(solutionACM.time_from_bombs)+"]"),
+                        solutionACM.name+" ["+parseTime(solutionACM.time)+(solutionACM.time_from_bombs==0?"":"+"+parseTime(solutionACM.time_from_bombs))+"]",
                         solutionACM.frozen ? "frozen" : null) + " ";
             }
             return r.trim();
