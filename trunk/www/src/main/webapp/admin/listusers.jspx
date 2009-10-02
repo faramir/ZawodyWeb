@@ -32,8 +32,8 @@
                             <h:outputText value="#{user.login}"/>
                         </h:column>
                     </t:dataTable>
-                </ui:define>
-        </c:otherwise>
-    </c:choose>
-</a4j:form>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
 </ui:composition>
