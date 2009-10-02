@@ -5,58 +5,58 @@
         ${messages.questions}
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formQuestions" styleClass="profilform">
-            <c:choose>
-                <c:when test="#{requestBean.currentContest == null}">
-                    <div class="not_choosen">
-                        ${messages.contest_not_choosen}
-                    </div>
-                </c:when>
-                <c:otherwise>
+        <c:choose>
+            <c:when test="#{requestBean.currentContest == null}">
+                <div class="not_choosen">
+                    ${messages.contest_not_choosen}
+                </div>
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formQuestions" styleClass="profilform">
                     <h:panelGroup rendered="#{sessionBean.loggedIn}">
-                    <div>
-                        <h:outputLabel for="problem">${messages.questions_problem}:</h:outputLabel>
-                        <h:selectOneMenu id="problem" required="false" value="#{requestBean.temporaryProblemId}">
-                            <f:selectItem itemValue="" itemLabel="#{messages.questions_general}" />
-                            <c:forEach var="problem" items="#{requestBean.contestsProblems}">
-                                <f:selectItem itemValue="#{problem.id}" itemLabel="#{problem.name}" />
-                            </c:forEach>
-                            <t:saveState id="saveProblemId" value="#{requestBean.temporaryProblemId}" />
-                        </h:selectOneMenu>
-                        <h:message for="problem" errorClass="error" />
-                        <br class="clear" />
-                    </div>
-                    <div>
-                        <h:outputLabel styleClass="required" for="subject">${messages.question_subject}:</h:outputLabel>
-                        <h:inputText id="subject" maxlength="50" required="true" value="#{requestBean.editedQuestion.subject}">
-                        </h:inputText>
-                        <h:message for="subject" errorClass="error" />
-                        <br class="clear" />
-                    </div>
-                    <div>
-                        <h:outputLabel styleClass="required" for="text">${messages.question_text}:</h:outputLabel>
-                        <h:inputTextarea id="text" styleClass="bigHeight" style="width:70%" required="true" value="#{requestBean.editedQuestion.question}">
-                        </h:inputTextarea>
-                        <h:message for="text" errorClass="error" />
-                        <br class="clear" />
-                    </div>
-                    <div>
-                        <a4j:commandButton id="save" reRender="formQuestions" styleClass="submit" type="submit" value="#{messages.send}" action="#{requestBean.addQuestion}" />
-                        <h:message for="save" errorClass="error" />
-                        <br class="clear" />
-                    </div>
-                 </h:panelGroup>
+                        <div>
+                            <h:outputLabel for="problem">${messages.questions_problem}:</h:outputLabel>
+                            <h:selectOneMenu id="problem" required="false" value="#{requestBean.temporaryProblemId}">
+                                <f:selectItem itemValue="" itemLabel="#{messages.questions_general}" />
+                                <c:forEach var="problem" items="#{requestBean.contestsProblems}">
+                                    <f:selectItem itemValue="#{problem.id}" itemLabel="#{problem.name}" />
+                                </c:forEach>
+                                <t:saveState id="saveProblemId" value="#{requestBean.temporaryProblemId}" />
+                            </h:selectOneMenu>
+                            <h:message for="problem" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel styleClass="required" for="subject">${messages.question_subject}:</h:outputLabel>
+                            <h:inputText id="subject" maxlength="50" required="true" value="#{requestBean.editedQuestion.subject}">
+                            </h:inputText>
+                            <h:message for="subject" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel styleClass="required" for="text">${messages.question_text}:</h:outputLabel>
+                            <h:inputTextarea id="text" styleClass="bigHeight" style="width:70%" required="true" value="#{requestBean.editedQuestion.question}">
+                            </h:inputTextarea>
+                            <h:message for="text" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <a4j:commandButton id="save" reRender="formQuestions" styleClass="submit" type="submit" value="#{messages.send}" action="#{requestBean.addQuestion}" />
+                            <h:message for="save" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                    </h:panelGroup>
                     <div class="questions">
                         <t:dataTable id="questions" var="question" footerClass="paginator" value="#{requestBean.currentContestQuestions}" preserveDataModel="false" rows="10" rowClasses="linia2,linia1" columnClasses="col1,col2">
                             <h:column>
                                 <f:facet name="header">
-                                ${messages.question}
+                                    ${messages.question}
                                 </f:facet>
                                 <zw:question-link question="#{question}" />
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
-                                ${messages.questions_problem}
+                                    ${messages.questions_problem}
                                 </f:facet>
                                 <c:catch>
                                     <h:panelGroup rendered="#{question.problems == null}">
@@ -69,8 +69,8 @@
                             </h:column>
                         </t:dataTable>
                     </div>
-                </c:otherwise>
-            </c:choose>
-        </a4j:form>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
     </ui:define>
 </ui:composition>

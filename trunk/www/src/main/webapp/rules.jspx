@@ -3,14 +3,14 @@
         ${messages.rules}
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formRules" styleClass="profilform" style="width:100%">
-            <c:choose>
-                <c:when test="#{requestBean.currentContest == null}">
-                    <div class="not_choosen">
-                        ${messages.contest_not_choosen}
-                    </div>
-                </c:when>
-                <c:otherwise>
+        <c:choose>
+            <c:when test="#{requestBean.currentContest == null}">
+                <div class="not_choosen">
+                    ${messages.contest_not_choosen}
+                </div>
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formRules" styleClass="profilform" style="width:100%">
                     <div style="margin: 0 50px;">
                         <div>
                             <h1>${messages.contest_about}</h1>
@@ -31,8 +31,8 @@
                             </div>
                         </div>
                     </div>
-                </c:otherwise>
-            </c:choose>
-        </a4j:form>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
     </ui:define>
 </ui:composition>

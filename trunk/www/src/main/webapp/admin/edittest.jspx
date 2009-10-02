@@ -1,25 +1,26 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk">
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
     <ui:define name="pageTitle">
         <c:choose>
             <c:when test="#{param.id == '0' or param.id == null}">
-            ${messages.test_adding}
+                ${messages.test_adding}
             </c:when>
             <c:otherwise>
-            ${messages.test_editing}
+                ${messages.test_editing}
             </c:otherwise>
         </c:choose>
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formEditTest" styleClass="profilform">
-            <c:choose>
-                <c:when test="#{requestBean.editedTest == null}">
+        <c:choose>
+            <c:when test="#{requestBean.editedTest == null}">
                 ${messages.no_test}
-                </c:when>
-                <c:when test="#{!(zw:isNullOrZero(requestBean.editedTest.id)) and !(zw:canEditProblem(rolesBean, requestBean.editedTest.problems.series.contests.id, requestBean.editedTest.problems.series.id))}">
+            </c:when>
+            <c:when test="#{!(zw:isNullOrZero(requestBean.editedTest.id)) and !(zw:canEditProblem(rolesBean, requestBean.editedTest.problems.series.contests.id, requestBean.editedTest.problems.series.id))}">
                 ${messages.nonsufficient_privileges}
-                </c:when>
-                <c:otherwise>
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formEditTest" styleClass="profilform">
                     <fieldset>
                         <t:saveState id="saveid" value="#{requestBean.temporaryTestId}" />
                         <div>
@@ -92,8 +93,8 @@
                             <h:message for="save" errorClass="error" />
                         </div>
                     </fieldset>
-                </c:otherwise>
-            </c:choose>
-        </a4j:form>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
     </ui:define>
 </ui:composition>

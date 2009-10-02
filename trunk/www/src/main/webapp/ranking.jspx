@@ -3,14 +3,14 @@
         ${messages.ranking}
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formRanking" styleClass="profilform" style="width:100%">
-            <c:choose>
-                <c:when test="#{requestBean.currentContest == null}">
-                    <div class="not_choosen">
-                        ${messages.contest_not_choosen}
-                    </div>
-                </c:when>
-                <c:otherwise>
+        <c:choose>
+            <c:when test="#{requestBean.currentContest == null}">
+                <div class="not_choosen">
+                    ${messages.contest_not_choosen}
+                </div>
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formRanking" styleClass="profilform" style="width:100%">
                     <c:if test="#{requestBean.currentContestRanking.frozenRanking}">
                         <div class="ranking_frozen">
                             <h:outputText value="#{messages.ranking_frozen}"/>
@@ -50,8 +50,8 @@
                             <c:set var="itr" value="#{itr + 1}" />
                         </c:forEach>
                     </table>
-                </c:otherwise>
-            </c:choose>
-        </a4j:form>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
     </ui:define>
 </ui:composition>
