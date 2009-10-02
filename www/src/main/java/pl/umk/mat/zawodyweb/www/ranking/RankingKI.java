@@ -30,12 +30,16 @@ public class RankingKI implements RankingInteface {
 
         int id_problem;
         long series_begin;
+        String abbrev;
         String name;
+        boolean frozen;
 
-        public ProblemsKI(int id_problem, long series_begin, String name) {
+        public ProblemsKI(int id_problem, long series_begin, String abbrev, String name, boolean frozen) {
             this.id_problem = id_problem;
             this.series_begin = series_begin;
+            this.abbrev = abbrev;
             this.name = name;
+            this.frozen = frozen;
         }
 
         @Override
@@ -49,7 +53,7 @@ public class RankingKI implements RankingInteface {
                 return 1;
             }
 
-            return this.name.compareTo(p2.name);
+            return this.abbrev.compareTo(p2.abbrev);
         }
     }
 
@@ -119,6 +123,7 @@ public class RankingKI implements RankingInteface {
 
         boolean allTests;
         boolean frozenRanking = false;
+        boolean frozenSeria;
 
         for (Series series : seriesDAO.findByContestsid(contest_id)) {
 
@@ -126,13 +131,17 @@ public class RankingKI implements RankingInteface {
                 continue;
             }
 
+            frozenSeria = false;
             checkTimestamp = checkDate;
             allTests = admin;
 
             if (!admin && series.getFreezedate() != null) {
                 if (checkDate.after(series.getFreezedate()) && (series.getUnfreezedate() == null || checkDate.before(series.getUnfreezedate()))) {
                     checkTimestamp = new Timestamp(series.getFreezedate().getTime());
-                    frozenRanking = true;
+                    if (series.getUnfreezedate() != null) {
+                        frozenRanking = true;
+                    }
+                    frozenSeria = true;
                 }
             }
 
@@ -144,7 +153,7 @@ public class RankingKI implements RankingInteface {
             }
 
             for (Problems problems : problemsDAO.findBySeriesid(series.getId())) {
-                vectorProblemsKI.add(new ProblemsKI(problems.getId(), series.getStartdate().getTime(), problems.getAbbrev()));
+                vectorProblemsKI.add(new ProblemsKI(problems.getId(), series.getStartdate().getTime(), problems.getAbbrev(), problems.getName(), frozenSeria));
 
                 Query query = null;
                 if (allTests == true) {
@@ -210,7 +219,7 @@ public class RankingKI implements RankingInteface {
         Vector<String> columnsCSS = new Vector<String>();
         Vector<String> columnsCaptions = new Vector<String>();
         for (ProblemsKI problemsKI : vectorProblemsKI) {
-            columnsCaptions.add(problemsKI.name);
+            columnsCaptions.add(RankingUtils.formatText(problemsKI.abbrev, problemsKI.name, problemsKI.frozen ? "frozen" : null));
             columnsCSS.add("small");
         }
         columnsCaptions.add(messages.getString("points"));

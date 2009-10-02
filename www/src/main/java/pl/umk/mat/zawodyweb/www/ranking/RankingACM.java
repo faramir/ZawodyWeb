@@ -33,16 +33,20 @@ public class RankingACM implements RankingInteface {
 
     private class SolutionACM implements Comparable {
 
-        String name;
+        String abbrev;
         long date;
         long time;
         int bombs;
+        String name;
+        boolean frozen;
 
-        public SolutionACM(String name, long date, long time, int bombs) {
-            this.name = name;
+        public SolutionACM(String abbrev, long date, long time, int bombs, String name, boolean frozen) {
+            this.abbrev = abbrev;
             this.date = date;
             this.time = time;
             this.bombs = bombs;
+            this.name = name;
+            this.frozen = frozen;
         }
 
         @Override
@@ -89,11 +93,12 @@ public class RankingACM implements RankingInteface {
         }
 
         String getSolutionsForRanking() {
-            String s = "";
+            String r = "";
+            String s;
             Collections.sort(this.solutions);
 
             for (SolutionACM solutionACM : solutions) {
-                s += solutionACM.name;
+                s = solutionACM.abbrev;
                 if (solutionACM.bombs >= 4) {
                     s += "(" + solutionACM.bombs + ")";
                 } else {
@@ -101,9 +106,9 @@ public class RankingACM implements RankingInteface {
                         s += "*";
                     }
                 }
-                s += " ";
+                r += RankingUtils.formatText(s, solutionACM.name, solutionACM.frozen ? "frozen" : null) + " ";
             }
-            return s.trim();
+            return r.trim();
         }
 
         @Override
@@ -162,6 +167,7 @@ public class RankingACM implements RankingInteface {
 
         boolean allTests;
         boolean frozenRanking = false;
+        boolean frozenSeria;
 
         for (Series series : seriesDAO.findByContestsid(contest_id)) {
 
@@ -171,11 +177,15 @@ public class RankingACM implements RankingInteface {
 
             checkTimestamp = checkDate;
             allTests = admin;
+            frozenSeria = false;
 
             if (!admin && series.getFreezedate() != null) {
                 if (checkDate.after(series.getFreezedate()) && (series.getUnfreezedate() == null || checkDate.before(series.getUnfreezedate()))) {
                     checkTimestamp = new Timestamp(series.getFreezedate().getTime());
-                    frozenRanking = true;
+                    if (series.getUnfreezedate() != null) {
+                        frozenRanking = true;
+                    }
+                    frozenSeria = true;
                 }
             }
 
@@ -287,7 +297,9 @@ public class RankingACM implements RankingInteface {
                     user.add(maxPoints.intValue(),
                             new SolutionACM(problems.getAbbrev(),
                             ((Timestamp) o[1]).getTime(),
-                            (maxPoints.equals(0) ? 0 : ((Timestamp) o[1]).getTime() - series.getStartdate().getTime() + series.getPenaltytime() * bombs.intValue()), bombs.intValue()));
+                            (maxPoints.equals(0) ? 0 : ((Timestamp) o[1]).getTime() - series.getStartdate().getTime() + series.getPenaltytime() * bombs.intValue()), bombs.intValue(),
+                            problems.getName(),
+                            frozenSeria));
                 }
             }
 
