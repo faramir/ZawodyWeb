@@ -4,6 +4,12 @@
         ${messages.registration}
     </ui:define>
     <ui:define name="pageContent">
+        <div class="frozen" style="text-align: center">
+            Jeśli jesteś użytkownikiem <b>OLAT WMiI UMK</b><br/>
+            albo bierzesz udział w <a href="http://www.mat.umk.pl/rki"><b>Regionalnym Kole informatycznym</b></a>,<br/>
+            <b><u>NIE twórz konta w serwisie ZawodyWeb</u></b>,<br/>
+            ale <h:outputLink value="#{facesContext.externalContext.requestContextPath}/login.html" styleClass="frozen"><b> zaloguj </b></h:outputLink>się za pomocą danych z serwisu OLAT.
+        </div>
         <a4j:form id="formRegister" styleClass="profilform">
             <fieldset>
                 <div>

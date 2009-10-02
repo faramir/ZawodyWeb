@@ -17,6 +17,11 @@
                 <h:graphicImage alt="Zespół" url="/media/images/CRW_3220.jpg" />
                 <h:graphicImage alt="Zespół" url="/media/images/CRW_3196.jpg" />
             </div>
+            <div id="mailto">
+                Jeśli znajdziesz błąd, zauważysz problem z bezpieczeństwem<br/>
+                lub masz inne pytanie techniczne, wyślij wiadomość do:<br/>
+                <h:outputLink value="&#109;&#097;&#105;&#108;&#116;&#111;:&#102;&#097;&#114;&#097;&#109;&#105;&#114;&#064;&#109;&#097;&#116;&#046;&#117;&#109;&#107;&#046;&#112;&#108;"><h:outputText escape="false" value="&#102;&#097;&#114;&#097;&#109;&#105;&#114;&#032;[&#097;&#116;]&#032;&#109;&#097;&#116;&#046;&#117;&#109;&#107;&#046;&#112;&#108;"/></h:outputLink>
+            </div>
         </a4j:form>
     </ui:define>
 </ui:composition>
