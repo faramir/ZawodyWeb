@@ -1101,7 +1101,11 @@ tbody {
 .ranking_frozen {
     font-size: 10px;
     text-align: center;
-    color: red;
+    color: #FF0000;
+}
+
+.frozen {
+    color: #FF0000;
 }
 
 .link_img {
