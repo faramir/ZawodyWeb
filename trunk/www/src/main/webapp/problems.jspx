@@ -18,9 +18,9 @@
                             <h:outputLabel for="problems#{series.id}" styleClass="seria">
                                 <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ranking_seria/#{series.id}/#{zw:filterUri(series.name)}.html">${series.name}</h:outputLink>:
                                 <div class="daty">
-                                    (<h:outputText value="#{zw:formatDateAndHour(series.startdate)}" />
+                                    (<h:outputText value="#{zw:formatDateAndHour(series.startdate, 'yyyy-MM-dd HH:mm')}" />
                                     <c:if test="#{series.enddate!=null}">
-                                        <h:outputText value=" - #{zw:formatDateAndHour(series.enddate)}" />
+                                        <h:outputText value=" - #{zw:formatDateAndHour(series.enddate, 'yyyy-MM-dd HH:mm')}" />
                                     </c:if>)
                                 </div>
                             </h:outputLabel>

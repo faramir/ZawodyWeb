@@ -15,6 +15,10 @@ public class RolesELFunctions {
         return rolesBean.canEditAnyProblem();
     }
 
+    public static Boolean canRateContest(RolesBean rolesBean, Contests contest){
+        return rolesBean.canRateContest(contest);
+    }
+
     public static Boolean canRateAnySeries(RolesBean rolesBean, Contests contest){
         return rolesBean.canRateAnySeries(contest);
     }
