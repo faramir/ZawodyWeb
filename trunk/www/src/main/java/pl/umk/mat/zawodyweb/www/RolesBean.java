@@ -72,6 +72,19 @@ public class RolesBean {
         return false;
     }
 
+    public Boolean canRateContest(Contests contest) {
+        if (contest == null) {
+            return false;
+        }
+
+        for (Series s : contest.getSeriess()) {
+            if (canRate(contest.getId(), s.getId()) == false) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public Boolean canAddContest(Integer contestId, Integer seriesId) {
         if (getUserRoles() == null) {
             return false;

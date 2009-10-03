@@ -1122,7 +1122,7 @@ public class RequestBean {
     public String reJudgeContest(@Param(name = "id", encode = true) int id) {
         Contests c = contestsDAO.getById(id);
 
-        if (c != null && rolesBean.canRateAnySeries(c)) {
+        if (c != null && rolesBean.canRateContest(c)) {
             ContestsUtils.getInstance().reJudge(c);
             return "/start";
         } else {
@@ -1506,36 +1506,33 @@ public class RequestBean {
         submissions = null;
     }
 
-    // http://pl.wikipedia.org/wiki/Odległość_Levenshteina#Obliczanie_odleg.C5.82o.C5.9Bci_Levenshteina
-    private int levenshteinDistance(final String str1, final String str2) {
-        int i, j, m, n, cost;
-        int d[][];
+    private Problems findProblemFromFilename(String filename) {
+        int index;
+        int count = 0;
+        int longest = -1;
+        int min_index = Integer.MAX_VALUE;
 
-        m = str1.length();
-        n = str2.length();
+        Problems problem = null;
 
-        d = new int[m + 1][n + 1];
-
-        for (i = 0; i <= m; i++) {
-            d[i][0] = i;
-        }
-        for (j = 1; j <= n; j++) {
-            d[0][j] = j;
-        }
-
-        for (i = 1; i <= m; i++) {
-            for (j = 1; j <= n; j++) {
-                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
-                    cost = 0;
+        for (Problems p : getSubmittableProblems()) {
+            index = filename.indexOf(p.getAbbrev().toLowerCase());
+            if (index >= 0) {
+                if (index < min_index || (index == min_index && p.getAbbrev().length() > longest)) {
+                    problem = p;
+                    min_index = index;
+                    longest = p.getAbbrev().length();
+                    count = 0;
                 } else {
-                    cost = 1;
+                    ++count;
                 }
-
-                d[i][j] = Math.min(d[i - 1][j] + 1, Math.min(d[i][j - 1] + 1, d[i - 1][j - 1] + cost));
             }
         }
 
-        return d[m][n];
+        if (count > 0) {
+            return null;
+        } else {
+            return problem;
+        }
     }
 
     private String sendSolution(byte[] bytes, String fileName, String controlId) {
@@ -1555,60 +1552,16 @@ public class RequestBean {
                 fileName = fileName.substring(fileName.lastIndexOf(java.io.File.separator) + 1);
                 /* odgadywanie zadania z nazwy */
                 if (temporaryProblemId == 0) {
-                    int tmp;
-                    int num = 0;
-                    int len = 0;
-                    int min_distance = Integer.MAX_VALUE;
-                    String filename_n = fileName;
+                    String filename_tmp = fileName;
 
-                    tmp = fileName.indexOf(".");
-                    if (tmp >= 0) {
-                        filename_n = filename_n.substring(0, tmp);
+                    int index = filename_tmp.indexOf(".");
+                    if (index >= 0) {
+                        filename_tmp = filename_tmp.substring(0, index);
                     }
 
-                    for (Problems p : getSubmittableProblems()) {
-                        tmp = filename_n.indexOf(p.getAbbrev());
-                        if (tmp >= 0) {
-                            if (tmp < min_distance) {
-                                min_distance = tmp;
-                                problem = p;
-                                len = p.getAbbrev().length();
-                                num = 0;
-                            } else if (tmp == min_distance) {
-                                if (p.getAbbrev().length() > len) {
-                                    problem = p;
-                                    len = p.getAbbrev().length();
-                                    num = 0;
-                                } else {
-                                    ++num;
-                                }
-                            }
-                        }
-                    }
+                    problem = findProblemFromFilename(filename_tmp);
                     if (problem == null) {
-                        filename_n = filename_n.toLowerCase();
-                        for (Problems p : getSubmittableProblems()) {
-                            tmp = filename_n.indexOf(p.getAbbrev().toLowerCase());
-                            if (tmp >= 0) {
-                                if (tmp < min_distance) {
-                                    min_distance = tmp;
-                                    problem = p;
-                                    len = p.getAbbrev().length();
-                                    num = 0;
-                                } else if (tmp == min_distance) {
-                                    if (p.getAbbrev().length() > len) {
-                                        problem = p;
-                                        len = p.getAbbrev().length();
-                                        num = 0;
-                                    } else {
-                                        ++num;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (num > 0) {
-                        problem = null;
+                        problem = findProblemFromFilename(filename_tmp.toLowerCase());
                     }
                 } else {
                     problem = problemsDAO.getById(temporaryProblemId);
