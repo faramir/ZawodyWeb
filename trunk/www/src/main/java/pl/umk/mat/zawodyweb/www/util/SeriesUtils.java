@@ -25,9 +25,9 @@ public class SeriesUtils {
     public void reJudge(Series serie) {
         Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         List<Problems> findBySeriesid = DAOFactory.DEFAULT.buildProblemsDAO().findBySeriesid(serie.getId());
+        transaction.commit();
         for (Problems problem : findBySeriesid){
             ProblemsUtils.getInstance().reJudge(problem);
         }
-        transaction.commit();
     }
 }
