@@ -131,8 +131,7 @@ public class ELFunctions {
         return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(t);
     }
 
-    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    public static String formatDateAndTime(Date d) {
-        return sdf.format(d);
+    public static String formatDateAndTime(Date d, String format) {
+        return new SimpleDateFormat(format).format(d);
     }
 }

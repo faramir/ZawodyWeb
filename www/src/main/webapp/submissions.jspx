@@ -37,10 +37,10 @@
                         </thead>
                         <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="10" >
                             <tr style="#{(submit.result==2)?zw:coloring(zw:points(submit), zw:maxPoints(submit)):'background: #e1d4f6'}">
-                                <td><h:outputText value="#{zw:formatDateAndHour(submit.sdate)}" /></td>
+                                <td><h:outputText value="#{zw:formatDateAndHour(submit.sdate, 'yyyy-MM-dd HH:mm:ss')}" /></td>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                                     <td>
-                                        ${submit.users.login} <h:outputLink rendered="#{zw:canEditUsers(rolesBean)}" value="#{facesContext.externalContext.requestContextPath}/admin/edituser.html?id=#{submit.users.id}" title="#{messages.edituser}" styleClass="ikonka"><h:graphicImage alt="#{messages.edituser}" title="#{messages.edituser}" url="/media/images/edytuj.png" /></h:outputLink>
+                                        <h:outputText value="#{submit.users.login}" title="#{submit.users.firstname} #{submit.users.lastname}"/>
                                     </td>
                                 </c:if>
                                 <td><zw:problem-link problem="${submit.problems}" message="${submit.problems.name}" type="problem" /></td>
