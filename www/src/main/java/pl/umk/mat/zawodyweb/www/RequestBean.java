@@ -1082,7 +1082,7 @@ public class RequestBean {
         return null;
     }
 
-    @HttpAction(name = "rejudge_submit", pattern = "rejduge/{id}/submit")
+    @HttpAction(name = "rejudge_submit", pattern = "rejudge/{id}/submit")
     public String reJudgeSubmit(@Param(name = "id", encode = true) int id) {
         Submits s = submitsDAO.getById(id);
 
@@ -1094,7 +1094,7 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(name = "rejudge_problem", pattern = "rejduge/{id}/problem")
+    @HttpAction(name = "rejudge_problem", pattern = "rejudge/{id}/problem")
     public String reJudgeProblem(@Param(name = "id", encode = true) int id) {
         Problems p = problemsDAO.getById(id);
 
@@ -1106,7 +1106,7 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(name = "rejudge_seria", pattern = "rejduge/{id}/seria")
+    @HttpAction(name = "rejudge_seria", pattern = "rejudge/{id}/seria")
     public String reJudgeSeria(@Param(name = "id", encode = true) int id) {
         Series s = seriesDAO.getById(id);
 
@@ -1118,7 +1118,7 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(name = "rejudge_contest", pattern = "rejduge/{id}/contest")
+    @HttpAction(name = "rejudge_contest", pattern = "rejudge/{id}/contest")
     public String reJudgeContest(@Param(name = "id", encode = true) int id) {
         Contests c = contestsDAO.getById(id);
 
