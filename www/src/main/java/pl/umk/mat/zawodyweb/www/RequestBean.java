@@ -293,7 +293,7 @@ public class RequestBean {
                 s.createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
             }
             s.add(Restrictions.or(Restrictions.isNull("enddate"), Restrictions.gt("enddate", new Date())));
-            s.add(Restrictions.lt("startdate", new Date()));
+            s.add(Restrictions.le("startdate", new Date()));
             submittableProblems = c.list();
         }
 
@@ -309,7 +309,7 @@ public class RequestBean {
             c.addOrder(Order.asc("enddate"));
             c.add(Restrictions.eq("contests.id", getCurrentContest().getId()));
             if (!rolesBean.canAddProblem(getCurrentContest().getId(), null)) {
-                c.add(Restrictions.lt("startdate", new Date()));
+                c.add(Restrictions.le("startdate", new Date()));
             }
             currentContestSeries = c.list();
         }
@@ -1506,25 +1506,142 @@ public class RequestBean {
         submissions = null;
     }
 
+    // http://pl.wikipedia.org/wiki/Odległość_Levenshteina#Obliczanie_odleg.C5.82o.C5.9Bci_Levenshteina
+    private int levenshteinDistance(final String str1, final String str2) {
+        int i, j, m, n, cost;
+        int d[][];
+
+        m = str1.length();
+        n = str2.length();
+
+        d = new int[m + 1][n + 1];
+
+        for (i = 0; i <= m; i++) {
+            d[i][0] = i;
+        }
+        for (j = 1; j <= n; j++) {
+            d[0][j] = j;
+        }
+
+        for (i = 1; i <= m; i++) {
+            for (j = 1; j <= n; j++) {
+                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
+                    cost = 0;
+                } else {
+                    cost = 1;
+                }
+
+                d[i][j] = Math.min(d[i - 1][j] + 1, Math.min(d[i][j - 1] + 1, d[i - 1][j - 1] + cost));
+            }
+        }
+
+        return d[m][n];
+    }
+
     private String sendSolution(byte[] bytes, String fileName, String controlId) {
         FacesContext context = FacesContext.getCurrentInstance();
 
         try {
+            Problems problem = null;
             Languages language = null;
+
             if (fileName == null) {
-                language = languagesDAO.getById(temporaryLanguageId);
-                fileName = "source." + language.getExtension();
+                if (temporaryLanguageId != 0) {
+                    problem = problemsDAO.getById(temporaryProblemId);
+                    language = languagesDAO.getById(temporaryLanguageId);
+                    fileName = "source_(" + problem.getAbbrev().replaceAll("[^A-Za-z0-9_+=.,()\\[\\]{};!@#$%&^-]", "_") + ")." + language.getExtension();
+                }
             } else {
                 fileName = fileName.substring(fileName.lastIndexOf(java.io.File.separator) + 1);
-                if (temporaryLanguageId.equals(-1)) {
-                    // TODO: tutaj należałoby dodać obliczanie temporaryLanguageId z nazwy pliku
-                    // a do submit.jspx dodać "< auto >" i "-1" jako wartość lub inaczej to rozwiązać (np. puste i nie required)
+                /* odgadywanie zadania z nazwy */
+                if (temporaryProblemId == 0) {
+                    int tmp;
+                    int num = 0;
+                    int len = 0;
+                    int min_distance = Integer.MAX_VALUE;
+                    String filename_n = fileName;
+
+                    tmp = fileName.indexOf(".");
+                    if (tmp >= 0) {
+                        filename_n = filename_n.substring(0, tmp);
+                    }
+
+                    for (Problems p : getSubmittableProblems()) {
+                        tmp = filename_n.indexOf(p.getAbbrev());
+                        if (tmp >= 0) {
+                            if (tmp < min_distance) {
+                                min_distance = tmp;
+                                problem = p;
+                                len = p.getAbbrev().length();
+                                num = 0;
+                            } else if (tmp == min_distance) {
+                                if (p.getAbbrev().length() > len) {
+                                    problem = p;
+                                    len = p.getAbbrev().length();
+                                    num = 0;
+                                } else {
+                                    ++num;
+                                }
+                            }
+                        }
+                    }
+                    if (problem == null) {
+                        filename_n = filename_n.toLowerCase();
+                        for (Problems p : getSubmittableProblems()) {
+                            tmp = filename_n.indexOf(p.getAbbrev().toLowerCase());
+                            if (tmp >= 0) {
+                                if (tmp < min_distance) {
+                                    min_distance = tmp;
+                                    problem = p;
+                                    len = p.getAbbrev().length();
+                                    num = 0;
+                                } else if (tmp == min_distance) {
+                                    if (p.getAbbrev().length() > len) {
+                                        problem = p;
+                                        len = p.getAbbrev().length();
+                                        num = 0;
+                                    } else {
+                                        ++num;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (num > 0) {
+                        problem = null;
+                    }
+                } else {
+                    problem = problemsDAO.getById(temporaryProblemId);
                 }
-                language = languagesDAO.getById(temporaryLanguageId);
+                if (temporaryLanguageId == 0) {
+                    if (problem != null) {
+                        int longest = -1;
+                        for (LanguagesProblems lp : problem.getLanguagesProblemss()) {
+                            if (fileName.endsWith("." + lp.getLanguages().getExtension()) && lp.getLanguages().getExtension().length() > longest) {
+                                language = lp.getLanguages();
+                                longest = language.getExtension().length();
+                            }
+                        }
+                    }
+                } else {
+                    language = languagesDAO.getById(temporaryLanguageId);
+                }
             }
 
+            if (problem == null) {
+                String summary = String.format("%s", messages.getString("problem_autorecognize_error"));
+                WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit:problem", summary, null);
+            }
 
-            Problems problem = problemsDAO.getById(temporaryProblemId);
+            if (language == null) {
+                String summary = String.format("%s", messages.getString("language_autorecognize_error"));
+                WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit:language", summary, null);
+            }
+
+            if (problem == null || language == null) {
+                return null;
+            }
+
             if (problem.getSeries().getStartdate().before(new Date()) && (problem.getSeries().getEnddate() == null || problem.getSeries().getEnddate().after(new Date()))) {
                 Submits submit = new Submits();
 

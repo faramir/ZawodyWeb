@@ -25,15 +25,13 @@
                         <t:saveState id="saveid" value="#{requestBean.temporaryLanguageId}" />
                         <div>
                             <h:outputLabel for="language_name" styleClass="required">${messages.language_name}:</h:outputLabel>
-                            <h:inputText id="language_name" required="true" value="#{requestBean.editedLanguage.name}">
-                            </h:inputText>
+                            <h:inputText id="language_name" required="true" value="#{requestBean.editedLanguage.name}" />
                             <h:message for="language_name" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="extension" styleClass="required">${messages.extension}:</h:outputLabel>
-                            <h:inputText id="extension" required="true" value="#{requestBean.editedLanguage.extension}">
-                            </h:inputText>
+                            <h:inputText id="extension" required="true" value="#{requestBean.editedLanguage.extension}" />
                             <h:message for="extension" errorClass="error" />
                             <br class="clear" />
                         </div>

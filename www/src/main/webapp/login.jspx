@@ -1,5 +1,5 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich">
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich"  xmlns:t="http://myfaces.apache.org/tomahawk" >
     <ui:define name="pageTitle">
         ${messages.logging}
     </ui:define>
@@ -8,14 +8,14 @@
             <fieldset>
                 <div>
                     <h:outputLabel styleClass="required" for="login">${messages.login}:</h:outputLabel>
-                    <h:inputText id="login" required="true" value="#{sessionBean.login}" />
+                    <t:inputText forceId="true" id="login" required="true" value="#{sessionBean.login}" />
                     <h:message for="login" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
-                    <h:outputLabel styleClass="required" for="passwd">${messages.passwd}:</h:outputLabel>
-                    <h:inputSecret id="passwd" required="true" value="#{sessionBean.currentUser.pass}" />
-                    <h:message for="passwd" errorClass="error" />
+                    <h:outputLabel styleClass="required" for="password">${messages.passwd}:</h:outputLabel>
+                    <t:inputSecret forceId="true" id="password" required="true" value="#{sessionBean.currentUser.pass}" />
+                    <h:message for="password" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
@@ -24,7 +24,7 @@
                     <br class="clear" />
                 </div>
                 <div>
-                    <a4j:commandButton reRender="formLogin" styleClass="submit" type="submit" value="#{messages.log_in}" action="#{sessionBean.logIn}" />
+                    <h:commandButton styleClass="submit" type="submit" value="#{messages.log_in}" action="#{sessionBean.logIn}" />
                 </div>
             </fieldset>
         </a4j:form>

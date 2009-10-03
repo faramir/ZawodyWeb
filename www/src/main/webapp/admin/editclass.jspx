@@ -25,15 +25,13 @@
                         <t:saveState id="saveid" value="#{requestBean.temporaryClassId}" />
                         <div>
                             <h:outputLabel for="description_class" styleClass="required">${messages.description}:</h:outputLabel>
-                            <h:inputText id="description_class" required="true" value="#{requestBean.editedClass.description}">
-                            </h:inputText>
+                            <h:inputText id="description_class" required="true" value="#{requestBean.editedClass.description}" />
                             <h:message for="description_class" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="classname_class" styleClass="required">${messages.classname}:</h:outputLabel>
-                            <h:inputText id="classname_class" required="true" value="#{requestBean.editedClass.filename}">
-                            </h:inputText>
+                            <h:inputText id="classname_class" required="true" value="#{requestBean.editedClass.filename}" />
                             <h:message for="classname_class" errorClass="error" />
                             <br class="clear" />
                         </div>

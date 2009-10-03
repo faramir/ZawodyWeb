@@ -18,29 +18,25 @@
                         <t:saveState id="saveid" value="#{requestBean.temporaryUserId}" />
                         <div>
                             <h:outputLabel for="email_profile" styleClass="required">${messages.email}:</h:outputLabel>
-                            <h:inputText id="email_profile" required="true" value="#{requestBean.editedUser.email}">
-                            </h:inputText>
+                            <h:inputText id="email_profile" required="true" value="#{requestBean.editedUser.email}" />
                             <h:message for="email_profile" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="firstname_profile" styleClass="required">${messages.firstname}:</h:outputLabel>
-                            <h:inputText id="firstname_profile" required="true" value="#{requestBean.editedUser.firstname}">
-                            </h:inputText>
+                            <h:inputText id="firstname_profile" required="true" value="#{requestBean.editedUser.firstname}" />
                             <h:message for="firstname_profile" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="lastname_profile" styleClass="required">${messages.lastname}:</h:outputLabel>
-                            <h:inputText id="lastname_profile" required="true" value="#{requestBean.editedUser.lastname}">
-                            </h:inputText>
+                            <h:inputText id="lastname_profile" required="true" value="#{requestBean.editedUser.lastname}" />
                             <h:message for="lastname_profile" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="passwd_profile">${messages.passwd}:</h:outputLabel>
-                            <h:inputSecret id="passwd_profile" required="false" value="#{requestBean.repPasswd}">
-                            </h:inputSecret>
+                            <h:inputSecret id="passwd_profile" required="false" value="#{requestBean.repPasswd}" />
                             <h:message for="passwd_profile" errorClass="error" />
                             <br class="clear" />
                         </div>
@@ -52,20 +48,17 @@
                         </div>
                         <div>
                             <h:outputLabel for="homeaddress_profile">${messages.homeaddress}:</h:outputLabel>
-                            <h:inputTextarea id="homeaddress_profile" styleClass="smaHeight" required="false" value="#{sessionBean.currentUser.address}">
-                            </h:inputTextarea>
+                            <h:inputTextarea id="homeaddress_profile" styleClass="smaHeight" required="false" value="#{sessionBean.currentUser.address}" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="school_profile">${messages.school}:</h:outputLabel>
-                            <h:inputText id="school_profile" required="false" value="#{requestBean.editedUser.school}">
-                            </h:inputText>
+                            <h:inputText id="school_profile" required="false" value="#{requestBean.editedUser.school}" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="tutor_profile">${messages.tutor}:</h:outputLabel>
-                            <h:inputText id="tutor_profile" required="false" value="#{requestBean.editedUser.tutor}">
-                            </h:inputText>
+                            <h:inputText id="tutor_profile" required="false" value="#{requestBean.editedUser.tutor}" />
                             <br class="clear" />
                         </div>
                         <div>
