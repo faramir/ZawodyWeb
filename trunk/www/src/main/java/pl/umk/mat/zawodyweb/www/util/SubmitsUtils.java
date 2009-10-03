@@ -31,15 +31,4 @@ public class SubmitsUtils {
 
         JudgeManagerConnector.getInstance().sentToJudgeManager(submit.getId());
     }
-
-    public boolean deleteSubmit(Submits submit) {
-        try {
-            Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-            DAOFactory.DEFAULT.buildSubmitsDAO().delete(submit);
-            transaction.commit();
-            return true;
-        } catch (Exception ex) {
-            return false;
-        }
-    }
 }

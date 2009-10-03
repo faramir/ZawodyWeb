@@ -12,6 +12,7 @@
                     <zw:contest-link id="link" contest="${contest}" type="problems" message="#{contest.name}" />
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editcontest.html?id=#{contest.id}" rendered="#{zw:canEditContest(rolesBean, contest.id, null)}" styleClass="ikonka"><h:graphicImage alt="${messages.contest_editing}" title="${messages.contest_editing}" url="/media/images/edytuj.png" /></h:outputLink>
                     <h:outputLink value="#" rendered="#{zw:canDeleteContest(rolesBean, contest.id, null)}" styleClass="ikonka" onclick="confirm(this,{nazwa:'konkurs #{contest.name}',link:'#{facesContext.externalContext.requestContextPath}/del/#{contest.id}/contest.html'})"><h:graphicImage alt="${messages.contest_deleting}" title="${messages.contest_deleting}" url="/media/images/usun.png" /></h:outputLink>
+                    <h:outputLink value="#" title="#{messages.rejudge_contest}" rendered="#{zw:canRateAnySeries(rolesBean, contest)}" styleClass="ikonka" onclick="confirm_rejudge(this,{nazwa:'wszystkie rozwiązania zadań z zawodów #{contest.name}',link:'#{facesContext.externalContext.requestContextPath}/rejudge/#{contest.id}/contest.html'})"><h:graphicImage alt="#{messages.rejudge_contest}" title="#{messages.rejudge_contest}" url="/media/images/reJudge.png" /></h:outputLink>
                 </h:column>
                 <h:column>
                     <f:facet name="header">

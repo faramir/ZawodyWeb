@@ -59,6 +59,10 @@ import pl.umk.mat.zawodyweb.database.pojo.UsersRoles;
 import pl.umk.mat.zawodyweb.www.datamodels.PagedDataModel;
 import pl.umk.mat.zawodyweb.www.ranking.Ranking;
 import pl.umk.mat.zawodyweb.www.ranking.RankingTable;
+import pl.umk.mat.zawodyweb.www.util.ContestsUtils;
+import pl.umk.mat.zawodyweb.www.util.ProblemsUtils;
+import pl.umk.mat.zawodyweb.www.util.SeriesUtils;
+import pl.umk.mat.zawodyweb.www.util.SubmitsUtils;
 
 /**
  *
@@ -1078,6 +1082,54 @@ public class RequestBean {
         return null;
     }
 
+    @HttpAction(name = "rejudge_submit", pattern = "rejduge/{id}/submit")
+    public String reJudgeSubmit(@Param(name = "id", encode = true) int id) {
+        Submits s = submitsDAO.getById(id);
+
+        if (s != null && rolesBean.canRate(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
+            SubmitsUtils.getInstance().reJudge(s);
+            return "/submissions";
+        } else {
+            return null;
+        }
+    }
+
+    @HttpAction(name = "rejudge_problem", pattern = "rejduge/{id}/problem")
+    public String reJudgeProblem(@Param(name = "id", encode = true) int id) {
+        Problems p = problemsDAO.getById(id);
+
+        if (p != null && rolesBean.canRate(p.getSeries().getContests().getId(), p.getSeries().getId())) {
+            ProblemsUtils.getInstance().reJudge(p);
+            return "/problems";
+        } else {
+            return null;
+        }
+    }
+
+    @HttpAction(name = "rejudge_seria", pattern = "rejduge/{id}/seria")
+    public String reJudgeSeria(@Param(name = "id", encode = true) int id) {
+        Series s = seriesDAO.getById(id);
+
+        if (s != null && rolesBean.canRate(s.getContests().getId(), s.getId())) {
+            SeriesUtils.getInstance().reJudge(s);
+            return "/problems";
+        } else {
+            return null;
+        }
+    }
+
+    @HttpAction(name = "rejudge_contest", pattern = "rejduge/{id}/contest")
+    public String reJudgeContest(@Param(name = "id", encode = true) int id) {
+        Contests c = contestsDAO.getById(id);
+
+        if (c != null && rolesBean.canRateAnySeries(c)) {
+            ContestsUtils.getInstance().reJudge(c);
+            return "/start";
+        } else {
+            return null;
+        }
+    }
+
     @HttpAction(name = "problems", pattern = "problems/{id}/{title}")
     public String goToProblems(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
@@ -1104,7 +1156,7 @@ public class RequestBean {
         if (getCurrentContest() == null) {
             return "/error/404";
         } else {
-            if ("__admin__".equals(dummy) && rolesBean.canAddProblem(getCurrentContest().getId(), null))  {
+            if ("__admin__".equals(dummy) && rolesBean.canAddProblem(getCurrentContest().getId(), null)) {
                 temporaryAdminBoolean = true;
             } else {
                 temporaryAdminBoolean = false;
@@ -1116,7 +1168,7 @@ public class RequestBean {
     @HttpAction(name = "ranking_seria", pattern = "ranking_seria/{id}/{title}")
     public String goToRankingSeria(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         Series s = seriesDAO.getById(id);
-        if (s==null) {
+        if (s == null) {
             return "/error/404";
         }
 
@@ -1126,7 +1178,7 @@ public class RequestBean {
             return "/error/404";
         } else {
             temporarySeriesId = id;
-            if ("__admin__".equals(dummy) && rolesBean.canAddProblem(getCurrentContest().getId(), id))  {
+            if ("__admin__".equals(dummy) && rolesBean.canAddProblem(getCurrentContest().getId(), id)) {
                 temporaryAdminBoolean = true;
             } else {
                 temporaryAdminBoolean = false;
@@ -1259,7 +1311,7 @@ public class RequestBean {
     public String deleteSubmit(@Param(name = "id", encode = true) int id) {
         Submits s = submitsDAO.getById(id);
 
-        if (rolesBean.canAddProblem(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
+        if (s != null && rolesBean.canAddProblem(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
             submitsDAO.deleteById(id);
             return "/submissions";
         } else {
