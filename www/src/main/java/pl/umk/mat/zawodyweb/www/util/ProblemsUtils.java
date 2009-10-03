@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Vector;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
@@ -34,7 +33,6 @@ public class ProblemsUtils {
     }
 
     public Problems copySolution(Problems problem, Series serie, boolean copySolution) {
-        Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         Problems copyProblem = new Problems();
         copyProblem.setAbbrev(problem.getAbbrev());
         copyProblem.setClasses(problem.getClasses());
@@ -115,14 +113,11 @@ public class ProblemsUtils {
                 }
             }
         }
-        transaction.commit();
         return copyProblem;
     }
 
     public void reJudge(Problems problem) {
-        Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         List<Submits> findByProblemsid = DAOFactory.DEFAULT.buildSubmitsDAO().findByProblemsid(problem.getId());
-        transaction.commit();
         for (Submits submit : findByProblemsid) {
             SubmitsUtils.getInstance().reJudge(submit);
         }
