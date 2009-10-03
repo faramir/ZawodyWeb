@@ -58,7 +58,7 @@
                             </c:if>
                             <c:if test="#{!(requestBean.showOnlyMySubmissions) and zw:canAddProblem(rolesBean, series.contests.id, series.id)}">
                                 <td>
-                                    <h:outputLink value="#" title="#{messages.delsubmit}" styleClass="ikonka" onclick="confirm(this,{nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/del/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.delsubmit}" title="#{messages.delproblem}" url="/media/images/usun.png" /></h:outputLink>
+                                    <h:outputLink value="#" title="#{messages.delsubmit}" styleClass="ikonka" onclick="confirm(this,{nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/del/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.delsubmit}" title="#{messages.delsubmit}" url="/media/images/usun.png" /></h:outputLink>
                                     <h:outputLink value="#" title="#{messages.rejudge_submit}" rendered="#{zw:canRate(rolesBean, series.contests.id, series.id)}" styleClass="ikonka" onclick="confirm_rejudge(this,{nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/rejudge/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.rejudge_submit}" title="#{messages.rejudge_submit}" url="/media/images/reJudge.png" /></h:outputLink>
                                 </td>
                             </c:if>
