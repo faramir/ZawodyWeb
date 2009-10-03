@@ -5,18 +5,18 @@
         ${messages.send_solution}
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formSubmit" styleClass="profilform" enctype="multipart/form-data">
-            <c:choose>
-                <c:when test="#{!(sessionBean.loggedIn)}">
-                    <div class="not_choosen">
-                        ${messages.login_please}
-                    </div>
-                </c:when>
-                <c:otherwise>
+        <c:choose>
+            <c:when test="#{!(sessionBean.loggedIn)}">
+                <div class="not_choosen">
+                    ${messages.login_please}
+                </div>
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formSubmit" styleClass="profilform" enctype="multipart/form-data">
                     <div style="padding-top:10px;">
                         <h:outputLabel styleClass="required" for="problem">${messages.submit_problem}:</h:outputLabel>
-                        <h:selectOneMenu id="problem" required="true" value="#{requestBean.temporaryProblemId}">
-                            <f:selectItem itemValue="" itemLabel="" />
+                        <h:selectOneMenu id="problem" value="#{requestBean.temporaryProblemId}">
+                            <f:selectItem itemValue="0" itemLabel="&lt; auto &gt;" />
                             <c:forEach var="problem" items="#{requestBean.submittableProblems}">
                                 <f:selectItem itemValue="#{problem.id}" itemLabel="#{problem.name}" />
                             </c:forEach>
@@ -28,8 +28,8 @@
                     </div>
                     <div>
                         <h:outputLabel styleClass="required" for="language">${messages.submit_language}:</h:outputLabel>
-                        <h:selectOneMenu id="language" required="true" value="#{requestBean.temporaryLanguageId}">
-                            <f:selectItem itemValue="" itemLabel="" />
+                        <h:selectOneMenu id="language" value="#{requestBean.temporaryLanguageId}">
+                            <f:selectItem itemValue="0" itemLabel="&lt; auto &gt;" />
                             <c:forEach var="languagesproblems" items="#{requestBean.temporaryLanguagesProblems}">
                                 <f:selectItem itemValue="#{languagesproblems.languages.id}" itemLabel="#{languagesproblems.languages.extension}" />
                             </c:forEach>
@@ -59,8 +59,8 @@
                         <h:message for="sendcode" errorClass="error" />
                         <br class="clear" />
                     </div>
-                </c:otherwise>
-            </c:choose>
-        </a4j:form>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
     </ui:define>
 </ui:composition>

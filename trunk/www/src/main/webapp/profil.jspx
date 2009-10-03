@@ -4,14 +4,14 @@
         ${messages.profile}
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formProfile" styleClass="profilform">
-            <c:choose>
-                <c:when test="#{!(sessionBean.loggedIn)}">
-                    <div class="not_choosen">
-                        ${messages.login_please}
-                    </div>
-                </c:when>
-                <c:otherwise>
+        <c:choose>
+            <c:when test="#{!(sessionBean.loggedIn)}">
+                <div class="not_choosen">
+                    ${messages.login_please}
+                </div>
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formProfile" styleClass="profilform">
                     <fieldset>
                         <div>
                             <h:outputLabel for="email_profile" styleClass="required">${messages.email}:</h:outputLabel>
@@ -68,8 +68,8 @@
                             <a4j:commandButton id="save_profile" reRender="formProfile" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.updateUser}" />
                         </div>
                     </fieldset>
-                </c:otherwise>
-            </c:choose>
-        </a4j:form>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
     </ui:define>
 </ui:composition>

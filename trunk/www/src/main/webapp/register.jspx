@@ -36,22 +36,19 @@
                 </div>
                 <div>
                     <h:outputLabel for="email" styleClass="required">${messages.email}:</h:outputLabel>
-                    <h:inputText id="email" required="true" value="#{requestBean.newUser.email}">
-                    </h:inputText>
+                    <h:inputText id="email" required="true" value="#{requestBean.newUser.email}" />
                     <h:message for="email" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
                     <h:outputLabel for="firstname" styleClass="required">${messages.firstname}:</h:outputLabel>
-                    <h:inputText id="firstname" required="true" value="#{requestBean.newUser.firstname}">
-                    </h:inputText>
+                    <h:inputText id="firstname" required="true" value="#{requestBean.newUser.firstname}" />
                     <h:message for="firstname" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
                     <h:outputLabel for="lastname" styleClass="required">${messages.lastname}:</h:outputLabel>
-                    <h:inputText id="lastname" required="true" value="#{requestBean.newUser.lastname}">
-                    </h:inputText>
+                    <h:inputText id="lastname" required="true" value="#{requestBean.newUser.lastname}" />
                     <h:message for="lastname" errorClass="error" />
                     <br class="clear" />
                 </div>
@@ -63,20 +60,17 @@
                 </div>
                 <div>
                     <h:outputLabel for="homeaddress">${messages.homeaddress}:</h:outputLabel>
-                    <h:inputTextarea id="homeaddress" styleClass="smaHeight" required="false" value="#{requestBean.newUser.address}">
-                    </h:inputTextarea>
+                    <h:inputTextarea id="homeaddress" styleClass="smaHeight" required="false" value="#{requestBean.newUser.address}" />
                     <br class="clear" />
                 </div>
                 <div>
                     <h:outputLabel for="school">${messages.school}:</h:outputLabel>
-                    <h:inputText id="school" required="false" value="#{requestBean.newUser.school}">
-                    </h:inputText>
+                    <h:inputText id="school" required="false" value="#{requestBean.newUser.school}" />
                     <br class="clear" />
                 </div>
                 <div>
                     <h:outputLabel for="tutor">${messages.tutor}:</h:outputLabel>
-                    <h:inputText id="tutor" required="false" value="#{requestBean.newUser.tutor}">
-                    </h:inputText>
+                    <h:inputText id="tutor" required="false" value="#{requestBean.newUser.tutor}" />
                     <br class="clear" />
                 </div>
                 <div>

@@ -5,5 +5,5 @@ function confirm(e, args)
 
 function confirm_rejudge(e, args)
 {
-    jConfirm('Sprawdzi\u0107 '+ args.nazwa + ' ponownie?', 'reJudge', function(r){if(r){window.location=args.link;}});
+    jConfirm('Sprawdzi\u0107 ponownie '+ args.nazwa + '?', 'reJudge', function(r){if(r){window.location=args.link;}});
 }
