@@ -40,7 +40,7 @@
                                 <td><h:outputText value="#{zw:formatDateAndHour(submit.sdate)}" /></td>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                                     <td>
-                                        ${submit.users.login}
+                                        ${submit.users.login} <h:outputLink rendered="#{zw:canEditUsers(rolesBean)}" value="#{facesContext.externalContext.requestContextPath}/admin/edituser.html?id=#{submit.users.id}" title="#{messages.edituser}" styleClass="ikonka"><h:graphicImage alt="#{messages.edituser}" title="#{messages.edituser}" url="/media/images/edytuj.png" /></h:outputLink>
                                     </td>
                                 </c:if>
                                 <td><zw:problem-link problem="${submit.problems}" message="${submit.problems.name}" type="problem" /></td>
