@@ -64,19 +64,19 @@ public class MainJudgeManager {
         }
 
         /* displaying properties */
-        logger.debug("WWW_PORT = " + properties.getProperty("WWW_PORT"));
-        logger.debug("WWW_LISTEN_ADDRESS = " + properties.getProperty("WWW_LISTEN_ADDRESS"));
-        logger.debug("WWW_POOL = " + properties.getProperty("WWW_POOL"));
-        logger.debug("WWW_ADDRESSES = " + properties.getProperty("WWW_ADDRESSES"));
-        logger.debug("WWW_TIMEOUT = " + properties.getProperty("WWW_TIMEOUT"));
+        logger.info("WWW_PORT = " + properties.getProperty("WWW_PORT"));
+        logger.info("WWW_LISTEN_ADDRESS = " + properties.getProperty("WWW_LISTEN_ADDRESS"));
+        logger.info("WWW_POOL = " + properties.getProperty("WWW_POOL"));
+        logger.info("WWW_ADDRESSES = " + properties.getProperty("WWW_ADDRESSES"));
+        logger.info("WWW_TIMEOUT = " + properties.getProperty("WWW_TIMEOUT"));
 
-        logger.debug("JUDGE_PORT = " + properties.getProperty("JUDGE_PORT"));
-        logger.debug("JUDGE_LISTEN_ADDRESS = " + properties.getProperty("JUDGE_LISTEN_ADDRESS"));
-        logger.debug("JUDGE_POOL = " + properties.getProperty("JUDGE_POOL"));
-        logger.debug("JUDGE_ADDRESSES = " + properties.getProperty("JUDGE_ADDRESSES"));
-        logger.debug("JUDGE_DELAY = " + properties.getProperty("JUDGE_DELAY"));
+        logger.info("JUDGE_PORT = " + properties.getProperty("JUDGE_PORT"));
+        logger.info("JUDGE_LISTEN_ADDRESS = " + properties.getProperty("JUDGE_LISTEN_ADDRESS"));
+        logger.info("JUDGE_POOL = " + properties.getProperty("JUDGE_POOL"));
+        logger.info("JUDGE_ADDRESSES = " + properties.getProperty("JUDGE_ADDRESSES"));
+        logger.info("JUDGE_DELAY = " + properties.getProperty("JUDGE_DELAY"));
 
-        logger.debug("DELAY_PROCESS = " + properties.getProperty("DELAY_PROCESS"));
+        logger.info("DELAY_PROCESS = " + properties.getProperty("DELAY_PROCESS"));
 
         try {
             delayProcess = Integer.parseInt(properties.getProperty("DELAY_PROCESS"));
