@@ -77,8 +77,8 @@
       $this.monthsFullNames[5]  = "czerwca";
       $this.monthsFullNames[6]  = "lipca";
       $this.monthsFullNames[7]  = "sierpnia";
-      $this.monthsFullNames[8]  = "września";
-      $this.monthsFullNames[9]  = "października";
+      $this.monthsFullNames[8]  = "wrze\u015bnia";
+      $this.monthsFullNames[9]  = "pa\u017adziernika";
       $this.monthsFullNames[10] = "listopada";
       $this.monthsFullNames[11] = "grudnia";
 
