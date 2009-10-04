@@ -14,7 +14,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import pl.umk.mat.zawodyweb.checker.CheckerInterface;
 import pl.umk.mat.zawodyweb.checker.CheckerResult;
 import pl.umk.mat.zawodyweb.checker.TestInput;
@@ -151,7 +154,11 @@ public class MainJudge {
 
                 /* downloading tests */
                 logger.debug("Downloading tests...");
-                List<Tests> tests = DAOFactory.DEFAULT.buildTestsDAO().findByProblemsid(submit.getProblems().getId());
+                Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Tests.class);
+                c.add(Restrictions.eq("problems.id", submit.getProblems().getId()));
+                c.addOrder(Order.asc("testorder"));
+                List<Tests> tests = c.list();
+
                 TestInput testInput;
                 TestOutput testOutput;
                 boolean undefinedResult = false;

@@ -219,14 +219,16 @@ public class RequestBean {
 
     public List<Classes> getAllClasses() {
         if (allClasses == null) {
-            allClasses = classesDAO.findAll();
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Classes.class);
+            c.addOrder(Order.asc("id"));
+            allClasses = c.list();
         }
         return allClasses;
     }
 
     public List<Classes> getDiffClasses() {
         if (diffClasses == null) {
-            diffClasses = classesDAO.findAll();
+            diffClasses = getAllClasses();
             List<Languages> tmp = languagesDAO.findAll();
             for (Languages l : tmp) {
                 diffClasses.remove(l.getClasses());
@@ -238,7 +240,9 @@ public class RequestBean {
 
     public List<Languages> getLanguages() {
         if (languages == null) {
-            languages = languagesDAO.findAll();
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Languages.class);
+            c.addOrder(Order.asc("id"));
+            languages = c.list();
         }
 
         return languages;
@@ -1543,13 +1547,16 @@ public class RequestBean {
             Languages language = null;
 
             if (fileName == null) {
-                if (temporaryLanguageId != 0) {
+                if (temporaryProblemId != 0) {
                     problem = problemsDAO.getById(temporaryProblemId);
+                }
+                if (temporaryLanguageId != 0) {
                     language = languagesDAO.getById(temporaryLanguageId);
-                    fileName = "source_(" + problem.getAbbrev().replaceAll("[^A-Za-z0-9_+=.,()\\[\\]{};!@#$%&^-]", "_") + ")." + language.getExtension();
+                    fileName = "source_" + problem.getAbbrev().replaceAll("[^A-Za-z0-9_-]", "_") + "." + language.getExtension();
                 }
             } else {
-                fileName = fileName.substring(fileName.lastIndexOf(java.io.File.separator) + 1);
+                fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+                fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
                 /* odgadywanie zadania z nazwy */
                 if (temporaryProblemId == 0) {
                     String filename_tmp = fileName;

@@ -51,7 +51,7 @@ public class LanguageC implements CompilerInterface {
         System.gc();
         List<String> command = Arrays.asList(path);
         if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
-            command = Arrays.asList("bash", "-c", "ulimit -v " + input.getMemoryLimit() + " && " + path);
+            command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " && '" + path + "'");
         } else {
             logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
         }
@@ -188,7 +188,7 @@ public class LanguageC implements CompilerInterface {
 
                 compileResult = CheckerErrors.CE;
                 while ((line = input.readLine()) != null) {
-                    line = line.replaceAll("^.*"+codefile, properties.getProperty("CODE_FILENAME"));
+                    line = line.replaceAll("^.*" + codefile, properties.getProperty("CODE_FILENAME"));
                     compileDesc = compileDesc + line + "\n";
                 }
                 input.close();

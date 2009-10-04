@@ -51,8 +51,8 @@ public class LanguageJAVA implements CompilerInterface {
         }
         BufferedReader inputStream;
         System.gc();
-        Vector<String> command = new Vector<String>(Arrays.asList("java", "-Xmx" + input.getMemoryLimit() + "k",
-                "-Xms" + input.getMemoryLimit() + "k", "-Xss" + input.getMemoryLimit() + "k"));
+        Vector<String> command = new Vector<String>(Arrays.asList("java", "-Xmx" + input.getMemoryLimit() + "m",
+                "-Xms" + input.getMemoryLimit() + "m", "-Xss" + input.getMemoryLimit() + "m"));
         if (!security.isEmpty()) {
             command.add("-Djava.security.manager");
             command.add("-Djava.security.policy=" + security);
