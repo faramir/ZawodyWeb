@@ -10,11 +10,11 @@
                 <div class="nazwa">
                     [${requestBean.currentProblem.abbrev}] ${requestBean.currentProblem.name}
                 </div>
-                <c:if test="#{requestBean.currentProblem.series.enddate!=null}">
-                    <div class="termin">
-                        ${requestBean.currentProblem.series.enddate}
-                    </div>
-                </c:if>
+                <div class="termin">
+                    <c:if test="#{requestBean.currentProblem.series.enddate!=null}">
+                        ${messages.series_enddate}: ${zw:formatDateAndHour(requestBean.currentProblem.series.enddate, 'yyyy-MM-dd HH:mm')}
+                    </c:if>
+                </div>
                 <div class="jezyki">
                     ${messages.languages}:
                     <c:forEach var="languageproblem" items="#{requestBean.currentProblem.languagesProblemss}">
@@ -22,10 +22,10 @@
                     </c:forEach>
                 </div>
                 <div class="czas">
-                    ${messages.test_timelimit}: ${zw:maxLimitTime(requestBean.currentProblem)/1000} s
+                    ${messages.test_timelimit2}: ${zw:maxLimitTime(requestBean.currentProblem)/1000} s
                 </div>
                 <div class="pamiec">
-                    ${messages.problem_memlimit}: ${requestBean.currentProblem.memlimit} kB
+                    ${messages.problem_memlimit2}: ${requestBean.currentProblem.memlimit} kB
                 </div>
                 <div class="pdf">
                     <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/pdf.html" title="PDF" rendered="#{requestBean.currentProblem.PDF != null}"><h:graphicImage alt="${messages.pdf_download}" title="${messages.pdf_download}" url="/media/images/edytuj.png" /></h:outputLink>
