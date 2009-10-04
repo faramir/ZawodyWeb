@@ -20,11 +20,11 @@
                 </div>
                 <div>
                     <h:outputLabel for="remember">${messages.remember_login}:</h:outputLabel>
-                    <h:selectBooleanCheckbox id="remember" styleClass="check" value="#{sessionBean.rememberMe}" />
+                    <t:selectBooleanCheckbox forceId="true" id="remember" styleClass="check" value="#{sessionBean.rememberMe}" />
                     <br class="clear" />
                 </div>
                 <div>
-                    <h:commandButton styleClass="submit" type="submit" value="#{messages.log_in}" action="#{sessionBean.logIn}" />
+                    <t:commandButton forceId="true" styleClass="submit" type="submit" value="#{messages.log_in}" action="#{sessionBean.logIn}" />
                 </div>
             </fieldset>
         </a4j:form>

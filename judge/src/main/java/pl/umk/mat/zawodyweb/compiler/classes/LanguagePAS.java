@@ -51,7 +51,7 @@ public class LanguagePAS implements CompilerInterface {
         System.gc();
         List<String> command = Arrays.asList(path);
         if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
-            command = Arrays.asList("bash", "-c", "ulimit -v " + input.getMemoryLimit() + " && " + path);
+            command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " && '" + path + "'");
         } else {
             logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
         }
@@ -61,7 +61,7 @@ public class LanguagePAS implements CompilerInterface {
             long time = new Date().getTime();
             timer.schedule(Thread.currentThread(), input.getTimeLimit());
             try {
-                inputStream =new BufferedReader(new InputStreamReader(p.getInputStream()));
+                inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
                 outputStream.write(input.getText());
                 //outputStream.flush();
@@ -75,7 +75,7 @@ public class LanguagePAS implements CompilerInterface {
             }
             long currentTime = new Date().getTime();
             timer.cancel();
-            
+
             if (p.exitValue() != 0) {
                 output.setResult(CheckerErrors.RE);
                 output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
@@ -188,7 +188,7 @@ public class LanguagePAS implements CompilerInterface {
                 return compilefile;
             }
             timer.cancel();
-            
+
             if (p.exitValue() != 0) {
 
                 compileResult = CheckerErrors.CE;
