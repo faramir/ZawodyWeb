@@ -11,8 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
@@ -187,7 +186,7 @@ public class LanguageCPP implements CompilerInterface {
 
                 compileResult = CheckerErrors.CE;
                 while ((line = input.readLine()) != null) {
-                    line = line.replaceAll("^.*" + codefile, properties.getProperty("CODE_FILENAME"));
+                    line = line.replaceAll("^.*" + Pattern.quote(codefile), properties.getProperty("CODE_FILENAME"));
                     compileDesc = compileDesc + line + "\n";
                 }
                 input.close();
