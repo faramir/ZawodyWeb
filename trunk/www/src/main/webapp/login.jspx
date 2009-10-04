@@ -24,7 +24,7 @@
                     <br class="clear" />
                 </div>
                 <div>
-                    <t:commandButton forceId="true" styleClass="submit" type="submit" value="#{messages.log_in}" action="#{sessionBean.logIn}" />
+                    <h:commandButton id="submit" styleClass="submit" type="submit" value="#{messages.log_in}" action="#{sessionBean.logIn}" />
                 </div>
             </fieldset>
         </a4j:form>
