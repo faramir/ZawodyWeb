@@ -1093,9 +1093,16 @@ tbody {
     width: 32%;
 }
 
-.profilform table.ranking {
+
+.profilform div#scroll {
     width: 100%;
+    overflow: auto;
+}
+
+.profilform table.ranking {
     padding-bottom: 10px;
+    table-layout: fixed;
+    width: auto;
 }
 
 .ranking_frozen {
