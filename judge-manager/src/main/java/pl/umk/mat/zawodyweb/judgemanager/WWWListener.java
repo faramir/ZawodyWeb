@@ -73,6 +73,7 @@ public class WWWListener extends Thread {
                 out.writeInt(submitId);
                 out.flush();
             } catch (IOException ex) {
+                logger.info("Exception reading submit_id from WWW", ex);
             } finally {
                 try {
                     wwwClient.close();
