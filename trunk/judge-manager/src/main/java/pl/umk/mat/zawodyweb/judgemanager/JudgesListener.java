@@ -89,7 +89,7 @@ public class JudgesListener extends Thread {
                                 logger.info("Send submit(" + submitId + ") to Judge: " + judgeHost);
                                 out.flush();
                                 in.readInt();
-                                logger.info("Judge " + judgeHost + "checked submit(" + submitId + ")");
+                                logger.info("Checked submit(" + submitId + ") by Judge: " + judgeHost);
                             }
 
                             transaction.commit();
