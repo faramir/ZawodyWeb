@@ -121,14 +121,22 @@ public class Users implements Serializable {
     @Basic
     @Column(name = "firstname", length = 40)
     public String getFirstname() {
-        return firstname;
+        if (firstname != null) {
+            return firstname.trim();
+        } else {
+            return firstname;
+        }
     }
 
     /**
      * @param firstname new value for firstname
      */
     public void setFirstname(String firstname) {
-        this.firstname = firstname;
+        if (firstname != null) {
+            this.firstname = firstname.trim();
+        } else {
+            this.firstname = firstname;
+        }
     }
 
     /* liste transiente */
@@ -138,14 +146,22 @@ public class Users implements Serializable {
     @Basic
     @Column(name = "lastname", length = 40)
     public String getLastname() {
-        return lastname;
+        if (lastname != null) {
+            return lastname.trim();
+        } else {
+            return lastname;
+        }
     }
 
     /**
      * @param lastname new value for lastname
      */
     public void setLastname(String lastname) {
-        this.lastname = lastname;
+        if (lastname != null) {
+            this.lastname = lastname.trim();
+        } else {
+            this.lastname = lastname;
+        }
     }
 
     /* liste transiente */
@@ -189,14 +205,22 @@ public class Users implements Serializable {
     @Basic
     @Column(name = "login", length = 20)
     public String getLogin() {
-        return login;
+        if (login != null) {
+            return login.trim();
+        } else {
+            return login;
+        }
     }
 
     /**
      * @param login new value for login
      */
     public void setLogin(String login) {
-        this.login = login;
+        if (login != null) {
+            this.login = login.trim();
+        } else {
+            this.login = login;
+        }
     }
 
     /* liste transiente */
@@ -214,17 +238,17 @@ public class Users implements Serializable {
     public String hashPass(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA1");
-            md.update((login+"+"+password).getBytes());
+            md.update((login + "+" + password).getBytes());
             byte[] digest = md.digest();
             org.apache.commons.codec.binary.Hex hex = new Hex();
             return new String(hex.encode(digest));
-                    } catch (NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
         }
-         return null;
+        return null;
     }
 
-    public boolean checkPass (String passToCheck) {
+    public boolean checkPass(String passToCheck) {
         return hashPass(passToCheck).equals(pass);
     }
 
@@ -233,7 +257,7 @@ public class Users implements Serializable {
      * @param pass new value for pass
      */
     public void setPass(String pass) {
-            this.pass = pass;
+        this.pass = pass;
     }
 
     public void savePass(String pass) {
