@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.regex.Pattern;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import org.apache.log4j.Logger;
@@ -66,7 +67,7 @@ public class LanguageJAVA implements CompilerInterface {
             long time = new Date().getTime();
             timer.schedule(Thread.currentThread(), input.getTimeLimit());
             try {
-                inputStream =new BufferedReader(new InputStreamReader(p.getInputStream()));
+                inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
                 outputStream.write(input.getText());
                 //outputStream.flush();
@@ -125,10 +126,12 @@ public class LanguageJAVA implements CompilerInterface {
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
             ByteArrayOutputStream err = new ByteArrayOutputStream();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            if (compiler.run(new ByteArrayInputStream(new String().getBytes()),
-                    out, err, codefile) != 0) {
-                compileDesc = err.toString();
+            if (compiler.run(new ByteArrayInputStream(new String().getBytes()), out, err, codefile) != 0) {
                 compileResult = CheckerErrors.CE;
+                for (String line : err.toString().split("\n")) {
+                    line = line.replaceAll("^.*" + Pattern.quote(codefile), properties.getProperty("CODE_FILENAME"));
+                    compileDesc = compileDesc + line + "\n";
+                }
             }
         } catch (Exception err) {
         }
