@@ -71,134 +71,141 @@ public class MainJudge {
 
                 /* change submit status to PROCESS */
                 Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-                Submits submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
-                submit.setResult(SubmitsResultEnum.PROCESS.getCode());
-                DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
-                transaction.commit();
-
-                /* getting submit */
-                transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-                if (!sock.isConnected()) {
-                    logger.error("Connection to JudgeManager closed, shutting down Judge...");
-                    break;
-                }
-                submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
-                byte[] codeText = submit.getCode();
-                String filename = submit.getFilename();
-                if (filename != null && !filename.isEmpty()) {
-                    properties.setProperty("COMPILED_FILENAME", filename);
-                    properties.setProperty("CODE_FILENAME", filename);
-                }
-                Classes compilerClasses = submit.getLanguages().getClasses();
-
-                /* downloading compiler class */
-                logger.debug("Downloading compiler class...");
-
-                int iVectorClassInfo;
-                boolean found = false;
-                for (iVectorClassInfo = 0; iVectorClassInfo < classes.size(); ++iVectorClassInfo) {
-                    if (classes.get(iVectorClassInfo).getId() == compilerClasses.getId()) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                CompilerInterface compiler;
-                if (found) {
-                    if (classes.get(iVectorClassInfo).getVersion() >= compilerClasses.getVersion()) {
-                        compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
-                    } else {
-                        classes.get(iVectorClassInfo).setVersion(compilerClasses.getVersion());
-                        classes.get(iVectorClassInfo).setCode(compilerClasses.getCode());
-                        compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
-                    }
-
-                } else {
-                    classes.add(new ClassInfo(compilerClasses.getId(), compilerClasses.getFilename(), compilerClasses.getCode(), compilerClasses.getVersion()));
-                    compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(compilerClasses.getFilename(), compilerClasses.getCode()).newInstance();
-
-                }
-                properties.setProperty("CODEFILE_EXTENSION", submit.getLanguages().getExtension());
-                compiler.setProperties(properties);
-
-                /* downloading diff class */
-                logger.debug("Downloading diff class...");
-                Classes diffClasses = submit.getProblems().getClasses();
-                found = false;
-                for (iVectorClassInfo = 0; iVectorClassInfo < classes.size(); iVectorClassInfo++) {
-                    if (classes.get(iVectorClassInfo).getId() == diffClasses.getId()) {
-                        found = true;
-                        break;
-                    }
-                }
-                CheckerInterface checker;
-                if (found) {
-                    if (classes.get(iVectorClassInfo).getVersion() >= diffClasses.getVersion()) {
-                        checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
-                    } else {
-                        classes.get(iVectorClassInfo).setVersion(diffClasses.getVersion());
-                        classes.get(iVectorClassInfo).setCode(diffClasses.getCode());
-                        checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
-                    }
-
-                } else {
-                    classes.add(new ClassInfo(diffClasses.getId(), diffClasses.getFilename(), diffClasses.getCode(), diffClasses.getVersion()));
-                    checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(diffClasses.getFilename(), diffClasses.getCode()).newInstance();
-
-                }
-
-                /* compilation */
-                Code code = new Code(codeText, compiler);
-                logger.debug("Trying to compile the code...");
-                Program program = code.compile();
-
-                /* downloading tests */
-                logger.debug("Downloading tests...");
-                Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Tests.class);
-                c.add(Restrictions.eq("problems.id", submit.getProblems().getId()));
-                c.addOrder(Order.asc("testorder"));
-                List<Tests> tests = c.list();
-
-                TestInput testInput;
-                TestOutput testOutput;
-                boolean undefinedResult = false;
-
-                /* TESTING */
-                logger.debug("Starting tests...");
-                for (Tests test : tests) {
-                    testInput = new TestInput(test.getInput(), test.getMaxpoints(), test.getTimelimit(), submit.getProblems().getMemlimit());
-                    testOutput = new TestOutput(test.getOutput());
-                    CheckerResult result = checker.check(program, testInput, testOutput);
-                    if (result.getResult() == CheckerErrors.UNDEF) {
-                        undefinedResult = true;
-                        break;
-                    }
-
-                    /* saving result to database */
-                    Results dbResult = new Results();
-                    dbResult.setMemory(result.getMemUsed());
-                    dbResult.setRuntime(result.getRuntime());
-                    dbResult.setNotes(result.getDecription());
-                    dbResult.setPoints(result.getPoints());
-                    dbResult.setSubmitResult(result.getResult());
-                    dbResult.setSubmits(submit);
-                    dbResult.setTests(test);
-                    DAOFactory.DEFAULT.buildResultsDAO().save(dbResult);
-                    logger.debug("Test finished.");
-                }
-
-                /* finish testing */
-                logger.debug("All tests finished. Closing program.");
-                program.closeProgram();
-
-                /* successfully completed? */
-                if (undefinedResult == false) {
-                    logger.debug("Saving results to database.");
-                    submit.setResult(SubmitsResultEnum.DONE.getCode());
+                try {
+                    Submits submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
+                    submit.setResult(SubmitsResultEnum.PROCESS.getCode());
                     DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
                     transaction.commit();
-                } else {
-                    logger.error("Some of the tests got UNDEFINED result -- this should not happend.");
+
+                    /* getting submit */
+                    transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+                    if (!sock.isConnected()) {
+                        logger.error("Connection to JudgeManager closed, shutting down Judge...");
+                        break;
+                    }
+                    submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
+                    byte[] codeText = submit.getCode();
+                    String filename = submit.getFilename();
+                    if (filename != null && !filename.isEmpty()) {
+                        properties.setProperty("COMPILED_FILENAME", filename);
+                        properties.setProperty("CODE_FILENAME", filename);
+                    }
+                    Classes compilerClasses = submit.getLanguages().getClasses();
+
+                    /* downloading compiler class */
+                    logger.debug("Downloading compiler class...");
+
+                    int iVectorClassInfo;
+                    boolean found = false;
+                    for (iVectorClassInfo = 0; iVectorClassInfo < classes.size(); ++iVectorClassInfo) {
+                        if (classes.get(iVectorClassInfo).getId() == compilerClasses.getId()) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    CompilerInterface compiler;
+                    if (found) {
+                        if (classes.get(iVectorClassInfo).getVersion() >= compilerClasses.getVersion()) {
+                            compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
+                        } else {
+                            classes.get(iVectorClassInfo).setVersion(compilerClasses.getVersion());
+                            classes.get(iVectorClassInfo).setCode(compilerClasses.getCode());
+                            compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
+                        }
+
+                    } else {
+                        classes.add(new ClassInfo(compilerClasses.getId(), compilerClasses.getFilename(), compilerClasses.getCode(), compilerClasses.getVersion()));
+                        compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(compilerClasses.getFilename(), compilerClasses.getCode()).newInstance();
+
+                    }
+                    properties.setProperty("CODEFILE_EXTENSION", submit.getLanguages().getExtension());
+                    compiler.setProperties(properties);
+
+                    /* downloading diff class */
+                    logger.debug("Downloading diff class...");
+                    Classes diffClasses = submit.getProblems().getClasses();
+                    found = false;
+                    for (iVectorClassInfo = 0; iVectorClassInfo < classes.size(); iVectorClassInfo++) {
+                        if (classes.get(iVectorClassInfo).getId() == diffClasses.getId()) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    CheckerInterface checker;
+                    if (found) {
+                        if (classes.get(iVectorClassInfo).getVersion() >= diffClasses.getVersion()) {
+                            checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
+                        } else {
+                            classes.get(iVectorClassInfo).setVersion(diffClasses.getVersion());
+                            classes.get(iVectorClassInfo).setCode(diffClasses.getCode());
+                            checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
+                        }
+
+                    } else {
+                        classes.add(new ClassInfo(diffClasses.getId(), diffClasses.getFilename(), diffClasses.getCode(), diffClasses.getVersion()));
+                        checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(diffClasses.getFilename(), diffClasses.getCode()).newInstance();
+
+                    }
+
+                    /* compilation */
+                    Code code = new Code(codeText, compiler);
+                    logger.debug("Trying to compile the code...");
+                    Program program = code.compile();
+
+                    /* downloading tests */
+                    logger.debug("Downloading tests...");
+                    Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Tests.class);
+                    c.add(Restrictions.eq("problems.id", submit.getProblems().getId()));
+                    c.addOrder(Order.asc("testorder"));
+                    List<Tests> tests = c.list();
+
+                    TestInput testInput;
+                    TestOutput testOutput;
+                    boolean undefinedResult = false;
+
+                    /* TESTING */
+                    logger.debug("Starting tests...");
+                    for (Tests test : tests) {
+                        testInput = new TestInput(test.getInput(), test.getMaxpoints(), test.getTimelimit(), submit.getProblems().getMemlimit());
+                        testOutput = new TestOutput(test.getOutput());
+                        CheckerResult result = checker.check(program, testInput, testOutput);
+                        if (result.getResult() == CheckerErrors.UNDEF) {
+                            undefinedResult = true;
+                            break;
+                        }
+
+                        /* saving result to database */
+                        Results dbResult = new Results();
+                        dbResult.setMemory(result.getMemUsed());
+                        dbResult.setRuntime(result.getRuntime());
+                        if (result.getDescription() != null) {
+                            dbResult.setNotes(result.getDescription().replaceAll("[\000-\007]", " "));
+                        }
+                        dbResult.setPoints(result.getPoints());
+                        dbResult.setSubmitResult(result.getResult());
+                        dbResult.setSubmits(submit);
+                        dbResult.setTests(test);
+                        DAOFactory.DEFAULT.buildResultsDAO().save(dbResult);
+                        logger.debug("Test finished.");
+                    }
+
+                    /* finish testing */
+                    logger.debug("All tests finished. Closing program.");
+                    program.closeProgram();
+
+                    /* successfully completed? */
+                    if (undefinedResult == false) {
+                        logger.debug("Saving results to database.");
+                        submit.setResult(SubmitsResultEnum.DONE.getCode());
+                        DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
+                        transaction.commit();
+                    } else {
+                        logger.error("Some of the tests got UNDEFINED result -- this should not happend.");
+                        transaction.rollback();
+                    }
+                } catch (Exception e) {
+                    logger.error("Exception occurs -- rolling back.", e);
                     transaction.rollback();
                 }
 

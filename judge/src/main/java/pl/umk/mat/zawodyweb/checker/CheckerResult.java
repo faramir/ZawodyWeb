@@ -13,7 +13,7 @@ import pl.umk.mat.zawodyweb.database.CheckerErrors;
 public class CheckerResult {
 
     private int result;
-    private String decription;
+    private String description;
     private int memUsed;
     private int runtime;
     private int points;
@@ -45,24 +45,24 @@ public class CheckerResult {
 
     public CheckerResult() {
         result = CheckerErrors.UNDEF;
-        decription = null;
+        description = null;
     }
 
-    public CheckerResult(int result, String decription) {
+    public CheckerResult(int result, String description) {
         this.result = result;
-        this.decription = decription;
+        this.description = description;
     }
 
-    public String getDecription() {
-        return decription;
+    public String getDescription() {
+        return description;
     }
 
     public int getResult() {
         return result;
     }
 
-    public void setDecription(String decription) {
-        this.decription = decription;
+    public void setDescription(String decription) {
+        this.description = decription;
     }
 
     public void setResult(int result) {
