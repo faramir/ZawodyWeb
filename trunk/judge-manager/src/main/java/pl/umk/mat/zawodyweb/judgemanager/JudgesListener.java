@@ -89,10 +89,12 @@ public class JudgesListener extends Thread {
                                 logger.info("Send submit(" + submitId + ") to Judge: " + judgeHost);
                                 out.flush();
                                 in.readInt();
+                                logger.info("Judge " + judgeHost + "checked submit(" + submitId + ")");
                             }
 
                             transaction.commit();
                         } catch (IOException ex) {
+                            logger.info("Exception occurs. Add submit(" + submitId + ") to queue", ex);
                             submitsQueue.add(submitId);
                         }
                     }
