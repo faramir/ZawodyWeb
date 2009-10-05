@@ -97,6 +97,7 @@ public class MainJudgeManager {
         submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
 
         for (Submits s : submitsDAO.findByResult(SubmitsResultEnum.WAIT.getCode())) {
+            logger.info("Add waiting submit(" + s.getId() + ") to queue");
             submitsQueue.add(s.getId());
         }
 
