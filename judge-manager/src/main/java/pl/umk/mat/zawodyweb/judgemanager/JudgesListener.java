@@ -79,17 +79,23 @@ public class JudgesListener extends Thread {
                         out.writeInt(0); // FIXME: brzydkie, bo brzydkie... ciąg dalszy opisu w Judge
                         delay(queueDelayTime);
                     } else {
-                        logger.debug("submit_id from queue: " + submitId);
+                        logger.info("submit_id from queue: " + submitId);
                         try {
                             transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
                             Submits s = DAOFactory.DEFAULT.buildSubmitsDAO().getById(submitId);
-                            if (s != null && s.getResult().equals(SubmitsResultEnum.WAIT.getCode()) == true) {
-                                out.writeInt(submitId);
-                                logger.info("Send submit(" + submitId + ") to Judge: " + judgeHost);
-                                out.flush();
-                                in.readInt();
-                                logger.info("Checked submit(" + submitId + ") by Judge: " + judgeHost);
+                            if (s != null) {
+                                if (s.getResult().equals(SubmitsResultEnum.WAIT.getCode()) == true) {
+                                    out.writeInt(submitId);
+                                    logger.info("Send submit(" + submitId + ") to Judge: " + judgeHost);
+                                    out.flush();
+                                    in.readInt();
+                                    logger.info("Checked submit(" + submitId + ") by Judge: " + judgeHost);
+                                } else {
+                                    logger.info("Submit(" + submitId + ") don't have WAIT(" + SubmitsResultEnum.WAIT.getCode() + ") status - it have (" + s.getResult() + ")");
+                                }
+                            } else {
+                                logger.info("Error getting submit(" + submitId + ")");
                             }
 
                             transaction.commit();
