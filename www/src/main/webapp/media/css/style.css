@@ -1112,6 +1112,15 @@ tbody {
     width: auto;
 }
 
+#view_ranking {
+    opacity:0.05; /* CSS3 */
+    filter:alpha(opacity=5); /* IE */
+}
+#view_ranking:hover {
+    opacity:1.0; /* CSS3 */
+    filter:alpha(opacity=100); /* IE */
+}
+
 .ranking_frozen {
     font-size: 11px;
     text-align: center;

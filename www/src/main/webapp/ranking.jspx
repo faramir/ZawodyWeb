@@ -12,8 +12,8 @@
             <c:otherwise>
                 <div class="profilform" style="width:100%">
                     <c:if test="#{zw:canAddProblem(rolesBean, requestBean.currentContest.id, null)}">
-                        <div class="ranking_frozen" style="float:right">
-                            <h:outputLink value="__admin__.html">${messages.view_unfrozen_ranking}</h:outputLink>
+                        <div class="ranking_frozen" id="view_ranking" style="float:right">
+                            <h:outputLink rendered="#{!requestBean.temporaryAdminBoolean}" value="__admin__.html">${messages.view_unfrozen_ranking}</h:outputLink><h:outputLink rendered="#{requestBean.temporaryAdminBoolean}" value="#{zw:filterUri(requestBean.currentContest.name)}.html">${messages.view_normal_ranking}</h:outputLink>
                         </div>
                     </c:if>
                     <c:if test="#{requestBean.currentContestRanking.frozenRanking}">
