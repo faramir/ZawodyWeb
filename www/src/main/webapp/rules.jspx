@@ -10,7 +10,7 @@
                 </div>
             </c:when>
             <c:otherwise>
-                <a4j:form id="formRules" styleClass="profilform" style="width:100%">
+                <div id="formRules" class="profilform" style="width:100%">
                     <div style="margin: 0 50px;">
                         <div>
                             <h1>${messages.contest_about}</h1>
@@ -31,7 +31,7 @@
                             </div>
                         </div>
                     </div>
-                </a4j:form>
+                </div>
             </c:otherwise>
         </c:choose>
     </ui:define>

@@ -10,7 +10,7 @@
                 ${messages.nonsufficient_privileges}
             </c:when>
             <c:otherwise>
-                <a4j:form id="formEditContest" styleClass="profilform">
+                <div id="formEditContest" class="profilform">
                     <t:dataTable id="users" var="user" styleClass="seria" value="#{requestBean.users}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols">
                         <h:column>
                             <f:facet name="header">
@@ -32,7 +32,7 @@
                             <h:outputText value="#{user.login}"/>
                         </h:column>
                     </t:dataTable>
-                </a4j:form>
+                </div>
             </c:otherwise>
         </c:choose>
     </ui:define>

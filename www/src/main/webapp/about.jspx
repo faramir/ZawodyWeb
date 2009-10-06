@@ -5,7 +5,7 @@
         ${messages.about_zawodyweb}
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formSubmit" styleClass="profilform" style="width:100%;">
+        <div id="formSubmit" class="profilform" style="width:100%;">
             <div class="about">
                 <div class="praca">
                     <h:outputText value="Zespół pracujący nad serwisem:" />
@@ -22,6 +22,6 @@
                 lub masz inne pytanie techniczne, wyślij wiadomość do:<br/>
                 <h:outputLink value="&#109;&#097;&#105;&#108;&#116;&#111;:&#102;&#097;&#114;&#097;&#109;&#105;&#114;&#064;&#109;&#097;&#116;&#046;&#117;&#109;&#107;&#046;&#112;&#108;"><h:outputText escape="false" value="&#102;&#097;&#114;&#097;&#109;&#105;&#114;&#032;[&#097;&#116;]&#032;&#109;&#097;&#116;&#046;&#117;&#109;&#107;&#046;&#112;&#108;"/></h:outputLink>
             </div>
-        </a4j:form>
+        </div>
     </ui:define>
 </ui:composition>

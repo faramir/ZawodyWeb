@@ -12,7 +12,7 @@
                 </div>
             </c:when>
             <c:otherwise>
-                <a4j:form id="formProblems" styleClass="profilform">
+                <div id="formProblems" class="profilform">
                     <c:forEach var="series" items="#{requestBean.currentContestSeries}">
                         <div class="seria">
                             <h:outputLabel for="problems#{series.id}" styleClass="seria">
@@ -57,7 +57,7 @@
                     <div style="padding-top: 20px;">
                         <zw:problem-link_img contest="${requestBean.currentContest}" type="start" message="#{messages.question_back}" />
                     </div>
-                </a4j:form>
+                </div>
             </c:otherwise>
         </c:choose>
     </ui:define>
