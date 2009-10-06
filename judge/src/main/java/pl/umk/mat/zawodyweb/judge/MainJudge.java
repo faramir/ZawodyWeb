@@ -72,7 +72,7 @@ public class MainJudge {
                 /* change submit status to PROCESS */
                 Transaction transaction = null;
                 try {
-                    HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+                    transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
                     Submits submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
                     submit.setResult(SubmitsResultEnum.PROCESS.getCode());
                     DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
