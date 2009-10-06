@@ -52,7 +52,7 @@ public class MainJudge {
             sock = new Socket(InetAddress.getByName(properties.getProperty("JUDGEMANAGER_HOST")), Integer.parseInt(properties.getProperty("JUDGEMANAGER_PORT")));
             DataInputStream input = new DataInputStream(sock.getInputStream());
             DataOutputStream output = new DataOutputStream(sock.getOutputStream());
-            logger.debug("Connection with JudgeManager on " + properties.getProperty("JUDGEMANAGER_HOST") + ":" + properties.getProperty("JUDGEMANAGER_PORT") + "...");
+            logger.info("Connection with JudgeManager on " + properties.getProperty("JUDGEMANAGER_HOST") + ":" + properties.getProperty("JUDGEMANAGER_PORT") + "...");
 
             while (15 == 15) {
                 /* receiving submit_id */
@@ -67,11 +67,12 @@ public class MainJudge {
                     logger.error("Connection to JudgeManager closed, shutting down Judge...");
                     break;
                 }
-                logger.debug("Setting submit status to PROCESS...");
+                logger.info("Setting submit status to PROCESS...");
 
                 /* change submit status to PROCESS */
-                Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+                Transaction transaction = null;
                 try {
+                    HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
                     Submits submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
                     submit.setResult(SubmitsResultEnum.PROCESS.getCode());
                     DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
@@ -93,7 +94,7 @@ public class MainJudge {
                     Classes compilerClasses = submit.getLanguages().getClasses();
 
                     /* downloading compiler class */
-                    logger.debug("Downloading compiler class...");
+                    logger.info("Downloading compiler class...");
 
                     int iVectorClassInfo;
                     boolean found = false;
@@ -123,7 +124,7 @@ public class MainJudge {
                     compiler.setProperties(properties);
 
                     /* downloading diff class */
-                    logger.debug("Downloading diff class...");
+                    logger.info("Downloading diff class...");
                     Classes diffClasses = submit.getProblems().getClasses();
                     found = false;
                     for (iVectorClassInfo = 0; iVectorClassInfo < classes.size(); iVectorClassInfo++) {
@@ -150,11 +151,11 @@ public class MainJudge {
 
                     /* compilation */
                     Code code = new Code(codeText, compiler);
-                    logger.debug("Trying to compile the code...");
+                    logger.info("Trying to compile the code...");
                     Program program = code.compile();
 
                     /* downloading tests */
-                    logger.debug("Downloading tests...");
+                    logger.info("Downloading tests...");
                     Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Tests.class);
                     c.add(Restrictions.eq("problems.id", submit.getProblems().getId()));
                     c.addOrder(Order.asc("testorder"));
@@ -165,7 +166,7 @@ public class MainJudge {
                     boolean undefinedResult = false;
 
                     /* TESTING */
-                    logger.debug("Starting tests...");
+                    logger.info("Starting tests...");
                     for (Tests test : tests) {
                         testInput = new TestInput(test.getInput(), test.getMaxpoints(), test.getTimelimit(), submit.getProblems().getMemlimit());
                         testOutput = new TestOutput(test.getOutput());
@@ -187,16 +188,16 @@ public class MainJudge {
                         dbResult.setSubmits(submit);
                         dbResult.setTests(test);
                         DAOFactory.DEFAULT.buildResultsDAO().save(dbResult);
-                        logger.debug("Test finished.");
+                        logger.info("Test finished.");
                     }
 
                     /* finish testing */
-                    logger.debug("All tests finished. Closing program.");
+                    logger.info("All tests finished. Closing program.");
                     program.closeProgram();
 
                     /* successfully completed? */
                     if (undefinedResult == false) {
-                        logger.debug("Saving results to database.");
+                        logger.info("Saving results to database.");
                         submit.setResult(SubmitsResultEnum.DONE.getCode());
                         DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
                         transaction.commit();
@@ -206,7 +207,9 @@ public class MainJudge {
                     }
                 } catch (Exception e) {
                     logger.error("Exception occurs -- rolling back.", e);
-                    transaction.rollback();
+                    if (transaction != null) {
+                        transaction.rollback();
+                    }
                 }
 
                 /* send ACK to JudgeManager */
@@ -224,8 +227,6 @@ public class MainJudge {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        boolean found = false;
-
         String configFile = MainJudge.class.getResource(".").getPath() + "configuration.xml";
         if (args.length == 1 && !args[0].isEmpty()) {
             configFile = args[0];
@@ -247,7 +248,7 @@ public class MainJudge {
         properties.setProperty("JAVA_POLICY", "");
 
         try {
-            logger.debug("Reading configuration file from " + configFile + "...");
+            logger.info("Reading configuration file from " + configFile + "...");
             properties.loadFromXML(new FileInputStream(configFile));
         } catch (Exception ex) {
             logger.error(ex.getMessage());

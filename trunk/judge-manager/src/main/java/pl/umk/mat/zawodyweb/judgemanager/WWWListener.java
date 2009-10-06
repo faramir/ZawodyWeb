@@ -59,7 +59,7 @@ public class WWWListener extends Thread {
             try {
                 wwwClient.setSoTimeout(soTimeout);
 
-                logger.debug("WWW connected from: " + wwwClient.getInetAddress().getHostAddress());
+                logger.info("WWW connected from: " + wwwClient.getInetAddress().getHostAddress());
 
                 DataInputStream in = new DataInputStream(wwwClient.getInputStream());
                 DataOutputStream out = new DataOutputStream(wwwClient.getOutputStream());
