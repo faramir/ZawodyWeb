@@ -131,6 +131,10 @@ public class RankingKI implements RankingInteface {
                 continue;
             }
 
+            if (series.getStartdate().after(checkDate)) {
+                continue;
+            }
+
             frozenSeria = false;
             checkTimestamp = checkDate;
             allTests = admin;

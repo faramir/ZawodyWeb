@@ -90,7 +90,7 @@ public class RankingACM implements RankingInteface {
 
         void add(int points, SolutionACM solutionACM) {
             this.points += points;
-            this.totalTime += solutionACM.time+solutionACM.time_from_bombs;
+            this.totalTime += solutionACM.time + solutionACM.time_from_bombs;
             this.solutions.add(solutionACM);
         }
 
@@ -109,7 +109,7 @@ public class RankingACM implements RankingInteface {
                     }
                 }
                 r += RankingUtils.formatText(text,
-                        solutionACM.name+" ["+parseTime(solutionACM.time)+(solutionACM.time_from_bombs==0?"":"+"+parseTime(solutionACM.time_from_bombs))+"]",
+                        solutionACM.name + " [" + parseTime(solutionACM.time) + (solutionACM.time_from_bombs == 0 ? "" : "+" + parseTime(solutionACM.time_from_bombs)) + "]",
                         solutionACM.frozen ? "frozen" : null) + " ";
             }
             return r.trim();
@@ -182,6 +182,10 @@ public class RankingACM implements RankingInteface {
         for (Series series : seriesDAO.findByContestsid(contest_id)) {
 
             if (series_id != null && series.getId() != series_id) {
+                continue;
+            }
+
+            if (series.getStartdate().after(checkDate)) {
                 continue;
             }
 
@@ -307,7 +311,7 @@ public class RankingACM implements RankingInteface {
                     user.add(maxPoints.intValue(),
                             new SolutionACM(problems.getAbbrev(),
                             ((Timestamp) o[1]).getTime(),
-                            (maxPoints.equals(0) ? 0 : ((Timestamp) o[1]).getTime() - series.getStartdate().getTime())/ 1000,
+                            (maxPoints.equals(0) ? 0 : ((Timestamp) o[1]).getTime() - series.getStartdate().getTime()) / 1000,
                             series.getPenaltytime() * bombs.intValue(),
                             bombs.intValue(),
                             problems.getName(),
