@@ -35,7 +35,8 @@
                             <c:forEach var="entry" items="#{requestBean.currentContestRanking.table}">
                                 <tr class="${itr % 2 == 0 ? 'linia2' : 'linia1'}">
                                     <td class="small">
-                                        <h:outputText value="#{entry.place}" />
+                                        <h:outputText value="#{entry.place}" rendered="#{requestBean.temporaryAdminBoolean == false}" />
+                                        <h:outputText value="#{entry.place}" title="#{itr + 1}" rendered="#{requestBean.temporaryAdminBoolean == true}" />
                                     </td>
                                     <td class="big">
                                         <h:outputText value="#{entry.username}" />

@@ -554,6 +554,10 @@ public class RequestBean {
         return currentProblem;
     }
 
+    public Boolean getTemporaryAdminBoolean() {
+        return temporaryAdminBoolean;
+    }
+
     public Integer getTemporaryContestId() {
         return temporaryContestId;
     }
