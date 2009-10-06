@@ -5,7 +5,7 @@
         ${requestBean.currentProblem.name} :: ${messages.problems}
     </ui:define>
     <ui:define name="pageContent">
-        <a4j:form id="formProblem" styleClass="profilform">
+        <div id="formProblem" class="profilform">
             <div class="zadanko">
                 <div class="nazwa">
                     [${requestBean.currentProblem.abbrev}] ${requestBean.currentProblem.name}
@@ -55,6 +55,6 @@
                     <zw:problem-link_img contest="${requestBean.currentContest}" type="problems" message="#{messages.question_back}" />
                 </div>
             </div>
-        </a4j:form>
+        </div>
     </ui:define>
 </ui:composition>

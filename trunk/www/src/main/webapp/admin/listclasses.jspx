@@ -10,7 +10,7 @@
                 ${messages.nonsufficient_privileges}
             </c:when>
             <c:otherwise>
-                <a4j:form id="formEditContest" styleClass="profilform">
+                <div id="formEditContest" class="profilform">
                     <t:dataTable id="classes" var="class" styleClass="seria" value="#{requestBean.allClasses}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols">
                         <h:column>
                             <f:facet name="header">
@@ -39,7 +39,7 @@
                     <div class="ikona" style="margin-left:-40px">
                         <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editclass.html" title="#{messages.addclass}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addclass}" title="#{messages.addclass}" url="/media/images/dodaj.png" /></h:outputLink>
                     </div>
-                </a4j:form>
+                </div>
             </c:otherwise>
         </c:choose>
     </ui:define>

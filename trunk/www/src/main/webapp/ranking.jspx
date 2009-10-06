@@ -10,9 +10,14 @@
                 </div>
             </c:when>
             <c:otherwise>
-                <a4j:form id="formRanking" styleClass="profilform" style="width:100%">
+                <div class="profilform" style="width:100%">
+                    <c:if test="#{zw:canAddProblem(rolesBean, requestBean.currentContest.id, null)}">
+                        <div class="ranking_frozen" style="float:right">
+                            <h:outputLink value="__admin__.html">${messages.view_unfrozen_ranking}</h:outputLink>
+                        </div>
+                    </c:if>
                     <c:if test="#{requestBean.currentContestRanking.frozenRanking}">
-                        <div class="ranking_frozen">
+                        <div class="ranking_frozen" style="clear:both">
                             <h:outputText value="#{messages.ranking_frozen}"/>
                         </div>
                     </c:if>
@@ -35,8 +40,7 @@
                             <c:forEach var="entry" items="#{requestBean.currentContestRanking.table}">
                                 <tr class="${itr % 2 == 0 ? 'linia2' : 'linia1'}">
                                     <td class="small">
-                                        <h:outputText value="#{entry.place}" rendered="#{requestBean.temporaryAdminBoolean == false}" />
-                                        <h:outputText value="#{entry.place}" title="#{itr + 1}" rendered="#{requestBean.temporaryAdminBoolean == true}" />
+                                        <h:outputText value="#{entry.place}" rendered="#{requestBean.temporaryAdminBoolean == false}" /><h:outputText value="#{entry.place}" title="#{itr + 1}" rendered="#{requestBean.temporaryAdminBoolean == true}" />
                                     </td>
                                     <td class="big">
                                         <h:outputText value="#{entry.username}" />
@@ -53,7 +57,7 @@
                             </c:forEach>
                         </table>
                     </div>
-                </a4j:form>
+                </div>
             </c:otherwise>
         </c:choose>
     </ui:define>
