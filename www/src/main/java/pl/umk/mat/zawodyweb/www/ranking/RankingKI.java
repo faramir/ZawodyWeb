@@ -1,6 +1,7 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.sql.Timestamp;
+import java.text.Collator;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -25,6 +26,16 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
 public class RankingKI implements RankingInteface {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
+    private static Collator collator;
+
+    static {
+        collator = Collator.getInstance();
+        collator.setStrength(Collator.CANONICAL_DECOMPOSITION);
+    }
+
+    int compareStrings(String str1, String str2) {
+        return collator.compare(str1, str2);
+    }
 
     private class ProblemsKI implements Comparable {
 
@@ -96,17 +107,17 @@ public class RankingKI implements RankingInteface {
             }
 
             int r;
-            r = this.lastname.compareToIgnoreCase(u2.lastname);
+            r = compareStrings(this.lastname, u2.lastname);
             if (r != 0) {
                 return r;
             }
 
-            r = this.firstname.compareToIgnoreCase(u2.firstname);
+            r = compareStrings(firstname, u2.firstname);
             if (r != 0) {
                 return r;
             }
 
-            return this.login.compareToIgnoreCase(u2.login);
+            return compareStrings(this.login, u2.login);
         }
     }
 
