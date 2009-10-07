@@ -22,7 +22,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
  * @version $Rev$
  * Date: $Date$
  */
-public class RankingKI implements RankingInteface {
+public class RankingPA implements RankingInteface {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
 
@@ -64,6 +64,7 @@ public class RankingKI implements RankingInteface {
         String login;
         int id_user;
         int points;
+        Vector<Integer> vPoints;
         HashMap<Integer, Integer> solutions;
 
         public UserKI(int id_user, Users users) {
@@ -81,6 +82,9 @@ public class RankingKI implements RankingInteface {
 
         void add(int problem_id, int points) {
             this.points += points;
+            vPoints.add(points);
+            Collections.sort(vPoints);
+            Collections.reverse(vPoints);
             this.solutions.put(problem_id, points);
         }
 
@@ -93,6 +97,13 @@ public class RankingKI implements RankingInteface {
             }
             if (this.points > u2.points) {
                 return -1;
+            }
+
+            int s = this.vPoints.size();
+            if (u2.vPoints.size()<s) s = u2.vPoints.size();
+            for (int i=0;i<s;++s) {
+                if (this.vPoints.get(i)==u2.vPoints.get(i)) continue;
+                return this.vPoints.get(i)-u2.vPoints.get(i);
             }
 
             int r;
