@@ -69,6 +69,9 @@ public class RankingPA implements RankingInteface {
 
         public UserKI(int id_user, Users users) {
             this.id_user = id_user;
+
+            this.points = 0;
+            this.vPoints = new Vector<Integer>();
             this.solutions = new HashMap<Integer, Integer>();
 
             this.login = users.getLogin();
