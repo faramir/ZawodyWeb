@@ -4,6 +4,7 @@
  */
 package pl.umk.mat.zawodyweb.www;
 
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
@@ -37,6 +38,7 @@ public class SessionBean {
     private boolean showOnlyMySubmissions = true;
     private int submissionsContestId = 0;
     private int submissionsPageIndex = 0;
+    private long submissionsLastVisit = 0;
 
     /**
      * @return the currentUser
@@ -206,6 +208,20 @@ public class SessionBean {
             submissionsPageIndex = 0;
         }
         this.submissionsPageIndex = submissionsPageIndex;
+    }
+
+    /**
+     * @return the submissionsLastVisit
+     */
+    public long getSubmissionsLastVisit() {
+        return submissionsLastVisit;
+    }
+
+    /**
+     * @param submissionsLastVisit the submissionsLastVisit to set
+     */
+    public void setSubmissionsLastVisit(long submissionsLastVisit) {
+        this.submissionsLastVisit = submissionsLastVisit;
     }
 
 }
