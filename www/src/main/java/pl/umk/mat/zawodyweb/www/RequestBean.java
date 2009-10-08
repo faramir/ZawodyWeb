@@ -129,7 +129,6 @@ public class RequestBean {
     private Integer[] temporaryLanguagesIds;
     private Integer temporaryLanguageId;
     private Integer temporaryResultId;
-    private int temporaryPageIndex = 0;
     private String temporarySource;
     private Problems currentProblem;
     private Submits currentSubmit;
@@ -139,7 +138,6 @@ public class RequestBean {
     private String answer;
     private boolean publicAnswer;
     private boolean deletePdf;
-    private boolean showOnlyMySubmissions = true;
     private boolean ratingMode = false;
 
     /**
@@ -349,7 +347,7 @@ public class RequestBean {
         if (submissions == null) {
             List<Integer> ratableSeries = null;
 
-            if (!isShowOnlyMySubmissions()) {
+            if (!sessionBean.isShowOnlyMySubmissions()) {
                 ratableSeries = new ArrayList<Integer>();
                 for (Series s : getCurrentContest().getSeriess()) {
                     if (rolesBean.canRate(getCurrentContest().getId(), s.getId())) {
@@ -363,7 +361,7 @@ public class RequestBean {
             Criteria criteriaSeries = c.createCriteria("problems").createCriteria("series");
             criteriaSeries.createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
 
-            if (isShowOnlyMySubmissions()) {
+            if (sessionBean.isShowOnlyMySubmissions()) {
                 c.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
             } else {
                 criteriaSeries.add(Restrictions.in("id", ratableSeries));
@@ -373,14 +371,14 @@ public class RequestBean {
             Criteria c2 = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
             Criteria criteria2Series = c2.createCriteria("problems").createCriteria("series");
             criteria2Series.createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
-            if (isShowOnlyMySubmissions()) {
+            if (sessionBean.isShowOnlyMySubmissions()) {
                 c2.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
             } else {
                 criteria2Series.add(Restrictions.in("id", ratableSeries));
             }
             c2.addOrder(Order.desc("sdate"));
-            c2.setFirstResult(temporaryPageIndex * 10);
-            c2.setMaxResults(10);
+            c2.setFirstResult(sessionBean.getSubmissionsPageIndex() * 20);
+            c2.setMaxResults(20);
             submissions = new PagedDataModel(c2.list(), number.intValue());
         }
 
@@ -679,11 +677,11 @@ public class RequestBean {
     }
 
     public boolean isShowOnlyMySubmissions() {
-        return showOnlyMySubmissions;
+        return sessionBean.isShowOnlyMySubmissions();
     }
 
     public void setShowOnlyMySubmissions(boolean showOnlyMySubmissions) {
-        this.showOnlyMySubmissions = showOnlyMySubmissions;
+        sessionBean.setShowOnlyMySubmissions(showOnlyMySubmissions);
     }
 
     public boolean isRatingMode() {
@@ -1473,7 +1471,7 @@ public class RequestBean {
     }
 
     public String switchShowOnlyMy() {
-        showOnlyMySubmissions = !showOnlyMySubmissions;
+        sessionBean.setShowOnlyMySubmissions(!sessionBean.isShowOnlyMySubmissions());
         submissions = null;
         return null;
     }
@@ -1510,7 +1508,15 @@ public class RequestBean {
 
     public void submissionsScrollerAction(ActionEvent event) {
         ScrollerActionEvent scrollerEvent = (ScrollerActionEvent) event;
-        temporaryPageIndex = scrollerEvent.getPageIndex() - 1;
+        if (scrollerEvent.getPageIndex() == -1 && scrollerEvent.getScrollerfacet() != null) {
+            if ("next".equals(scrollerEvent.getScrollerfacet())) {
+                sessionBean.setSubmissionsPageIndex(sessionBean.getSubmissionsPageIndex() + 1);
+            } else if ("previous".equals(scrollerEvent.getScrollerfacet())) {
+                sessionBean.setSubmissionsPageIndex(sessionBean.getSubmissionsPageIndex() - 1);
+            }
+        } else {
+            sessionBean.setSubmissionsPageIndex(scrollerEvent.getPageIndex() - 1);
+        }
         submissions = null;
     }
 
