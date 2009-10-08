@@ -4,7 +4,6 @@
  */
 package pl.umk.mat.zawodyweb.www;
 
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;

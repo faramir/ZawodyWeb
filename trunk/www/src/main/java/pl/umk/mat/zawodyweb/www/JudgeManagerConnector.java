@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -47,6 +46,12 @@ public class JudgeManagerConnector {
         @Override
         public void run() {
             Socket jmSocket = null;
+            try {
+                // FIXME: tutaj przydało by się sprawdzenie, czy dany submit jest już w bazie, jeśli jest, to można ruszać
+                // jeśli nie to zwiększamy jakiś licznik o 1, aż dojdzie do 10 - wtedy koniec
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+            }
             try {
                 logger.debug("Sending (" + submitId + ") to JudgeManager");
 
