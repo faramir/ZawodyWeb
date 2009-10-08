@@ -33,6 +33,10 @@ public class SessionBean {
     private Integer currentContestId;
     private boolean loggedIn;
     private Boolean rememberMe;
+    /* */
+    private boolean showOnlyMySubmissions = true;
+    private int submissionsContestId = 0;
+    private int submissionsPageIndex = 0;
 
     /**
      * @return the currentUser
@@ -161,4 +165,47 @@ public class SessionBean {
     public void setLogin(String value) {
         currentUser.setLogin(value);
     }
+
+    public boolean isShowOnlyMySubmissions() {
+        return showOnlyMySubmissions;
+    }
+
+    public void setShowOnlyMySubmissions(boolean showOnlyMySubmissions) {
+        if (showOnlyMySubmissions != this.showOnlyMySubmissions) {
+            this.showOnlyMySubmissions = showOnlyMySubmissions;
+            setSubmissionsPageIndex(0);
+        }
+    }
+
+    /**
+     * @return the submissionsContestId
+     */
+    public int getSubmissionsContestId() {
+        return submissionsContestId;
+    }
+
+    /**
+     * @return the submissionsPageIndex
+     */
+    public int getSubmissionsPageIndex() {
+        return submissionsPageIndex;
+    }
+
+    /**
+     * @param submissionsContestId the submissionsContestId to set
+     */
+    public void setSubmissionsContestId(int submissionsContestId) {
+        this.submissionsContestId = submissionsContestId;
+    }
+
+    /**
+     * @param submissionsPageIndex the submissionsPageIndex to set
+     */
+    public void setSubmissionsPageIndex(int submissionsPageIndex) {
+        if (submissionsPageIndex < 0) {
+            submissionsPageIndex = 0;
+        }
+        this.submissionsPageIndex = submissionsPageIndex;
+    }
+
 }

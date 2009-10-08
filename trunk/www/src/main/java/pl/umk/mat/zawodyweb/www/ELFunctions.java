@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
+import pl.umk.mat.zawodyweb.database.pojo.Contests;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
@@ -133,5 +134,14 @@ public class ELFunctions {
 
     public static String formatDateAndTime(Date d, String format) {
         return new SimpleDateFormat(format).format(d);
+    }
+
+    public static void prepareSubmissions(SessionBean sessionBean, Contests contests) {
+        if (sessionBean.getCurrentContestId() != contests.getId()) {
+            sessionBean.setShowOnlyMySubmissions(true);
+            sessionBean.setSubmissionsPageIndex(0);
+            sessionBean.setCurrentContestId(contests.getId());
+        }
+        //return "";
     }
 }

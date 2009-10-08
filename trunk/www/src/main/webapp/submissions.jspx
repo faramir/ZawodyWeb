@@ -18,6 +18,7 @@
             </c:when>
             <c:otherwise>
                 <a4j:form id="formSubmissions" styleClass="profilform">
+                    ${zw:prepareSubmissions(sessionBean, requestBean.currentContest)}
                     <table>
                         <thead>
                             <tr>
@@ -30,12 +31,12 @@
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                                     <th></th>
                                 </c:if>
-                                <c:if test="#{!(requestBean.showOnlyMySubmissions) and zw:canAddProblem(rolesBean, series.contests.id, series.id)}">
+                                <c:if test="#{!(requestBean.showOnlyMySubmissions) and zw:canRateAnySeries(rolesBean, requestBean.currentContest)}">
                                     <th></th>
                                 </c:if>
                             </tr>
                         </thead>
-                        <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="10" >
+                        <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="20" >
                             <tr style="#{(submit.result==2)?zw:coloring(zw:points(submit), zw:maxPoints(submit)):'background: #e1d4f6'}">
                                 <td><h:outputText value="#{zw:formatDateAndHour(submit.sdate, 'yyyy-MM-dd HH:mm:ss')}" /></td>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
@@ -56,18 +57,18 @@
                                 <zw:submission-link submission="#{submit}" type="rate" message="#{messages.submission_rate}" />
                                 </td>
                             </c:if>
-                            <c:if test="#{!(requestBean.showOnlyMySubmissions) and zw:canAddProblem(rolesBean, series.contests.id, series.id)}">
+                            <c:if test="#{!(requestBean.showOnlyMySubmissions) and zw:canRateAnySeries(rolesBean, requestBean.currentContest)}">
                                 <td>
                                     <h:outputLink value="#" title="#{messages.delsubmit}" styleClass="ikonka" onclick="confirm(this,{nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/del/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.delsubmit}" title="#{messages.delsubmit}" url="/media/images/usun.png" /></h:outputLink>
-                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{submit.id}/code.html" title="#{messages.solution_download}" rendered="#{zw:canRate(rolesBean, series.contests.id, series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.solution_download}" title="#{messages.solution_download}" url="/media/images/pobierz.png" /></h:outputLink>
-                                    <h:outputLink value="#" title="#{messages.rejudge_submit}" rendered="#{zw:canRate(rolesBean, series.contests.id, series.id)}" styleClass="ikonka" onclick="confirm_rejudge(this,{nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/rejudge/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.rejudge_submit}" title="#{messages.rejudge_submit}" url="/media/images/reJudge.png" /></h:outputLink>
+                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{submit.id}/code.html" title="#{messages.solution_download}" rendered="#{zw:canRate(rolesBean, submit.problems.series.contests.id, submit.problems.series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.solution_download}" title="#{messages.solution_download}" url="/media/images/pobierz.png" /></h:outputLink>
+                                    <h:outputLink value="#" title="#{messages.rejudge_submit}" rendered="#{zw:canRate(rolesBean, submit.problems.series.contests.id, submit.problems.series.id)}" styleClass="ikonka" onclick="confirm_rejudge(this,{nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/rejudge/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.rejudge_submit}" title="#{messages.rejudge_submit}" url="/media/images/reJudge.png" /></h:outputLink>
                                 </td>
                             </c:if>
                             </tr>
                         </t:dataList>
                     </table>
                     <h:panelGrid columns="1" styleClass="pagingrid" >
-                        <t:dataScroller for="submissions" paginator="true" paginatorActiveColumnClass="act" paginatorTableClass="paginator" paginatorMaxPages="9" actionListener="#{requestBean.submissionsScrollerAction}" >
+                        <t:dataScroller pageIndexVar="pageIndex" immediate="true" for="submissions" paginator="true" paginatorActiveColumnClass="act" paginatorTableClass="paginator" paginatorMaxPages="9" actionListener="#{requestBean.submissionsScrollerAction}" >
                             <f:facet name="previous" >
                                 <t:graphicImage url="/media/images/left_arrow.png" alt="" styleClass="lewy" />
                             </f:facet>
@@ -78,7 +79,6 @@
                     </h:panelGrid>
                     <c:if test="#{zw:canRateAnySeries(rolesBean, requestBean.currentContest)}">
                         <div class="subm_switch">
-                            <t:saveState id="saveid" value="#{requestBean.showOnlyMySubmissions}" />
                             <h:commandButton id="switch" value="#{requestBean.showOnlyMySubmissions ? messages.show_all_submissions : messages.show_only_my_submissions}" action="#{requestBean.switchShowOnlyMy}" />
                         </div>
                     </c:if>
