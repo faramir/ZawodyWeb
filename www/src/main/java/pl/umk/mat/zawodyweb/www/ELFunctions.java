@@ -137,11 +137,11 @@ public class ELFunctions {
     }
 
     public static void prepareSubmissions(SessionBean sessionBean, Contests contests) {
-        if (sessionBean.getCurrentContestId() != contests.getId()) {
+        if ((new Date().getTime() - sessionBean.getSubmissionsLastVisit()) > 10 * 60 * 1000 || sessionBean.getCurrentContestId() != contests.getId()) {
             sessionBean.setShowOnlyMySubmissions(true);
             sessionBean.setSubmissionsPageIndex(0);
             sessionBean.setCurrentContestId(contests.getId());
+            sessionBean.setSubmissionsLastVisit(new Date().getTime());
         }
-        //return "";
     }
 }
