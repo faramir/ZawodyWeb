@@ -129,6 +129,7 @@ public class RequestBean {
     private Integer[] temporaryLanguagesIds;
     private Integer temporaryLanguageId;
     private Integer temporaryResultId;
+    private Integer temporarySubmitResultId;
     private String temporarySource;
     private Problems currentProblem;
     private Submits currentSubmit;
@@ -139,6 +140,7 @@ public class RequestBean {
     private boolean publicAnswer;
     private boolean deletePdf;
     private boolean ratingMode = false;
+    private Integer ratingEditNote;
 
     /**
      * @return the sessionBean
@@ -413,6 +415,7 @@ public class RequestBean {
     public Results getEditedResult() {
         if (editedResult == null && !ELFunctions.isNullOrZero(temporaryResultId)) {
             editedResult = resultsDAO.getById(temporaryResultId);
+            temporarySubmitResultId = editedResult.getSubmitResult();
         }
 
         return editedResult;
@@ -1083,8 +1086,15 @@ public class RequestBean {
     }
 
     public String saveResult() {
-        resultsDAO.update(getEditedResult());
+        Results result = getEditedResult();
+        result.setSubmitResult(temporarySubmitResultId);
+        resultsDAO.update(result);
         temporaryResultId = null;
+        return null;
+    }
+
+    public String saveNotes() {
+        submitsDAO.update(getCurrentSubmit());
         return null;
     }
 
@@ -1319,7 +1329,7 @@ public class RequestBean {
 
         if (s != null && rolesBean.canAddProblem(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
             submitsDAO.deleteById(id);
-            return "/submissions";
+            return "submissions";
         } else {
             return null;
         }
@@ -1674,5 +1684,53 @@ public class RequestBean {
         }
         return users;
 
+    }
+
+    public Integer getRatingEditNote() {
+        return ratingEditNote;
+    }
+
+    public void setRatingEditNote(Integer ratingEditNote) {
+        this.ratingEditNote = ratingEditNote;
+    }
+
+    /**
+     * http://stackoverflow.com/questions/277521/how-to-identify-the-file-content-is-in-ascii-or-binary/277568#277568
+     * 
+     * If the first two bytes are hex FE FF, the file is tentatively UTF-16 BE.
+     * If the first two bytes are hex FF FE, and the following two bytes are not hex 00 00 , the file is tentatively UTF-16 LE.
+     * If the first four bytes are hex 00 00 FE FF, the file is tentatively UTF-32 BE.
+     * If the first four bytes are hex FF FE 00 00, the file is tentatively UTF-32 LE.
+     * @param text
+     * @return true if file is binary
+     */
+    public boolean isBinary(byte[] data) {
+        if (data[0] == 0xFE && data[1] == 0xFF) {
+            return false;
+        }
+        if (data[0] == 0xFF && data[1] == 0xFE) {
+            return false;
+        }
+        if (data[0] == 0x00 && data[1] == 0x00 && data[2] == 0xFE && data[3] == 0xFF) {
+            return false;
+        }
+        if (data[0] == 0xFF && data[1] == 0xFE && data[2] == 0x00 && data[3] == 0x00) {
+            return false;
+        }
+        for (byte b : data) {
+            if (b == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Integer getTemporarySubmitResultId() {
+        getEditedResult();
+        return temporarySubmitResultId;
+    }
+
+    public void setTemporarySubmitResultId(Integer id) {
+        temporarySubmitResultId = id;
     }
 }

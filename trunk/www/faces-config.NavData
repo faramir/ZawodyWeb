@@ -2,8 +2,8 @@
 <Scene Scope="Project" version="2">
     <Scope Scope="Faces Configuration Only"/>
     <Scope Scope="Project">
-        <Node id="&#10;                /submissions.jspx&#10;            " x="150" y="1050" zoom="true"/>
         <Node id="problems.jspx" x="650" y="600" zoom="true"/>
+        <Node id="&#10;                /submissions.jspx&#10;            " x="150" y="1050" zoom="true"/>
         <Node id="templates/contest-link_button.jspx" x="1650" y="300" zoom="true"/>
         <Node id="&#10;                /start.jspx&#10;            " x="150" y="450" zoom="true"/>
         <Node id="&#10;                /problems.jspx&#10;            " x="150" y="900" zoom="true"/>
@@ -37,22 +37,22 @@
         <Node id="&#10;                /admin/listusers.jspx&#10;            " x="1400" y="750" zoom="true"/>
         <Node id="templates/contest-link.jspx" x="400" y="450" zoom="true"/>
         <Node id="&#10;                /submit.jspx&#10;            " x="1650" y="150" zoom="true"/>
-        <Node id="admin/editproblem.jspx" x="1400" y="150" zoom="true"/>
         <Node id="templates/main.jspx" x="650" y="150" zoom="true"/>
+        <Node id="admin/editproblem.jspx" x="1400" y="150" zoom="true"/>
         <Node id="register.jspx" x="400" y="150" zoom="true"/>
         <Node id="submit.jspx" x="150" y="300" zoom="true"/>
+        <Node id="submission.jspx" x="150" y="1200" zoom="true"/>
         <Node id="&#10;                /admin/listclasses.jspx&#10;            " x="1150" y="900" zoom="true"/>
         <Node id="about.jspx" x="400" y="1050" zoom="true"/>
-        <Node id="submission.jspx" x="150" y="1200" zoom="true"/>
-        <Node id="admin/listusers.jspx" x="2400" y="150" zoom="true"/>
         <Node id="questions.jspx" x="1400" y="300" zoom="true"/>
+        <Node id="admin/listusers.jspx" x="2400" y="150" zoom="true"/>
         <Node id="admin/editseries.jspx" x="150" y="750" zoom="true"/>
         <Node id="admin/editlanguage.jspx" x="900" y="1050" zoom="true"/>
         <Node id="redirect.jsp" x="150" y="150" zoom="true"/>
         <Node id="templates/problem-link.jspx" x="1150" y="300" zoom="true"/>
         <Node id="&#10;                /login.jspx&#10;            " x="400" y="300" zoom="true"/>
-        <Node id="&#10;                /questions.jspx&#10;            " x="1150" y="450" zoom="true"/>
         <Node id="question.jspx" x="650" y="750" zoom="true"/>
+        <Node id="&#10;                /questions.jspx&#10;            " x="1150" y="450" zoom="true"/>
         <Node id="&#10;                /passwd.jspx&#10;            " x="150" y="1350" zoom="true"/>
         <Node id="admin/edittest.jspx" x="900" y="450" zoom="true"/>
         <Node id="admin/listclasses.jspx" x="2150" y="300" zoom="true"/>
