@@ -1626,7 +1626,9 @@ public class RequestBean {
                 selectContest(problem.getSeries().getContests().getId());
                 submitsDAO.saveOrUpdate(submit);
 
-                // FIXME: tutaj może nastąpić wyścig... bo transakcja nie jest jeszcze zacommitowana
+                HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+                HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
                 JudgeManagerConnector.getInstance().sentToJudgeManager(submit.getId());
             }
 
