@@ -438,6 +438,16 @@ img {
     padding: 0px 1px;
     background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
 }
+.profilform textarea {
+    margin-right:20px;
+    margin-top: 12px;
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    width: 250px;
+    padding: 0px 1px;
+    background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+}
 
 .profilform select {
     margin-right:20px;
