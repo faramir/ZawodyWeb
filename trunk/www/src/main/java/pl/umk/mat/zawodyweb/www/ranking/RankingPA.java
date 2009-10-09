@@ -91,10 +91,7 @@ public class RankingPA implements RankingInteface {
             this.solutions.put(problem_id, points);
         }
 
-        @Override
-        public int compareTo(Object o) {
-            UserKI u2 = (UserKI) o;
-
+        public int comparePlace(UserKI u2) {
             if (this.points < u2.points) {
                 return 1;
             }
@@ -103,13 +100,36 @@ public class RankingPA implements RankingInteface {
             }
 
             int s = this.vPoints.size();
-            if (u2.vPoints.size()<s) s = u2.vPoints.size();
-            for (int i=0;i<s;++s) {
-                if (this.vPoints.get(i)==u2.vPoints.get(i)) continue;
-                return this.vPoints.get(i)-u2.vPoints.get(i);
+            if (u2.vPoints.size() < s) {
+                s = u2.vPoints.size();
             }
+            for (int i = 0; i < s; ++i) {
+                if (this.vPoints.get(i) == u2.vPoints.get(i)) {
+                    continue;
+                }
+                if (this.vPoints.get(i) < u2.vPoints.get(i)) {
+                    return 1;
+                }
+                return -1;
+            }
+            if (this.vPoints.size() < u2.vPoints.size()) {
+                return 1;
+            } else if (this.vPoints.size() > u2.vPoints.size()) {
+                return -1;
+            }
+            return 0;
+        }
+
+        @Override
+        public int compareTo(Object o) {
+            UserKI u2 = (UserKI) o;
 
             int r;
+            r = comparePlace(u2);
+            if (r != 0) {
+                return r;
+            }
+
             r = RankingUtils.compareStrings(this.lastname, u2.lastname);
             if (r != 0) {
                 return r;
@@ -245,12 +265,12 @@ public class RankingPA implements RankingInteface {
 
         /* tabelka z rankingiem */
         Vector<RankingEntry> vectorRankingEntry = new Vector<RankingEntry>();
-        int place = 0;
-        int points = Integer.MAX_VALUE;
+        int place = 1;
+        UserKI userTmp = cre.get(0);
         for (UserKI user : cre) {
-            if (points > user.points) {
+            if (userTmp.comparePlace(user) != 0) {
                 ++place;
-                points = user.points;
+                userTmp = user;
             }
             Vector<String> v = new Vector<String>();
             for (ProblemsKI problemsKI : vectorProblemsKI) {

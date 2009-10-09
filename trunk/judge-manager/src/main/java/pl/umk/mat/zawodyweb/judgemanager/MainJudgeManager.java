@@ -148,6 +148,24 @@ public class MainJudgeManager {
             try {
                 Thread.sleep(delayProcess);
 
+                /* WAIT */
+
+                logger.info("Checking database for solutions in WAIT state...");
+                transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
+                submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
+                for(Submits submit: submitsDAO.findByResult(SubmitsResultEnum.WAIT.getCode())) {
+                    if (!submitsQueue.contains(submit.getId())) {
+                        submitsQueue.add(submit.getId());
+                        logger.info("Adding submit(" + submit.getId() + ") in status WAIT, which was not in submitsQueue, to submitsQueue.");
+                    }
+                }
+
+
+                transaction.commit();
+
+                /* PROCESS */
+
                 logger.info("Checking database for solutions in PROCESS state...");
 
                 transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
