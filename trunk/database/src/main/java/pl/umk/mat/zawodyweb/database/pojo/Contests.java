@@ -67,6 +67,11 @@ public class Contests implements Serializable {
 	 * Attribute tech.
 	 */
 	private String tech;
+
+        /**
+         * Attribute rankingRefreshRate
+         */
+        private Integer rankingRefreshRate;
 	
 	/**
 	 * Attribute visibility.
@@ -224,7 +229,24 @@ public class Contests implements Serializable {
 	public void setTech(String tech) {
 		this.tech = tech;
 	}
-	
+
+		/* liste transiente */
+	/**
+	 * @return rankingRefreshRate
+	 */
+	@Basic
+	@Column(name = "rankingrefreshrate")
+		public Integer getRankingrefreshrate() {
+		return rankingRefreshRate;
+	}
+
+	/**
+	 * @param rankingRefreshRate new value for rankingRefreshRate
+	 */
+	public void setRankingrefreshrate(Integer rankingRefreshRate) {
+		this.rankingRefreshRate = rankingRefreshRate;
+	}
+
 	/* liste transiente */
 	/**
 	 * @return visibility

@@ -5,11 +5,30 @@
     <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.SimpleLayout"/>
     </appender>
-    
+
+    <appender name="FileAppender" class="org.apache.log4j.FileAppender">
+        <param name="File" value="judge-manager.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%t:%p] %c - %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="org.hibernate">
+        <level value="warn"/>
+    </logger>
+
+    <logger name="org.hibernate.SQL">
+        <level value="warn"/>
+    </logger>
+
+    <logger name="org.hibernate.type">
+        <level value="warn"/>
+    </logger>
+
     <root>
-        <!--priority value="debug" /-->
         <priority value="info" />
         <appender-ref ref="ConsoleAppender"/>
+        <appender-ref ref="FileAppender"/>
     </root>
-    
+
 </log4j:configuration>

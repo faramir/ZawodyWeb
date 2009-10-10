@@ -44,6 +44,11 @@
                             <br class="clear" />
                         </div>
                         <div>
+                            <h:outputLabel for="refresh_rate">${messages.contest_ranking_refresh_rate}:</h:outputLabel>
+                            <h:inputText id="refresh_rate" required="false" value="#{requestBean.editedContest.rankingrefreshrate}"/>
+                            <br class="clear" />
+                        </div>
+                        <div>
                             <h:outputLabel for="startdate">${messages.contest_startdate}:</h:outputLabel>
                             <rich:calendar id="startdate" value="#{requestBean.editedContest.startdate}" datePattern="yyyy.MM.dd HH:mm"  showApplyButton="true" cellWidth="31px" cellHeight="22px" style="width:250px" />
                             <h:message for="startdate" errorClass="error" />
@@ -51,20 +56,17 @@
                         </div>
                         <div>
                             <h:outputLabel for="about">${messages.contest_about}:</h:outputLabel>
-                            <h:inputTextarea id="about" styleClass="bigHeight" required="false" value="#{requestBean.editedContest.about}">
-                            </h:inputTextarea>
+                            <h:inputTextarea id="about" styleClass="bigHeight" required="false" value="#{requestBean.editedContest.about}" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="rules">${messages.contest_rules}:</h:outputLabel>
-                            <h:inputTextarea id="rules" styleClass="bigHeight" required="false" value="#{requestBean.editedContest.rules}">
-                            </h:inputTextarea>
+                            <h:inputTextarea id="rules" styleClass="bigHeight" required="false" value="#{requestBean.editedContest.rules}" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="tech">${messages.contest_tech}:</h:outputLabel>
-                            <h:inputTextarea id="tech" styleClass="bigHeight" required="false" value="#{requestBean.editedContest.tech}">
-                            </h:inputTextarea>
+                            <h:inputTextarea id="tech" styleClass="bigHeight" required="false" value="#{requestBean.editedContest.tech}" />
                             <br class="clear" />
                         </div>
                         <div>
