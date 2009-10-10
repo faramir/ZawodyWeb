@@ -4,13 +4,13 @@
   <session-factory>
     <!-- You need to complete the configuration here. This is just a sample, you should use a connection pool -->
     <!-- <property name="connection.url">jdbc:postgresql://localhost:5432/zawodyweb</property> -->
-    <property name="connection.url">jdbc:postgresql://158.75.12.138:8072/zawodyweb</property>
+    <property name="connection.url">jdbc:postgresql://localhost:5432/zawodyweb</property>
     <property name="connection.username">zawody</property>
     <property name="connection.driver_class">org.postgresql.Driver</property>
     <!-- Your database is PostgreSQL 8.3 -->
     <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
     <!-- You can also use org.hibernate.dialect.MySQLInnoDBDialect if all your tables are InnoDBs or org.hibernate.dialect.MySQLMyISAMDialect if all your tables are MyISAMs.-->
-    <property name="connection.password">zawody</property>
+    <property name="connection.password">Z4wody@</property>
     <property name="show_sql">true</property>
     <!-- Remove this property if you use JTA -->
     <property name="current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</property>

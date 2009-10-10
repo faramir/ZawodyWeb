@@ -1,3 +1,6 @@
+-- > createuser -P zawody
+-- > createdb -O zawody -E UTF8 zawodyweb
+
 /* tabele */
 
 CREATE TABLE USERS (
