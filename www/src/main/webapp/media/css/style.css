@@ -1216,4 +1216,6 @@ pre.code {
     background-color:#F0F0F0;
     border: 1px dashed;
     padding: 4px;
+    overflow: auto;
+    font-size: 12px;
 }

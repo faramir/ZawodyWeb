@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Ranking {
 
-    static private final long cacheLive = 59 * 1000; // 59s
     static private final Ranking instance = new Ranking();
     Map<Integer, RankingTable> contestRankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
     Map<Integer, RankingTable> seriesRankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
@@ -27,7 +26,7 @@ public class Ranking {
         return instance;
     }
 
-    private RankingTable getCachedRanking(Map<Integer, RankingTable> map, int key, int type, Date data) {
+    private RankingTable getCachedRanking(Map<Integer, RankingTable> map, int key, int type, Date data, int rankingRefreshRate) {
         if (map.get(key) == null) {
             return null;
         }
@@ -35,7 +34,7 @@ public class Ranking {
         if (ranking.getType() != type) {
             return null;
         }
-        if (ranking.getGenerationDate().getTime() < data.getTime() - cacheLive) {
+        if (ranking.getGenerationDate().getTime() <= data.getTime() - rankingRefreshRate) {
             return null;
         }
         return map.get(key);
@@ -53,7 +52,7 @@ public class Ranking {
         clearCachedRankingTable(seriesRankingTableMap, contest_id);
     }
 
-    public RankingTable getRanking(int contest_id, int type, Date date, boolean admin) {
+    public RankingTable getRanking(int contest_id, int type, int rankingRefreshRate, Date date, boolean admin) {
         RankingInteface ranking = null;
 
         if (type == 0) { // ACM
@@ -68,7 +67,7 @@ public class Ranking {
             return null;
         }
 
-        RankingTable rankingTable = getCachedRanking(contestRankingTableMap, contest_id, type, date);
+        RankingTable rankingTable = getCachedRanking(contestRankingTableMap, contest_id, type, date, rankingRefreshRate * 1000);
 
         if (admin == true || rankingTable == null) {
             if (admin == true) {
@@ -85,7 +84,7 @@ public class Ranking {
         return rankingTable;
     }
 
-    public RankingTable getRankingForSeries(int contest_id, int series_id, int type, Date date, boolean admin) {
+    public RankingTable getRankingForSeries(int contest_id, int series_id, int type, int rankingRefreshRate, Date date, boolean admin) {
         RankingInteface ranking = null;
 
         if (type == 0) { // ACM
@@ -100,7 +99,7 @@ public class Ranking {
             return null;
         }
 
-        RankingTable rankingTable = getCachedRanking(seriesRankingTableMap, series_id, type, date);
+        RankingTable rankingTable = getCachedRanking(seriesRankingTableMap, series_id, type, date, rankingRefreshRate * 1000);
 
         if (admin == true || rankingTable == null) {
             if (admin == true) {

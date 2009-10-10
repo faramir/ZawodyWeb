@@ -334,11 +334,15 @@ public class RequestBean {
         if (currentContestRanking == null && getCurrentContest() != null) {
             Integer contests_id = getCurrentContest().getId();
             Integer type = getCurrentContest().getType();
+            Integer rankingRefreshRate = getCurrentContest().getRankingrefreshrate();
+            if (rankingRefreshRate == null) {
+                rankingRefreshRate = 0;
+            }
             Date date = new Date();
             if (temporarySeriesId == null) {
-                currentContestRanking = Ranking.getInstance().getRanking(contests_id, type, date, temporaryAdminBoolean);
+                currentContestRanking = Ranking.getInstance().getRanking(contests_id, type, rankingRefreshRate, date, temporaryAdminBoolean);
             } else {
-                currentContestRanking = Ranking.getInstance().getRankingForSeries(contests_id, temporarySeriesId, type, date, temporaryAdminBoolean);
+                currentContestRanking = Ranking.getInstance().getRankingForSeries(contests_id, temporarySeriesId, type, rankingRefreshRate, date, temporaryAdminBoolean);
             }
         }
 

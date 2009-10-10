@@ -5,7 +5,7 @@
     <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.SimpleLayout"/>
     </appender>
-    
+
     <logger name="org.hibernate">
         <level value="warn"/>
     </logger>
@@ -17,7 +17,7 @@
     <logger name="org.hibernate.type">
         <level value="warn"/>
     </logger>
-    
+
     <root>
         <priority value="info" />
         <appender-ref ref="ConsoleAppender"/>

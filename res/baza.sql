@@ -50,6 +50,7 @@ CREATE TABLE CONTESTS (
         about               text,
         rules               text,
         tech                text,
+        rankingRefreshRate  int,
         visibility          int
 );
 
