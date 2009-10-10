@@ -36,7 +36,7 @@
                         </div>
                         <div>
                             <h:outputLabel for="passwd_profile">${messages.passwd}:</h:outputLabel>
-                            <h:commandButton value="#{messages.change_passwd}" style="width:254px;" id="passwd_profile" action="goToPasswd" />
+                            <h:commandButton value="#{messages.change_passwd}" styleClass="longerInput" id="passwd_profile" action="goToPasswd" />
                             <h:message for="passwd_profile" errorClass="error" />
                             <br class="clear" />
                         </div>
