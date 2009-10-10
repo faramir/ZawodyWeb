@@ -1178,6 +1178,10 @@ tbody {
     white-space: nowrap;
 }
 
+.left {
+    text-align: left;
+}
+
 .profilform div.subm_switch input {
     float: none;
     margin: 0px auto 10px auto;

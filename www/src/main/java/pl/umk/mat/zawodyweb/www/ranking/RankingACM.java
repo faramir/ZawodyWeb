@@ -336,7 +336,7 @@ public class RankingACM implements RankingInteface {
         Vector<String> columnsCSS = new Vector<String>();
         columnsCSS.add("small");    // points
         columnsCSS.add("nowrap,small");    // time
-        columnsCSS.add("big");      // solutions
+        columnsCSS.add("big,left");      // solutions
 
         /* tabelka z rankingiem */
         Vector<RankingEntry> vectorRankingEntry = new Vector<RankingEntry>();
