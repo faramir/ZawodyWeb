@@ -37,7 +37,7 @@
                         </div>
                         <div>
                             <h:outputLabel for="classfile" styleClass="required">${messages.classfile}:</h:outputLabel>
-                            <t:inputFileUpload id="classfile" value="#{requestBean.temporaryFile}" storage="file" accept="Pliki .class (*.class)|*.class"/>
+                            <t:inputFileUpload id="classfile" styleClass="inputFileUpload" value="#{requestBean.temporaryFile}" storage="file" accept="Pliki .class (*.class)|*.class"/>
                             <h:message for="classfile" errorClass="error" />
                             <br class="clear" />
                         </div>

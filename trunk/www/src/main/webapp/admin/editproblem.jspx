@@ -50,7 +50,7 @@
                                     </c:otherwise>
                                 </c:choose>
                             </h:outputLabel>
-                            <t:inputFileUpload id="pdf" value="#{requestBean.temporaryFile}" storage="file" accept="application/pdf" />
+                            <t:inputFileUpload id="pdf" styleClass="longerInput" value="#{requestBean.temporaryFile}" storage="file" accept="application/pdf" />
                             <h:message for="pdf" errorClass="error" />
                             <br class="clear" />
                         </div>

@@ -78,7 +78,7 @@
                     <h:inputText id="captcha" required="true" validator="#{requestBean.validateCaptcha}" />
                     <h:message for="captcha" errorClass="error" />
                     <div class="captcha">
-                        <t:captcha id="captchaImage" imageWidth="250" imageHeight="70" captchaSessionKeyName="captchaKey"  />
+                        <t:captcha id="captchaImage" imageWidth="375" imageHeight="70" captchaSessionKeyName="captchaKey"  />
                     </div>
                     <br class="clear" />
                     <br />
