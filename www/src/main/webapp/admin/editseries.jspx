@@ -16,6 +16,9 @@
             <c:when test="#{requestBean.editedSeries == null}">
                 ${messages.no_series}
             </c:when>
+            <c:when test="#{zw:isNullOrZero(requestBean.editedSeries.id) and !(zw:canAddSeries(rolesBean, temporaryContestId, null))}">
+                ${messages.nonsufficient_privileges}
+            </c:when>
             <c:when test="#{!(zw:isNullOrZero(requestBean.editedSeries.id)) and !(zw:canEditSeries(rolesBean, requestBean.editedSeries.contests.id, requestBean.editedSeries.id))}">
                 ${messages.nonsufficient_privileges}
             </c:when>

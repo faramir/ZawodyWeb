@@ -1160,6 +1160,12 @@ tbody {
     color: #FF0000;
 }
 
+.ranking_generated {
+    font-size: 11px;
+    text-align: right;
+    color: #0000ff;
+}
+
 .link_img {
     margin-bottom:10px;
     margin-left:-80px;

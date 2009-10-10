@@ -1,5 +1,6 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
+import java.util.Date;
 import java.util.Vector;
 
 /**
@@ -13,6 +14,8 @@ public class RankingTable {
     private Vector<String> columnsCSS;
     private Vector<RankingEntry> table;
     private Boolean frozenRanking;
+    private Date generationDate;
+    private int type;
 
     public RankingTable() {
     }
@@ -71,5 +74,33 @@ public class RankingTable {
      */
     public Boolean getFrozenRanking() {
         return frozenRanking;
+    }
+
+    /**
+     * @return the generationDate
+     */
+    public Date getGenerationDate() {
+        return generationDate;
+    }
+
+    /**
+     * @param generationDate the generationDate to set
+     */
+    public void setGenerationDate(Date generationDate) {
+        this.generationDate = generationDate;
+    }
+
+    /**
+     * @return the type
+     */
+    public int getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(int type) {
+        this.type = type;
     }
 }

@@ -25,6 +25,7 @@ import javax.persistence.Transient;
 import javax.persistence.Embeddable;
 import javax.persistence.GenerationType;
 import org.apache.commons.codec.binary.Hex;
+import org.hibernate.annotations.Fetch;
 
 /**
  * <p>Pojo mapping TABLE public.users</p>
@@ -168,7 +169,7 @@ public class Users implements Serializable {
     /**
      * @return email
      */
-    @Basic
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "email", length = 40)
     public String getEmail() {
         return email;
@@ -185,7 +186,7 @@ public class Users implements Serializable {
     /**
      * @return birthTimestamp
      */
-    @Basic
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "birthdate")
     public Date getBirthdate() {
         return birthdate;
@@ -229,7 +230,7 @@ public class Users implements Serializable {
      * checkPass(String passToCheck)
      * @return pass hash of the password (<b>NOT</b> plaintext password)
      */
-    @Basic
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "pass", length = 40)
     public String getPass() {
         return pass;
@@ -268,7 +269,7 @@ public class Users implements Serializable {
     /**
      * @return address
      */
-    @Basic
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "address", length = 80)
     public String getAddress() {
         return address;
@@ -285,7 +286,7 @@ public class Users implements Serializable {
     /**
      * @return school
      */
-    @Basic
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "school", length = 80)
     public String getSchool() {
         return school;
@@ -302,7 +303,7 @@ public class Users implements Serializable {
     /**
      * @return tutor
      */
-    @Basic
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "tutor", length = 2147483647)
     public String getTutor() {
         return tutor;
@@ -319,7 +320,7 @@ public class Users implements Serializable {
     /**
      * @return emailnotification
      */
-    @Basic
+    @Basic(fetch=FetchType.LAZY)
     @Column(name = "emailnotification")
     public Integer getEmailnotification() {
         return emailnotification;
