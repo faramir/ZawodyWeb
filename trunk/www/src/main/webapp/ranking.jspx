@@ -56,6 +56,9 @@
                                 <c:set var="itr" value="#{itr + 1}" />
                             </c:forEach>
                         </table>
+                            <div class="ranking_generated" style="clear:both">
+                                <h:outputText value="#{messages.ranking_generation_date}: #{zw:formatDateAndHour(requestBean.currentContestRanking.generationDate, 'yyyy-MM-dd HH:mm:ss')}" />
+                            </div>
                     </div>
                 </div>
             </c:otherwise>
