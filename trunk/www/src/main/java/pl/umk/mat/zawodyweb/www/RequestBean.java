@@ -1236,6 +1236,15 @@ public class RequestBean {
         }
     }
 
+    @HttpAction(name = "code", pattern = "code/{id}/{title}")
+    public String goToViewCode(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        String res = goToSubmission(id, dummy);
+        if (res.equals("submission")) {
+            res = "view_code";
+        }
+        return res;
+    }
+
     @HttpAction(name = "rate", pattern = "rate/{id}/{title}")
     public String goToRate(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         String res = goToSubmission(id, dummy);
@@ -1427,17 +1436,21 @@ public class RequestBean {
             }
         } else if (type.equals("code")) {
             Submits s = submitsDAO.getById(id);
-            if (s != null && s.getCode() != null) {
-                name = s.getFilename();
-                content = s.getCode();
-                mimetype = "application/force-download";
+            if (s.getUsers().getId().equals(sessionBean.getCurrentUser().getId()) || rolesBean.canRate(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getContests().getId())) {
+                if (s != null && s.getCode() != null) {
+                    name = s.getFilename();
+                    content = s.getCode();
+                    mimetype = "application/force-download";
+                }
             }
         } else if (type.equals("class")) {
-            Classes c = classesDAO.getById(id);
-            if (c != null && c.getCode() != null) {
-                name = c.getFilename() + ".class";
-                content = c.getCode();
-                mimetype = "application/force-download";
+            if (rolesBean.canEditAnyProblem()) {
+                Classes c = classesDAO.getById(id);
+                if (c != null && c.getCode() != null) {
+                    name = c.getFilename() + ".class";
+                    content = c.getCode();
+                    mimetype = "application/force-download";
+                }
             }
         }
 
@@ -1692,37 +1705,6 @@ public class RequestBean {
 
     public void setRatingEditNote(Integer ratingEditNote) {
         this.ratingEditNote = ratingEditNote;
-    }
-
-    /**
-     * http://stackoverflow.com/questions/277521/how-to-identify-the-file-content-is-in-ascii-or-binary/277568#277568
-     * 
-     * If the first two bytes are hex FE FF, the file is tentatively UTF-16 BE.
-     * If the first two bytes are hex FF FE, and the following two bytes are not hex 00 00 , the file is tentatively UTF-16 LE.
-     * If the first four bytes are hex 00 00 FE FF, the file is tentatively UTF-32 BE.
-     * If the first four bytes are hex FF FE 00 00, the file is tentatively UTF-32 LE.
-     * @param text
-     * @return true if file is binary
-     */
-    public boolean isBinary(byte[] data) {
-        if (data[0] == 0xFE && data[1] == 0xFF) {
-            return false;
-        }
-        if (data[0] == 0xFF && data[1] == 0xFE) {
-            return false;
-        }
-        if (data[0] == 0x00 && data[1] == 0x00 && data[2] == 0xFE && data[3] == 0xFF) {
-            return false;
-        }
-        if (data[0] == 0xFF && data[1] == 0xFE && data[2] == 0x00 && data[3] == 0x00) {
-            return false;
-        }
-        for (byte b : data) {
-            if (b == 0) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public Integer getTemporarySubmitResultId() {

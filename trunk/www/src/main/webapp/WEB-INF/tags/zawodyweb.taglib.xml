@@ -194,4 +194,14 @@
         <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
         <function-signature>java.lang.Void prepareSubmissions(pl.umk.mat.zawodyweb.www.SessionBean, pl.umk.mat.zawodyweb.database.pojo.Contests)</function-signature>
     </function>
+    <function>
+        <function-name>isBinarySubmit</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
+        <function-signature>java.lang.Boolean isBinarySubmit(pl.umk.mat.zawodyweb.database.pojo.Submits)</function-signature>
+    </function>
+    <function>
+        <function-name>getSubmitCodeString</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
+        <function-signature>java.lang.String getSubmitCodeString(pl.umk.mat.zawodyweb.database.pojo.Submits)</function-signature>
+    </function>
 </facelet-taglib>

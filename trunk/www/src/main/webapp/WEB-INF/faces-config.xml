@@ -48,12 +48,8 @@
         <display-name>register_to_login</display-name>
         <from-view-id>/register.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                login
-            </from-outcome>
-            <to-view-id>
-                /login.jspx
-            </to-view-id>
+            <from-outcome>login</from-outcome>
+            <to-view-id>/login.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -61,12 +57,8 @@
         <display-name>login_to_index</display-name>
         <from-view-id>/login.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                start
-            </from-outcome>
-            <to-view-id>
-                /start.jspx
-            </to-view-id>
+            <from-outcome>start</from-outcome>
+            <to-view-id>/start.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -74,12 +66,8 @@
         <display-name>to_index</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
-            <from-outcome>
-                start
-            </from-outcome>
-            <to-view-id>
-                /start.jspx
-            </to-view-id>
+            <from-outcome>start</from-outcome>
+            <to-view-id>/start.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -87,12 +75,8 @@
         <display-name>editcontest_to_index</display-name>
         <from-view-id>/admin/editcontest.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                start
-            </from-outcome>
-            <to-view-id>
-                /start.jspx
-            </to-view-id>
+            <from-outcome>start</from-outcome>
+            <to-view-id>/start.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -100,12 +84,8 @@
         <display-name>editseries_to_index</display-name>
         <from-view-id>/admin/editseries.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                start
-            </from-outcome>
-            <to-view-id>
-                /start.jspx
-            </to-view-id>
+            <from-outcome>start</from-outcome>
+            <to-view-id>/start.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -113,60 +93,40 @@
         <display-name>goToProblems</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
-            <from-outcome>
-                problems
-            </from-outcome>
-            <to-view-id>
-                /problems.jspx
-            </to-view-id>
+            <from-outcome>problems</from-outcome>
+            <to-view-id>/problems.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <display-name>goToPasswd</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
-            <from-outcome>
-                goToPasswd
-            </from-outcome>
-            <to-view-id>
-                /passwd.jspx
-            </to-view-id>
+            <from-outcome>goToPasswd</from-outcome>
+            <to-view-id>/passwd.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <display-name>goToRanking</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
-            <from-outcome>
-                ranking
-            </from-outcome>
-            <to-view-id>
-                /ranking.jspx
-            </to-view-id>
+            <from-outcome>ranking</from-outcome>
+            <to-view-id>/ranking.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <display-name>goToRules</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
-            <from-outcome>
-                rules
-            </from-outcome>
-            <to-view-id>
-                /rules.jspx
-            </to-view-id>
+            <from-outcome>rules</from-outcome>
+            <to-view-id>/rules.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <display-name>questions_to_questions</display-name>
         <from-view-id>/questions.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                questions
-            </from-outcome>
-            <to-view-id>
-                /questions.jspx
-            </to-view-id>
+            <from-outcome>questions</from-outcome>
+            <to-view-id>/questions.jspx</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
@@ -174,12 +134,8 @@
         <display-name>question_to_questions</display-name>
         <from-view-id>/question.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                questions
-            </from-outcome>
-            <to-view-id>
-                /questions.jspx
-            </to-view-id>
+            <from-outcome>questions</from-outcome>
+            <to-view-id>/questions.jspx</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
@@ -187,24 +143,16 @@
         <display-name>goToQuestions</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
-            <from-outcome>
-                questions
-            </from-outcome>
-            <to-view-id>
-                /questions.jspx
-            </to-view-id>
+            <from-outcome>questions</from-outcome>
+            <to-view-id>/questions.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <display-name>goToSubmissions</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
-            <from-outcome>
-                submissions
-            </from-outcome>
-            <to-view-id>
-                /submissions.jspx
-            </to-view-id>
+            <from-outcome>submissions</from-outcome>
+            <to-view-id>/submissions.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -212,24 +160,16 @@
         <display-name>submitProblem</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
-            <from-outcome>
-                submit
-            </from-outcome>
-            <to-view-id>
-                /submit.jspx
-            </to-view-id>
+            <from-outcome>submit</from-outcome>
+            <to-view-id>/submit.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <display-name>edit_problem_to_problems</display-name>
         <from-view-id>/admin/editproblem.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                problems
-            </from-outcome>
-            <to-view-id>
-                /problems.jspx
-            </to-view-id>
+            <from-outcome>problems</from-outcome>
+            <to-view-id>/problems.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -237,12 +177,8 @@
         <display-name>edit_test_to_problems</display-name>
         <from-view-id>/admin/edittest.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                problems
-            </from-outcome>
-            <to-view-id>
-                /problems.jspx
-            </to-view-id>
+            <from-outcome>problems</from-outcome>
+            <to-view-id>/problems.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -250,12 +186,8 @@
         <display-name>submit_to_problems</display-name>
         <from-view-id>/submit.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                problems
-            </from-outcome>
-            <to-view-id>
-                /problems.jspx
-            </to-view-id>
+            <from-outcome>problems</from-outcome>
+            <to-view-id>/problems.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -263,12 +195,8 @@
         <display-name>problems_to_problems</display-name>
         <from-view-id>/problems.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                problems
-            </from-outcome>
-            <to-view-id>
-                /problems.jspx
-            </to-view-id>
+            <from-outcome>problems</from-outcome>
+            <to-view-id>/problems.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -276,12 +204,8 @@
         <display-name>delproblem_to_problems</display-name>
         <from-view-id>/del/*</from-view-id>
         <navigation-case>
-            <from-outcome>
-                problems
-            </from-outcome>
-            <to-view-id>
-                /problems.jspx
-            </to-view-id>
+            <from-outcome>problems</from-outcome>
+            <to-view-id>/problems.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -313,12 +237,8 @@
         <display-name>passwd_to_profil</display-name>
         <from-view-id>/passwd.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                profil
-            </from-outcome>
-            <to-view-id>
-                /profil.jspx
-            </to-view-id>
+            <from-outcome>profil</from-outcome>
+            <to-view-id>/profil.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -326,12 +246,8 @@
         <display-name>edit_user_to_listusers</display-name>
         <from-view-id>/admin/edituser.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                listusers
-            </from-outcome>
-            <to-view-id>
-                /admin/listusers.jspx
-            </to-view-id>
+            <from-outcome>listusers</from-outcome>
+            <to-view-id>/admin/listusers.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -339,12 +255,8 @@
         <display-name>edit_class_to_listclasses</display-name>
         <from-view-id>/admin/editclass.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                listclasses
-            </from-outcome>
-            <to-view-id>
-                /admin/listclasses.jspx
-            </to-view-id>
+            <from-outcome>listclasses</from-outcome>
+            <to-view-id>/admin/listclasses.jspx</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -352,13 +264,17 @@
         <display-name>edit_language_to_listlanguages</display-name>
         <from-view-id>/admin/editlanguage.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>
-                listlanguages
-            </from-outcome>
-            <to-view-id>
-                /admin/listlanguages.jspx
-            </to-view-id>
+            <from-outcome>listlanguages</from-outcome>
+            <to-view-id>/admin/listlanguages.jspx</to-view-id>
             <redirect />
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <display-name>goToViewCode</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>view_code</from-outcome>
+            <to-view-id>/viewcode.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>
 </faces-config>

@@ -1,0 +1,49 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
+    <ui:define name="pageTitle">
+        <h:outputText value="#{messages.no_submission}" rendered="#{requestBean.currentSubmit.id == null}" />
+        <h:outputText value="#{messages.submissionnumber} #{requestBean.currentSubmit.id}" rendered="#{requestBean.currentSubmit != null}" />
+    </ui:define>
+    <ui:define name="pageContent">
+        <c:choose>
+            <c:when test="#{requestBean.currentSubmit == null}">
+                ${messages.no_submission}
+            </c:when>
+            <c:when test="#{!(requestBean.currentSubmit.users.id == sessionBean.currentUser.id) and !zw:canRate(rolesBean, requestBean.currentSubmit.problems.series.contests.id, requestBean.currentSubmit.problems.series.id)}">
+                ${messages.nonsufficient_privileges}
+            </c:when>
+            <c:otherwise>
+                <div class="profilform">
+                    <div class="zadanko">
+                        <div class="nazwa">
+                            ${requestBean.currentSubmit.problems.name} (${requestBean.currentSubmit.problems.abbrev})
+                        </div>
+                        <div class="termin">
+                            ${messages.submission_date}: ${requestBean.currentSubmit.sdate}
+                        </div>
+                        <div class="filename">
+                            ${messages.filename}: ${requestBean.currentSubmit.filename}
+                        </div>
+                        <div class="language">
+                            ${messages.submit_language}: ${requestBean.currentSubmit.languages.name} (.${requestBean.currentSubmit.languages.extension})
+                        </div>
+                        <div class="notes">
+                            <h:outputText value="#{zw:nlToBr(requestBean.currentSubmit.notes)}" escape="false"/>
+                        </div>
+                    </div>
+                    <div>
+                        <c:choose>
+                            <c:when test="#{zw:isBinarySubmit(requestBean.currentSubmit)}">
+                                <pre class="code">${messages.binary_file}</pre>
+                            </c:when>
+                            <c:otherwise>
+                                <pre class="code"><h:outputText value="#{zw:getSubmitCodeString(requestBean.currentSubmit)}" escape="true"/></pre>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </div>
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
+</ui:composition>

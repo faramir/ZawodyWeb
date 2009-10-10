@@ -340,6 +340,25 @@ img {
     text-align: right;
 }
 
+.profilform div.zadanko div.filename {
+    font-size: 11px;
+    border: solid #c7aaf1;
+    border-width: 0px 1px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.language {
+    font-size: 11px;
+    border: solid #c7aaf1;
+    border-width: 0px 1px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    text-align: right;
+}
+
+
 .profilform div.zadanko div.jezyki {
     font-size: 11px;
     padding-bottom: 2px;
@@ -1178,4 +1197,10 @@ tbody {
     border-width: 1px 0 0 0;
     width:70%;
     margin: 0 auto 0 auto;
+}
+
+pre.code {
+    background-color:#F0F0F0;
+    border: 1px dashed;
+    padding: 4px;
 }
