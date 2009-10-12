@@ -38,7 +38,7 @@
                         <zw:problem-link_button problem="${requestBean.currentProblem}" message="${messages.send_solution}" type="submit" />
                     </h:panelGroup>
                 </div>
-                <div style="background: transparent;border:none;padding-top:30px;">
+                <div class="testy">
                     <t:dataTable rendered="#{zw:canEditProblem(rolesBean, series.contests.id, series.id)}" id="test" var="test" styleClass="seria" value="#{requestBean.currentProblem.testss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
                         <h:column>
                             <f:facet name="header">

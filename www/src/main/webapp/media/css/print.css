@@ -1,19 +1,19 @@
 body {
     margin: 0; padding: 0;
-    font: 1em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
-    background: #efeaf7 url(../images/backgr1.png) repeat;
-    color: #0000FF;
+    font: 11pt  Verdana, 'Trebuchet MS', Arial, Sans-serif;
+    background: white;
+    color: black;
     text-align: left;
 }
 
 a:link:hover, a:visited:hover {
-    color: #4b00ff;
+    color: black;
     text-decoration: none;
 }
 
 a:visited, a:link {
     text-decoration: none;
-    color: #0000FF;
+    color: black;
 }
 
 .jclock {
@@ -23,11 +23,12 @@ a:visited, a:link {
     text-align: center;
     font: 0.9em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
     padding: 0 20px 80px 0;
+    display: none;
 }
 
 #home h1 {
     font-size: 1.3em;
-    color: #0000bb;
+    color: black;
     margin: 0 0 0 0;
     padding: 20px 0 0 0;
     text-align: center;
@@ -37,7 +38,7 @@ a:visited, a:link {
     font-size: 1em;
     margin: 0;
     padding: 0;
-    color: #0000bb;
+    color: black;
     text-align: center;
 }
 
@@ -52,6 +53,7 @@ a:visited, a:link {
     position: absolute;
     left: 90px;
     top: 8px;
+    display: none;
 }
 
 .graph {
@@ -59,23 +61,21 @@ a:visited, a:link {
     left: -45px;
     top: -29px;
     z-index: -1;
+    display: none;
 }
 
 #content {
-    position: relative;
-    color: #000000;
-    bottom: 4px;
-    margin: 20px 0 0 0;
-    padding: 15px 0 0 0;
-    float: left;
-    width: 70%;
-    min-width: 635px;
-    border: ridge #c5a7f2;
-    border-width: 0 0 1px 0;
+    width: auto;
+	border: 0;
+	margin: 0 5%;
+	padding: 0;
+	float: none !important;
+    color: black;
+	background: transparent;
 }
 
 #content h1 {
-    border: ridge #c5a7f2;
+    border: ridge black;
     padding: 0 0 20px 0;
     border-width: 0 0 1px 0;
     text-align: center;
@@ -91,6 +91,7 @@ img {
     float: left;
     margin: 10px 0 0 10px;
     padding: 20px 0 0 40px;
+    display: none;
 }
 
 /* MENU */
@@ -98,6 +99,7 @@ img {
     float: left;
     width: 70%;
     min-width: 635px;
+    display: none;
 }
 
 #top_menu ul {	
@@ -106,10 +108,11 @@ img {
     padding: 2px;
     margin: 0px;
     font: bold 1em 'Trebuchet MS', Tahoma, Arial, Sans-serif;
-    border: 1px ridge #c5a7f2;
+    border: ridge black;
     border-width: 1px;
     list-style: none;
     background: url(../images/bg_top1.png) repeat-x;
+    display: none;
 }
 
 #top_menu ul li{
@@ -117,10 +120,11 @@ img {
     display: inline;
     float: left;
     padding: 0 20px 0 20px;
+    display: none;
 }
 
 #top_menu ul li:hover {
-    color: #4b00ff;
+    color:  black;
     text-decoration: none;
     background: url(../images/bg_top2.png) repeat-x;
 }
@@ -147,6 +151,7 @@ img {
     width: 150px;
     border: none;
     list-style: none;
+    display: none;
 }
 
 #left_menu ul li:hover{
@@ -159,6 +164,7 @@ img {
     border-width: 0px 0px 0px 3px;
     border-style: solid;
     border-color: #c5a7f2;
+    display: none;
 }
 
 #left_menu ul li a {
@@ -197,7 +203,7 @@ img {
     border:1px solid #999999;
     float:right;
     clear:right;
-    background: #decff4;
+    background: transparent;
 }
 
 .loginform input.guzik {
@@ -205,7 +211,7 @@ img {
     margin: 0 40% 0 0;
     border:1px solid #999999;
     clear:right;
-    background: #decff4;
+    background: transparent;
 }
 
 .loginform input:focus, .loginform input:hover {
@@ -243,7 +249,7 @@ img {
     float: right;
     font-weight: bold;
     display: inline-block;
-    color: #001188;
+    color: black;
     height: auto;
     margin: 2px 0 0px 0px;
     padding: 5px;
@@ -258,27 +264,20 @@ img {
 }
 
 .profilform div.seria {
-    border: solid;
-    border-color: #dfd1f4;
-    border-width: 0px 1px 0px 0px;
     margin: 20px 0 0px 0px;
     padding: 5px 0 0 0;
-    background: #e9dff7 url(../images/seriaGora.png) repeat-x;
+    background: transparent;
 }
 
 .profilform div.seriaDol {
-    border: solid;
-    border-color: #dfd1f4;
-    border-width: 0px 1px 0px 0px;
     margin: 0px 0px 10px 0px;
     height: 30px;
-    background: #e9dff7 url(../images/seriaDol.png) repeat-x;
+    background: transparent;
 }
 
 .profilform div.zadanko div.nazwa {
     font-size: 32px;
-    background: #ddcff3;
-    background: #ddcff3 url(../images/trescGora.png) repeat-x;
+    background: transparent;
     margin: auto;
     text-align: center;
     padding-top: 10px;
@@ -291,9 +290,9 @@ img {
 
 .profilform div.zadanko div {
     padding-right: 5px;
-    background: #ddcff3;
-    border: solid #c7aaf1;
-    border-width: 0 1px 0 0;
+    background: transparent;
+    border: solid black;
+    border-width: 0 0px 0 0;
 }
 
 .profilform div.zadanko div.pamiec {
@@ -308,6 +307,8 @@ img {
     margin: 0px 0 0 0;
     text-align: right;
     display: block;
+    border: solid black;
+    border-width: 1px 0px 0 0;
 }
 
 .profilform div.zadanko div.pdf a {
@@ -318,13 +319,13 @@ img {
     margin: 0px 0 0 0;
     padding: 0px 0 0px 5px;
     float: right;
-    background: #ddcff3;
+    background: transparent;
 }
 
 .profilform div.zadanko div.termin {
     font-size: 11px;
-    border: solid #c7aaf1;
-    border-width: 1px 1px 0 0;
+    border: solid black;
+    border-width: 1px 0px 0 0;
     padding-bottom: 2px;
     padding-top: 5px;
     text-align: right;
@@ -332,8 +333,8 @@ img {
 
 .profilform div.zadanko div.notes {
     font-size: 11px;
-    border: solid #c7aaf1;
-    border-width: 1px 1px 0 0;
+    border: solid black;
+    border-width: 1px 0px 0 0;
     padding-bottom: 2px;
     padding-top: 5px;
     margin-bottom: 20px;
@@ -342,8 +343,8 @@ img {
 
 .profilform div.zadanko div.filename {
     font-size: 11px;
-    border: solid #c7aaf1;
-    border-width: 0px 1px 0 0;
+    border: solid black;
+    border-width: 0px 0px 0 0;
     padding-bottom: 2px;
     padding-top: 5px;
     text-align: right;
@@ -351,13 +352,19 @@ img {
 
 .profilform div.zadanko div.language {
     font-size: 11px;
-    border: solid #c7aaf1;
-    border-width: 0px 1px 0 0;
+    border: solid black;
+    border-width: 0px 0px 0 0;
     padding-bottom: 2px;
     padding-top: 5px;
     text-align: right;
 }
 
+.profilform div.zadanko div.testy {
+    background: transparent;
+    border:none;
+    padding-top:30px;
+    display: none;
+}
 
 .profilform div.zadanko div.jezyki {
     font-size: 11px;
@@ -375,20 +382,15 @@ img {
     font-size: 18px;
     margin: 0px auto 10px auto;
     text-align: center;
-    background: #ddcff3 url(../images/trescDol.png) repeat-x;;
-    padding: 10px 0 10px 0;
-}
-
-.profilform div.zadanko div.testy {
     background: transparent;
-    border:none;
-    padding-top:30px;
+    padding: 10px 0 10px 0;
+    display: none;
 }
 
 .profilform div.zadanko div.tresc {
     padding: 10px 45px 10px 45px;
     border: none;
-    background: #efeaf7;
+    background: transparent;
 }
 
 .profilform div.zadanko div.tresc div {
@@ -413,6 +415,7 @@ img {
     margin: 0px;
     padding: 0 2px 0 2px;
     float: right;
+    width: 18px;
 }
 
 .profilform table tr a {
@@ -424,13 +427,15 @@ img {
     display: inline-table;
     float: left;
     background: transparent;
-    border: none;
+    border: ridge black;
+    border-width: 1px;
     text-align: center;
 }
 
 .profilform table tr a.ikonka {
     display: inline-table;
     float: right;
+    width: 18px;
 }
 
 #content #pageTitle {
@@ -461,7 +466,7 @@ img {
     clear:right;
     width: 375px;
     padding: 0px 1px;
-    background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+    background: transparent;
 }
 .profilform textarea {
     margin-right:20px;
@@ -481,7 +486,7 @@ img {
     clear:right;
     width: 379px;
     padding: 0px 1px;
-    background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+    background: transparent;
 }
 
 .profilform input.check {
@@ -491,7 +496,7 @@ img {
     float:right;
     clear:right;
     padding: 0px 0px;
-    background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+    background: transparent;
 }
 
 .profilform .captcha {
@@ -521,12 +526,12 @@ img {
 
 .bigHeight {
     height: 15em;
-    background: #decff4 url(../images/ui-bg_1x150.png) repeat-x;
+    background: transparent;
 }
 
 .smaHeight {
     height: 4em;
-    background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x50.png) repeat-x;
+    background: transparent;
 }
 
 .profilform input.longerInput {
@@ -537,6 +542,7 @@ img {
     margin: 10px 40%;
     float: none;
     width: 100px;
+    display: none;
 }
 
 .profilform input.check {
@@ -546,7 +552,7 @@ img {
 
 .profilform .error {
     margin-top: 15px;
-    color:red;
+    color: silver;
     font-size:0.7em;
     float:right;
     padding-right: 10px;
@@ -572,10 +578,17 @@ img {
     margin-left:auto;
     text-align: center;
     padding-bottom: 0px;
+    background: transparent;
+}
+
+.profilform table tr {
+    background: transparent !important;
+    border: ridge black;
+    border-width: 1px;
 }
 
 .profilform table tr:hover {
-    background: #f6f6f6;
+    background: transparent;
 }
 
 .profilform table.pagingrid tr:hover {
@@ -584,19 +597,21 @@ img {
 
 .profilform table th {
     color: #000;
-    background: #d4abff url(../images/th_bg1.png) repeat-x;;
+    background: transparent;
     text-align: center;
     font-weight: bold;
     padding: 1px;
+    border: black ridge;
+    border-width: 1px;
 }
 
 .linia1 {
-    background: #d7c1fe;
+    background: transparent;
 
 }
 
 .linia2 {
-    background: #e1d4f6;
+    background: transparent;
 }
 
 .col1 {
@@ -604,25 +619,32 @@ img {
     margin: 0px 1px 0px 1px;
     padding-left: 5px;
     width: 70%;
+    border: black ridge;
+    border-width: 1px;
 }
 
 .col2 {
     width: 50px;
     margin: 0px 1px 0px 1px;
+    border: black ridge;
+    border-width: 1px;
 }
 
 .cols {
     text-align: left;
     margin: 0px 1px 0px 1px;
     padding-left: 5px;
+    border: black ridge;
+    border-width: 1px;
 }
 
 .paginator {
     text-align: center;
-    background: url(../images/pagin.png) repeat-x;
+    background: transparent;
     width: 305px;
     margin: 0px auto;
     padding: 0px;
+    display: none;
 }
 
 .pagingrid {
@@ -666,7 +688,7 @@ img {
 }
 
 .act a {
-    color: #0000ff;
+    color: black;
 }
 
 .paginator a:hover {
@@ -675,7 +697,7 @@ img {
 }
 
 .paginator tr:hover {
-    background: url(../images/pagin.png) repeat-x;
+    background: transparent;
 }
 
 .pagingrid tr:hover {
@@ -706,7 +728,7 @@ img {
     border:1px solid #999999;
     float:right;
     clear:right;
-    background: #decff4;
+    background: transparent;
 }
 
 .qform input.topic {
@@ -715,7 +737,7 @@ img {
     width: 50%;
     float:right;
     clear:right;
-    background: #decff4;
+    background: transparent;
 }
 
 .qform select {
@@ -723,7 +745,7 @@ img {
     width: 51%;
     float:right;
     clear:right;
-    background: #decff4;
+    background: transparent;
 }
 
 
@@ -735,7 +757,7 @@ img {
     clear:right;
     width: 90%;
     height: 70px;
-    background: #decff4;
+    background: transparent;
 }
 
 .qform input:focus, .qform input:hover, .qform select:hover, .qform select:focus {
@@ -770,7 +792,7 @@ img {
     margin: 0 40% 20px 0;
     float:right;
     clear:right;
-    background: #decff4;
+    background: transparent;
 }
 
 .sendform input.file {
@@ -779,7 +801,7 @@ img {
     clear:right;
     margin: 0;
     width: 90%;
-    background: #decff4;
+    background: transparent;
 }
 
 .sendform textarea {
@@ -789,7 +811,7 @@ img {
     width: 90%;
     height: 150px;
     margin: 20px 0 20px 0;
-    background: #decff4;
+    background: transparent;
 }
 
 .sendform select {
@@ -797,7 +819,7 @@ img {
     width: 30%;
     float:right;
     clear:right;
-    background: #decff4;
+    background: transparent;
 }
 
 .sendform input:focus, .sendform input:hover, .sendform textarea:focus, .sendform textarea:hover, .sendform select:focus, .sendform select:hover, .sendform input#file:focus, .sendform input#file:hover {
@@ -810,14 +832,15 @@ img {
     clear: right;
     margin: -20px 0 0 0;
     padding: 0px;
+    display: none;
 }
 
 .rich-calendar-header {
-    background-color: #bb97f2;
+    background-color: transparent;
 }
 
 .rich-calendar-tool-btn-hover {
-    background-color: #f1eee9;
+    background-color: transparent;
     color: #000000;
     border-top-width: 1px;
     border-left-width: 1px;
@@ -840,7 +863,7 @@ img {
 .rich-calendar-cell {
     border-bottom-color: #c4c0b9;
     border-right-color: #c4c0b9;
-    background-color: #efeaf7;
+    background-color: transparent;
     font-family: "Trebuchet MS", Tahoma, Arial, sans-serif;
 }
 
@@ -858,7 +881,7 @@ img {
     background-attachment: scroll;
     background-repeat: repeat;
     background-position: 0% 0%;
-    background-color: #f1eee9;
+    background-color: transparent;
     background-image: none;
     font-family: "Trebuchet MS", Tahoma, Arial, sans-serif;
 }
@@ -897,7 +920,7 @@ table.rich-calendar-editor-container tr:hover{
     background-attachment: scroll;
     background-repeat: repeat;
     background-position: 0% 0%;
-    background-color: #f1eee9;
+    background-color: transparent;
     background-image: none;
     white-space: nowrap;
     text-align: center;
@@ -909,7 +932,7 @@ table.rich-calendar-editor-container tr:hover{
     text-align: center;
     width: 20px;
     height: 22px;
-    background-color: #bb97f2;
+    background-color: white;
     font-weight: bold;
     color: #000;
 }
@@ -918,7 +941,7 @@ table.rich-calendar-editor-container tr:hover{
     vertical-align: middle;
     text-align: center;
     height: 22px;
-    background-color: #bb97f2;
+    background-color: white;
     font-weight: bold;
     color: #000;
     white-space: nowrap;
@@ -928,7 +951,7 @@ table.rich-calendar-editor-container tr:hover{
     color: #A0A0A0;
 }
 .profilform table td.rich-calendar-spinner-input-container {
-    background-color: #efeaf7;
+    background-color: white;
     margin: 0px;
     padding: 0px;
     width: 5px;
@@ -967,37 +990,37 @@ table.rich-calendar-editor-container tr:hover{
 }
 
 .profilform table.rich-calendar-time-layout-fields {
-    background-color: #efeaf7;
+    background-color: white;
     margin: 0px;
     padding: 0px;
 }
 
 .profilform.rich-calendar-time-layout-fields:hover {
-    background-color: #efeaf7;
+    background-color: transparent;
 }
 
 .profilform table td.rich-calendar-time-layout-fields:hover {
-    background-color: #efeaf7;
+    background-color: transparent;
 }
 
 .profilform table td.rich-calendar-time-layout-ok {
-    background-color: #efeaf7;
+    background-color: white;
 }
 
 .profilform table td.rich-calendar-time-layout-ok:hover {
-    background-color: #efeaf7;
+    background-color: transparent;
 }
 
 .profilform table td.rich-calendar-time-layout-cancel {
-    background-color: #efeaf7;
+    background-color: white;
 }
 
 .profilform table td.rich-calendar-time-layout-cancel:hover {
-    background-color: #efeaf7;
+    background-color: transparent;
 }
 
 .profilform table td.rich-calendar-spinner-input-container {
-    background-color: #efeaf7;
+    background-color: white;
 }
 
 .profilform table.rich-calendar-spinner-input-container {
@@ -1010,7 +1033,7 @@ tbody {
 }
 
 .profilform table td.rich-calendar-spinner-input-container:hover {
-    background-color: #efeaf7;
+    background-color: transparent;
 }
 
 .rich-calendar-cell-size {
@@ -1019,13 +1042,13 @@ tbody {
 }
 
 .rich-calendar-week {
-    background-color: #faf8e9;
-    color: #2181ff;
+    background-color: white;
+    color: black;
 }
 
 .rich-calendar-select {
-    background-color: #224986;
-    color: #FFFFFF;
+    background-color: white;
+    color: silver;
     font-weight: bold;
 }
 
@@ -1040,6 +1063,7 @@ tbody {
     margin-right:5%;
     margin-bottom: 0px;
     color:#000;
+    display: none;
 }
 
 .contest-link_img {
@@ -1051,18 +1075,18 @@ tbody {
 .title {
     font-size:1.4em;
     text-align:center;
-    color:#0000FF;
+    color:black;
 }
 
 .text {
     padding:30px;
-    background: #ddcff3;
+    background: transparent;
     margin:10px;
 }
 
 .source {
     margin-top:30px;
-    border: solid #c5a7f2;
+    border: ridge black;
     border-width: 1px 0 0 0;
     padding-top:30px;
 }
@@ -1075,6 +1099,7 @@ tbody {
     margin: 10px 40%;
     float: none;
     width: 100px;
+    display: none;
 }
 
 .about img {
@@ -1089,14 +1114,14 @@ tbody {
 }
 
 .praca {
-    color: #0000FF;
+    color: black;
     font-weight: bold;
     font-size: 18px;
-    background: #ddcff3 url(../images/trescGora.png) repeat-x;
+    background: transparent;
     height: 1.7em;
     padding-top: 10px;
-    border: solid #c7aaf1;
-    border-width: 0 1px 1px 0;
+    border: solid black;
+    border-width: 0 0px 1px 0;
 }
 
 .questions {
@@ -1106,7 +1131,7 @@ tbody {
 
 .not_choosen {
     margin:30px;
-    color:#0000FF;
+    color:black;
     font-weight:bold
 }
 
@@ -1115,6 +1140,8 @@ tbody {
     padding-left: 5px;
     padding-right: 5px;
     width: 10%;
+    border: ridge black;
+    border-width: 1px;
 }
 
 .profilform table th.small {
@@ -1129,6 +1156,8 @@ tbody {
     padding-left: 5px;
     padding-right: 5px;
     width: 32%;
+    border: ridge black;
+    border-width: 1px;
 }
 
 .profilform table th.big {
@@ -1137,7 +1166,6 @@ tbody {
     padding-right: 5px;
     width: 32%;
 }
-
 
 .profilform div#scroll {
     width: 100%;
@@ -1162,17 +1190,17 @@ tbody {
 .ranking_frozen {
     font-size: 11px;
     text-align: center;
-    color: #FF0000;
+    color: black;
 }
 
 .frozen {
-    color: #FF0000;
+    color: black;
 }
 
 .ranking_generated {
     font-size: 11px;
     text-align: right;
-    color: #0000ff;
+    color: black;
 }
 
 .link_img {
@@ -1200,6 +1228,7 @@ tbody {
 .profilform div.subm_switch input {
     float: none;
     margin: 0px auto 10px auto;
+    display: none;
 }
 
 .profilform div.subm_switch{
@@ -1209,19 +1238,15 @@ tbody {
 }
 
 #mailto {
-    font-size: 12px;
-    color: #0000FF;
+    font-size: 12pt;
+    color: black;
     text-align: center;
-    border: ridge #c5a7f2;
-    border-width: 1px 0 0 0;
     width:70%;
     margin: 0 auto 0 auto;
 }
 
 pre.code {
-    background-color:#F0F0F0;
-    border: 1px dashed;
+    background-color:transparent;
+    border: none;
     padding: 4px;
-    overflow: auto;
-    font-size: 12px;
 }

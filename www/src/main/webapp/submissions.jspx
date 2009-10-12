@@ -39,14 +39,14 @@
                         </thead>
                         <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="20" >
                             <tr style="#{(submit.result==2)?zw:coloring(zw:points(submit), zw:maxPoints(submit)):'background: #e1d4f6'}">
-                                <td><h:outputText value="#{zw:formatDateAndHour(submit.sdate, 'yyyy-MM-dd HH:mm:ss')}" /></td>
+                                <td class="cols"><h:outputText value="#{zw:formatDateAndHour(submit.sdate, 'yyyy-MM-dd HH:mm:ss')}" /></td>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
-                                    <td>
+                                    <td class="cols">
                                         <h:outputText value="#{submit.users.login}" title="#{submit.users.firstname} #{submit.users.lastname}"/>
                                     </td>
                                 </c:if>
-                                <td><zw:problem-link problem="${submit.problems}" message="${submit.problems.name}" type="problem" /></td>
-                            <td>
+                                <td class="cols"><zw:problem-link problem="${submit.problems}" message="${submit.problems.name}" type="problem" /></td>
+                            <td class="cols">
                                 <h:outputText value="#{messages.waiting}" rendered="#{submit.result == 0}" />
                                 <h:outputText value="#{messages.processing}" rendered="#{submit.result == 1}" />
                                 <h:outputText value="#{messages.manual}" rendered="#{submit.result == 3}" />
@@ -54,17 +54,17 @@
                                 <zw:submission-link submission="#{submit}" type="submission" />
                             </h:panelGroup>
                             </td>
-                            <td>
+                            <td class="cols">
                                 <h:outputLink value="#{facesContext.externalContext.requestContextPath}/code/#{submit.id}/#{zw:filterUri(submit.problems.name)}.html" title="#{messages.solution_view}" styleClass="ikonka"><h:graphicImage alt="#{messages.solution_view}" title="#{messages.solution_view}" url="/media/images/view.png" /></h:outputLink>
                                 <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{submit.id}/code.html" title="#{messages.solution_download}" styleClass="ikonka"><h:graphicImage alt="#{messages.solution_download}" title="#{messages.solution_download}" url="/media/images/get.png" /></h:outputLink>
                             </td>
                             <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
-                                <td>
+                                <td class="cols">
                                 <zw:submission-link submission="#{submit}" type="rate" message="#{messages.submission_rate}" />
                                 </td>
                             </c:if>
                             <c:if test="#{!(requestBean.showOnlyMySubmissions) and zw:canRateAnySeries(rolesBean, requestBean.currentContest)}">
-                                <td>
+                                <td class="cols">
                                     <h:outputLink value="#" title="#{messages.delsubmit}" styleClass="ikonka" onclick="confirm(this,{nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/del/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.delsubmit}" title="#{messages.delsubmit}" url="/media/images/usun.png" /></h:outputLink>
                                     <h:outputLink value="#" title="#{messages.rejudge_submit}" rendered="#{zw:canRate(rolesBean, submit.problems.series.contests.id, submit.problems.series.id)}" styleClass="ikonka" onclick="confirm_rejudge(this,{nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/rejudge/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.rejudge_submit}" title="#{messages.rejudge_submit}" url="/media/images/reJudge.png" /></h:outputLink>
                                 </td>
