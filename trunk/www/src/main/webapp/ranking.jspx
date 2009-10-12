@@ -21,14 +21,16 @@
                             <h:outputText value="#{messages.ranking_frozen}"/>
                         </div>
                     </c:if>
-                    <div id="scroll">
+                    <div id="scroll" style="clear:both">
                         <table class="ranking">
                             <thead><tr><th class="small">${messages.position}</th><th class="big">${messages.competitor}</th><c:set var="itc" value="0" /><c:forEach var="column" items="#{requestBean.currentContestRanking.columnsCaptions}"><th class="${requestBean.currentContestRanking.columnsCSS[itc]}"><h:outputText escape="false" value="#{column}" /></th><c:set var="itc" value="#{itc + 1}" /></c:forEach></tr></thead>
-                            <c:set var="itr" value="0" />
-                            <c:forEach var="entry" items="#{requestBean.currentContestRanking.table}"><tr class="${itr % 2 == 0 ? 'linia2' : 'linia1'}"><td class="small"><h:outputText value="#{entry.place}" rendered="#{requestBean.temporaryAdminBoolean == false}" /><h:outputText value="#{entry.place}" title="#{itr + 1}" rendered="#{requestBean.temporaryAdminBoolean == true}" /></td><td class="big"><h:outputText value="#{entry.username}" /></td><c:set var="itc" value="0" /><c:forEach var="column" items="#{entry.table}"><td class="${requestBean.currentContestRanking.columnsCSS[itc]}"><h:outputText escape="false" value="#{column}" /></td><c:set var="itc" value="#{itc + 1}" /></c:forEach></tr><c:set var="itr" value="#{itr + 1}" /></c:forEach>
+                            <c:set var="itr" value="1" />
+                            <c:forEach var="entry" items="#{requestBean.currentContestRanking.table}"><tr class="${itr % 2 == 0 ? 'linia1' : 'linia2'}"><td class="small"><h:outputText value="#{entry.place}" title="#{requestBean.temporaryAdminBoolean == true?itr:null}" /></td><td class="big"><h:outputText value="#{entry.username}" /></td><c:set var="itc" value="0" /><c:forEach var="column" items="#{entry.table}"><td class="${requestBean.currentContestRanking.columnsCSS[itc]}"><h:outputText escape="false" value="#{column}" /></td><c:set var="itc" value="#{itc + 1}" /></c:forEach></tr><c:set var="itr" value="#{itr + 1}" /></c:forEach>
                         </table>
                         <div class="ranking_generated" style="clear:both">
                             <h:outputText value="#{messages.ranking_generation_date}: #{zw:formatDateAndHour(requestBean.currentContestRanking.generationDate, 'yyyy-MM-dd HH:mm:ss')}" />
+                            <br/>
+                            <h:outputText value="#{messages.ranking_generation_time}: #{requestBean.currentContestRanking.generationTime/1000} #{messages.ranking_generation_time_sufix}" />
                         </div>
                     </div>
                 </div>

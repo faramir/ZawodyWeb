@@ -179,22 +179,24 @@ public class RankingACM implements RankingInteface {
         boolean frozenRanking = false;
         boolean frozenSeria;
 
+        long lCheckDate = checkDate.getTime();
+
         for (Series series : seriesDAO.findByContestsid(contest_id)) {
 
             if (series_id != null && series.getId() != series_id) {
                 continue;
             }
 
-            if (series.getStartdate().after(checkDate)) {
+            if (series.getStartdate().getTime() > lCheckDate) {
                 continue;
             }
 
+            frozenSeria = false;
             checkTimestamp = checkDate;
             allTests = admin;
-            frozenSeria = false;
 
             if (!admin && series.getFreezedate() != null) {
-                if (checkDate.after(series.getFreezedate()) && (series.getUnfreezedate() == null || checkDate.before(series.getUnfreezedate()))) {
+                if (lCheckDate > series.getFreezedate().getTime() && (series.getUnfreezedate() == null || lCheckDate < series.getUnfreezedate().getTime())) {
                     checkTimestamp = new Timestamp(series.getFreezedate().getTime());
                     if (series.getUnfreezedate() != null) {
                         frozenRanking = true;
@@ -207,7 +209,6 @@ public class RankingACM implements RankingInteface {
                 if (checkDate.after(series.getUnfreezedate())) {
                     allTests = true;
                 }
-
             }
 
             for (Problems problems : problemsDAO.findBySeriesid(series.getId())) {
