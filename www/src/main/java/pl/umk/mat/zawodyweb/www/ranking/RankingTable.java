@@ -15,6 +15,7 @@ public class RankingTable {
     private Vector<RankingEntry> table;
     private Boolean frozenRanking;
     private Date generationDate;
+    private long generationTime;
     private int type;
 
     public RankingTable() {
@@ -102,5 +103,19 @@ public class RankingTable {
      */
     public void setType(int type) {
         this.type = type;
+    }
+
+    /**
+     * @return the generationTime
+     */
+    public long getGenerationTime() {
+        return generationTime;
+    }
+
+    /**
+     * @param generationTime the generationTime to set
+     */
+    public void setGenerationTime(long generationTime) {
+        this.generationTime = generationTime;
     }
 }

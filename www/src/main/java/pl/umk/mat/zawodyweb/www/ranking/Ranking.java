@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Ranking {
 
     static private final Ranking instance = new Ranking();
-    Map<Integer, RankingTable> contestRankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
-    Map<Integer, RankingTable> seriesRankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
+    private Map<Integer, RankingTable> contestRankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
+    private Map<Integer, RankingTable> seriesRankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
 
     private Ranking() {
     }
@@ -27,17 +27,17 @@ public class Ranking {
     }
 
     private RankingTable getCachedRanking(Map<Integer, RankingTable> map, int key, int type, Date data, int rankingRefreshRate) {
-        if (map.get(key) == null) {
+        RankingTable ranking = map.get(key);
+        if (ranking == null) {
             return null;
         }
-        RankingTable ranking = map.get(key);
         if (ranking.getType() != type) {
             return null;
         }
         if (ranking.getGenerationDate().getTime() <= data.getTime() - rankingRefreshRate) {
             return null;
         }
-        return map.get(key);
+        return ranking;
     }
 
     private void clearCachedRankingTable(Map<Integer, RankingTable> map, int key) {
@@ -53,23 +53,25 @@ public class Ranking {
     }
 
     public RankingTable getRanking(int contest_id, int type, int rankingRefreshRate, Date date, boolean admin) {
-        RankingInteface ranking = null;
-
-        if (type == 0) { // ACM
-            ranking = new RankingACM();
-        } else if (type == 1) { // PA
-            ranking = new RankingPA();
-        } else if (type == 2) { // KI
-            ranking = new RankingKI();
-        }
-
-        if (ranking == null) {
+        if (!(type == 0 || type == 1 || type == 2)) {
             return null;
         }
 
         RankingTable rankingTable = getCachedRanking(contestRankingTableMap, contest_id, type, date, rankingRefreshRate * 1000);
 
         if (admin == true || rankingTable == null) {
+            long start = new Date().getTime();
+
+            RankingInteface ranking = null;
+
+            if (type == 0) { // ACM
+                ranking = new RankingACM();
+            } else if (type == 1) { // PA
+                ranking = new RankingPA();
+            } else if (type == 2) { // KI
+                ranking = new RankingKI();
+            }
+
             if (admin == true) {
                 rankingTable = ranking.getRankingForAdmin(contest_id, new Timestamp(date.getTime()));
             } else {
@@ -77,39 +79,45 @@ public class Ranking {
 
                 contestRankingTableMap.put(contest_id, rankingTable);
             }
+            
             rankingTable.setType(type);
             rankingTable.setGenerationDate(date);
+            rankingTable.setGenerationTime(new Date().getTime() - start);
         }
 
         return rankingTable;
     }
 
     public RankingTable getRankingForSeries(int contest_id, int series_id, int type, int rankingRefreshRate, Date date, boolean admin) {
-        RankingInteface ranking = null;
-
-        if (type == 0) { // ACM
-            ranking = new RankingACM();
-        } else if (type == 1) { // PA
-            ranking = new RankingPA();
-        } else if (type == 2) { // KI
-            ranking = new RankingKI();
-        }
-
-        if (ranking == null) {
+        if (!(type == 0 || type == 1 || type == 2)) {
             return null;
         }
 
         RankingTable rankingTable = getCachedRanking(seriesRankingTableMap, series_id, type, date, rankingRefreshRate * 1000);
 
         if (admin == true || rankingTable == null) {
+            long start = new Date().getTime();
+
+            RankingInteface ranking = null;
+
+            if (type == 0) { // ACM
+                ranking = new RankingACM();
+            } else if (type == 1) { // PA
+                ranking = new RankingPA();
+            } else if (type == 2) { // KI
+                ranking = new RankingKI();
+            }
+
             if (admin == true) {
                 rankingTable = ranking.getRankingForSeriesForAdmin(contest_id, series_id, new Timestamp(date.getTime()));
             } else {
                 rankingTable = ranking.getRankingForSeries(contest_id, series_id, new Timestamp(date.getTime()));
                 seriesRankingTableMap.put(series_id, rankingTable);
             }
+
             rankingTable.setType(type);
             rankingTable.setGenerationDate(date);
+            rankingTable.setGenerationTime(new Date().getTime() - start);
         }
 
         return rankingTable;
