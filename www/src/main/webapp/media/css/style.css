@@ -61,15 +61,27 @@ a:visited, a:link {
     z-index: -1;
 }
 
+#copy {
+    text-align:center;
+    font-size:10px;
+}
+
+#body {
+    position: relative;
+    color: #000000;
+    float: left;
+    width: 70%;
+    min-width: 635px;
+}
+
 #content {
     position: relative;
     color: #000000;
     bottom: 4px;
     margin: 20px 0 0 0;
-    padding: 15px 0 0 0;
+    padding: 15px 0 15px 0;
     float: left;
-    width: 70%;
-    min-width: 635px;
+    width: 100%;
     border: ridge #c5a7f2;
     border-width: 0 0 1px 0;
 }

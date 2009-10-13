@@ -18,10 +18,15 @@
                             <h:outputLabel for="problems#{series.id}" styleClass="seria">
                                 <h:outputLink value="#{facesContext.externalContext.requestContextPath}/ranking_seria/#{series.id}/#{zw:filterUri(series.name)}.html">${series.name}</h:outputLink>:
                                 <div class="daty">
-                                    (<h:outputText value="#{zw:formatDateAndHour(series.startdate, 'yyyy-MM-dd HH:mm')}" />
+                                    <h:outputText value="#{zw:formatDateAndHour(series.startdate, 'yyyy-MM-dd HH:mm')}" title="#{messages.series_startdate}" />
                                     <c:if test="#{series.enddate!=null}">
-                                        <h:outputText value=" - #{zw:formatDateAndHour(series.enddate, 'yyyy-MM-dd HH:mm')}" />
-                                    </c:if>)
+                                        <h:outputText value=" - #{zw:formatDateAndHour(series.enddate, 'yyyy-MM-dd HH:mm')}" title="#{messages.series_enddate}" />
+                                    </c:if>
+                                    <c:if test="#{series.freezedate!=null}">
+                                    <div class="ranking_frozen">
+                                        <h:outputText value="(#{zw:formatDateAndHour(series.freezedate, 'yyyy-MM-dd HH:mm')})" title="${messages.series_freezedate}" />
+                                    </div>
+                                    </c:if>
                                 </div>
                             </h:outputLabel>
                             <br />

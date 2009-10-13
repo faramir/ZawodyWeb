@@ -64,14 +64,28 @@ a:visited, a:link {
     display: none;
 }
 
+#copy {
+    text-align:center;
+    font-size:10px;
+}
+
+#body {
+    position: relative;
+    color: #000000;
+    float: left;
+    width: 100%;
+}
+
 #content {
     width: auto;
-	border: 0;
-	margin: 0 5%;
-	padding: 0;
-	float: none !important;
+    border: 0;
+    margin: 0 5%;
+    padding: 0 0 15px 0;
+    float: none !important;
     color: black;
-	background: transparent;
+    background: transparent;
+    border: ridge black;
+    border-width: 0 0 1px 0;
 }
 
 #content h1 {
@@ -579,6 +593,7 @@ img {
     text-align: center;
     padding-bottom: 0px;
     background: transparent;
+    border-collapse:collapse;
 }
 
 .profilform table tr {
@@ -1179,12 +1194,10 @@ tbody {
 }
 
 #view_ranking {
-    opacity:0.05; /* CSS3 */
-    filter:alpha(opacity=5); /* IE */
+    display: none;
 }
 #view_ranking:hover {
-    opacity:1.0; /* CSS3 */
-    filter:alpha(opacity=100); /* IE */
+    display: none;
 }
 
 .ranking_frozen {
