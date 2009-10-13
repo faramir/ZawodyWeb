@@ -17,6 +17,7 @@ public class RankingTable {
     private Date generationDate;
     private long generationTime;
     private int type;
+    private String html;
 
     public RankingTable() {
     }
@@ -117,5 +118,16 @@ public class RankingTable {
      */
     public void setGenerationTime(long generationTime) {
         this.generationTime = generationTime;
+    }
+
+    /**
+     * @return the html
+     */
+    public String getHtml() {
+        return html;
+    }
+
+    public void generateHtml(boolean admin) {
+        html = RankingUtils.generateHtml(this, admin);
     }
 }
