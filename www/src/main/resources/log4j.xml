@@ -19,7 +19,7 @@
     </logger>
 
     <root>
-        <priority value="info" />
+        <priority value="warn" />
         <appender-ref ref="ConsoleAppender"/>
     </root>
 </log4j:configuration>

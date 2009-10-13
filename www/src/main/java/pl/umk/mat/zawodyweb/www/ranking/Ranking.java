@@ -20,6 +20,7 @@ public class Ranking {
 
     private static final Logger logger = Logger.getLogger(Ranking.class);
     static private final Ranking instance = new Ranking();
+    private static final long rankingWorkerLive = 3 * 60 * 60 * 1000; //3h
     private Map<Integer, RankingWorker> contestRankingWorker = new ConcurrentHashMap<Integer, RankingWorker>();
     private Map<Integer, RankingTable> contestRankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
     private Map<Integer, RankingTable> seriesRankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
@@ -40,33 +41,43 @@ public class Ranking {
 
         @Override
         public void run() {
-            contestRankingWorker.put(contest_id, this);
             Transaction transaction = null;
             try {
+                logger.warn("[" + contest_id + "] Adding RankingWorker to Map...");
+                contestRankingWorker.put(contest_id, this);
                 Contests contest = null;
-                while (start_date > (new Date().getTime() - 3 * 60 * 60 * 1000)) {
+                while (start_date > (new Date().getTime() - rankingWorkerLive)) {
                     transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
                     contest = DAOFactory.DEFAULT.buildContestsDAO().getById(contest_id);
 
                     if (contest == null) {
+                        logger.warn("[" + contest_id + "] Contest not found in database, ending RankingWorker...");
                         break;
                     }
 
-                    if (contest.getRankingrefreshrate() == 0) {
-                        break;
-                    }
-
+                    logger.warn("[" + contest_id + "] Creating RankingTable for contest: " + contest.getName() + " (" + contest.getId() + ")");
                     contestRankingTableMap.put(contest.getId(), createRankingTable(contest.getId(), contest.getType(), new Date(), false));
                     for (Series serie : DAOFactory.DEFAULT.buildSeriesDAO().findByContestsid(contest.getId())) {
+                        logger.warn("[" + contest_id + "] Creating RankingTable for serie: " + serie.getName() + " (" + serie.getId() + ")");
                         seriesRankingTableMap.put(serie.getId(), createRankingTableForSeries(contest.getId(), serie.getId(), contest.getType(), new Date(), false));
                     }
 
                     transaction.commit();
 
+                    if (contest.getRankingrefreshrate() <= 0) {
+                        logger.warn("[" + contest_id + "] Contest RefreshRate <= 0, ending RankingWorker...");
+                        break;
+                    }
+
+                    logger.warn("[" + contest_id + "] Waiting " + contest.getRankingrefreshrate() + " seconds...");
                     Thread.sleep(contest.getRankingrefreshrate() * 1000);
                 }
+                logger.warn("[" + contest_id + "] RankingWorker live time elapsed (" + new Date(start_date) + " >  (" + new Date() + ")");
             } catch (Exception ex) {
-                logger.fatal("Fatal exception", ex);
+                logger.fatal("[" + contest_id + "] Fatal exception", ex);
+            } finally {
+                logger.warn("[" + contest_id + "] Removing RankingWorker from Map...");
+                contestRankingWorker.remove(contest_id);
                 try {
                     if (transaction != null) {
                         transaction.rollback();
@@ -74,7 +85,6 @@ public class Ranking {
                 } catch (Exception e) {
                 }
             }
-            contestRankingWorker.remove(contest_id);
         }
     }
 
@@ -175,17 +185,26 @@ public class Ranking {
         }
 
         if (contestRankingWorker.get(contest_id) == null) {
-            contestRankingTableMap.remove(contest_id);
-            new RankingWorker(contest_id).start();
+            if (rankingRefreshRate > 0) {
+                contestRankingTableMap.remove(contest_id);
+                new RankingWorker(contest_id).start();
+            }
         } else {
-            contestRankingWorker.get(contest_id).setStartDate(new Date().getTime());
+            if (rankingRefreshRate > 0) {
+                contestRankingWorker.get(contest_id).setStartDate(new Date().getTime());
+            } else {
+                contestRankingWorker.get(contest_id).interrupt();
+            }
         }
 
         if (admin == true) {
             return createRankingTable(contest_id, type, date, admin);
         }
 
-        RankingTable rankingTable = getCachedRanking(contestRankingTableMap, contest_id, type);
+        RankingTable rankingTable = null;
+        if (rankingRefreshRate > 0) {
+            rankingTable = getCachedRanking(contestRankingTableMap, contest_id, type);
+        }
         if (rankingTable == null) {
             rankingTable = createRankingTable(contest_id, type, date, admin);
             contestRankingTableMap.put(contest_id, rankingTable);
@@ -201,11 +220,17 @@ public class Ranking {
 
         boolean startWorker = false;
         if (contestRankingWorker.get(contest_id) == null) {
-            contestRankingTableMap.remove(contest_id);
-            new RankingWorker(contest_id).start();
-            startWorker = true;
+            if (rankingRefreshRate > 0) {
+                contestRankingTableMap.remove(contest_id);
+                new RankingWorker(contest_id).start();
+                startWorker = true;
+            }
         } else {
-            contestRankingWorker.get(contest_id).setStartDate(new Date().getTime());
+            if (rankingRefreshRate > 0) {
+                contestRankingWorker.get(contest_id).setStartDate(new Date().getTime());
+            } else {
+                contestRankingWorker.get(contest_id).interrupt();
+            }
         }
 
         if (admin == true) {
