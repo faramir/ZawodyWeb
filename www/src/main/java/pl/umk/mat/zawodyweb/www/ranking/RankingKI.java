@@ -129,7 +129,7 @@ public class RankingKI implements RankingInteface {
 
         for (Series series : seriesDAO.findByContestsid(contest_id)) {
 
-            if (series_id != null && series.getId() != series_id) {
+            if (series_id != null && !series_id.equals(series.getId())) {
                 continue;
             }
 
