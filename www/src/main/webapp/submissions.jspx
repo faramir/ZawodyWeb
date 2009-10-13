@@ -28,12 +28,12 @@
                                 </c:if>
                                 <th>${messages.submission_problem}</th>
                                 <th>${messages.submission_result}</th>
-                                <th></th>
+                                <th class="cols2"></th>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                                     <th>${messages.submission_rate}</th>
                                 </c:if>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions) and zw:canRateAnySeries(rolesBean, requestBean.currentContest)}">
-                                    <th></th>
+                                    <th class="cols2"></th>
                                 </c:if>
                             </tr>
                         </thead>
@@ -54,7 +54,7 @@
                                 <zw:submission-link submission="#{submit}" type="submission" />
                             </h:panelGroup>
                             </td>
-                            <td class="cols">
+                            <td class="cols2">
                                 <h:outputLink value="#{facesContext.externalContext.requestContextPath}/code/#{submit.id}/#{zw:filterUri(submit.problems.name)}.html" title="#{messages.solution_view}" styleClass="ikonka"><h:graphicImage alt="#{messages.solution_view}" title="#{messages.solution_view}" url="/media/images/view.png" /></h:outputLink>
                                 <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{submit.id}/code.html" title="#{messages.solution_download}" styleClass="ikonka"><h:graphicImage alt="#{messages.solution_download}" title="#{messages.solution_download}" url="/media/images/get.png" /></h:outputLink>
                             </td>
@@ -64,7 +64,7 @@
                                 </td>
                             </c:if>
                             <c:if test="#{!(requestBean.showOnlyMySubmissions) and zw:canRateAnySeries(rolesBean, requestBean.currentContest)}">
-                                <td class="cols">
+                                <td class="cols2">
                                     <h:outputLink value="#" title="#{messages.delsubmit}" styleClass="ikonka" onclick="confirm(this,{nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/del/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.delsubmit}" title="#{messages.delsubmit}" url="/media/images/usun.png" /></h:outputLink>
                                     <h:outputLink value="#" title="#{messages.rejudge_submit}" rendered="#{zw:canRate(rolesBean, submit.problems.series.contests.id, submit.problems.series.id)}" styleClass="ikonka" onclick="confirm_rejudge(this,{nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/rejudge/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.rejudge_submit}" title="#{messages.rejudge_submit}" url="/media/images/reJudge.png" /></h:outputLink>
                                 </td>
