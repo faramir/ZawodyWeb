@@ -100,11 +100,16 @@
                 </li>
             </ul>
         </div>
-        <div id="content">
-            <ui:remove>
-                <h1 id="pageTitle"><ui:insert name="pageTitle" /></h1>
-            </ui:remove>
-            <ui:insert name="pageContent" />
+        <div id="body">
+            <div id="content">
+                <ui:remove>
+                    <h1 id="pageTitle"><ui:insert name="pageTitle" /></h1>
+                </ui:remove>
+                <ui:insert name="pageContent" />
+            </div>
+            <div id="copy">
+                <h:outputText value="&amp;copy; 2009-2010 - Wydział Matematyki i Informatyki UMK" escape="false" />
+            </div>
         </div>
     </body>
 </html>
