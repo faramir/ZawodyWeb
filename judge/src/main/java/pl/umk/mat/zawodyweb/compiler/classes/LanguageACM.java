@@ -149,7 +149,7 @@ public class LanguageACM implements CompilerInterface {
             try {
                 id = Integer.parseInt(location.substring(location.lastIndexOf("+") + 1));
             } catch (NumberFormatException ex) {
-                result.setResult(CheckerErrors.UNDEF);
+                result.setResult(CheckerErrors.UNKNOWN);
                 result.setResultDesc(URLDecoder.decode(location.substring(location.lastIndexOf("=") + 1), "UTF-8"));
                 result.setText("NumberFormatException");
                 sendAnswer.releaseConnection();
