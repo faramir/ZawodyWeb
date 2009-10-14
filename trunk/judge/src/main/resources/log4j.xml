@@ -7,7 +7,7 @@
     </appender>
 
     <appender name="FileAppender" class="org.apache.log4j.FileAppender">
-        <param name="File" value="judge-manager.log"/>
+        <param name="File" value="judge.log"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d [%t:%p] %c - %m%n"/>
         </layout>
