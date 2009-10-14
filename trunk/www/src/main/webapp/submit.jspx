@@ -18,7 +18,7 @@
                         <h:selectOneMenu id="problem" value="#{requestBean.temporaryProblemId}">
                             <f:selectItem itemValue="0" itemLabel="&lt; auto &gt;" />
                             <c:forEach var="problem" items="#{requestBean.submittableProblems}">
-                                <f:selectItem itemValue="#{problem.id}" itemLabel="#{problem.name}" />
+                                <f:selectItem itemValue="#{problem.id}" itemLabel="[#{problem.abbrev}] #{problem.name}" />
                             </c:forEach>
                             <t:saveState id="saveProblemId" value="#{requestBean.temporaryProblemId}" />
                             <a4j:support event="onchange" reRender="language" ajaxSingle="true" />
