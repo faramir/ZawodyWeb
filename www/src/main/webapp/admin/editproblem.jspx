@@ -74,6 +74,12 @@
                             <br class="clear" />
                         </div>
                         <div>
+                            <h:outputLabel for="codesize">${messages.problem_codesize}:</h:outputLabel>
+                            <h:inputText id="codesize" value="#{requestBean.editedProblem.codesize}" />
+                            <h:message for="codesize" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
                             <h:outputLabel styleClass="required" for="contest">${messages.problem_contest}:</h:outputLabel>
                             <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}">
                                 <f:selectItem itemValue="" itemLabel="" />

@@ -298,6 +298,8 @@ public class RequestBean {
             }
             s.add(Restrictions.or(Restrictions.isNull("enddate"), Restrictions.gt("enddate", new Date())));
             s.add(Restrictions.le("startdate", new Date()));
+            s.addOrder(Order.desc("startdate"));
+            c.addOrder(Order.asc("abbrev"));
             submittableProblems = c.list();
         }
 
@@ -1625,6 +1627,23 @@ public class RequestBean {
                 }
             }
 
+            /* upewnijmy się, że rozwiązanie jest wysłane w języku,
+             * który jest akceptowany przez zadanie
+             */
+            if (problem != null && language != null) {
+                boolean hack = true;
+                int language_id = language.getId();
+                for (LanguagesProblems lp : problem.getLanguagesProblemss()) {
+                    if (lp.getLanguages().getId() == language_id) {
+                        hack = false;
+                        break;
+                    }
+                }
+                if (hack == true) {
+                    language = null;
+                }
+            }
+
             if (problem == null) {
                 String summary = String.format("%s", messages.getString("problem_autorecognize_error"));
                 WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit:problem", summary, null);
@@ -1636,6 +1655,12 @@ public class RequestBean {
             }
 
             if (problem == null || language == null) {
+                return null;
+            }
+
+            if (problem.getCodesize() != null && problem.getCodesize() > 0 && bytes.length > problem.getCodesize() * 1024) {
+                String summary = String.format("%s", messages.getString("problem_codesize_error"));
+                WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, controlId, summary, null);
                 return null;
             }
 

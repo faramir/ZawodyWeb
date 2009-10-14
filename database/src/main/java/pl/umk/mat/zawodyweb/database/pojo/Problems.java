@@ -47,7 +47,6 @@ public class Problems implements Serializable {
      * Attribute text.
      */
     private String text;
-
     /**
      * Attribute abbrev.
      */
@@ -56,6 +55,10 @@ public class Problems implements Serializable {
      * Attribute memlimit.
      */
     private Integer memlimit;
+    /**
+     * Attribute codesize.
+     */
+    private Integer codesize;
     /**
      * Attribute series
      */
@@ -120,7 +123,7 @@ public class Problems implements Serializable {
     /**
      * @return text
      */
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "text", length = 2147483647)
     public String getText() {
         return text;
@@ -137,12 +140,11 @@ public class Problems implements Serializable {
      * @deprecated only for Hibernate. Instead, use loadProperties()
      * @return text
      */
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "config", length = 2147483647)
     public String getConfig() {
         return this.config;
     }
-
 
     /**
      * @deprecated only for Hibernate. Instead, use saveProperities()
@@ -185,13 +187,13 @@ public class Problems implements Serializable {
     }
 
     public void saveProperties(String properties) {
-    this.config = properties;
+        this.config = properties;
     }
 
     /**
      * @return pdf
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "pdfid")
     public PDF getPDF() {
         return pdfData;
@@ -237,6 +239,22 @@ public class Problems implements Serializable {
     }
 
     /**
+     * @return memlimit
+     */
+    @Basic
+    @Column(name = "codesize")
+    public Integer getCodesize() {
+        return codesize;
+    }
+
+    /**
+     * @param memlimit new value for memlimit
+     */
+    public void setCodesize(Integer codesize) {
+        this.codesize = codesize;
+    }
+
+    /**
      * get series
      */
     @ManyToOne
@@ -272,7 +290,7 @@ public class Problems implements Serializable {
      * Get the list of LanguagesProblems
      */
     // languagesProblemsPK
-    @OneToMany(mappedBy = "problems", cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy = "problems", cascade = CascadeType.REMOVE)
     public List<LanguagesProblems> getLanguagesProblemss() {
         return this.languagesProblemss;
     }
@@ -288,7 +306,7 @@ public class Problems implements Serializable {
      * Get the list of Questions
      */
     // questionsPK
-    @OneToMany(mappedBy = "problems", cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy = "problems", cascade = CascadeType.REMOVE)
     public List<Questions> getQuestionss() {
         return this.questionss;
     }
@@ -304,7 +322,7 @@ public class Problems implements Serializable {
      * Get the list of Submits
      */
     // submitsPK
-    @OneToMany(mappedBy = "problems", cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy = "problems", cascade = CascadeType.REMOVE)
     public List<Submits> getSubmitss() {
         return this.submitss;
     }
@@ -320,7 +338,7 @@ public class Problems implements Serializable {
      * Get the list of Submits
      */
     // submitsPK
-    @OneToMany(mappedBy = "problems", cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy = "problems", cascade = CascadeType.REMOVE)
     public List<Tests> getTestss() {
         return this.testss;
     }

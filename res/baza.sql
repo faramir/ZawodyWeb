@@ -72,6 +72,7 @@ CREATE TABLE PROBLEMS (
         text                text,
         abbrev              varchar(5),
         memlimit            int,
+        codesize            int,
         config              text
 );
 

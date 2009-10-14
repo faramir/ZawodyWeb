@@ -2,7 +2,7 @@
                 xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
                 xmlns:zw="http://zawodyweb.mat.umk.pl/">
     <ui:define name="pageTitle">
-        ${requestBean.currentProblem.name} :: ${messages.problems}
+        [${requestBean.currentProblem.abbrev}] ${requestBean.currentProblem.name} :: ${messages.problems}
     </ui:define>
     <ui:define name="pageContent">
         <div id="formProblem" class="profilform">
@@ -26,6 +26,11 @@
                 </div>
                 <div class="pamiec">
                     ${messages.problem_memlimit_prefix}: ${requestBean.currentProblem.memlimit} ${messages.problem_memlimit_sufix}
+                </div>
+                <div class="rozmiar">
+                    <c:if test="#{requestBean.currentProblem.codesize!=null and requestBean.currentProblem.codesize>0}">
+                        ${messages.problem_codesize_prefix}: ${requestBean.currentProblem.codesize} ${messages.problem_codesize_sufix}
+                    </c:if>
                 </div>
                 <div class="pdf">
                     <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/pdf.html" title="PDF" rendered="#{requestBean.currentProblem.PDF != null}"><h:graphicImage alt="${messages.pdf_download}" title="${messages.pdf_download}" url="/media/images/edytuj.png" /></h:outputLink>

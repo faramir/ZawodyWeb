@@ -310,9 +310,15 @@ img {
     border-width: 0 0px 0 0;
 }
 
-.profilform div.zadanko div.pamiec {
+.profilform div.zadanko div.rozmiar {
     font-size: 11px;
     padding-bottom: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.pamiec {
+    font-size: 11px;
+    padding-bottom: 2px;
     text-align: right;
 }
 
