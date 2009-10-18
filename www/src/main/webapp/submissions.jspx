@@ -21,7 +21,7 @@
                     ${zw:prepareSubmissions(sessionBean, requestBean.currentContest)}
                     <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                         <div class="ikona">
-                            <h:commandLink action="#{requestBean.noop}" title="#{messages.submissions_filter}"><h:graphicImage alt="#{messages.submissions_filter}" title="#{messages.submissions_filter}" url="/media/images/reJudge.png" /></h:commandLink>
+                            <h:commandLink action="#{requestBean.noop}" title="#{messages.submissions_refresh}"><h:graphicImage alt="#{messages.submissions_refresh}" title="#{messages.submissions_refresh}" url="/media/images/reJudge.png" /></h:commandLink>
                         </div>
                         <br style="clear:both"/>
                     </c:if>
@@ -79,7 +79,7 @@
                         </t:dataList>
                     </table>
                     <h:panelGrid columns="1" styleClass="pagingrid" >
-                        <t:dataScroller pageIndexVar="pageIndex" immediate="true" for="submissions" paginator="true" paginatorActiveColumnClass="act" paginatorTableClass="paginator" paginatorMaxPages="9" actionListener="#{requestBean.submissionsScrollerAction}" >
+                        <t:dataScroller pageIndexVar="pageIndex" immediate="true" for="submissions" paginator="true" paginatorActiveColumnClass="act" paginatorTableClass="paginator" paginatorMaxPages="15" actionListener="#{requestBean.submissionsScrollerAction}" >
                             <f:facet name="previous" >
                                 <t:graphicImage url="/media/images/left_arrow.png" alt="" styleClass="lewy" />
                             </f:facet>
