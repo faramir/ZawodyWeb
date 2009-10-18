@@ -19,12 +19,21 @@
             <c:otherwise>
                 <a4j:form id="formSubmissions" styleClass="profilform">
                     ${zw:prepareSubmissions(sessionBean, requestBean.currentContest)}
+                    <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
+                        <div class="ikona">
+                            <h:commandLink action="#{requestBean.noop}" title="Odśwież"><h:graphicImage alt="Odśwież" title="Odśwież" url="/media/images/reJudge.png" /></h:commandLink>
+                        </div>
+                        <br style="clear:both"/>
+                    </c:if>
                     <table>
                         <thead>
                             <tr>
                                 <th>${messages.submission_date}</th>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
-                                    <th>${messages.submission_user}</th>
+                                    <th>
+                                        ${messages.submission_user}
+                                        <h:outputLink value="#" title="Filtrowanie" styleClass="ikonka" onclick="prompt(this,{nazwa:'nazwa użytkownika',def:'#{sessionBean.currentUser.login}',link:'#{facesContext.externalContext.requestContextPath}/submissions_username/#{sessionBean.currentContestId}/'})"><h:graphicImage alt="Filtrowanie" title="Filtrowanie" url="/media/images/view.png" /></h:outputLink>
+                                    </th>
                                 </c:if>
                                 <th>${messages.submission_problem}</th>
                                 <th>${messages.submission_result}</th>

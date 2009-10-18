@@ -142,6 +142,9 @@ public class ELFunctions {
             sessionBean.setSubmissionsPageIndex(0);
             sessionBean.setCurrentContestId(contests.getId());
             sessionBean.setSubmissionsLastVisit(new Date().getTime());
+            sessionBean.setSubmissionsUserId(0);
+            sessionBean.setSubmissionsSeriesId(0);
+            sessionBean.setSubmissionsProblemId(0);
         }
     }
 

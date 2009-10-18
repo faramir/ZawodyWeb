@@ -37,6 +37,9 @@ public class SessionBean {
     private boolean showOnlyMySubmissions = true;
     private int submissionsContestId = 0;
     private int submissionsPageIndex = 0;
+    private int submissionsUserId = 0;
+    private int submissionsProblemId = 0;
+    private int submissionsSeriesId = 0;
     private long submissionsLastVisit = 0;
 
     /**
@@ -221,6 +224,48 @@ public class SessionBean {
      */
     public void setSubmissionsLastVisit(long submissionsLastVisit) {
         this.submissionsLastVisit = submissionsLastVisit;
+    }
+
+    /**
+     * @return the submissionsUserId
+     */
+    public int getSubmissionsUserId() {
+        return submissionsUserId;
+    }
+
+    /**
+     * @param submissionsUserId the submissionsUserId to set
+     */
+    public void setSubmissionsUserId(int submissionsUserId) {
+        this.submissionsUserId = submissionsUserId;
+    }
+
+    /**
+     * @return the submissionsProblemId
+     */
+    public int getSubmissionsProblemId() {
+        return submissionsProblemId;
+    }
+
+    /**
+     * @param submissionsProblemId the submissionsProblemId to set
+     */
+    public void setSubmissionsProblemId(int submissionsProblemId) {
+        this.submissionsProblemId = submissionsProblemId;
+    }
+
+    /**
+     * @return the submissionsSeriesId
+     */
+    public int getSubmissionsSeriesId() {
+        return submissionsSeriesId;
+    }
+
+    /**
+     * @param submissionsSeriesId the submissionsSeriesId to set
+     */
+    public void setSubmissionsSeriesId(int submissionsSeriesId) {
+        this.submissionsSeriesId = submissionsSeriesId;
     }
 
 }
