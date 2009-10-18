@@ -184,6 +184,10 @@ public class Ranking {
             return null;
         }
 
+        if (rankingRefreshRate < 0) {
+            rankingRefreshRate = 0;
+        }
+
         if (contestRankingWorker.get(contest_id) == null) {
             if (rankingRefreshRate > 0) {
                 contestRankingTableMap.remove(contest_id);
@@ -198,6 +202,9 @@ public class Ranking {
         }
 
         if (admin == true) {
+            return createRankingTable(contest_id, type, date, admin);
+        }
+        if (Math.abs(date.getTime() - new Date().getTime()) > (rankingRefreshRate + 1) * 1000) {
             return createRankingTable(contest_id, type, date, admin);
         }
 
@@ -217,6 +224,10 @@ public class Ranking {
         if (!(type == 0 || type == 1 || type == 2)) {
             return null;
         }
+        
+        if (rankingRefreshRate < 0) {
+            rankingRefreshRate = 0;
+        }
 
         boolean startWorker = false;
         if (contestRankingWorker.get(contest_id) == null) {
@@ -235,6 +246,9 @@ public class Ranking {
 
         if (admin == true) {
             return createRankingTableForSeries(contest_id, series_id, type, date, admin);
+        }
+        if (Math.abs(date.getTime() - new Date().getTime()) > (rankingRefreshRate + 1) * 1000) {
+            return createRankingTable(contest_id, type, date, admin);
         }
 
         RankingTable rankingTable;

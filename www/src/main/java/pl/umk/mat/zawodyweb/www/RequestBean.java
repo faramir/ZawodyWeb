@@ -2,6 +2,7 @@ package pl.umk.mat.zawodyweb.www;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -116,6 +117,7 @@ public class RequestBean {
     private List<Classes> allClasses = null;
     private RankingTable currentContestRanking = null;
     private PagedDataModel submissions = null;
+    private Date temporaryRankingDate;
     private Boolean temporaryAdminBoolean;
     private Integer temporaryContestId;
     private Integer temporarySeriesId;
@@ -340,7 +342,10 @@ public class RequestBean {
             if (rankingRefreshRate == null) {
                 rankingRefreshRate = 0;
             }
-            Date date = new Date();
+            Date date = temporaryRankingDate;
+            if (date == null) {
+                date = new Date();
+            }
             if (temporarySeriesId == null) {
                 currentContestRanking = Ranking.getInstance().getRanking(contests_id, type, rankingRefreshRate, date, temporaryAdminBoolean);
             } else {
@@ -366,31 +371,60 @@ public class RequestBean {
 
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
             c.setProjection(Projections.rowCount());
-            Criteria criteriaSeries = c.createCriteria("problems").createCriteria("series");
+            Criteria criteriaProblems = c.createCriteria("problems");
+            Criteria criteriaSeries = criteriaProblems.createCriteria("series");
             criteriaSeries.createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
 
             if (sessionBean.isShowOnlyMySubmissions()) {
                 c.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
             } else {
+                if (sessionBean.getSubmissionsUserId() != 0) {
+                    c.createCriteria("users").add(Restrictions.eq("id", sessionBean.getSubmissionsUserId()));
+                }
+                if (sessionBean.getSubmissionsProblemId() != 0) {
+                    criteriaProblems.add(Restrictions.eq("id", sessionBean.getSubmissionsProblemId()));
+                }
+                if (sessionBean.getSubmissionsSeriesId() != 0) {
+                    criteriaSeries.add(Restrictions.eq("id", sessionBean.getSubmissionsSeriesId()));
+                }
                 criteriaSeries.add(Restrictions.in("id", ratableSeries));
             }
             Number number = (Number) c.uniqueResult();
 
             Criteria c2 = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
-            Criteria criteria2Series = c2.createCriteria("problems").createCriteria("series");
+            Criteria criteria2Problems = c2.createCriteria("problems");
+            Criteria criteria2Series = criteria2Problems.createCriteria("series");
             criteria2Series.createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
+
             if (sessionBean.isShowOnlyMySubmissions()) {
                 c2.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
             } else {
+                if (sessionBean.getSubmissionsUserId() != 0) {
+                    c2.createCriteria("users").add(Restrictions.eq("id", sessionBean.getSubmissionsUserId()));
+                }
+                if (sessionBean.getSubmissionsProblemId() != 0) {
+                    criteria2Problems.add(Restrictions.eq("id", sessionBean.getSubmissionsProblemId()));
+                }
+                if (sessionBean.getSubmissionsSeriesId() != 0) {
+                    criteria2Series.add(Restrictions.eq("id", sessionBean.getSubmissionsSeriesId()));
+                }
                 criteria2Series.add(Restrictions.in("id", ratableSeries));
             }
             c2.addOrder(Order.desc("sdate"));
-            c2.setFirstResult(sessionBean.getSubmissionsPageIndex() * 20);
-            c2.setMaxResults(20);
+            if (sessionBean.isShowOnlyMySubmissions()) {
+                c2.setFirstResult(sessionBean.getSubmissionsPageIndex() * 25);
+                c2.setMaxResults(25);
+            } else {
+                c2.setFirstResult(sessionBean.getSubmissionsPageIndex() * 50);
+                c2.setMaxResults(50);
+            }
             submissions = new PagedDataModel(c2.list(), number.intValue());
         }
-
         return submissions;
+    }
+
+    public String noop() {
+        return null;
     }
 
     /**
@@ -406,6 +440,7 @@ public class RequestBean {
                 } catch (Exception e) {
                     temporaryContestId = 0;
                 }
+
             }
 
             if (ELFunctions.isNullOrZero(temporaryContestId)) {
@@ -413,6 +448,7 @@ public class RequestBean {
             } else {
                 editedContest = contestsDAO.getById(temporaryContestId);
             }
+
         }
 
         return editedContest;
@@ -421,7 +457,8 @@ public class RequestBean {
     public Results getEditedResult() {
         if (editedResult == null && !ELFunctions.isNullOrZero(temporaryResultId)) {
             editedResult = resultsDAO.getById(temporaryResultId);
-            temporarySubmitResultId = editedResult.getSubmitResult();
+            temporarySubmitResultId =
+                    editedResult.getSubmitResult();
         }
 
         return editedResult;
@@ -1187,6 +1224,26 @@ public class RequestBean {
         }
     }
 
+    @HttpAction(name = "ranking_date", pattern = "ranking/{id}/{title}/{date}")
+    public String goToRankingDate(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy, @Param(name = "date", encode = true) String date) {
+        selectContest(id);
+        if (getCurrentContest() == null) {
+            return "/error/404";
+        } else {
+            temporaryAdminBoolean = false;
+            if (rolesBean.canAddProblem(getCurrentContest().getId(), null)) {
+                try {
+                    temporaryRankingDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
+                } catch (Exception e) {
+                }
+                if ("__admin__".equals(dummy)) {
+                    temporaryAdminBoolean = true;
+                }
+            }
+            return "ranking";
+        }
+    }
+
     @HttpAction(name = "ranking_seria", pattern = "ranking_seria/{id}/{title}")
     public String goToRankingSeria(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         Series s = seriesDAO.getById(id);
@@ -1209,6 +1266,34 @@ public class RequestBean {
         }
     }
 
+    @HttpAction(name = "ranking_seria_date", pattern = "ranking_seria/{id}/{title}/{date}")
+    public String goToRankingSeriaDate(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy, @Param(name = "date", encode = true) String date) {
+        Series s = seriesDAO.getById(id);
+        if (s == null) {
+            return "/error/404";
+        }
+
+        selectContest(s.getContests().getId());
+
+        if (getCurrentContest() == null) {
+            return "/error/404";
+        } else {
+            temporarySeriesId = id;
+            temporaryAdminBoolean = false;
+            if (rolesBean.canAddProblem(getCurrentContest().getId(), id)) {
+                try {
+                    temporaryRankingDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
+                } catch (Exception e) {
+                }
+                if ("__admin__".equals(dummy)) {
+                    temporaryAdminBoolean = true;
+                }
+            }
+            return "ranking";
+        }
+
+    }
+
     @HttpAction(name = "rules", pattern = "rules/{id}/{title}")
     public String goToRules(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
@@ -1222,11 +1307,60 @@ public class RequestBean {
     @HttpAction(name = "submissions", pattern = "submissions/{id}/{title}")
     public String goToSubmissions(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
+        sessionBean.setSubmissionsUserId(0);
+        sessionBean.setSubmissionsSeriesId(0);
+        sessionBean.setSubmissionsProblemId(0);
         if (getCurrentContest() == null) {
             return "/error/404";
         } else {
             return "submissions";
         }
+    }
+
+    @HttpAction(name = "submissions_username", pattern = "submissions_username/{id}/{username}")
+    public String goToSubmissionsUsername(@Param(name = "id", encode = true) int id, @Param(name = "username", encode = true) String username) {
+        selectContest(id);
+        try {
+            sessionBean.setSubmissionsUserId(usersDAO.findByLogin(username).get(0).getId());
+        } catch (Exception e) {
+            sessionBean.setSubmissionsUserId(0);
+        }
+        if (getCurrentContest() == null) {
+            return "/error/404";
+        } else {
+            return "submissions";
+        }
+
+    }
+
+    @HttpAction(name = "submissions_problem", pattern = "submissions_problem/{id}/{problem}")
+    public String goToSubmissionsProblem(@Param(name = "id", encode = true) int id, @Param(name = "problem", encode = true) Integer problem) {
+        selectContest(id);
+        try {
+            sessionBean.setSubmissionsProblemId(problem);
+        } catch (Exception e) {
+        }
+        if (getCurrentContest() == null) {
+            return "/error/404";
+        } else {
+            return "submissions";
+        }
+
+    }
+
+    @HttpAction(name = "submissions_series", pattern = "submissions_series/{id}/{series}")
+    public String goToSubmissionsSeries(@Param(name = "id", encode = true) int id, @Param(name = "series", encode = true) Integer series) {
+        selectContest(id);
+        try {
+            sessionBean.setSubmissionsSeriesId(series);
+        } catch (Exception e) {
+        }
+        if (getCurrentContest() == null) {
+            return "/error/404";
+        } else {
+            return "submissions";
+        }
+
     }
 
     @HttpAction(name = "submission", pattern = "submission/{id}/{title}")
@@ -1502,6 +1636,10 @@ public class RequestBean {
     public String switchShowOnlyMy() {
         sessionBean.setShowOnlyMySubmissions(!sessionBean.isShowOnlyMySubmissions());
         submissions = null;
+        sessionBean.setSubmissionsUserId(0);
+        sessionBean.setSubmissionsSeriesId(0);
+        sessionBean.setSubmissionsProblemId(0);
+
         return null;
     }
 

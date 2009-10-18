@@ -76,7 +76,10 @@ public class RolesBean {
         if (contest == null) {
             return false;
         }
-
+        
+        if (contest.getSeriess().isEmpty()) {
+            return false;
+        }
         for (Series s : contest.getSeriess()) {
             if (canRate(contest.getId(), s.getId()) == false) {
                 return false;
