@@ -248,7 +248,7 @@ public class Ranking {
             return createRankingTableForSeries(contest_id, series_id, type, date, admin);
         }
         if (Math.abs(date.getTime() - new Date().getTime()) > (rankingRefreshRate + 1) * 1000) {
-            return createRankingTable(contest_id, type, date, admin);
+            return createRankingTableForSeries(contest_id, series_id, type, date, admin);
         }
 
         RankingTable rankingTable;
