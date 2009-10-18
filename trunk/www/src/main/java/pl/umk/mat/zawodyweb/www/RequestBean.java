@@ -412,15 +412,23 @@ public class RequestBean {
             }
             c2.addOrder(Order.desc("sdate"));
             if (sessionBean.isShowOnlyMySubmissions()) {
-                c2.setFirstResult(sessionBean.getSubmissionsPageIndex() * 25);
-                c2.setMaxResults(25);
+                c2.setFirstResult(sessionBean.getSubmissionsPageIndex() * getSubmissionsPerPage());
+                c2.setMaxResults(getSubmissionsPerPage());
             } else {
-                c2.setFirstResult(sessionBean.getSubmissionsPageIndex() * 50);
-                c2.setMaxResults(50);
+                c2.setFirstResult(sessionBean.getSubmissionsPageIndex() * getSubmissionsPerPage());
+                c2.setMaxResults(getSubmissionsPerPage());
             }
             submissions = new PagedDataModel(c2.list(), number.intValue());
         }
         return submissions;
+    }
+
+    public Integer getSubmissionsPerPage() {
+        if (sessionBean.isShowOnlyMySubmissions()) {
+            return 15;
+        } else {
+            return 30;
+        }
     }
 
     public String noop() {
@@ -1215,10 +1223,11 @@ public class RequestBean {
         if (getCurrentContest() == null) {
             return "/error/404";
         } else {
-            if ("__admin__".equals(dummy) && rolesBean.canAddProblem(getCurrentContest().getId(), null)) {
-                temporaryAdminBoolean = true;
-            } else {
-                temporaryAdminBoolean = false;
+            temporaryAdminBoolean = false;
+            if (rolesBean.canAddProblem(getCurrentContest().getId(), null)) {
+                if ("__admin__".equals(dummy)) {
+                    temporaryAdminBoolean = true;
+                }
             }
             return "ranking";
         }
@@ -1257,10 +1266,11 @@ public class RequestBean {
             return "/error/404";
         } else {
             temporarySeriesId = id;
-            if ("__admin__".equals(dummy) && rolesBean.canAddProblem(getCurrentContest().getId(), id)) {
-                temporaryAdminBoolean = true;
-            } else {
-                temporaryAdminBoolean = false;
+            temporaryAdminBoolean = false;
+            if (rolesBean.canAddProblem(getCurrentContest().getId(), id)) {
+                if ("__admin__".equals(dummy)) {
+                    temporaryAdminBoolean = true;
+                }
             }
             return "ranking";
         }
@@ -1310,6 +1320,7 @@ public class RequestBean {
         sessionBean.setSubmissionsUserId(0);
         sessionBean.setSubmissionsSeriesId(0);
         sessionBean.setSubmissionsProblemId(0);
+        sessionBean.setSubmissionsPageIndex(0);
         if (getCurrentContest() == null) {
             return "/error/404";
         } else {

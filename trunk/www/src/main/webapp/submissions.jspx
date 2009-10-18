@@ -21,7 +21,7 @@
                     ${zw:prepareSubmissions(sessionBean, requestBean.currentContest)}
                     <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                         <div class="ikona">
-                            <h:commandLink action="#{requestBean.noop}" title="Odśwież"><h:graphicImage alt="Odśwież" title="Odśwież" url="/media/images/reJudge.png" /></h:commandLink>
+                            <h:commandLink action="#{requestBean.noop}" title="#{messages.submissions_filter}"><h:graphicImage alt="#{messages.submissions_filter}" title="#{messages.submissions_filter}" url="/media/images/reJudge.png" /></h:commandLink>
                         </div>
                         <br style="clear:both"/>
                     </c:if>
@@ -30,10 +30,7 @@
                             <tr>
                                 <th>${messages.submission_date}</th>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
-                                    <th>
-                                        ${messages.submission_user}
-                                        <h:outputLink value="#" title="Filtrowanie" styleClass="ikonka" onclick="prompt(this,{nazwa:'nazwa użytkownika',def:'#{sessionBean.currentUser.login}',link:'#{facesContext.externalContext.requestContextPath}/submissions_username/#{sessionBean.currentContestId}/'})"><h:graphicImage alt="Filtrowanie" title="Filtrowanie" url="/media/images/view.png" /></h:outputLink>
-                                    </th>
+                                    <th>${messages.submission_user}<h:outputLink value="#" title="#{messages.submissions_filtering}" styleClass="ikonka" onclick="prompt(this,{nazwa:'nazwa użytkownika',def:'#{sessionBean.currentUser.login}',link:'#{facesContext.externalContext.requestContextPath}/submissions_username/#{sessionBean.currentContestId}/'})"><h:graphicImage alt="#{messages.submissions_filtering}" title="#{messages.submissions_filtering}" url="/media/images/view.png" /></h:outputLink></th>
                                 </c:if>
                                 <th>${messages.submission_problem}</th>
                                 <th>${messages.submission_result}</th>
@@ -46,7 +43,7 @@
                                 </c:if>
                             </tr>
                         </thead>
-                        <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="20" >
+                        <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="#{requestBean.submissionsPerPage}" >
                             <tr style="#{(submit.result==2)?zw:coloring(zw:points(submit), zw:maxPoints(submit)):'background: #e1d4f6'}">
                                 <td class="cols"><h:outputText value="#{zw:formatDateAndHour(submit.sdate, 'yyyy-MM-dd HH:mm:ss')}" /></td>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
