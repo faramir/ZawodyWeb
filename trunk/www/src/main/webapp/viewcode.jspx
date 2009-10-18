@@ -22,6 +22,9 @@
                         <div class="termin">
                             ${messages.submission_date}: ${requestBean.currentSubmit.sdate}
                         </div>
+                        <div class="autor">
+                            ${messages.submission_user}: ${requestBean.currentSubmit.users.firstname} ${requestBean.currentSubmit.users.lastname} (${requestBean.currentSubmit.users.login})
+                        </div>
                         <div class="filename">
                             ${messages.filename}: ${requestBean.currentSubmit.filename}
                         </div>
