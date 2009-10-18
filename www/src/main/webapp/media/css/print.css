@@ -352,13 +352,12 @@ img {
     text-align: right;
 }
 
-.profilform div.zadanko div.notes {
+.profilform div.zadanko div.autor {
     font-size: 11px;
     border: solid black;
-    border-width: 1px 0px 0 0;
+    border-width: 0px 0px 0 0;
     padding-bottom: 2px;
     padding-top: 5px;
-    margin-bottom: 20px;
     text-align: right;
 }
 
@@ -377,6 +376,16 @@ img {
     border-width: 0px 0px 0 0;
     padding-bottom: 2px;
     padding-top: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.notes {
+    font-size: 11px;
+    border: solid black;
+    border-width: 1px 0px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    margin-bottom: 20px;
     text-align: right;
 }
 
