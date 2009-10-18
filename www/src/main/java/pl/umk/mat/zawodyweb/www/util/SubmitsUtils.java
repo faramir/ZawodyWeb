@@ -3,6 +3,7 @@ package pl.umk.mat.zawodyweb.www.util;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.ResultsDAO;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
+import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.www.JudgeManagerConnector;
@@ -29,6 +30,9 @@ public class SubmitsUtils {
         for (Results r : submit.getResultss()) { //resultsDAO.findBySubmitsid(submit.getId())) {
             resultsDAO.delete(r);
         }
+
+        HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
         JudgeManagerConnector.getInstance().sentToJudgeManager(submit.getId());
     }
