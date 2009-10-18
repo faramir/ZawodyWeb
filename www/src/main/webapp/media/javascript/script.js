@@ -15,5 +15,5 @@ function prompt(e, args)
 
 function prompt_ranking(e, args)
 {
-    jPrompt('Poka\u017c ranking z daty: ', args.def, 'Poka\u017c ranking', function(r){if(r){window.location=args.link+'/'+r+'.html';}else{window.location=args.link+'.html'}});
+    jPrompt('Poka\u017c ranking z daty: ', args.def, 'Poka\u017c ranking', function(r){if(r){window.location=args.link+r+'.html';}});
 }
