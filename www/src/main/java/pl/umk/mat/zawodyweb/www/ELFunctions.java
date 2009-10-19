@@ -136,18 +136,6 @@ public class ELFunctions {
         return new SimpleDateFormat(format).format(d);
     }
 
-    public static void prepareSubmissions(SessionBean sessionBean, Contests contests) {
-        if ((new Date().getTime() - sessionBean.getSubmissionsLastVisit()) > 10 * 60 * 1000 || sessionBean.getCurrentContestId() != contests.getId()) {
-            sessionBean.setShowOnlyMySubmissions(true);
-            sessionBean.setSubmissionsPageIndex(0);
-            sessionBean.setCurrentContestId(contests.getId());
-            sessionBean.setSubmissionsLastVisit(new Date().getTime());
-            sessionBean.setSubmissionsUserId(0);
-            sessionBean.setSubmissionsSeriesId(0);
-            sessionBean.setSubmissionsProblemId(0);
-        }
-    }
-
     /**
      * http://stackoverflow.com/questions/277521/how-to-identify-the-file-content-is-in-ascii-or-binary/277568#277568
      *

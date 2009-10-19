@@ -18,7 +18,6 @@
             </c:when>
             <c:otherwise>
                 <a4j:form id="formSubmissions" styleClass="profilform">
-                    ${zw:prepareSubmissions(sessionBean, requestBean.currentContest)}
                     <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                         <div class="ikona">
                             <h:commandLink action="#{requestBean.noop}" title="#{messages.submissions_refresh}"><h:graphicImage alt="#{messages.submissions_refresh}" title="#{messages.submissions_refresh}" url="/media/images/reJudge.png" /></h:commandLink>
@@ -44,7 +43,7 @@
                             </tr>
                         </thead>
                         <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="#{requestBean.submissionsPerPage}" >
-                            <tr style="#{(submit.result==2)?zw:coloring(zw:points(submit), zw:maxPoints(submit)):'background: #e1d4f6'}">
+                            <tr style="${(submit.result==2)?zw:coloring(zw:points(submit), zw:maxPoints(submit)):'background: #e1d4f6'}">
                                 <td class="cols"><h:outputText value="#{zw:formatDateAndHour(submit.sdate, 'yyyy-MM-dd HH:mm:ss')}" /></td>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                                     <td class="cols">
