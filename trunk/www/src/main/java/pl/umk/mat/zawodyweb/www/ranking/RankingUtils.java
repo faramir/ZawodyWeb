@@ -23,7 +23,7 @@ public class RankingUtils {
         return collator.compare(str1, str2);
     }
 
-    public static String generateHtml(RankingTable ranking, boolean admin) {
+    public static String generateHtml(RankingTable ranking, boolean showRowNumber) {
         int itc;
         int itr;
         String out = "";
@@ -32,7 +32,7 @@ public class RankingUtils {
         for (RankingEntry entry : ranking.getTable()) { // <c:forEach var="entry" items="#{requestBean.currentContestRanking.table}">
             out += "<tr class=\"" + (itr % 2 == 0 ? "linia1" : "linia2") + "\">"; // <tr class="${itr % 2 == 0 ? 'linia1' : 'linia2'}">
             out += "<td class=\"small\">"; // <td class="small">
-            if (admin) {
+            if (showRowNumber) {
                 out += "<span title=\"" + itr + "\">" + entry.getPlace() + "</span>"; // <h:outputText value="#{entry.place}" title="#{itr}" rendered="#{requestBean.temporaryAdminBoolean == true}" />
             } else {
                 out += entry.getPlace(); // <h:outputText value="#{entry.place}" rendered="#{requestBean.temporaryAdminBoolean == false}" />

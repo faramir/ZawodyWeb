@@ -1321,6 +1321,13 @@ public class RequestBean {
         sessionBean.setSubmissionsSeriesId(0);
         sessionBean.setSubmissionsProblemId(0);
         sessionBean.setSubmissionsPageIndex(0);
+
+        if ((new Date().getTime() - sessionBean.getSubmissionsLastVisit()) > 10 * 60 * 1000 || sessionBean.getCurrentContestId() != id) {
+            sessionBean.setShowOnlyMySubmissions(true);
+            sessionBean.setCurrentContestId(id);
+            sessionBean.setSubmissionsLastVisit(new Date().getTime());
+        }
+
         if (getCurrentContest() == null) {
             return "/error/404";
         } else {
@@ -1328,47 +1335,53 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(name = "submissions_username", pattern = "submissions_username/{id}/{username}")
-    public String goToSubmissionsUsername(@Param(name = "id", encode = true) int id, @Param(name = "username", encode = true) String username) {
-        selectContest(id);
+    @HttpAction(name = "submissions_username", pattern = "submissions_username/{username}")
+    public String goToSubmissionsUsername(@Param(name = "username", encode = true) String username) {
         try {
             sessionBean.setSubmissionsUserId(usersDAO.findByLogin(username).get(0).getId());
         } catch (Exception e) {
             sessionBean.setSubmissionsUserId(0);
         }
-        if (getCurrentContest() == null) {
+        if (getCurrentContest() == null || sessionBean.isShowOnlyMySubmissions() == true) {
             return "/error/404";
         } else {
+            sessionBean.setSubmissionsPageIndex(0);
             return "submissions";
         }
 
     }
 
-    @HttpAction(name = "submissions_problem", pattern = "submissions_problem/{id}/{problem}")
-    public String goToSubmissionsProblem(@Param(name = "id", encode = true) int id, @Param(name = "problem", encode = true) Integer problem) {
-        selectContest(id);
+    @HttpAction(name = "submissions_problem", pattern = "submissions_problem/{id}")
+    public String goToSubmissionsProblem(@Param(name = "id", encode = true) Integer id) {
         try {
-            sessionBean.setSubmissionsProblemId(problem);
+            Problems p = problemsDAO.getById(id);
+            selectContest(p.getSeries().getContests().getId());
+            sessionBean.setSubmissionsProblemId(p.getId());
         } catch (Exception e) {
+            return "/error/404";
         }
-        if (getCurrentContest() == null) {
+        if (getCurrentContest() == null || sessionBean.isShowOnlyMySubmissions() == true) {
             return "/error/404";
         } else {
+            sessionBean.setSubmissionsPageIndex(0);
             return "submissions";
         }
 
     }
 
-    @HttpAction(name = "submissions_series", pattern = "submissions_series/{id}/{series}")
-    public String goToSubmissionsSeries(@Param(name = "id", encode = true) int id, @Param(name = "series", encode = true) Integer series) {
-        selectContest(id);
+    @HttpAction(name = "submissions_series", pattern = "submissions_series/{id}")
+    public String goToSubmissionsSeries(@Param(name = "id", encode = true) int id) {
         try {
-            sessionBean.setSubmissionsSeriesId(series);
+            Series s = seriesDAO.getById(id);
+            selectContest(s.getContests().getId());
+            sessionBean.setSubmissionsSeriesId(s.getId());
         } catch (Exception e) {
+            return "/error/404";
         }
-        if (getCurrentContest() == null) {
+        if (getCurrentContest() == null || sessionBean.isShowOnlyMySubmissions() == true) {
             return "/error/404";
         } else {
+            sessionBean.setSubmissionsPageIndex(0);
             return "submissions";
         }
 
