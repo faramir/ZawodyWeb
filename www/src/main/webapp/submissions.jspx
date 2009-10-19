@@ -29,7 +29,7 @@
                             <tr>
                                 <th>${messages.submission_date}</th>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
-                                    <th>${messages.submission_user}<h:outputLink value="#" title="#{messages.submissions_filtering}" styleClass="ikonka" onclick="prompt(this,{nazwa:'nazwa użytkownika',def:'#{sessionBean.currentUser.login}',link:'#{facesContext.externalContext.requestContextPath}/submissions_username/#{sessionBean.currentContestId}/'})"><h:graphicImage alt="#{messages.submissions_filtering}" title="#{messages.submissions_filtering}" url="/media/images/view.png" /></h:outputLink></th>
+                                    <th>${messages.submission_user}<h:outputLink value="#" title="#{messages.submissions_filtering}" styleClass="ikonka" onclick="prompt(this,{nazwa:'nazwa użytkownika',def:'#{sessionBean.currentUser.login}',link:'#{facesContext.externalContext.requestContextPath}/submissions_username/'})"><h:graphicImage alt="#{messages.submissions_filtering}" title="#{messages.submissions_filtering}" url="/media/images/view.png" /></h:outputLink></th>
                                 </c:if>
                                 <th>${messages.submission_problem}</th>
                                 <th>${messages.submission_result}</th>

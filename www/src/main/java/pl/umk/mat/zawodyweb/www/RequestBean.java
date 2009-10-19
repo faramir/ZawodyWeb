@@ -1322,7 +1322,7 @@ public class RequestBean {
         sessionBean.setSubmissionsProblemId(0);
         sessionBean.setSubmissionsPageIndex(0);
 
-        if ((new Date().getTime() - sessionBean.getSubmissionsLastVisit()) > 10 * 60 * 1000 || sessionBean.getCurrentContestId() != id) {
+        if (sessionBean.getCurrentContestId() != id || (new Date().getTime() - sessionBean.getSubmissionsLastVisit()) > 60 * 60 * 1000) {
             sessionBean.setShowOnlyMySubmissions(true);
             sessionBean.setCurrentContestId(id);
             sessionBean.setSubmissionsLastVisit(new Date().getTime());
