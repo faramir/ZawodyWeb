@@ -14,7 +14,7 @@
                 </div>
                 <div>
                     <h:outputLabel styleClass="required" for="password">${messages.passwd}:</h:outputLabel>
-                    <t:inputSecret forceId="true" id="password" required="true" value="#{sessionBean.currentUser.pass}" />
+                    <t:inputSecret forceId="true" id="password" value="#{sessionBean.currentUser.pass}" />
                     <h:message for="password" errorClass="error" />
                     <br class="clear" />
                 </div>
