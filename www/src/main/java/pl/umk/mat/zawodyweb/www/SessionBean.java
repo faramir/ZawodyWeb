@@ -148,9 +148,9 @@ public class SessionBean {
                     }
                 } else if ("OPENID".equals(users.get(0).getPass())) {
                     String contextPath = ((HttpServletRequest) context.getExternalContext().getRequest()).getRequestURL().toString();
-                    contextPath = contextPath.replace(context.getExternalContext().getRequestServletPath(), "");
+                    contextPath = contextPath.replaceFirst(context.getExternalContext().getRequestServletPath() + ".*$", "");
                     openIdConsumer = new OpenIdConsumer(contextPath + "/openid.html");
-                    if (openIdConsumer.authRequest(currentUser.getLogin(), (HttpServletRequest) context.getExternalContext().getRequest(), response) == true) {
+                    if (openIdConsumer.authorizationRequest(currentUser.getLogin(), (HttpServletRequest) context.getExternalContext().getRequest(), response) == true) {
                         return null;
                     } else {
                         loggedIn = false;
@@ -165,9 +165,9 @@ public class SessionBean {
                     loggedIn = true;
                 } else {
                     String contextPath = ((HttpServletRequest) context.getExternalContext().getRequest()).getRequestURL().toString();
-                    contextPath = contextPath.replace(context.getExternalContext().getRequestServletPath(), "");
+                    contextPath = contextPath.replaceFirst(context.getExternalContext().getRequestServletPath() + ".*$", "");
                     openIdConsumer = new OpenIdConsumer(contextPath + "/openid.html");
-                    if (openIdConsumer.authRequest(currentUser.getLogin(), (HttpServletRequest) context.getExternalContext().getRequest(), response) == true) {
+                    if (openIdConsumer.authorizationRequest(currentUser.getLogin(), (HttpServletRequest) context.getExternalContext().getRequest(), response) == true) {
                         return null;
                     } else {
                         loggedIn = false;
