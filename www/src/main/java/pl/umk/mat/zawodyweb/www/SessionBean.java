@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
+import org.openid4java.discovery.Identifier;
 import org.restfaces.annotation.HttpAction;
 import org.restfaces.annotation.Instance;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
@@ -41,6 +42,7 @@ public class SessionBean {
     private int submissionsProblemId = 0;
     private int submissionsSeriesId = 0;
     private long submissionsLastVisit = 0;
+    private OpenIdConsumer openIdConsumer;
 
     /**
      * @return the currentUser
@@ -64,6 +66,65 @@ public class SessionBean {
         return loggedIn;
     }
 
+    /**
+     * Redirect here when using OpenID functionality
+     * @return
+     */
+    @HttpAction(name = "openid", pattern = "openid")
+    public String openIdResponse() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        Identifier identifier = openIdConsumer.verifyResponse((HttpServletRequest) context.getExternalContext().getRequest());
+        if (identifier == null) {
+            String summary = messages.getString("bad_login_data");
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "login", summary, null);
+            return "login";
+        } else {
+            /* Login using OpenID successful */
+            UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
+            List<Users> users = dao.findByLogin(openIdConsumer.getLogin());
+            Users user = null;
+            if (users.isEmpty()) {
+                user = new Users();
+            } else {
+                user = users.get(0);
+            }
+
+            user.setLogin(openIdConsumer.getLogin());
+            user.setFirstname(openIdConsumer.getFirstname());
+            user.setLastname(openIdConsumer.getLastname());
+            user.setEmail(openIdConsumer.getEmail());
+            user.setPass("OPENID");
+
+            dao.saveOrUpdate(user);
+
+            currentUser = user;
+            loggedIn = true;
+        }
+
+        return "start";
+    }
+
+    /**
+     * Inserts or updates user using OLAT data
+     * @param dao
+     * @param user
+     * @param username
+     * @return
+     */
+    public Users olatSaveUser(UsersDAO dao, Users user, String username) {
+        User olatUser = Connector.getInstance().getUser(currentUser.getLogin());
+
+        user.setLogin(olatUser.getLogin());
+        user.setFirstname(olatUser.getFirstname());
+        user.setLastname(olatUser.getLastname());
+        user.setEmail(olatUser.getEmail());
+        user.setPass("OLAT");
+
+        dao.saveOrUpdate(user);
+
+        return user;
+    }
+
     public String logIn() {
         FacesContext context = FacesContext.getCurrentInstance();
 
@@ -76,35 +137,42 @@ public class SessionBean {
         HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
         response.addCookie(cookie);
 
-
         try {
             UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
             List<Users> users = dao.findByLogin(currentUser.getLogin());
-            if (users.isEmpty() || "OLAT".equals(users.get(0).getPass())) {
-                if (Connector.getInstance().checkPassword(currentUser.getLogin(), currentUser.getPass())) {
-                    Users user;
-                    if (users.isEmpty()) {
-                        user = new Users();
-                    } else {
-                        user = users.get(0);
+            if (users.isEmpty() == false) {
+                if ("OLAT".equals(users.get(0).getPass())) {
+                    if (Connector.getInstance().checkPassword(currentUser.getLogin(), currentUser.getPass())) {
+                        currentUser = olatSaveUser(dao, users.get(0), currentUser.getLogin());
+                        loggedIn = true;
                     }
-
-                    User olatUser = Connector.getInstance().getUser(currentUser.getLogin());
-
-                    user.setLogin(olatUser.getLogin());
-                    user.setFirstname(olatUser.getFirstname());
-                    user.setLastname(olatUser.getLastname());
-                    user.setEmail(olatUser.getEmail());
-                    user.setPass("OLAT");
-
-                    dao.saveOrUpdate(user);
-
+                } else if ("OPENID".equals(users.get(0).getPass())) {
+                    String contextPath = ((HttpServletRequest) context.getExternalContext().getRequest()).getRequestURL().toString();
+                    contextPath = contextPath.replace(context.getExternalContext().getRequestServletPath(), "");
+                    openIdConsumer = new OpenIdConsumer(contextPath + "/openid.html");
+                    if (openIdConsumer.authRequest(currentUser.getLogin(), (HttpServletRequest) context.getExternalContext().getRequest(), response) == true) {
+                        return null;
+                    } else {
+                        loggedIn = false;
+                    }
+                } else if (users.get(0).checkPass(currentUser.getPass())) {
+                    currentUser = users.get(0);
                     loggedIn = true;
-                    currentUser = user;
                 }
-            } else if (users.get(0).checkPass(currentUser.getPass())) {
-                loggedIn = true;
-                currentUser = users.get(0);
+            } else {
+                if (currentUser.getPass() != null && Connector.getInstance().checkPassword(currentUser.getLogin(), currentUser.getPass())) {
+                    currentUser = olatSaveUser(dao, new Users(), currentUser.getLogin());
+                    loggedIn = true;
+                } else {
+                    String contextPath = ((HttpServletRequest) context.getExternalContext().getRequest()).getRequestURL().toString();
+                    contextPath = contextPath.replace(context.getExternalContext().getRequestServletPath(), "");
+                    openIdConsumer = new OpenIdConsumer(contextPath + "/openid.html");
+                    if (openIdConsumer.authRequest(currentUser.getLogin(), (HttpServletRequest) context.getExternalContext().getRequest(), response) == true) {
+                        return null;
+                    } else {
+                        loggedIn = false;
+                    }
+                }
             }
         } catch (Exception e) {
             loggedIn = false;
@@ -112,7 +180,7 @@ public class SessionBean {
 
         if (!loggedIn) {
             String summary = messages.getString("bad_login_data");
-            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formLogin:login", summary, null);
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "login", summary, null);
             return null;
         }
 
@@ -267,5 +335,4 @@ public class SessionBean {
     public void setSubmissionsSeriesId(int submissionsSeriesId) {
         this.submissionsSeriesId = submissionsSeriesId;
     }
-
 }

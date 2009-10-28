@@ -45,12 +45,12 @@
         </managed-property>
     </managed-bean>
     <navigation-rule>
-        <display-name>register_to_login</display-name>
-        <from-view-id>/register.jspx</from-view-id>
+        <display-name>all_to_login</display-name>
+        <from-view-id>*</from-view-id>
         <navigation-case>
             <from-outcome>login</from-outcome>
             <to-view-id>/login.jspx</to-view-id>
-            <redirect />
+            <redirect/>
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
