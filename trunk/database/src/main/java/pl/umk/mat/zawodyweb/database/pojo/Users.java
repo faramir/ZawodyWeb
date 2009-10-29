@@ -204,7 +204,7 @@ public class Users implements Serializable {
      * @return login
      */
     @Basic
-    @Column(name = "login", length = 20)
+    @Column(name = "login", length = 64)
     public String getLogin() {
         if (login != null) {
             return login.trim();

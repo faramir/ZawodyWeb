@@ -1,6 +1,8 @@
 package pl.umk.mat.zawodyweb.www;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,8 +49,6 @@ public class OpenIdConsumer {
      */
     public boolean authorizationRequest(String userSuppliedString, HttpServletRequest req, HttpServletResponse res) throws IOException {
         try {
-            this.login = userSuppliedString;
-
             List discoveries = manager.discover(userSuppliedString);
 
             DiscoveryInformation discovered = manager.associate(discoveries);
@@ -99,10 +99,10 @@ public class OpenIdConsumer {
                     MessageExtension ext = authSuccess.getExtension(SRegMessage.OPENID_NS_SREG);
 
                     String _email = (String) ext.getParameters().getParameterValue("email");
-                    String fullname = (String) ext.getParameters().getParameterValue("fullname");
+                    String _fullname = (String) ext.getParameters().getParameterValue("fullname");
 
-                    if (_email != null && _email.isEmpty() == false && fullname != null) {
-                        String[] names = fullname.split("[ ]+");
+                    if (_email != null && _email.isEmpty() == false && _fullname != null) {
+                        String[] names = _fullname.split("[ ]+");
                         if (names.length >= 2) {
                             String _firstname = names[0];
                             String _lastname = names[1];
@@ -112,6 +112,7 @@ public class OpenIdConsumer {
                                 }
                             }
 
+                            this.login = new URI(authSuccess.getIdentity()).getHost();
                             this.email = _email;
                             this.firstname = _firstname;
                             this.lastname = _lastname;
@@ -121,6 +122,8 @@ public class OpenIdConsumer {
                     }
                 }
             }
+        } catch (URISyntaxException ex) {
+            logger.error("Exception in verifyResponse", ex);
         } catch (OpenIDException ex) {
             logger.error("Exception in verifyResponse", ex);
         }
