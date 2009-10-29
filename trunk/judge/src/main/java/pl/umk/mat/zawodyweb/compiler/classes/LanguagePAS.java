@@ -122,20 +122,23 @@ public class LanguagePAS implements CompilerInterface {
                 "ttyname ttyname_r ttyslot ualarm ungetc unlink usleep vfork vfprintf vfscanf vhangup";
         String strWithoutComments = new String();
         int len = str.length() - 1;
-        for (int i = 0; i < len; i++) {
-            if (str.charAt(i) == '{') {
-                while (str.charAt(i) != '}') {
+        try {
+            for (int i = 0; i < len; i++) {
+                if (str.charAt(i) == '{') {
+                    while (str.charAt(i) != '}') {
+                        i++;
+                    }
                     i++;
                 }
-                i++;
-            }
-            if (str.charAt(i) == '(' && str.charAt(i + 1) == '*') {
-                while (str.charAt(i) != '*' || str.charAt(i + 1) != ')') {
-                    i++;
+                if (str.charAt(i) == '(' && str.charAt(i + 1) == '*') {
+                    while (str.charAt(i) != '*' || str.charAt(i + 1) != ')') {
+                        i++;
+                    }
+                    i += 2;
                 }
-                i += 2;
+                strWithoutComments = strWithoutComments + str.charAt(i);
             }
-            strWithoutComments = strWithoutComments + str.charAt(i);
+        } catch (StringIndexOutOfBoundsException ex) {
         }
         str = strWithoutComments;
         String regexp1_on = "(?s).*\\W(" + forbiddenCalls.replaceAll(" ", "|") + ")\\W.*";

@@ -116,20 +116,23 @@ public class LanguageCPP implements CompilerInterface {
                 "unlink usleep vfork vfprintf vfscanf vhangup write system";
         String strWithoutComments = new String();
         int len = str.length() - 1;
-        for (int i = 0; i < len; i++) {
-            if (str.charAt(i) == '/' && str.charAt(i) == '*') {
-                while (str.charAt(i) != '*' || str.charAt(i + 1) != '/') {
+        try {
+            for (int i = 0; i < len; i++) {
+                if (str.charAt(i) == '/' && str.charAt(i) == '*') {
+                    while (str.charAt(i) != '*' || str.charAt(i + 1) != '/') {
+                        i++;
+                    }
+                    i += 2;
+                }
+                if (str.charAt(i) == '/' && str.charAt(i + 1) == '/') {
+                    while (str.charAt(i) != '\n') {
+                        i++;
+                    }
                     i++;
                 }
-                i += 2;
+                strWithoutComments = strWithoutComments + str.charAt(i);
             }
-            if (str.charAt(i) == '/' && str.charAt(i + 1) == '/') {
-                while (str.charAt(i) != '\n') {
-                    i++;
-                }
-                i++;
-            }
-            strWithoutComments = strWithoutComments + str.charAt(i);
+        } catch (StringIndexOutOfBoundsException ex) {
         }
         str = strWithoutComments;
         String regexp1_on = "(?s).*\\W(" + forbiddenCalls.replaceAll(" ", "|") + ")\\W.*";
