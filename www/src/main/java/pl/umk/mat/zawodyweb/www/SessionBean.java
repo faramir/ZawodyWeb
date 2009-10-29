@@ -87,6 +87,10 @@ public class SessionBean {
                 user = new Users();
             } else {
                 user = users.get(0);
+                if ("OPENID".equals(user.getPass()) == false) {
+                    loggedIn = false;
+                    return "login";
+                }
             }
 
             user.setLogin(openIdConsumer.getLogin());

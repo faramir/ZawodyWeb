@@ -9,7 +9,7 @@ CREATE TABLE USERS (
         lastName            varchar(40),
         eMail               varchar(40) unique,
         birthDate           timestamp,
-        login               varchar(20) unique,
+        login               varchar(64) unique,
         pass                varchar(40),
         address             varchar(80),
         school              varchar(80),
