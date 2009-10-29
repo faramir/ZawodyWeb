@@ -195,42 +195,13 @@ img {
     text-decoration: none;
 }
 
-/* LOGINFORM */
-.loginform {
-    width:300px;
-    margin:auto;
-}
-
-.loginform fieldset{
-    padding:10px;
-    border: none;
-}
-
-.loginform label{
-    display:block;
-    height:2em;
-    background-color:transparent;
-    padding:10px 10px 0;
-}
-
-.loginform input {
-    margin-right:20px;
-    border:1px solid #999999;
-    float:right;
-    clear:right;
-    background: transparent;
-}
-
-.loginform input.guzik {
-    margin-right:20px;
-    margin: 0 40% 0 0;
-    border:1px solid #999999;
-    clear:right;
-    background: transparent;
-}
-
-.loginform input:focus, .loginform input:hover {
-    border:1px solid #333333;
+.profilform img.openid {
+    display: block;
+    float: right;
+    clear: right;
+    margin: -20px 0 0 0;
+    padding: 0px;
+    display: none;
 }
 
 .clear {
