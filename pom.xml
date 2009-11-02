@@ -41,6 +41,13 @@
         </developer>
     </developers>
     <!-- -->
+    <repositories>
+        <repository>
+            <id>alfred</id>
+            <url>http://alfred.studmat.umk.pl/maven2_repository</url>
+        </repository>
+    </repositories>
+    <!-- -->
     <modules>
         <module>database</module>
         <module>judge-manager</module>
