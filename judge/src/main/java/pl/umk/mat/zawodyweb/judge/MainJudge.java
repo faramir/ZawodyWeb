@@ -283,6 +283,12 @@ public class MainJudge {
                     Thread.sleep(delayConnect);
                 } catch (InterruptedException ex1) {
                 }
+            } catch (Error error) {
+                logger.error("Error occurs: ", error);
+                try {
+                    Thread.sleep(delayConnect);
+                } catch (InterruptedException ex1) {
+                }
             }
         }
     }
