@@ -1742,6 +1742,7 @@ public class RequestBean {
 
     private String sendSolution(byte[] bytes, String fileName, String controlId) {
         FacesContext context = FacesContext.getCurrentInstance();
+        long submitTime = System.currentTimeMillis();
 
         try {
             Problems problem = null;
@@ -1826,7 +1827,7 @@ public class RequestBean {
                 return null;
             }
 
-            if (problem.getSeries().getStartdate().before(new Date()) && (problem.getSeries().getEnddate() == null || problem.getSeries().getEnddate().after(new Date()))) {
+            if (problem.getSeries().getStartdate().getTime() < submitTime && (problem.getSeries().getEnddate() == null || submitTime < problem.getSeries().getEnddate().getTime())) {
                 Submits submit = new Submits();
 
                 submit.setId(null);
@@ -1835,7 +1836,7 @@ public class RequestBean {
                 submit.setResult(SubmitsResultEnum.WAIT.getCode());
                 submit.setLanguages(language);
                 submit.setProblems(problem);
-                submit.setSdate(new Timestamp(System.currentTimeMillis()));
+                submit.setSdate(new Timestamp(submitTime));
                 submit.setUsers(usersDAO.getById(sessionBean.getCurrentUser().getId()));
                 selectContest(problem.getSeries().getContests().getId());
                 submitsDAO.saveOrUpdate(submit);
@@ -1844,9 +1845,13 @@ public class RequestBean {
                 HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
                 JudgeManagerConnector.getInstance().sentToJudgeManager(submit.getId());
-            }
 
-            return "submissions";
+                return "submissions";
+            } else {
+                String summary = String.format("%s", messages.getString("submission_not_in_time"));
+                WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, controlId, summary, null);
+                return null;
+            }
         } catch (Exception e) {
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, controlId, summary, null);

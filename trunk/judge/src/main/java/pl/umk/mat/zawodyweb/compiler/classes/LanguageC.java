@@ -50,7 +50,7 @@ public class LanguageC implements CompilerInterface {
         System.gc();
         List<String> command = Arrays.asList(path);
         if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
-            command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " && '" + path + "'");
+            command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && '" + path + "'");
         } else {
             logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
         }
@@ -58,8 +58,8 @@ public class LanguageC implements CompilerInterface {
             InterruptTimer timer = new InterruptTimer();
             Process p = new ProcessBuilder(command).start();
             long time = new Date().getTime();
-            timer.schedule(Thread.currentThread(), input.getTimeLimit());
             try {
+                timer.schedule(Thread.currentThread(), input.getTimeLimit());
                 inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
                 outputStream.write(input.getText());
@@ -69,6 +69,7 @@ public class LanguageC implements CompilerInterface {
                 p.waitFor();
             } catch (InterruptedException ex) {
                 p.destroy();
+                output.setRuntime(input.getTimeLimit());
                 output.setResult(CheckerErrors.TLE);
                 logger.debug("TLE after " + (new Date().getTime() - time) + "ms.");
                 return output;

@@ -99,6 +99,10 @@ public class JudgesListener extends Thread {
                             }
 
                             transaction.commit();
+                        } catch (SocketException ex) {
+                            logger.info("Exception occurs. Add submit(" + submitId + ") to queue", ex);
+                            submitsQueue.add(submitId);
+                            return;
                         } catch (IOException ex) {
                             logger.info("Exception occurs. Add submit(" + submitId + ") to queue", ex);
                             submitsQueue.add(submitId);
