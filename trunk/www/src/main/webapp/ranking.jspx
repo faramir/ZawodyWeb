@@ -35,26 +35,26 @@
                             <thead><tr><th class="small">${messages.position}</th><th class="big">${messages.competitor}</th><c:set var="itc" value="0" /><c:forEach var="column" items="#{requestBean.currentContestRanking.columnsCaptions}"><th class="${requestBean.currentContestRanking.columnsCSS[itc]}"><h:outputText escape="false" value="#{column}" /></th><c:set var="itc" value="#{itc + 1}" /></c:forEach></tr></thead>
                             <tbody><h:outputText value="#{requestBean.currentContestRanking.html}" escape="false" /></tbody>
                         </table>
-                        <div class="ranking_generated" style="clear:both">
-                            <h:outputText value="#{messages.ranking_generation_date}: #{zw:formatDateAndHour(requestBean.currentContestRanking.generationDate, 'yyyy-MM-dd HH:mm:ss')}" />
+                    </div>
+                    <div class="ranking_generated" style="clear:both">
+                        <h:outputText value="#{messages.ranking_generation_date}: #{zw:formatDateAndHour(requestBean.currentContestRanking.generationDate, 'yyyy-MM-dd HH:mm:ss')}" />
+                        <br/>
+                        <h:outputText value="#{messages.ranking_generation_time}: #{requestBean.currentContestRanking.generationTime/1000} #{messages.ranking_generation_time_sufix}" rendered="#{zw:canAddProblem(rolesBean, requestBean.currentContest.id, null)}"/>
+                        <c:if test="#{zw:canAddProblem(rolesBean, requestBean.currentContest.id, null)}">
                             <br/>
-                            <h:outputText value="#{messages.ranking_generation_time}: #{requestBean.currentContestRanking.generationTime/1000} #{messages.ranking_generation_time_sufix}" rendered="#{zw:canAddProblem(rolesBean, requestBean.currentContest.id, null)}"/>
-                            <c:if test="#{zw:canAddProblem(rolesBean, requestBean.currentContest.id, null)}">
-                                <br/>
-                                <div class="ranking_frozen" id="view_ranking" style="float:right">
-                                    <c:choose>
-                                        <c:when test="#{requestBean.temporarySeriesId!=null and requestBean.temporarySeriesId!=0}">
-                                            <h:outputLink rendered="#{requestBean.temporaryAdminBoolean}" value="#" title="#{messages.ranking_date}" styleClass="ikonka" onclick="prompt_ranking(this,{def:'#{zw:formatDateAndHour(requestBean.currentContestRanking.generationDate, 'yyyy-MM-dd HH:mm:ss')}',link:'#{facesContext.externalContext.requestContextPath}/ranking_seria/#{requestBean.temporarySeriesId}/__admin__/'})"><h:graphicImage alt="#{messages.ranking_date}" title="#{messages.ranking_date}" url="/media/images/view.png" /></h:outputLink>
-                                            <h:outputLink rendered="#{!requestBean.temporaryAdminBoolean}" value="#" title="#{messages.ranking_date}" styleClass="ikonka" onclick="prompt_ranking(this,{def:'#{zw:formatDateAndHour(requestBean.currentContestRanking.generationDate, 'yyyy-MM-dd HH:mm:ss')}',link:'#{facesContext.externalContext.requestContextPath}/ranking_seria/#{requestBean.temporarySeriesId}/#{zw:filterUri(requestBean.currentContest.name)}/'})"><h:graphicImage alt="#{messages.ranking_date}" title="#{messages.ranking_date}" url="/media/images/view.png" /></h:outputLink>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <h:outputLink rendered="#{requestBean.temporaryAdminBoolean}" value="#" title="#{messages.ranking_date}" styleClass="ikonka" onclick="prompt_ranking(this,{def:'#{zw:formatDateAndHour(requestBean.currentContestRanking.generationDate, 'yyyy-MM-dd HH:mm:ss')}',link:'#{facesContext.externalContext.requestContextPath}/ranking/#{requestBean.currentContest.id}/__admin__/'})"><h:graphicImage alt="#{messages.ranking_date}" title="#{messages.ranking_date}" url="/media/images/view.png" /></h:outputLink>
-                                            <h:outputLink rendered="#{!requestBean.temporaryAdminBoolean}" value="#" title="#{messages.ranking_date}" styleClass="ikonka" onclick="prompt_ranking(this,{def:'#{zw:formatDateAndHour(requestBean.currentContestRanking.generationDate, 'yyyy-MM-dd HH:mm:ss')}',link:'#{facesContext.externalContext.requestContextPath}/ranking/#{requestBean.currentContest.id}/#{zw:filterUri(requestBean.currentContest.name)}/'})"><h:graphicImage alt="#{messages.ranking_date}" title="#{messages.ranking_date}" url="/media/images/view.png" /></h:outputLink>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </div>
-                            </c:if>
-                        </div>
+                            <div class="ranking_frozen" id="view_ranking" style="float:right">
+                                <c:choose>
+                                    <c:when test="#{requestBean.temporarySeriesId!=null and requestBean.temporarySeriesId!=0}">
+                                        <h:outputLink rendered="#{requestBean.temporaryAdminBoolean}" value="#" title="#{messages.ranking_date}" styleClass="ikonka" onclick="prompt_ranking(this,{def:'#{zw:formatDateAndHour(requestBean.currentContestRanking.generationDate, 'yyyy-MM-dd HH:mm:ss')}',link:'#{facesContext.externalContext.requestContextPath}/ranking_seria/#{requestBean.temporarySeriesId}/__admin__/'})"><h:graphicImage alt="#{messages.ranking_date}" title="#{messages.ranking_date}" url="/media/images/view.png" /></h:outputLink>
+                                        <h:outputLink rendered="#{!requestBean.temporaryAdminBoolean}" value="#" title="#{messages.ranking_date}" styleClass="ikonka" onclick="prompt_ranking(this,{def:'#{zw:formatDateAndHour(requestBean.currentContestRanking.generationDate, 'yyyy-MM-dd HH:mm:ss')}',link:'#{facesContext.externalContext.requestContextPath}/ranking_seria/#{requestBean.temporarySeriesId}/#{zw:filterUri(requestBean.currentContest.name)}/'})"><h:graphicImage alt="#{messages.ranking_date}" title="#{messages.ranking_date}" url="/media/images/view.png" /></h:outputLink>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <h:outputLink rendered="#{requestBean.temporaryAdminBoolean}" value="#" title="#{messages.ranking_date}" styleClass="ikonka" onclick="prompt_ranking(this,{def:'#{zw:formatDateAndHour(requestBean.currentContestRanking.generationDate, 'yyyy-MM-dd HH:mm:ss')}',link:'#{facesContext.externalContext.requestContextPath}/ranking/#{requestBean.currentContest.id}/__admin__/'})"><h:graphicImage alt="#{messages.ranking_date}" title="#{messages.ranking_date}" url="/media/images/view.png" /></h:outputLink>
+                                        <h:outputLink rendered="#{!requestBean.temporaryAdminBoolean}" value="#" title="#{messages.ranking_date}" styleClass="ikonka" onclick="prompt_ranking(this,{def:'#{zw:formatDateAndHour(requestBean.currentContestRanking.generationDate, 'yyyy-MM-dd HH:mm:ss')}',link:'#{facesContext.externalContext.requestContextPath}/ranking/#{requestBean.currentContest.id}/#{zw:filterUri(requestBean.currentContest.name)}/'})"><h:graphicImage alt="#{messages.ranking_date}" title="#{messages.ranking_date}" url="/media/images/view.png" /></h:outputLink>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </c:if>
                     </div>
                 </div>
             </c:otherwise>
