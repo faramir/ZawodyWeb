@@ -1317,16 +1317,16 @@ public class RequestBean {
     @HttpAction(name = "submissions", pattern = "submissions/{id}/{title}")
     public String goToSubmissions(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
+
+        if (sessionBean.getCurrentContestId() != sessionBean.getSubmissionsContestId() || (new Date().getTime() - sessionBean.getSubmissionsLastVisit()) > 60 * 60 * 1000) {
+            sessionBean.setShowOnlyMySubmissions(true);
+            sessionBean.setSubmissionsContestId(id);
+        }
         sessionBean.setSubmissionsUserId(0);
         sessionBean.setSubmissionsSeriesId(0);
         sessionBean.setSubmissionsProblemId(0);
         sessionBean.setSubmissionsPageIndex(0);
-
-        if (sessionBean.getCurrentContestId() != id || (new Date().getTime() - sessionBean.getSubmissionsLastVisit()) > 60 * 60 * 1000) {
-            sessionBean.setShowOnlyMySubmissions(true);
-            sessionBean.setCurrentContestId(id);
-            sessionBean.setSubmissionsLastVisit(new Date().getTime());
-        }
+        sessionBean.setSubmissionsLastVisit(new Date().getTime());
 
         if (getCurrentContest() == null) {
             return "/error/404";
