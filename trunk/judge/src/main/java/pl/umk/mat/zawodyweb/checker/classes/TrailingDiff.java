@@ -44,6 +44,12 @@ public class TrailingDiff implements CheckerInterface {
     private int diff(String codeText, String rightText) throws IOException {
         BufferedReader right = new BufferedReader(new StringReader(rightText));
         BufferedReader code = new BufferedReader(new StringReader(codeText));
+        if (code == null || right == null) {
+            if (code == null && right == null) {
+                return 0;
+            }
+            return 1;
+        }
         String codeLine = code.readLine();
         String rightLine = right.readLine();
         while (codeLine != null && rightLine != null) {

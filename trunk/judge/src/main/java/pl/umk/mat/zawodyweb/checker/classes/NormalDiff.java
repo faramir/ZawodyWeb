@@ -13,6 +13,13 @@ public class NormalDiff implements CheckerInterface {
     private int diff(String codeText, String rightText) {
         int i = 0;
         int j = 0;
+
+        if (codeText == null || rightText == null) {
+            if (codeText == null && rightText == null) {
+                return 0;
+            }
+            return 1;
+        }
         int rightTextLength = rightText.length();
         int codeTextLength = codeText.length();
         while (i < rightTextLength && j < codeTextLength) {
