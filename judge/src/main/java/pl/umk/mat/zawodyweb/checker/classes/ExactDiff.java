@@ -36,6 +36,14 @@ public class ExactDiff implements CheckerInterface {
     }
 
     private int diff(String codeText, String rightText) {
+
+        if (codeText == null || rightText == null) {
+            if (codeText == null && rightText == null) {
+                return 0;
+            }
+            return 1;
+        }
+
         if (codeText.length() != rightText.length()) {
             return 1;
         }

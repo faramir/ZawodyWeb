@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -50,7 +51,7 @@ public class LanguageJAVA implements CompilerInterface {
             }
             return output;
         }
-        BufferedReader inputStream;
+        BufferedReader inputStream = null;
         System.gc();
         Vector<String> command = new Vector<String>(Arrays.asList("java", "-Xmx" + input.getMemoryLimit() + "m",
                 "-Xms" + input.getMemoryLimit() + "m", "-Xss" + input.getMemoryLimit() + "m"));
@@ -75,12 +76,14 @@ public class LanguageJAVA implements CompilerInterface {
                 logger.debug("Waiting for program after " + (new Date().getTime() - time) + "ms.");
                 p.waitFor();
             } catch (InterruptedException ex) {
-                ex.printStackTrace();
                 p.destroy();
                 output.setRuntime(input.getTimeLimit());
                 output.setResult(CheckerErrors.TLE);
-                logger.debug("TLE after " + (new Date().getTime() - time) + "ms.");
+                logger.debug("TLE after " + (new Date().getTime() - time) + "ms.", ex);
                 return output;
+            } catch (IOException ex) {
+                logger.fatal("IOException", ex);
+                p.destroy();
             }
             long currentTime = new Date().getTime();
             timer.cancel();
@@ -92,13 +95,15 @@ public class LanguageJAVA implements CompilerInterface {
             }
             output.setRuntime((int) (currentTime - time));
             String outputText = new String();
-            String line;
-            while ((line = inputStream.readLine()) != null) {
-                outputText = outputText + line + "\n";
+            if (inputStream != null) {
+                String line;
+                while ((line = inputStream.readLine()) != null) {
+                    outputText = outputText + line + "\n";
+                }
             }
             output.setText(outputText);
         } catch (Exception ex) {
-            logger.error(ex.getMessage());
+            logger.fatal("Exception", ex);
         }
         return output;
     }
@@ -136,6 +141,7 @@ public class LanguageJAVA implements CompilerInterface {
                 }
             }
         } catch (Exception err) {
+            logger.error("Exception when compiling", err);
         }
         new File(codefile).delete();
         return codefile.replaceAll("\\.java$", ".class");

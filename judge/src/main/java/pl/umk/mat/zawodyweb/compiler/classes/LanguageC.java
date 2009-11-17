@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -46,7 +47,7 @@ public class LanguageC implements CompilerInterface {
             }
             return output;
         }
-        BufferedReader inputStream;
+        BufferedReader inputStream = null;
         System.gc();
         List<String> command = Arrays.asList(path);
         if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
@@ -71,8 +72,11 @@ public class LanguageC implements CompilerInterface {
                 p.destroy();
                 output.setRuntime(input.getTimeLimit());
                 output.setResult(CheckerErrors.TLE);
-                logger.debug("TLE after " + (new Date().getTime() - time) + "ms.");
+                logger.debug("TLE after " + (new Date().getTime() - time) + "ms.", ex);
                 return output;
+            } catch (IOException ex) {
+                logger.fatal("IOException", ex);
+                p.destroy();
             }
             long currentTime = new Date().getTime();
             timer.cancel();
@@ -83,14 +87,16 @@ public class LanguageC implements CompilerInterface {
                 return output;
             }
             output.setRuntime((int) (currentTime - time));
-            String line;
-            while ((line = inputStream.readLine()) != null) {
-                outputText = outputText + line + "\n";
+            if (inputStream != null) {
+                String line;
+                while ((line = inputStream.readLine()) != null) {
+                    outputText = outputText + line + "\n";
+                }
             }
             output.setText(outputText);
             p.destroy();
         } catch (Exception ex) {
-            logger.error(ex.getMessage());
+            logger.fatal("Exception", ex);
         }
         return output;
     }
@@ -182,6 +188,7 @@ public class LanguageC implements CompilerInterface {
             try {
                 p.waitFor();
             } catch (InterruptedException ex) {
+                logger.error("Compile Time Limit Exceeded", ex);
                 p.destroy();
                 compileResult = CheckerErrors.CTLE;
                 return compilefile;
@@ -200,7 +207,7 @@ public class LanguageC implements CompilerInterface {
             new File(codefile).delete();
             p.destroy();
         } catch (Exception err) {
-            err.printStackTrace();
+            logger.fatal("Exception when compiling", err);
         }
         return compilefile;
     }
