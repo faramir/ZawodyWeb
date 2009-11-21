@@ -15,19 +15,19 @@
                         <div>
                             <h1>${messages.contest_about}</h1>
                             <div class="text">
-                                ${requestBean.currentContest.about}
+                                <h:outputText value="#{requestBean.currentContest.about}" escape="false" />
                             </div>
                         </div>
                         <div>
                             <h1>${messages.contest_rules}</h1>
                             <div class="text">
-                                ${requestBean.currentContest.rules}
+                                <h:outputText value="#{requestBean.currentContest.rules}" escape="false" />
                             </div>
                         </div>
                         <div>
                             <h1>${messages.contest_tech}</h1>
                             <div class="text">
-                                ${requestBean.currentContest.tech}
+                                <h:outputText value="#{requestBean.currentContest.tech}" escape="false" />
                             </div>
                         </div>
                     </div>

@@ -32,49 +32,49 @@ public class ProblemsUtils {
         return instance;
     }
 
-    public Problems copySolution(Problems problem, Series serie, boolean copySolution) {
-        Problems copyProblem = new Problems();
-        copyProblem.setAbbrev(problem.getAbbrev());
-        copyProblem.setClasses(problem.getClasses());
-        copyProblem.setMemlimit(problem.getMemlimit());
-        copyProblem.setName(problem.getName());
-        copyProblem.setPDF(problem.getPDF());
-        copyProblem.setSeries(serie);
-        copyProblem.setText(problem.getText());
-        DAOFactory.DEFAULT.buildProblemsDAO().saveOrUpdate(copyProblem);
-        List<LanguagesProblems> findByProblemsid = DAOFactory.DEFAULT.buildLanguagesProblemsDAO().findByProblemsid(problem.getId());
+    public Problems copyProblem(Problems sourceProblem, Series destinationSerie, boolean copySolutions) {
+        Problems destinationProblem = new Problems();
+        destinationProblem.setAbbrev(sourceProblem.getAbbrev());
+        destinationProblem.setClasses(sourceProblem.getClasses());
+        destinationProblem.setMemlimit(sourceProblem.getMemlimit());
+        destinationProblem.setName(sourceProblem.getName());
+        destinationProblem.setPDF(sourceProblem.getPDF());
+        destinationProblem.setSeries(destinationSerie);
+        destinationProblem.setText(sourceProblem.getText());
+        DAOFactory.DEFAULT.buildProblemsDAO().saveOrUpdate(destinationProblem);
+        List<LanguagesProblems> findByProblemsid = DAOFactory.DEFAULT.buildLanguagesProblemsDAO().findByProblemsid(sourceProblem.getId());
         for (LanguagesProblems oldLanguage : findByProblemsid) {
             LanguagesProblems newLanguage = new LanguagesProblems();
             newLanguage.setLanguages(oldLanguage.getLanguages());
-            newLanguage.setProblems(copyProblem);
+            newLanguage.setProblems(destinationProblem);
             DAOFactory.DEFAULT.buildLanguagesProblemsDAO().saveOrUpdate(newLanguage);
         }
-        List<Tests> findByProblemsid1 = DAOFactory.DEFAULT.buildTestsDAO().findByProblemsid(problem.getId());
+        List<Tests> findByProblemsid1 = DAOFactory.DEFAULT.buildTestsDAO().findByProblemsid(sourceProblem.getId());
         for (Tests oldTest : findByProblemsid1) {
             Tests newTest = new Tests();
             newTest.setInput(oldTest.getInput());
             newTest.setMaxpoints(oldTest.getMaxpoints());
             newTest.setOutput(oldTest.getOutput());
-            newTest.setProblems(copyProblem);
+            newTest.setProblems(destinationProblem);
             newTest.setTestorder(oldTest.getTestorder());
             newTest.setTimelimit(oldTest.getTimelimit());
             newTest.setVisibility(oldTest.getVisibility());
             DAOFactory.DEFAULT.buildTestsDAO().saveOrUpdate(newTest);
         }
-        if (copySolution) {
+        if (copySolutions) {
             Criteria crit = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
             Query query = HibernateUtil.getSessionFactory().getCurrentSession().createSQLQuery("" +
-                    "SELECT DISTINCT on (submits.usersid) " +
-                    "submits.id, submits.usersid, sum(results.points) as suma " +
-                    "from submits, results " +
-                    "where submits.problemsid ='" + problem.getId() + "' " +
-                    "and submits.id = results.submitsid " +
-                    "and results.submitresult = '" + CheckerErrors.ACC + "' " +
-                    "and submits.result = '" + SubmitsResultEnum.DONE.getCode() + "' " +
-                    "group by " +
-                    "submits.id, submits.usersid " +
-                    "order by " +
-                    "submits.usersid ASC, suma DESC");
+                    "SELECT DISTINCT ON (submits.usersid) " +
+                    "      submits.id, submits.usersid, SUM(results.points) AS suma " +
+                    "   FROM submits, results " +
+                    "      WHERE submits.problemsid ='" + sourceProblem.getId() + "' " +
+                    "        AND submits.id = results.submitsid " +
+                    "        AND results.submitresult = '" + CheckerErrors.ACC + "' " +
+                    "        AND submits.result = '" + SubmitsResultEnum.DONE.getCode() + "' " +
+                    "      GROUP BY " +
+                    "        submits.id, submits.usersid " +
+                    "   ORDER BY " +
+                    "        submits.usersid ASC, suma DESC");
             Vector<Criterion> vCrit = new Vector<Criterion>();
             for (Object list : query.list()) {
                 Object[] o = (Object[]) list;
@@ -93,7 +93,7 @@ public class ProblemsUtils {
                     newSubmit.setFilename(oldSubmits.getFilename());
                     newSubmit.setLanguages(oldSubmits.getLanguages());
                     newSubmit.setNotes(oldSubmits.getNotes());
-                    newSubmit.setProblems(copyProblem);
+                    newSubmit.setProblems(destinationProblem);
                     newSubmit.setResult(oldSubmits.getResult());
                     newSubmit.setSdate(oldSubmits.getSdate());
                     newSubmit.setUsers(oldSubmits.getUsers());
@@ -113,7 +113,7 @@ public class ProblemsUtils {
                 }
             }
         }
-        return copyProblem;
+        return destinationProblem;
     }
 
     public void reJudge(Problems problem) {
