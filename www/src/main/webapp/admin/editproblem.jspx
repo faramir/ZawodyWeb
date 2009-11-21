@@ -83,7 +83,7 @@
                             <h:outputLabel styleClass="required" for="contest">${messages.problem_contest}:</h:outputLabel>
                             <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}">
                                 <f:selectItem itemValue="" itemLabel="" />
-                                <c:forEach var="contest" items="#{requestBean.contests}">
+                                <c:forEach var="contest" items="#{requestBean.contestsWhenAddingProblem}">
                                     <f:selectItem itemValue="#{contest.id}" itemLabel="#{contest.name}" />
                                 </c:forEach>
                                 <a4j:support event="onchange" reRender="series" ajaxSingle="true" />
@@ -96,10 +96,8 @@
                             <h:outputLabel styleClass="required" for="series">${messages.problem_series}:</h:outputLabel>
                             <h:selectOneMenu id="series" required="true" value="#{requestBean.temporarySeriesId}">
                                 <f:selectItem itemValue="" itemLabel="" />
-                                <c:forEach var="series" items="#{requestBean.contestsSeries}">
-                                    <c:if test="#{(zw:isNullOrZero(requestBean.editedProblem.id) and zw:canAddProblem(rolesBean, requestBean.temporaryContestId, series.id)) or (!(zw:isNullOrZero(requestBean.editedProblem.id)) and series.id == requestBean.editedProblem.series.id)}">
-                                        <f:selectItem itemValue="#{series.id}" itemLabel="#{series.name}" />
-                                    </c:if>
+                                <c:forEach var="series" items="#{requestBean.contestsSeriesWhenAddingProblem}">
+                                    <f:selectItem itemValue="#{series.id}" itemLabel="#{series.name}" />
                                 </c:forEach>
                             </h:selectOneMenu>
                             <h:message for="series" errorClass="error" />

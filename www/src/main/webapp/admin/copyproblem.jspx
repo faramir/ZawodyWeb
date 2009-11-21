@@ -1,0 +1,64 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
+    <ui:define name="pageTitle">
+        ${messages.problem_copying}
+    </ui:define>
+    <ui:define name="pageContent">
+        <c:choose>
+            <c:when test="#{requestBean.copiedProblem == null}">
+                ${messages.no_problem}
+            </c:when>
+            <c:when test="#{!(zw:canEditProblem(rolesBean, requestBean.temporaryContestId, requestBean.temporarySeriesId))}">
+                ${messages.nonsufficient_privileges}
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formEditProblem" styleClass="profilform" enctype="multipart/form-data">
+                    <fieldset>
+                        <t:saveState id="saveid" value="#{requestBean.temporaryProblemId}" />
+                        <div>
+                            <h:outputLabel styleClass="required" for="name">${messages.problem_name}:</h:outputLabel>
+                            <h:inputText id="name" required="true" value="#{requestBean.copiedProblem.name}" />
+                            <h:message for="name" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel styleClass="required" for="abbrev">${messages.problem_abbrev}:</h:outputLabel>
+                            <h:inputText id="abbrev" required="true" value="#{requestBean.copiedProblem.abbrev}" />
+                            <h:message for="abbrev" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel styleClass="required" for="contest">${messages.problem_contest}:</h:outputLabel>
+                            <h:selectOneMenu id="contest" required="true" value="#{requestBean.temporaryContestId}">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <c:forEach var="contest" items="#{requestBean.contestsWhenAddingProblem}">
+                                    <f:selectItem itemValue="#{contest.id}" itemLabel="#{contest.name}" />
+                                </c:forEach>
+                                <a4j:support event="onchange" reRender="series" ajaxSingle="true" />
+                            </h:selectOneMenu>
+                            <t:saveState id="saveContestId" value="#{requestBean.temporaryContestId}" />
+                            <h:message for="contest" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel styleClass="required" for="series">${messages.problem_series}:</h:outputLabel>
+                            <h:selectOneMenu id="series" required="true" value="#{requestBean.temporarySeriesId}">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <c:forEach var="series" items="#{requestBean.contestsSeriesWhenAddingProblem}">
+                                    <f:selectItem itemValue="#{series.id}" itemLabel="#{series.name}" />
+                                </c:forEach>
+                            </h:selectOneMenu>
+                            <h:message for="series" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:commandButton id="save" value="#{messages.save}" styleClass="submit" type="submit" action="#{requestBean.copyProblem}" />
+                            <h:message for="save" errorClass="error" />
+                        </div>
+                    </fieldset>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
+</ui:composition>

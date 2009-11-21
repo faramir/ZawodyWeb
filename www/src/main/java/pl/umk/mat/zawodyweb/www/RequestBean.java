@@ -96,6 +96,7 @@ public class RequestBean {
     private Contests currentContest;
     private Series editedSeries;
     private Problems editedProblem;
+    private Problems copiedProblem;
     private Users editedUser;
     private Tests editedTest;
     private Submits editedSubmit;
@@ -173,6 +174,50 @@ public class RequestBean {
     }
 
     /**
+     * @return the copiedProblem
+     */
+    public Problems getCopiedProblem() {
+        if (copiedProblem == null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+
+            if (!WWWHelper.isPost(context)) {
+                try {
+                    temporaryProblemId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+
+            if (ELFunctions.isNullOrZero(temporaryProblemId)) {
+                return null;
+            } else {
+                Problems problem = problemsDAO.getById(temporaryProblemId);
+
+                copiedProblem = new Problems();
+
+                copiedProblem.setAbbrev(problem.getAbbrev());
+                copiedProblem.setName(problem.getName());
+
+                if (!WWWHelper.isPost(context)) {
+                    if (problem.getSeries() != null) {
+                        temporarySeriesId = problem.getSeries().getId().intValue();
+                        temporaryContestId = problem.getSeries().getContests().getId().intValue();
+                    }
+                }
+            }
+        }
+
+        return copiedProblem;
+    }
+
+    /**
+     * @param copiedProblem the copiedProblem to set
+     */
+    public void setCopiedProblem(Problems copiedProblem) {
+        this.copiedProblem = copiedProblem;
+    }
+
+    /**
      * @param editedProblem the editedProblem to set
      */
     public void setEditedProblem(Problems editedProblem) {
@@ -207,6 +252,23 @@ public class RequestBean {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Contests.class);
             c.addOrder(Order.desc("startdate"));
             contests = c.list();
+        }
+
+        return contests;
+    }
+
+    public List<Contests> getContestsWhenAddingProblem() {
+        if (contests == null) {
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Contests.class);
+            c.addOrder(Order.desc("startdate"));
+            contests = new ArrayList<Contests>();
+            for (Contests contest : (List<Contests>) c.list()) {
+                if (ELFunctions.isNullOrZero(temporaryProblemId) && rolesBean.canAddProblem(contest.getId(), null)) {
+                    contests.add(contest);
+                } else if (!ELFunctions.isNullOrZero(temporaryProblemId) && rolesBean.canEditProblem(contest.getId(), null)) {
+                    contests.add(contest);
+                }
+            }
         }
 
         return contests;
@@ -260,6 +322,29 @@ public class RequestBean {
             c.createCriteria("contests").add(Restrictions.eq("id", temporaryContestId));
             c.addOrder(Order.asc("startdate"));
             contestsSeries = c.list();
+        }
+
+        return contestsSeries;
+    }
+
+    public List<Series> getContestsSeriesWhenAddingProblem() {
+        if (contestsSeries == null) {
+            if (temporaryContestId == null) {
+                temporaryContestId = getTemporaryContestId();
+            }
+
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Series.class);
+            c.createCriteria("contests").add(Restrictions.eq("id", temporaryContestId));
+            c.addOrder(Order.asc("startdate"));
+            contestsSeries = new ArrayList<Series>();
+            for (Series serie : (List<Series>) c.list()) {
+                if (ELFunctions.isNullOrZero(temporaryProblemId) && rolesBean.canAddProblem(serie.getContests().getId(), serie.getId())) {
+                    contestsSeries.add(serie);
+                } else if (!ELFunctions.isNullOrZero(temporaryProblemId) && rolesBean.canEditProblem(serie.getContests().getId(), serie.getId())) {
+                    contestsSeries.add(serie);
+                }
+            }
+
         }
 
         return contestsSeries;
@@ -1048,6 +1133,28 @@ public class RequestBean {
         return sendSolution(temporarySource.getBytes(), null, "formSubmit:sendcode");
     }
 
+    public String copyProblem() {
+        Integer id = temporaryProblemId;
+        if ((ELFunctions.isNullOrZero(id) && !rolesBean.canEditProblem(temporaryContestId, temporarySeriesId)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditProblem(temporaryContestId, temporarySeriesId))) {
+            return null;
+        }
+        try {
+            Problems oldProblem = problemsDAO.getById(temporaryProblemId);
+            Series newSeries = seriesDAO.getById(temporarySeriesId);
+
+            Problems newProblem = ProblemsUtils.getInstance().copyProblem(oldProblem, newSeries, copiedProblem.getAbbrev(), copiedProblem.getName());
+
+            selectContest(newProblem.getSeries().getContests().getId());
+        } catch (Exception e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditProblem:save", summary, null);
+            return null;
+        }
+
+        return "problems";
+    }
+
     public String saveProblem() {
         Integer id = getEditedProblem().getId();
         if ((ELFunctions.isNullOrZero(id) && !rolesBean.canAddProblem(temporaryContestId, temporarySeriesId)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditProblem(temporaryContestId, temporarySeriesId))) {
@@ -1091,6 +1198,8 @@ public class RequestBean {
             }
 
             problemsDAO.saveOrUpdate(getEditedProblem());
+
+            selectContest(editedProblem.getSeries().getContests().getId());
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -1098,7 +1207,6 @@ public class RequestBean {
             return null;
         }
 
-        selectContest(editedProblem.getSeries().getContests().getId());
         return "problems";
     }
 
@@ -1537,7 +1645,7 @@ public class RequestBean {
     }
 
     @HttpAction(name = "addproblem", pattern = "add/{id}/problem")
-    public String goToAddproblem(@Param(name = "id", encode = true) int id) {
+    public String goToAddProblem(@Param(name = "id", encode = true) int id) {
         Series s = seriesDAO.getById(id);
         if (s != null) {
             temporarySeriesId = id;
