@@ -21,7 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.GenerationType;
-import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 
 /**
  * <p>Pojo mapping TABLE public.problems</p>
@@ -339,6 +339,7 @@ public class Problems implements Serializable {
      */
     // submitsPK
     @OneToMany(mappedBy = "problems", cascade = CascadeType.REMOVE)
+    @OrderBy(value = "testorder")
     public List<Tests> getTestss() {
         return this.testss;
     }

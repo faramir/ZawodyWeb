@@ -227,7 +227,7 @@ public class LanguageACM implements CompilerInterface {
             }
             if (!stat.equals("") && !time.equals("")) {
                 result.setPoints(0);
-                if (!stat.equals("Received") && !stat.equals("Running") && !stat.equals("Sent to judge") && !stat.equals("In judge queue")) {
+                if (stat.compareTo("Received") != 0 && stat.compareTo("Running") != 0 && stat.compareTo("Sent to judge") != 0 && stat.compareTo("In judge queue") != 0 && stat.compareTo("Compiling") != 0 && stat.compareTo("Linking") != 0) {
                     if (stat.matches(".*Accepted.*")) {
                         result.setResult(CheckerErrors.ACC);
                         result.setPoints(input.getMaxPoints());
