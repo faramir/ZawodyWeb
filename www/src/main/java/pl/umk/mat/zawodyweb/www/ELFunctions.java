@@ -9,8 +9,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
-import pl.umk.mat.zawodyweb.database.pojo.Contests;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
@@ -50,10 +50,13 @@ public class ELFunctions {
         return in.replace("\n", "\n\n");
     }
 
-    public static String coloring(Integer in1, Integer in2) {
+    public static String coloring(Integer in1, Integer in2, Integer submitResult) {
         if (in2 == 0) {
             in1 = 1;
             in2 = 1;
+        }
+        if (submitResult != CheckerErrors.ACC) {
+            in1 = 0;
         }
         Float in = (float) in1 / (float) in2;
         String out = Integer.toHexString((int) ((1 - in) * 0x55) + 0xaa);

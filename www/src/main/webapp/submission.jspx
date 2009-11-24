@@ -60,7 +60,7 @@
                             </thead>
                             <t:dataList id="submissions" var="result" footerClass="paginator" value="#{requestBean.currentSubmit.resultss}" preserveRowStates="true">
                                 <h:panelGroup rendered="#{zw:testVisible(result.tests)}">
-                                    <tr style="#{zw:coloring(result.points, result.tests.maxpoints)}">
+                                    <tr style="#{zw:coloring(result.points, result.tests.maxpoints, result.submitResult)}">
                                         <h:panelGroup rendered="#{result.id == requestBean.temporaryResultId}">
                                             <td>${result.tests.testorder}</td>
                                             <td style="text-align:center;">
