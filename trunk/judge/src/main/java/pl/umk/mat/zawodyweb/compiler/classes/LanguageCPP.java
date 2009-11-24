@@ -76,6 +76,9 @@ public class LanguageCPP implements CompilerInterface {
             } catch (IOException ex) {
                 logger.fatal("IOException", ex);
                 p.destroy();
+            } catch (Exception ex) {
+                logger.fatal("Fatal Exception", ex);
+                p.destroy();
             }
             long currentTime = new Date().getTime();
             timer.cancel();
