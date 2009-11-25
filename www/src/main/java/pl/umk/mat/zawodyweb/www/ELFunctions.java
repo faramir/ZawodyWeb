@@ -54,9 +54,9 @@ public class ELFunctions {
         if (in2 == 0) {
             in1 = 1;
             in2 = 1;
-        }
-        if (submitResult != CheckerErrors.ACC) {
-            in1 = 0;
+            if (submitResult != CheckerErrors.ACC) {
+                in1 = 0;
+            }
         }
         Float in = (float) in1 / (float) in2;
         String out = Integer.toHexString((int) ((1 - in) * 0x55) + 0xaa);
