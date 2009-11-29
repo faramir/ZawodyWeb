@@ -68,6 +68,7 @@ public class LanguageCPP implements CompilerInterface {
                 logger.debug("Waiting for program after " + (new Date().getTime() - time) + "ms.");
                 p.waitFor();
             } catch (InterruptedException ex) {
+                timer.cancel();
                 p.destroy();
                 output.setRuntime(input.getTimeLimit());
                 output.setResult(CheckerErrors.TLE);
@@ -99,7 +100,7 @@ public class LanguageCPP implements CompilerInterface {
             output.setText(outputText);
             p.destroy();
         } catch (Exception ex) {
-            logger.fatal("Exception", ex);
+            logger.fatal("Fatal Exception (timer may not be canceled)", ex);
         }
         return output;
     }
@@ -191,6 +192,7 @@ public class LanguageCPP implements CompilerInterface {
                 timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
                 p.waitFor();
             } catch (InterruptedException ex) {
+                timer.cancel();
                 logger.error("Compile Time Limit Exceeded", ex);
                 p.destroy();
                 compileResult = CheckerErrors.CTLE;
@@ -209,7 +211,7 @@ public class LanguageCPP implements CompilerInterface {
             new File(codefile).delete();
             p.destroy();
         } catch (Exception err) {
-            logger.fatal("Exception when compiling", err);
+            logger.fatal("Fatal Exception (timer may not be canceled)", err);
         }
         return compilefile;
     }
