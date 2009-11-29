@@ -76,6 +76,7 @@ public class LanguageJAVA implements CompilerInterface {
                 logger.debug("Waiting for program after " + (new Date().getTime() - time) + "ms.");
                 p.waitFor();
             } catch (InterruptedException ex) {
+                timer.cancel();
                 p.destroy();
                 output.setRuntime(input.getTimeLimit());
                 output.setResult(CheckerErrors.TLE);
@@ -106,7 +107,7 @@ public class LanguageJAVA implements CompilerInterface {
             }
             output.setText(outputText);
         } catch (Exception ex) {
-            logger.fatal("Exception", ex);
+            logger.fatal("Fatal Exception (timer may not be canceled)", ex);
         }
         return output;
     }
