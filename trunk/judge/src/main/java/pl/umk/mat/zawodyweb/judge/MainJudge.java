@@ -168,6 +168,7 @@ public class MainJudge {
                     /* TESTING */
                     logger.info("Starting tests...");
                     for (Tests test : tests) {
+                        logger.info("Test " + test.getTestorder() + " started.");
                         testInput = new TestInput(test.getInput(), test.getMaxpoints(), test.getTimelimit(), submit.getProblems().getMemlimit());
                         testOutput = new TestOutput(test.getOutput());
                         CheckerResult result = checker.check(program, testInput, testOutput);
@@ -188,7 +189,7 @@ public class MainJudge {
                         dbResult.setSubmits(submit);
                         dbResult.setTests(test);
                         DAOFactory.DEFAULT.buildResultsDAO().save(dbResult);
-                        logger.info("Test finished.");
+                        logger.info("Test " + test.getTestorder() + " finished.");
                     }
 
                     /* finish testing */

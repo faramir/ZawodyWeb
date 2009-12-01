@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import pl.umk.mat.zawodyweb.checker.TestInput;
@@ -36,6 +37,29 @@ public class LanguageCPP implements CompilerInterface {
         this.properties = properties;
     }
 
+/*    class ProgramReaderThreader extends Thread {
+
+        private IOException ex;
+        private StringBuilder outputText = new StringBuilder();
+        private BufferedReader inputStream;
+
+        public ProgramReaderThreader(BufferedReader bufferedReader) {
+            inputStream = bufferedReader;
+        }
+
+        @Override
+        public void run() {
+            try {
+                String line;
+                while ((line = inputStream.readLine()) != null) {
+                    outputText.append(line + "\n");
+                }
+            } catch (IOException e) {
+                this.ex = e;
+            }
+        }
+    }
+*/
     @Override
     public TestOutput runTest(String path, TestInput input) {
         TestOutput output = new TestOutput(null);
@@ -50,23 +74,37 @@ public class LanguageCPP implements CompilerInterface {
         System.gc();
         List<String> command = Arrays.asList(path);
         if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
-            command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && '" + path + "'");
+            command = Arrays.asList("bash", "-c", "FILE=`mktemp`; ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && '" + path + "' > $FILE && cat $FILE && rm $FILE");
         } else {
             logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
         }
+        InterruptTimer timer = null;
         try {
-            InterruptTimer timer = new InterruptTimer();
+            timer = new InterruptTimer();
             Process p = new ProcessBuilder(command).start();
             long time = new Date().getTime();
+            StringBuilder outputText = new StringBuilder();
             try {
                 timer.schedule(Thread.currentThread(), input.getTimeLimit());
                 inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+//                ProgramReaderThreader outputEater = new ProgramReaderThreader(inputStream);
+//                outputEater.start();
+
                 BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
                 outputStream.write(input.getText());
                 //outputStream.flush();
                 outputStream.close();
                 logger.debug("Waiting for program after " + (new Date().getTime() - time) + "ms.");
+
+                String line;
+                while ((line = inputStream.readLine()) != null) {
+                    outputText.append(line + "\n");
+                }
+
                 p.waitFor();
+//                outputText = outputEater.outputText;
+                logger.debug("Stopped waitingFor.");
             } catch (InterruptedException ex) {
                 timer.cancel();
                 p.destroy();
@@ -84,23 +122,28 @@ public class LanguageCPP implements CompilerInterface {
             long currentTime = new Date().getTime();
             timer.cancel();
 
-            if (p.exitValue() != 0) {
+            try {
+                if (p.exitValue() != 0) {
+                    output.setResult(CheckerErrors.RE);
+                    output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
+                    return output;
+                }
+            } catch (java.lang.IllegalThreadStateException ex) {
+                p.destroy();
                 output.setResult(CheckerErrors.RE);
                 output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
                 return output;
             }
             output.setRuntime((int) (currentTime - time));
-            String outputText = new String();
-            if (inputStream != null) {
-                String line;
-                while ((line = inputStream.readLine()) != null) {
-                    outputText = outputText + line + "\n";
-                }
-            }
-            output.setText(outputText);
+
+            output.setText(outputText.toString());
             p.destroy();
         } catch (Exception ex) {
             logger.fatal("Fatal Exception (timer may not be canceled)", ex);
+        } finally {
+            if (timer != null) {
+                timer.cancel();
+            }
         }
         return output;
     }
