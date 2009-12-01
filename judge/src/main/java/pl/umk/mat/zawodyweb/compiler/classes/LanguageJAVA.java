@@ -12,8 +12,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.regex.Pattern;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
@@ -53,17 +53,35 @@ public class LanguageJAVA implements CompilerInterface {
         }
         BufferedReader inputStream = null;
         System.gc();
-        Vector<String> command = new Vector<String>(Arrays.asList("java", "-Xmx" + input.getMemoryLimit() + "m",
-                "-Xms" + input.getMemoryLimit() + "m", "-Xss" + input.getMemoryLimit() + "m"));
+        /*        Vector<String> command = new Vector<String>(Arrays.asList("java", "-Xmx" + input.getMemoryLimit() + "m",
+        "-Xms" + input.getMemoryLimit() + "m", "-Xss" + input.getMemoryLimit() + "m"));
         if (!security.isEmpty()) {
-            command.add("-Djava.security.manager");
-            command.add("-Djava.security.policy=" + security);
+        command.add("-Djava.security.manager");
+        command.add("-Djava.security.policy=" + security);
         }
         command.add("-cp");
         command.add(path.substring(0, path.lastIndexOf(File.separator)));
         command.add(path.substring(path.lastIndexOf(File.separator) + 1, path.lastIndexOf(".")));
+         */
+        String commandString = "java -Xmx" + input.getMemoryLimit() + "m -Xms" + input.getMemoryLimit() + "m -Xss" + input.getMemoryLimit() + "m";
+        if (!security.isEmpty()) {
+            commandString += " -Djava.security.manager";
+            commandString += " -Djava.security.policy=" + security;
+        }
+        commandString += " -cp";
+        commandString += " " + path.substring(0, path.lastIndexOf(File.separator));
+        commandString += " " + path.substring(path.lastIndexOf(File.separator) + 1, path.lastIndexOf("."));
+
+        List<String> command = Arrays.asList(commandString);
+        if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
+            command = Arrays.asList("bash", "-c", "FILE=`mktemp`; " + commandString + " > $FILE && cat $FILE && rm $FILE");
+        } else {
+            logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
+        }
+
+        InterruptTimer timer = null;
         try {
-            InterruptTimer timer = new InterruptTimer();
+            timer = new InterruptTimer();
             Process p = new ProcessBuilder(command).start();
             long time = new Date().getTime();
             try {
@@ -92,7 +110,14 @@ public class LanguageJAVA implements CompilerInterface {
             long currentTime = new Date().getTime();
             timer.cancel();
 
-            if (p.exitValue() != 0) {
+            try {
+                if (p.exitValue() != 0) {
+                    output.setResult(CheckerErrors.RE);
+                    output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
+                    return output;
+                }
+            } catch (java.lang.IllegalThreadStateException ex) {
+                p.destroy();
                 output.setResult(CheckerErrors.RE);
                 output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
                 return output;
@@ -108,7 +133,12 @@ public class LanguageJAVA implements CompilerInterface {
             output.setText(outputText);
         } catch (Exception ex) {
             logger.fatal("Fatal Exception (timer may not be canceled)", ex);
+        } finally {
+            if (timer != null) {
+                timer.cancel();
+            }
         }
+
         return output;
     }
 
