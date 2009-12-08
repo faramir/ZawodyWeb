@@ -107,6 +107,14 @@ public class LanguageJAVA implements CompilerInterface {
             long currentTime = new Date().getTime();
             timer.cancel();
 
+            if ((int) (currentTime - time) < input.getTimeLimit()) {
+                output.setRuntime((int) (currentTime - time));
+            } else {
+                if (input.getTimeLimit() > 0) {
+                    output.setRuntime(input.getTimeLimit() - 1);
+                }
+            }
+
             try {
                 if (p.exitValue() != 0) {
                     output.setResult(CheckerErrors.RE);
@@ -121,7 +129,6 @@ public class LanguageJAVA implements CompilerInterface {
                 return output;
             }
 
-            output.setRuntime((int) (currentTime - time));
             output.setText(outputText);
 
             p.destroy();

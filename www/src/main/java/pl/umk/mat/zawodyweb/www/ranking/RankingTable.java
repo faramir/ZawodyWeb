@@ -1,7 +1,7 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.util.Date;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
@@ -10,9 +10,9 @@ import java.util.Vector;
  */
 public class RankingTable {
 
-    private Vector<String> columnsCaptions;
-    private Vector<String> columnsCSS;
-    private Vector<RankingEntry> table;
+    private ArrayList<String> columnsCaptions;
+    private ArrayList<String> columnsCSS;
+    private ArrayList<RankingEntry> table;
     private Boolean frozenRanking;
     private Date generationDate;
     private long generationTime;
@@ -22,7 +22,7 @@ public class RankingTable {
     public RankingTable() {
     }
 
-    public RankingTable(Vector<String> columnsCaptions, Vector<String> columnsCSS, Vector<RankingEntry> table, Boolean frozenRanking) {
+    public RankingTable(ArrayList<String> columnsCaptions, ArrayList<String> columnsCSS, ArrayList<RankingEntry> table, Boolean frozenRanking) {
         this.columnsCaptions = columnsCaptions;
         this.columnsCSS = columnsCSS;
         this.table = table;
@@ -32,42 +32,42 @@ public class RankingTable {
     /**
      * @return the columnsCaptions
      */
-    public Vector<String> getColumnsCaptions() {
+    public ArrayList<String> getColumnsCaptions() {
         return columnsCaptions;
     }
 
     /**
      * @param columnsCaptions the columnsCaptions to set
      */
-    public void setColumnsCaptions(Vector<String> columnsCaptions) {
+    public void setColumnsCaptions(ArrayList<String> columnsCaptions) {
         this.columnsCaptions = columnsCaptions;
     }
 
     /**
      * @return the columnsCSS
      */
-    public Vector<String> getColumnsCSS() {
+    public ArrayList<String> getColumnsCSS() {
         return columnsCSS;
     }
 
     /**
      * @param columnsCSS the columnsCSS to set
      */
-    public void setColumnsCSS(Vector<String> columnsCSS) {
+    public void setColumnsCSS(ArrayList<String> columnsCSS) {
         this.columnsCSS = columnsCSS;
     }
 
     /**
      * @return the table
      */
-    public Vector<RankingEntry> getTable() {
+    public ArrayList<RankingEntry> getTable() {
         return table;
     }
 
     /**
      * @param table the table to set
      */
-    public void setTable(Vector<RankingEntry> table) {
+    public void setTable(ArrayList<RankingEntry> table) {
         this.table = table;
     }
 
