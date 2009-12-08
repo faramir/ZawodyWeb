@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.Vector;
+import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
@@ -64,14 +64,14 @@ public class RankingPA implements RankingInteface {
         String login;
         int id_user;
         int points;
-        Vector<Integer> vPoints;
+        ArrayList<Integer> vPoints;
         HashMap<Integer, Integer> solutions;
 
         public UserKI(int id_user, Users users) {
             this.id_user = id_user;
 
             this.points = 0;
-            this.vPoints = new Vector<Integer>();
+            this.vPoints = new ArrayList<Integer>();
             this.solutions = new HashMap<Integer, Integer>();
 
             this.login = users.getLogin();
@@ -159,7 +159,7 @@ public class RankingPA implements RankingInteface {
             SeriesDAO seriesDAO = DAOFactory.DEFAULT.buildSeriesDAO();
             ProblemsDAO problemsDAO = DAOFactory.DEFAULT.buildProblemsDAO();
             HashMap<Integer, UserKI> mapUserKI = new HashMap<Integer, UserKI>();
-            Vector<ProblemsKI> vectorProblemsKI = new Vector<ProblemsKI>();
+            ArrayList<ProblemsKI> vectorProblemsKI = new ArrayList<ProblemsKI>();
 
             boolean allTests;
             boolean frozenRanking = false;
@@ -254,15 +254,15 @@ public class RankingPA implements RankingInteface {
             }
 
             /* Tworzenie rankingu z danych */
-            Vector<UserKI> cre = new Vector<UserKI>();
+            ArrayList<UserKI> cre = new ArrayList<UserKI>();
             cre.addAll(mapUserKI.values());
             Collections.sort(cre);
 
             Collections.sort(vectorProblemsKI);
 
             /* nazwy kolumn i CSSy */
-            Vector<String> columnsCSS = new Vector<String>();
-            Vector<String> columnsCaptions = new Vector<String>();
+            ArrayList<String> columnsCSS = new ArrayList<String>();
+            ArrayList<String> columnsCaptions = new ArrayList<String>();
             for (ProblemsKI problemsKI : vectorProblemsKI) {
                 columnsCaptions.add(RankingUtils.formatText(problemsKI.abbrev, problemsKI.name, problemsKI.frozen ? "frozen" : null));
                 columnsCSS.add("small");
@@ -271,7 +271,7 @@ public class RankingPA implements RankingInteface {
             columnsCSS.add("small");
 
             /* tabelka z rankingiem */
-            Vector<RankingEntry> vectorRankingEntry = new Vector<RankingEntry>();
+            ArrayList<RankingEntry> vectorRankingEntry = new ArrayList<RankingEntry>();
             int place = 1;
             UserKI userTmp = cre.get(0);
             for (UserKI user : cre) {
@@ -279,7 +279,7 @@ public class RankingPA implements RankingInteface {
                     ++place;
                     userTmp = user;
                 }
-                Vector<String> v = new Vector<String>();
+                ArrayList<String> v = new ArrayList<String>();
                 for (ProblemsKI problemsKI : vectorProblemsKI) {
                     Integer solution_points = user.solutions.get(problemsKI.id_problem);
                     if (solution_points == null) {

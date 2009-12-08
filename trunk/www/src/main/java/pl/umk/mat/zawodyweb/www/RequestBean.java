@@ -1636,7 +1636,7 @@ public class RequestBean {
     @HttpAction(name = "deltest", pattern = "del/{id}/test")
     public String deleteTest(@Param(name = "id", encode = true) int id) {
         Tests s = testsDAO.getById(id);
-        if (s != null && rolesBean.canEditProblem(s.getProblems().getId(), s.getProblems().getSeries().getId())) {
+        if (s != null && rolesBean.canEditProblem(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
             testsDAO.delete(s);
             return "problems";
         } else {

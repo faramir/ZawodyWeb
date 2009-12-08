@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.Vector;
+import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
@@ -71,13 +71,13 @@ public class RankingACM implements RankingInteface {
         int id_user;
         int points;
         long totalTime;
-        Vector<SolutionACM> solutions;
+        ArrayList<SolutionACM> solutions;
 
         public UserACM(int id_user, Users users) {
             this.id_user = id_user;
             this.points = 0;
             this.totalTime = 0;
-            this.solutions = new Vector<SolutionACM>();
+            this.solutions = new ArrayList<SolutionACM>();
 
             this.login = users.getLogin();
             this.firstname = users.getFirstname();
@@ -323,24 +323,24 @@ public class RankingACM implements RankingInteface {
         }
 
         /* Tworzenie rankingu z danych */
-        Vector<UserACM> cre = new Vector<UserACM>();
+        ArrayList<UserACM> cre = new ArrayList<UserACM>();
         cre.addAll(mapUserACM.values());
         Collections.sort(cre);
 
         /* nazwy kolumn */
-        Vector<String> columnsCaptions = new Vector<String>();
+        ArrayList<String> columnsCaptions = new ArrayList<String>();
         columnsCaptions.add(messages.getString("points"));
         columnsCaptions.add(messages.getString("time"));
         columnsCaptions.add(messages.getString("solutions"));
 
         /* nazwy klas css-owych dla kolumn  */
-        Vector<String> columnsCSS = new Vector<String>();
+        ArrayList<String> columnsCSS = new ArrayList<String>();
         columnsCSS.add("small");    // points
         columnsCSS.add("nowrap small");    // time
         columnsCSS.add("big left");      // solutions
 
         /* tabelka z rankingiem */
-        Vector<RankingEntry> vectorRankingEntry = new Vector<RankingEntry>();
+        ArrayList<RankingEntry> vectorRankingEntry = new ArrayList<RankingEntry>();
         int place = 0;
         long totalTime = -1;
         int points = Integer.MAX_VALUE;
@@ -350,7 +350,7 @@ public class RankingACM implements RankingInteface {
                 points = user.points;
                 totalTime = user.totalTime;
             }
-            Vector<String> v = new Vector<String>();
+            ArrayList<String> v = new ArrayList<String>();
             v.add(Integer.toString(user.points));
             v.add(parseTime(user.totalTime));
             v.add(user.getSolutionsForRanking());

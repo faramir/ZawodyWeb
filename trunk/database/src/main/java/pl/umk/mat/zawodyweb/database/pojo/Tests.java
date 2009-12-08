@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.persistence.Embeddable;
 import javax.persistence.GenerationType;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 /**
  * <p>Pojo mapping TABLE public.tests</p>
@@ -63,7 +65,6 @@ public class Tests implements Serializable {
      * List of Results
      */
     private List<Results> resultss = null;
-
     private Integer testorder;
 
     /* liste transiente */
@@ -174,7 +175,8 @@ public class Tests implements Serializable {
      * Get the list of Results
      */
     // resultsPK
-    @OneToMany(mappedBy = "tests")
+    @OneToMany(mappedBy = "tests", cascade = javax.persistence.CascadeType.ALL)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
     public List<Results> getResultss() {
         return this.resultss;
     }
