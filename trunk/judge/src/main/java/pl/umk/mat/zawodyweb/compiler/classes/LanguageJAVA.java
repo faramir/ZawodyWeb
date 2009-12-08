@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 import javax.tools.JavaCompiler;
@@ -23,6 +23,7 @@ import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.judge.InterruptTimer;
+import pl.umk.mat.zawodyweb.judge.ReaderEater;
 
 /**
  *
@@ -53,46 +54,42 @@ public class LanguageJAVA implements CompilerInterface {
         }
         BufferedReader inputStream = null;
         System.gc();
-        /*        Vector<String> command = new Vector<String>(Arrays.asList("java", "-Xmx" + input.getMemoryLimit() + "m",
-        "-Xms" + input.getMemoryLimit() + "m", "-Xss" + input.getMemoryLimit() + "m"));
+        ArrayList<String> command = new ArrayList<String>(Arrays.asList("java", "-Xmx" + input.getMemoryLimit() + "m",
+                "-Xms" + input.getMemoryLimit() + "m", "-Xss" + input.getMemoryLimit() + "m"));
         if (!security.isEmpty()) {
-        command.add("-Djava.security.manager");
-        command.add("-Djava.security.policy=" + security);
+            command.add("-Djava.security.manager");
+            command.add("-Djava.security.policy=" + security);
         }
         command.add("-cp");
         command.add(path.substring(0, path.lastIndexOf(File.separator)));
         command.add(path.substring(path.lastIndexOf(File.separator) + 1, path.lastIndexOf(".")));
-         */
-        String commandString = "java -Xmx" + input.getMemoryLimit() + "m -Xms" + input.getMemoryLimit() + "m -Xss" + input.getMemoryLimit() + "m";
-        if (!security.isEmpty()) {
-            commandString += " -Djava.security.manager";
-            commandString += " -Djava.security.policy=" + security;
-        }
-        commandString += " -cp";
-        commandString += " " + path.substring(0, path.lastIndexOf(File.separator));
-        commandString += " " + path.substring(path.lastIndexOf(File.separator) + 1, path.lastIndexOf("."));
-
-        List<String> command = Arrays.asList(commandString);
-        if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
-            command = Arrays.asList("bash", "-c", "FILE=`mktemp`; " + commandString + " > $FILE && cat $FILE && rm $FILE");
-        } else {
-            logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
-        }
-
         InterruptTimer timer = null;
         try {
             timer = new InterruptTimer();
             Process p = new ProcessBuilder(command).start();
             long time = new Date().getTime();
+            String outputText = "";
             try {
                 timer.schedule(Thread.currentThread(), input.getTimeLimit());
                 inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+                ReaderEater readerEater = new ReaderEater(inputStream);
+                Thread threadReaderEater = new Thread(readerEater);
+                threadReaderEater.start();
+
                 BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
                 outputStream.write(input.getText());
-                //outputStream.flush();
                 outputStream.close();
                 logger.debug("Waiting for program after " + (new Date().getTime() - time) + "ms.");
+
                 p.waitFor();
+                threadReaderEater.join();
+
+                if (readerEater.getException() != null) {
+                    throw readerEater.getException();
+                }
+
+                outputText = readerEater.getOutputText();
             } catch (InterruptedException ex) {
                 timer.cancel();
                 p.destroy();
@@ -117,20 +114,17 @@ public class LanguageJAVA implements CompilerInterface {
                     return output;
                 }
             } catch (java.lang.IllegalThreadStateException ex) {
+                logger.fatal("Fatal Exception", ex);
                 p.destroy();
                 output.setResult(CheckerErrors.RE);
-                output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
+                output.setResultDesc("Abnormal Program termination.");
                 return output;
             }
+
             output.setRuntime((int) (currentTime - time));
-            String outputText = new String();
-            if (inputStream != null) {
-                String line;
-                while ((line = inputStream.readLine()) != null) {
-                    outputText = outputText + line + "\n";
-                }
-            }
             output.setText(outputText);
+
+            p.destroy();
         } catch (Exception ex) {
             logger.fatal("Fatal Exception (timer may not be canceled)", ex);
         } finally {
@@ -138,7 +132,6 @@ public class LanguageJAVA implements CompilerInterface {
                 timer.cancel();
             }
         }
-
         return output;
     }
 

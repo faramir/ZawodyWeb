@@ -19,6 +19,7 @@ import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.judge.InterruptTimer;
+import pl.umk.mat.zawodyweb.judge.ReaderEater;
 
 /**
  *
@@ -39,7 +40,6 @@ public class LanguageC implements CompilerInterface {
     @Override
     public TestOutput runTest(String path, TestInput input) {
         TestOutput output = new TestOutput(new String());
-        String outputText = new String();
         if (compileResult != CheckerErrors.UNDEF) {
             output.setResult(compileResult);
             if (!compileDesc.isEmpty()) {
@@ -55,19 +55,33 @@ public class LanguageC implements CompilerInterface {
         } else {
             logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
         }
+        InterruptTimer timer = null;
         try {
-            InterruptTimer timer = new InterruptTimer();
+            timer = new InterruptTimer();
             Process p = new ProcessBuilder(command).start();
             long time = new Date().getTime();
+            String outputText = "";
             try {
                 timer.schedule(Thread.currentThread(), input.getTimeLimit());
                 inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+                ReaderEater readerEater = new ReaderEater(inputStream);
+                Thread threadReaderEater = new Thread(readerEater);
+                threadReaderEater.start();
+
                 BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
                 outputStream.write(input.getText());
-                //outputStream.flush();
                 outputStream.close();
                 logger.debug("Waiting for program after " + (new Date().getTime() - time) + "ms.");
+
                 p.waitFor();
+                threadReaderEater.join();
+
+                if (readerEater.getException() != null) {
+                    throw readerEater.getException();
+                }
+
+                outputText = readerEater.getOutputText();
             } catch (InterruptedException ex) {
                 timer.cancel();
                 p.destroy();
@@ -85,22 +99,30 @@ public class LanguageC implements CompilerInterface {
             long currentTime = new Date().getTime();
             timer.cancel();
 
-            if (p.exitValue() != 0) {
+            try {
+                if (p.exitValue() != 0) {
+                    output.setResult(CheckerErrors.RE);
+                    output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
+                    return output;
+                }
+            } catch (java.lang.IllegalThreadStateException ex) {
+                logger.fatal("Fatal Exception", ex);
+                p.destroy();
                 output.setResult(CheckerErrors.RE);
-                output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
+                output.setResultDesc("Abnormal Program termination.");
                 return output;
             }
+            
             output.setRuntime((int) (currentTime - time));
-            if (inputStream != null) {
-                String line;
-                while ((line = inputStream.readLine()) != null) {
-                    outputText = outputText + line + "\n";
-                }
-            }
             output.setText(outputText);
+
             p.destroy();
         } catch (Exception ex) {
             logger.fatal("Fatal Exception (timer may not be canceled)", ex);
+        } finally {
+            if (timer != null) {
+                timer.cancel();
+            }
         }
         return output;
     }
@@ -108,25 +130,25 @@ public class LanguageC implements CompilerInterface {
     @Override
     public byte[] precompile(byte[] code) {
         String str = new String(code);
-        String forbiddenCalls = "__asm__ __asm asm access acct alarm brk chdir chown chroot clearerr clearerr_unlocked close " +
-                "confstr crypt ctermid daemon dup2 dup encrypt endusershell euidaccess execl execle execlp " +
-                "execv execve execvp _exit fchdir fchown fcloseall fclose fdatasync fdopen feof_unlocked " +
-                "ferror ferror_unlocked fexecve fflush_unlocked fgetc fgetc_unlocked fgetpos64 fgetpos " +
-                "fgets_unlocked fileno fileno_unlocked flockfile fmemopen fopen64 fopen fopencookie fork " +
-                "fpathconf fprintf fputc fputc_unlocked fputs fputs_unlocked fread fread_unlocked freopen64 " +
-                "freopen fscanf fseek fseeko64 fseeko fsetpos64 fsetpos ftell ftello64 ftello ftruncate64 " +
-                "ftruncate ftrylockfile funlockfile fwrite fwrite_unlocked getc getc_unlocked " +
-                "get_current_dir_name getcwd __getdelim getdelim getdomainname getegid geteuid getgid getgroups " +
-                "gethostid gethostname getlogin getlogin_r getpagesize getpass __getpgid getpgid " +
-                "getpgrp getpid getppid getsid getuid getusershell getw getwd group_member isatty lchown link " +
-                "lockf64 lockf lseek nice __off64t open open_memstream pathconf pause pclose pipe popen pread64 " +
-                "pread profil pthread_atfork pthread_ putc putc_unlocked putw pwrite64 pwrite read readlink " +
-                "remove rename revoke rewind rmdir sbrk setbuf setbuffer setdomainname setegid seteuid setgid " +
-                "sethostid sethostname setlinebuf setlogin setpgid setpgrp setregid setreuid setsid setuid " +
-                "setusershell setvbuf signal sleep swab symlink sync sysconf tcgetpgrp tcsetpgrp tempnam " +
-                "tmpfile64 tmpfile tmpnam tmpnam_r truncate64 truncate ttyname ttyname_r ttyslot ualarm ungetc " +
-                "unlink usleep vfork vfprintf vfscanf vhangup write system " +
-                "mkfifo";
+        String forbiddenCalls = "__asm__ __asm asm access acct alarm brk chdir chown chroot clearerr clearerr_unlocked close "
+                + "confstr crypt ctermid daemon dup2 dup encrypt endusershell euidaccess execl execle execlp "
+                + "execv execve execvp _exit fchdir fchown fcloseall fclose fdatasync fdopen feof_unlocked "
+                + "ferror ferror_unlocked fexecve fflush_unlocked fgetc fgetc_unlocked fgetpos64 fgetpos "
+                + "fgets_unlocked fileno fileno_unlocked flockfile fmemopen fopen64 fopen fopencookie fork "
+                + "fpathconf fprintf fputc fputc_unlocked fputs fputs_unlocked fread fread_unlocked freopen64 "
+                + "freopen fscanf fseek fseeko64 fseeko fsetpos64 fsetpos ftell ftello64 ftello ftruncate64 "
+                + "ftruncate ftrylockfile funlockfile fwrite fwrite_unlocked getc getc_unlocked "
+                + "get_current_dir_name getcwd __getdelim getdelim getdomainname getegid geteuid getgid getgroups "
+                + "gethostid gethostname getlogin getlogin_r getpagesize getpass __getpgid getpgid "
+                + "getpgrp getpid getppid getsid getuid getusershell getw getwd group_member isatty lchown link "
+                + "lockf64 lockf lseek nice __off64t open open_memstream pathconf pause pclose pipe popen pread64 "
+                + "pread profil pthread_atfork pthread_ putc putc_unlocked putw pwrite64 pwrite read readlink "
+                + "remove rename revoke rewind rmdir sbrk setbuf setbuffer setdomainname setegid seteuid setgid "
+                + "sethostid sethostname setlinebuf setlogin setpgid setpgrp setregid setreuid setsid setuid "
+                + "setusershell setvbuf signal sleep swab symlink sync sysconf tcgetpgrp tcsetpgrp tempnam "
+                + "tmpfile64 tmpfile tmpnam tmpnam_r truncate64 truncate ttyname ttyname_r ttyslot ualarm ungetc "
+                + "unlink usleep vfork vfprintf vfscanf vhangup write system "
+                + "mkfifo";
         String strWithoutComments = new String();
         int len = str.length() - 1;
         try {
