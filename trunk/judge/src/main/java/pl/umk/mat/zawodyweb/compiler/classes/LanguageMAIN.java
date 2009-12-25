@@ -97,10 +97,6 @@ public class LanguageMAIN implements CompilerInterface {
 
         HttpClient client = new HttpClient();
 
-        login = "spamz";
-        password = "spamz2";
-
-
         HttpClientParams params = client.getParams();
         params.setParameter("http.useragent", "Opera/9.64 (Windows NT 6.0; U; pl) Presto/2.1.1");
         //params.setParameter("http.protocol.handle-redirects", true);
