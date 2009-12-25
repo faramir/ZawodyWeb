@@ -191,7 +191,7 @@ public class RankingKI implements RankingInteface {
                             "        where submits.problemsid='" + problems.getId() + "' " +
                             "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
                             "          and sdate <= '" + checkTimestamp.toString() + "' " +
-                            "	       and tests.visibility=1 " +
+                            //"	       and tests.visibility=1 " + // FIXME: this takes too much time
                             "	     group by usersid " +
                             "      ) " +
                             "group by usersid, submits.id");

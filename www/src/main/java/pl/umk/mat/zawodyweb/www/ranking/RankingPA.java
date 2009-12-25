@@ -231,7 +231,7 @@ public class RankingPA implements RankingInteface {
             "        where submits.problemsid='" + problems.getId() + "' " +
             "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
             "          and sdate <= '" + checkTimestamp.toString() + "' " +
-            "	       and tests.visibility=1 " +
+            //"	       and tests.visibility=1 " + // FIXME: with this, generating is veeery slow
             "	     group by usersid " +
             "      ) " +
             "group by usersid, submits.id");

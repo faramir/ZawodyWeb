@@ -283,7 +283,7 @@ public class RankingACM implements RankingInteface {
                             "      and results.submitresult='" + CheckerErrors.ACC + "' " +
                             "      and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
                             "      and sdate <= '" + checkTimestamp.toString() + "' " +
-                            "	   and tests.visibility=1 " +
+                            //"	   and tests.visibility=1 " + // FIXME: with this generating ranking is very slow
                             "    group by submits.id,usersid,sdate " +
                             "    having sum(points)='" + maxPoints + "' " +
                             "      and count(points)='" + noTests + "' " +
