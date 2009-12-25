@@ -32,7 +32,7 @@ public class Program {
         this.path = path;
     }
 
-        public Program(String path, CompilerInterface compiler) {
+    public Program(String path, CompilerInterface compiler) {
         this.path = path;
         this.compiler = compiler;
     }
