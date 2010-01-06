@@ -162,39 +162,39 @@ public class RankingKI implements RankingInteface {
 
                 Query query = null;
                 if (allTests == true) {
-                    query = hibernateSession.createSQLQuery("" +
-                            "select usersid, sum(points) " +
-                            "from submits,results,tests " +
-                            "where submits.problemsid='" + problems.getId() + "' " +
-                            "  and submits.id=results.submitsid " +
-                            "  and tests.id=results.testsid" +
-                            "  and sdate in ( " +
-                            "        select max(sdate) " +
-                            "	     from submits " +
-                            "        where submits.problemsid='" + problems.getId() + "' " +
-                            "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
-                            "          and sdate <= '" + checkTimestamp.toString() + "' " +
-                            //"	       and tests.visibility=1 " +
-                            "	     group by usersid " +
-                            "      ) " +
-                            "group by usersid, submits.id");
+                    query = hibernateSession.createSQLQuery(""
+                            + "select usersid, sum(points) "
+                            + "from submits,results,tests "
+                            + "where submits.problemsid='" + problems.getId() + "' "
+                            + "  and submits.id=results.submitsid "
+                            + "  and tests.id=results.testsid"
+                            + "  and sdate in ( "
+                            + "        select max(sdate) "
+                            + "	     from submits "
+                            + "        where submits.problemsid='" + problems.getId() + "' "
+                            + "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
+                            + "          and sdate <= '" + checkTimestamp.toString() + "' "
+                            + //"	       and tests.visibility=1 " +
+                            "	     group by usersid "
+                            + "      ) "
+                            + "group by usersid, submits.id");
                 } else {
-                    query = hibernateSession.createSQLQuery("" +
-                            "select usersid, sum(points) " +
-                            "from submits,results,tests " +
-                            "where submits.problemsid='" + problems.getId() + "' " +
-                            "  and submits.id=results.submitsid " +
-                            "  and tests.id=results.testsid" +
-                            "  and sdate in ( " +
-                            "        select max(sdate) " +
-                            "	     from submits " +
-                            "        where submits.problemsid='" + problems.getId() + "' " +
-                            "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
-                            "          and sdate <= '" + checkTimestamp.toString() + "' " +
-                            //"	       and tests.visibility=1 " + // FIXME: this takes too much time
-                            "	     group by usersid " +
-                            "      ) " +
-                            "group by usersid, submits.id");
+                    query = hibernateSession.createSQLQuery(""
+                            + "select usersid, sum(points) "
+                            + "from submits,results,tests "
+                            + "where submits.problemsid='" + problems.getId() + "' "
+                            + "  and submits.id=results.submitsid "
+                            + "  and tests.id=results.testsid"
+                            + "  and tests.visibility=1 " + // FIXME: should be ok
+                            "  and sdate in ( "
+                            + "        select max(sdate) "
+                            + "	     from submits "
+                            + "        where submits.problemsid='" + problems.getId() + "' "
+                            + "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
+                            + "          and sdate <= '" + checkTimestamp.toString() + "' "
+                            + "	     group by usersid "
+                            + "      ) "
+                            + "group by usersid, submits.id");
                 }
 
                 for (Object list : query.list()) {
