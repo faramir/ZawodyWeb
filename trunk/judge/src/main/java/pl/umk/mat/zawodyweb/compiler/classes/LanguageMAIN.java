@@ -43,10 +43,34 @@ public class LanguageMAIN implements CompilerInterface {
     }
 
     /**
+     * Calculate gained points from MAIN to points in ZawodyWeb
+     * @param _points string representing MAIN points
+     * @param task_points points for test in ZawodyWeb
+     * @param max_points max points for problem in MAIN
+     * @return
+     */
+    private Integer calculatePoints(String _points, int task_points, Integer max_points) {
+        try {
+            int points = Integer.parseInt(_points);
+            if (max_points == null) {
+                if (points > task_points) {
+                    points = task_points;
+                }
+                return points;
+            } else {
+                return points * task_points / max_points;
+            }
+        } catch (NumberFormatException ex) {
+            logger.info("Failed to calculate gained points (" + _points + ").", ex);
+        }
+        return null;
+    }
+
+    /**
      * Sprawdza rozwiązanie na input
      * @param path kod źródłowy
      * @param input w formacie:
-     *              <pre>c=NUMER_KONKURSU<br/>t=NUMER_ZADANIA</pre>
+     *              <pre>c=NUMER_KONKURSU<br/>t=NUMER_ZADANIA<br/>m=MAX_POINTS</pre>
      * @return
      */
     @Override
@@ -55,6 +79,7 @@ public class LanguageMAIN implements CompilerInterface {
 
         Integer contest_id = null;
         Integer task_id = null;
+        Integer max_points = null;
         try {
             try {
                 Matcher matcher = null;
@@ -68,6 +93,12 @@ public class LanguageMAIN implements CompilerInterface {
                 if (matcher.find()) {
                     task_id = Integer.valueOf(matcher.group(1));
                 }
+
+                matcher = Pattern.compile("m=([0-9]+)").matcher(input.getText());
+                if (matcher.find()) {
+                    max_points = Integer.valueOf(matcher.group(1));
+                }
+
                 if (contest_id == null) {
                     throw new IllegalArgumentException("task_id == null");
                 }
@@ -90,6 +121,7 @@ public class LanguageMAIN implements CompilerInterface {
         }
         logger.debug("Contest id = " + contest_id);
         logger.debug("Task id = " + task_id);
+        logger.debug("Max points = " + max_points);
 
         String loginUrl = "http://main.edu.pl/user.phtml?op=login";
         String login = properties.getProperty("main_edu_pl.login");
@@ -279,19 +311,19 @@ public class LanguageMAIN implements CompilerInterface {
                             continue;
                         } else if (resultType.matches("B..d kompilacji")) { // CE
                             result.setResult(CheckerErrors.CE);
-                            result.setPoints(Integer.parseInt(resultMatcher.group(2)));
+                            result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else if (resultType.matches("Program wyw.aszczony")) { // TLE
                             result.setResult(CheckerErrors.TLE);
-                            result.setPoints(Integer.parseInt(resultMatcher.group(2)));
+                            result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else if (resultType.matches("B..d wykonania")) { // RTE
                             result.setResult(CheckerErrors.RE);
-                            result.setPoints(Integer.parseInt(resultMatcher.group(2)));
+                            result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else if (resultType.matches("Z.a odpowied.")) { // WA
                             result.setResult(CheckerErrors.WA);
-                            result.setPoints(Integer.parseInt(resultMatcher.group(2)));
+                            result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else if (resultType.equals("OK")) { // AC
                             result.setResult(CheckerErrors.ACC);
-                            result.setPoints(Integer.parseInt(resultMatcher.group(2)));
+                            result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else {
                             result.setResult(CheckerErrors.UNDEF);
                             result.setResultDesc("Unknown status: \"" + resultType + "\"");
