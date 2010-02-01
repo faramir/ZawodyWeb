@@ -3,8 +3,8 @@
         ${messages.contest}
     </ui:define>
     <ui:define name="pageContent">
-        <div id="formContests" class="profilform">
-            <t:dataTable id="contests" var="contest" footerClass="paginator" value="#{requestBean.contests}" preserveDataModel="false" rows="10" rowClasses="linia2,linia1" columnClasses="col1,col2">
+        <a4j:form id="formContests" styleClass="profilform">
+            <t:dataTable id="contests" var="contest" footerClass="paginator" value="#{requestBean.contests}" preserveDataModel="false" rows="16" rowClasses="linia2,linia1" columnClasses="col1,col2">
                 <h:column>
                     <f:facet name="header">
                         ${messages.contest_name}
@@ -34,6 +34,6 @@
             <div class="ikona">
                 <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editcontest.html" rendered="#{zw:canAddContest(rolesBean, null, null)}"><h:graphicImage alt="${messages.addcontest}" title="${messages.addcontest}" url="/media/images/dodaj.png" /></h:outputLink>
             </div>
-        </div>
+        </a4j:form>
     </ui:define>
 </ui:composition>
