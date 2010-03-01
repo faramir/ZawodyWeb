@@ -156,27 +156,37 @@ public class LanguageCPP implements CompilerInterface {
                 + "tmpfile64 tmpfile tmpnam tmpnam_r truncate64 truncate ttyname ttyname_r ttyslot ualarm ungetc "
                 + "unlink usleep vfork vfprintf vfscanf vhangup write system "
                 + "mkfifo";
-        String strWithoutComments = new String();
+        StringBuilder strWithoutComments = new StringBuilder();
         int len = str.length() - 1;
         try {
             for (int i = 0; i < len; i++) {
-                if (str.charAt(i) == '/' && str.charAt(i) == '*') {
+                if (str.charAt(i) == '"') {
+                    do {
+                        strWithoutComments.append(str.charAt(i));
+                        ++i;
+                    } while (str.charAt(i) != '"' && str.charAt(i) != '\n');
+                    strWithoutComments.append(str.charAt(i));
+                    continue;
+                }
+                if (str.charAt(i) == '/' && str.charAt(i + 1) == '*') {
                     while (str.charAt(i) != '*' || str.charAt(i + 1) != '/') {
-                        i++;
+                        ++i;
                     }
-                    i += 2;
+                    ++i;
+                    continue;
                 }
                 if (str.charAt(i) == '/' && str.charAt(i + 1) == '/') {
                     while (str.charAt(i) != '\n') {
-                        i++;
+                        ++i;
                     }
-                    i++;
+                    strWithoutComments.append(str.charAt(i));
+                    continue;
                 }
-                strWithoutComments = strWithoutComments + str.charAt(i);
+                strWithoutComments.append(str.charAt(i));
             }
         } catch (StringIndexOutOfBoundsException ex) {
         }
-        str = strWithoutComments;
+        str = strWithoutComments.toString();
         String regexp1_on = "(?s).*\\W(" + forbiddenCalls.replaceAll(" ", "|") + ")\\W.*";
         if (str.matches(regexp1_on)) {
             compileResult = CheckerErrors.RV;
