@@ -8,10 +8,10 @@
     <entry key="JUDGEMANAGER_DELAY_CONNECT">10000</entry>
 
     <entry key="COMPILED_FILENAME">a.out</entry>
-    <entry key="COMPILED_DIR">compiled_submits</entry>
+    <entry key="COMPILED_DIR">/home/konkinf/zw30/submits/compiled</entry>
 
-    <entry key="CODE_FILENAME">a.pas</entry>
-    <entry key="CODE_DIR">submits</entry>
+    <entry key="CODE_FILENAME">a</entry>
+    <entry key="CODE_DIR">/home/konkinf/zw30/submits/sources</entry>
 
     <entry key="COMPILE_TIMEOUT">30000</entry>
 
