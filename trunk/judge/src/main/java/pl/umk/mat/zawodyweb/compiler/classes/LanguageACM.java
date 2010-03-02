@@ -29,6 +29,7 @@ import pl.umk.mat.zawodyweb.database.CheckerErrors;
  */
 public class LanguageACM implements CompilerInterface {
 
+    public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageACM.class);
     private Properties properties;
 
     @Override
@@ -121,6 +122,7 @@ public class LanguageACM implements CompilerInterface {
             return result;
         }
         sendAnswer.releaseConnection();
+        logger.info("Logged to ACM");
         sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=save_submission");
         String lang = properties.getProperty("CODEFILE_EXTENSION");
         if (lang.equals("c")) {
@@ -148,6 +150,7 @@ public class LanguageACM implements CompilerInterface {
             String location = sendAnswer.getResponseHeader("Location").getValue();
             try {
                 id = Integer.parseInt(location.substring(location.lastIndexOf("+") + 1));
+                logger.info("ACM Submit id = " + id);
             } catch (NumberFormatException ex) {
                 result.setResult(CheckerErrors.UNKNOWN);
                 result.setResultDesc(URLDecoder.decode(location.substring(location.lastIndexOf("=") + 1), "UTF-8"));
@@ -170,9 +173,9 @@ public class LanguageACM implements CompilerInterface {
         }
         sendAnswer.releaseConnection();
         int limit = 50;
-        int limitstart = 0;
+        int limitstart = 50;
         String statusSite = "";
-        String stat = "", time = "";
+        String stat = null, time = null;
         try {
             Thread.sleep(7000);
         } catch (InterruptedException e) {
@@ -182,7 +185,8 @@ public class LanguageACM implements CompilerInterface {
             return result;
         }
         do {
-            logging = new GetMethod("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=9&limit=50&limitstart=" + String.valueOf(limitstart));
+            logger.info("Checking answer on ACM");
+            logging = new GetMethod("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=9&limit=" + limitstart + "&limitstart=0");
             firstGet = null;
             try {
                 client.executeMethod(logging);
@@ -225,7 +229,7 @@ public class LanguageACM implements CompilerInterface {
                 logging.releaseConnection();
                 return result;
             }
-            if (!stat.equals("") && !time.equals("")) {
+            if (stat != null) {
                 result.setPoints(0);
                 if (stat.compareTo("Received") != 0 && stat.compareTo("Running") != 0 && stat.compareTo("Sent to judge") != 0 && stat.compareTo("In judge queue") != 0 && stat.compareTo("Compiling") != 0 && stat.compareTo("Linking") != 0) {
                     if (stat.matches(".*Accepted.*")) {
