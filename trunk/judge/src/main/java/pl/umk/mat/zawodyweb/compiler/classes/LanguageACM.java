@@ -176,7 +176,8 @@ public class LanguageACM implements CompilerInterface {
         int limitstart = 50;
         int counter = 0;
         String statusSite = "";
-        String stat = null, time = null;
+        String stat;
+        String time;
         try {
             Thread.sleep(7000);
         } catch (InterruptedException e) {
@@ -186,6 +187,9 @@ public class LanguageACM implements CompilerInterface {
             return result;
         }
         do {
+            stat = null;
+            time = "";
+
             logger.info("Checking answer on ACM");
             logging = new GetMethod("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=9&limit=" + limitstart + "&limitstart=0");
             firstGet = null;
@@ -211,7 +215,7 @@ public class LanguageACM implements CompilerInterface {
             }
             try {
                 while ((line = br.readLine()) != null) {
-                    if (line.matches(".*<td>" + String.valueOf(id) + "</td>.*")) {
+                    if (line.matches(".*<td>" + id + "</td>.*")) {
                         statusSite = line;
                         line = br.readLine();
                         while (!line.matches(".*</tr>.*")) {
