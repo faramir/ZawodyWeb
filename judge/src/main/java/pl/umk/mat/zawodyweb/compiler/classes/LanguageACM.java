@@ -174,6 +174,7 @@ public class LanguageACM implements CompilerInterface {
         sendAnswer.releaseConnection();
         int limit = 50;
         int limitstart = 50;
+        int counter = 0;
         String statusSite = "";
         String stat = null, time = null;
         try {
@@ -231,7 +232,7 @@ public class LanguageACM implements CompilerInterface {
             }
             if (stat != null) {
                 result.setPoints(0);
-                if (stat.compareTo("Received") != 0 && stat.compareTo("Running") != 0 && stat.compareTo("Sent to judge") != 0 && stat.compareTo("In judge queue") != 0 && stat.compareTo("Compiling") != 0 && stat.compareTo("Linking") != 0) {
+                if (stat.compareTo("Received") != 0 && stat.compareTo("Running") != 0 && stat.compareTo("Sent to judge") != 0 && stat.compareTo("In judge queue") != 0 && stat.compareTo("Compiling") != 0 && stat.compareTo("Linking") != 0 && stat.compareTo("") != 0) {
                     if (stat.matches(".*Accepted.*")) {
                         result.setResult(CheckerErrors.ACC);
                         result.setPoints(input.getMaxPoints());
@@ -261,6 +262,15 @@ public class LanguageACM implements CompilerInterface {
                     }
                     break;
                 } else {
+                    if (stat.matches("")) {
+                        ++counter;
+                        if (counter > 50) {
+                            result.setResult(CheckerErrors.UNDEF);
+                            result.setResultDesc("counter > 0");
+                            result.setText("... :(");
+                            return result;
+                        }
+                    }
                     try {
                         Thread.sleep(7000);
                     } catch (InterruptedException e) {
