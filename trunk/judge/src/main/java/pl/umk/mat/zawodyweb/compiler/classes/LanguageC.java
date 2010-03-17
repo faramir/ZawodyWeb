@@ -39,7 +39,7 @@ public class LanguageC implements CompilerInterface {
 
     @Override
     public TestOutput runTest(String path, TestInput input) {
-        TestOutput output = new TestOutput(new String());
+        TestOutput output = new TestOutput(null);
         if (compileResult != CheckerErrors.UNDEF) {
             output.setResult(compileResult);
             if (!compileDesc.isEmpty()) {
@@ -227,10 +227,11 @@ public class LanguageC implements CompilerInterface {
             }
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             InterruptTimer timer = new InterruptTimer();
-            timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
             try {
+                timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
                 p.waitFor();
             } catch (InterruptedException ex) {
+                timer.cancel();
                 logger.error("Compile Time Limit Exceeded", ex);
                 p.destroy();
                 compileResult = CheckerErrors.CTLE;
@@ -239,7 +240,6 @@ public class LanguageC implements CompilerInterface {
             timer.cancel();
 
             if (p.exitValue() != 0) {
-
                 compileResult = CheckerErrors.CE;
                 while ((line = input.readLine()) != null) {
                     line = line.replaceAll("^.*" + Pattern.quote(codefile), properties.getProperty("CODE_FILENAME"));
@@ -250,7 +250,7 @@ public class LanguageC implements CompilerInterface {
             new File(codefile).delete();
             p.destroy();
         } catch (Exception err) {
-            logger.fatal("Exception when compiling", err);
+            logger.fatal("Fatal Exception (timer may not be canceled)", err);
         }
         return compilefile;
     }
