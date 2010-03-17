@@ -221,10 +221,11 @@ public class LanguagePAS implements CompilerInterface {
             }
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             InterruptTimer timer = new InterruptTimer();
-            timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
             try {
+                timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
                 p.waitFor();
             } catch (InterruptedException ex) {
+                timer.cancel();
                 logger.error("Compile Time Limit Exceeded", ex);
                 p.destroy();
                 compileResult = CheckerErrors.CTLE;
@@ -247,7 +248,7 @@ public class LanguagePAS implements CompilerInterface {
             new File(codefile).delete();
             p.destroy();
         } catch (Exception err) {
-            logger.fatal("Exception when compiling", err);
+            logger.fatal("Fatal Exception (timer may not be canceled)", err);
         }
         return compilefile;
     }
