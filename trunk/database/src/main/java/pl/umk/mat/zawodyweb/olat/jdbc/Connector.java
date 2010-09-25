@@ -66,6 +66,8 @@ public class Connector {
                     user.setLastname(propvalue);
                 } else if ("email".equalsIgnoreCase(propname)) {
                     user.setEmail(propvalue);
+                } else if ("schoolType".equalsIgnoreCase(propname)) {
+                    user.setSchooltype(propvalue);
                 }
             }
             statment.close();

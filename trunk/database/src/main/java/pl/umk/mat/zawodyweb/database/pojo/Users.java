@@ -80,6 +80,10 @@ public class Users implements Serializable {
      */
     private String tutor;
     /**
+     * Attribute type.
+     */
+    private String schooltype;
+    /**
      * Attribute emailnotification.
      */
     private Integer emailnotification;
@@ -314,6 +318,23 @@ public class Users implements Serializable {
      */
     public void setTutor(String tutor) {
         this.tutor = tutor;
+    }
+
+    /* liste transiente */
+    /**
+     * @return tutor
+     */
+    @Basic
+    @Column(name = "schooltype", length = 16)
+    public String getSchooltype() {
+        return schooltype;
+    }
+
+    /**
+     * @param tutor new value for tutor
+     */
+    public void setSchooltype(String schooltype) {
+        this.schooltype = schooltype;
     }
 
     /* liste transiente */
