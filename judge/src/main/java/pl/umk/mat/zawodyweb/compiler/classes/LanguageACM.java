@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.Properties;
 import java.util.Vector;
 import org.apache.commons.httpclient.HttpClient;
@@ -186,7 +187,16 @@ public class LanguageACM implements CompilerInterface {
             result.setText("InterruptedException");
             return result;
         }
+        long start_time = new Date().getTime();
         do {
+            if (new Date().getTime() - start_time > 7L * 60L * 1000L) {
+                logger.info("7 minutes without answer. Destroy!");
+                result.setResult(CheckerErrors.UNDEF);
+                result.setResultDesc("Too slow to answer.. destroy");
+                result.setText("In judge queue?");
+                logging.releaseConnection();
+                return result;
+            }
             stat = null;
             time = "";
 

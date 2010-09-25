@@ -10,6 +10,7 @@ public class User {
     private String email;
     private String firstname;
     private String lastname;
+    private String schooltype;
 
     /**
      * @return the login
@@ -65,5 +66,19 @@ public class User {
      */
     public void setLastname(String lastname) {
         this.lastname = lastname;
+    }
+
+    /**
+     * @return the schooltype
+     */
+    public String getSchooltype() {
+        return schooltype;
+    }
+
+    /**
+     * @param schooltype the schooltype to set
+     */
+    public void setSchooltype(String schooltype) {
+        this.schooltype = schooltype;
     }
 }

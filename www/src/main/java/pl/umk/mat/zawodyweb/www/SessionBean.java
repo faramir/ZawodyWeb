@@ -122,6 +122,7 @@ public class SessionBean {
         user.setFirstname(olatUser.getFirstname());
         user.setLastname(olatUser.getLastname());
         user.setEmail(olatUser.getEmail());
+        user.setSchooltype(olatUser.getSchooltype());
         user.setPass("OLAT");
 
         dao.saveOrUpdate(user);
