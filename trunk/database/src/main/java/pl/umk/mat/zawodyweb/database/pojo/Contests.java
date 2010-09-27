@@ -50,6 +50,10 @@ public class Contests implements Serializable {
      */
     private Integer subtype;
     /**
+     * Attribute type.
+     */
+    private String subtypename;
+    /**
      * Attribute startdate.
      */
     private Date startdate;
@@ -156,7 +160,7 @@ public class Contests implements Serializable {
 
     /* liste transiente */
     /**
-     * @return type
+     * @return subtype
      */
     @Basic
     @Column(name = "subtype")
@@ -169,6 +173,23 @@ public class Contests implements Serializable {
      */
     public void setSubtype(Integer subtype) {
         this.subtype = subtype;
+    }
+
+    /* liste transiente */
+    /**
+     * @return name
+     */
+    @Basic
+    @Column(name = "subtypename", length = 120)
+    public String getSubtypename() {
+        return subtypename;
+    }
+
+    /**
+     * @param name new value for name
+     */
+    public void setSubtypename(String subtypename) {
+        this.subtypename = subtypename;
     }
 
     /* liste transiente */

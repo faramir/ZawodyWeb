@@ -44,14 +44,20 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel styleClass="required" for="subtype">${messages.subcontest_type}:</h:outputLabel>
+                            <h:outputLabel styleClass="required" for="subtype">${messages.contest_subtype}:</h:outputLabel>
                             <h:selectOneMenu id="subtype" required="true" value="#{requestBean.editedContest.subtype}">
                                 <f:selectItem itemValue="0" itemLabel="#{messages.absence}" />
-                                <f:selectItem itemValue="1" itemLabel="KI s1" />
-                                <f:selectItem itemValue="2" itemLabel="KI s2" />
+                                <f:selectItem itemValue="1" itemLabel="KI s1 (gimnazjum)" />
+                                <f:selectItem itemValue="2" itemLabel="KI s2 (szkoła ponadgimnazjalna)" />
                                 <f:convertNumber integerOnly="true" />
                             </h:selectOneMenu>
-                            <h:message for="type" errorClass="error" />
+                            <h:message for="subtype" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel styleClass="required" for="subtypename">${messages.contest_subtype_name}:</h:outputLabel>
+                            <h:inputText id="subtypename" required="true" value="#{requestBean.editedContest.subtypename}" />
+                            <h:message for="subtypename" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
