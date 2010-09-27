@@ -44,6 +44,17 @@
                             <br class="clear" />
                         </div>
                         <div>
+                            <h:outputLabel styleClass="required" for="subtype">${messages.subcontest_type}:</h:outputLabel>
+                            <h:selectOneMenu id="subtype" required="true" value="#{requestBean.editedContest.subtype}">
+                                <f:selectItem itemValue="0" itemLabel="#{messages.absence}" />
+                                <f:selectItem itemValue="1" itemLabel="KI s1" />
+                                <f:selectItem itemValue="2" itemLabel="KI s2" />
+                                <f:convertNumber integerOnly="true" />
+                            </h:selectOneMenu>
+                            <h:message for="type" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
                             <h:outputLabel for="refresh_rate">${messages.contest_ranking_refresh_rate}:</h:outputLabel>
                             <h:inputText id="refresh_rate" required="false" value="#{requestBean.editedContest.rankingrefreshrate}"/>
                             <br class="clear" />

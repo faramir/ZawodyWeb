@@ -14,7 +14,8 @@ CREATE TABLE USERS (
         address             varchar(80),
         school              varchar(80),
         tutor               text,
-        eMailNotification   int
+        eMailNotification   int,
+	schooltype          varchar(16) DEFAULT '-'
 );
 
 CREATE TABLE ROLES (  
@@ -48,6 +49,7 @@ CREATE TABLE CONTESTS (
         id                  serial primary key,
         name                varchar(120) unique,
         type                int,
+	subtype             int DEFAULT 0,
         pass                varchar(32),
         startDate           timestamp,
         about               text,

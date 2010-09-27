@@ -48,6 +48,11 @@
                 <li>
                     <zw:contest-link contest="${requestBean.currentContest}" type="ranking" message="#{messages.ranking}" />
                 </li>
+                <c:if test="#{requestBean.currentContest != null and requestBean.currentContest.subtype != 0}">
+                    <li style="padding-left: 10%;font-size:90%">
+                        <zw:contest-link contest="${requestBean.currentContest}" type="subranking" message="#{messages.subranking}" />
+                    </li>
+                </c:if>
                 <li>
                     <zw:contest-link contest="${requestBean.currentContest}" type="questions" message="#{messages.questions}" />
                 </li>

@@ -114,6 +114,14 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
+        <display-name>goToSubranking</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>subranking</from-outcome>
+            <to-view-id>/subranking.jspx</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
         <display-name>goToRules</display-name>
         <from-view-id>*</from-view-id>
         <navigation-case>
