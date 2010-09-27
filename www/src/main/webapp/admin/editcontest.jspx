@@ -44,7 +44,7 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel styleClass="required" for="subtype">${messages.contest_subtype}:</h:outputLabel>
+                            <h:outputLabel for="subtype">${messages.contest_subtype}:</h:outputLabel>
                             <h:selectOneMenu id="subtype" required="true" value="#{requestBean.editedContest.subtype}">
                                 <f:selectItem itemValue="0" itemLabel="#{messages.absence}" />
                                 <f:selectItem itemValue="1" itemLabel="KI s1 (gimnazjum)" />
@@ -55,7 +55,7 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel styleClass="required" for="subtypename">${messages.contest_subtype_name}:</h:outputLabel>
+                            <h:outputLabel for="subtypename">${messages.contest_subtype_name}:</h:outputLabel>
                             <h:inputText id="subtypename" required="false" value="#{requestBean.editedContest.subtypename}" />
                             <h:message for="subtypename" errorClass="error" />
                             <br class="clear" />
