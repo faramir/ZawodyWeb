@@ -1,0 +1,47 @@
+<ui:composition template="/templates/main.jspx" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich"  xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:zw="http://zawodyweb.mat.umk.pl/" xmlns:c="http://java.sun.com/jstl/core">
+    <ui:define name="pageTitle">
+        ${messages.subranking}
+    </ui:define>
+    <ui:define name="pageContent">
+        <c:choose>
+            <c:when test="#{requestBean.currentContest == null}">
+                <div class="not_choosen">
+                    ${messages.contest_not_choosen}
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div class="profilform" style="width:100%">
+                    <c:if test="#{zw:canAddProblem(rolesBean, requestBean.currentContest.id, null)}">
+                        <div class="ranking_frozen" id="view_ranking" style="float:right">
+                            <h:outputLink rendered="#{!requestBean.temporaryAdminBoolean}" value="#{facesContext.externalContext.requestContextPath}/ranking/#{requestBean.currentContest.id}/__admin__.html">${messages.view_unfrozen_ranking}</h:outputLink>
+                            <h:outputLink rendered="#{requestBean.temporaryAdminBoolean}" value="#{facesContext.externalContext.requestContextPath}/ranking/#{requestBean.currentContest.id}/#{zw:filterUri(requestBean.currentContest.name)}.html">${messages.view_normal_ranking}</h:outputLink>
+                        </div>
+                    </c:if>
+                    <c:if test="#{requestBean.currentContestSubranking.frozenRanking}">
+                        <div class="ranking_frozen" style="clear:both">
+                            <h:outputText value="#{messages.ranking_frozen}"/>
+                        </div>
+                    </c:if>
+                    <div id="scroll" style="clear:both">
+                        <table class="ranking">
+                            <thead><tr><th class="small">${messages.position}</th><th class="big">${messages.competitor}</th><c:set var="itc" value="0" /><c:forEach var="column" items="#{requestBean.currentContestSubranking.columnsCaptions}"><th class="${requestBean.currentContestSubranking.columnsCSS[itc]}"><h:outputText escape="false" value="#{column}" /></th><c:set var="itc" value="#{itc + 1}" /></c:forEach></tr></thead>
+                            <tbody><h:outputText value="#{requestBean.currentContestSubranking.html}" escape="false" /></tbody>
+                        </table>
+                    </div>
+                    <div class="ranking_generated" style="clear:both">
+                        <h:outputText value="#{messages.ranking_generation_date}: #{zw:formatDateAndHour(requestBean.currentContestSubranking.generationDate, 'yyyy-MM-dd HH:mm:ss')}" />
+                        <br/>
+                        <h:outputText value="#{messages.ranking_generation_time}: #{requestBean.currentContestSubranking.generationTime/1000} #{messages.ranking_generation_time_sufix}" rendered="#{zw:canAddProblem(rolesBean, requestBean.currentContest.id, null)}"/>
+                        <c:if test="#{zw:canAddProblem(rolesBean, requestBean.currentContest.id, null)}">
+                            <br/>
+                            <div class="ranking_frozen" id="view_ranking" style="float:right">
+                                <h:outputLink rendered="#{requestBean.temporaryAdminBoolean}" value="#" title="#{messages.ranking_date}" styleClass="ikonka" onclick="prompt_ranking(this,{def:'#{zw:formatDateAndHour(requestBean.currentContestSubranking.generationDate, 'yyyy-MM-dd HH:mm:ss')}',link:'#{facesContext.externalContext.requestContextPath}/ranking/#{requestBean.currentContest.id}/__admin__/'})"><h:graphicImage alt="#{messages.ranking_date}" title="#{messages.ranking_date}" url="/media/images/view.png" /></h:outputLink>
+                                <h:outputLink rendered="#{!requestBean.temporaryAdminBoolean}" value="#" title="#{messages.ranking_date}" styleClass="ikonka" onclick="prompt_ranking(this,{def:'#{zw:formatDateAndHour(requestBean.currentContestSubranking.generationDate, 'yyyy-MM-dd HH:mm:ss')}',link:'#{facesContext.externalContext.requestContextPath}/ranking/#{requestBean.currentContest.id}/#{zw:filterUri(requestBean.currentContest.name)}/'})"><h:graphicImage alt="#{messages.ranking_date}" title="#{messages.ranking_date}" url="/media/images/view.png" /></h:outputLink>
+                            </div>
+                        </c:if>
+                    </div>
+                </div>
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
+</ui:composition>

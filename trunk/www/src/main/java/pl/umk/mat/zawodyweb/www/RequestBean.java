@@ -117,6 +117,7 @@ public class RequestBean {
     private List<Roles> roles = null;
     private List<Classes> allClasses = null;
     private RankingTable currentContestRanking = null;
+    private RankingTable currentContestSubranking = null;
     private PagedDataModel submissions = null;
     private Date temporaryRankingDate;
     private Boolean temporaryAdminBoolean;
@@ -439,6 +440,29 @@ public class RequestBean {
         }
 
         return currentContestRanking;
+    }
+
+    public RankingTable getCurrentContestSubranking() {
+        if (currentContestSubranking == null && getCurrentContest() != null) {
+            Integer contests_id = getCurrentContest().getId();
+            Integer subtype = getCurrentContest().getSubtype();
+            Integer rankingRefreshRate = getCurrentContest().getRankingrefreshrate();
+            if (rankingRefreshRate == null) {
+                rankingRefreshRate = 0;
+            }
+            Date date = temporaryRankingDate;
+            if (date == null) {
+                date = new Date();
+            }
+
+            if (subtype == 0) {
+                currentContestSubranking = getCurrentContestRanking();
+            } else {
+                currentContestSubranking = Ranking.getInstance().getSubranking(contests_id, subtype, rankingRefreshRate, date, temporaryAdminBoolean);
+            }
+        }
+
+        return currentContestSubranking;
     }
 
     public PagedDataModel getSubmissions() {
@@ -1410,6 +1434,22 @@ public class RequestBean {
             return "ranking";
         }
 
+    }
+
+    @HttpAction(name = "subranking", pattern = "subranking/{id}/{title}")
+    public String goToSubranking(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
+        selectContest(id);
+        if (getCurrentContest() == null) {
+            return "/error/404";
+        } else {
+            temporaryAdminBoolean = false;
+            if (rolesBean.canAddProblem(getCurrentContest().getId(), null)) {
+                if ("__admin__".equals(dummy)) {
+                    temporaryAdminBoolean = true;
+                }
+            }
+            return "subranking";
+        }
     }
 
     @HttpAction(name = "rules", pattern = "rules/{id}/{title}")
