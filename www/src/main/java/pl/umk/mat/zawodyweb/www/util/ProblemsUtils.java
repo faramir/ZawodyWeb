@@ -40,6 +40,7 @@ public class ProblemsUtils {
         }
         destinationProblem.setClasses(sourceProblem.getClasses());
         destinationProblem.setMemlimit(sourceProblem.getMemlimit());
+        destinationProblem.setCodesize(sourceProblem.getCodesize());
 
         PDF pdf = sourceProblem.getPDF();
         if (pdf != null) {

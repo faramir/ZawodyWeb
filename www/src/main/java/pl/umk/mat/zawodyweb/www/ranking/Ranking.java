@@ -239,12 +239,10 @@ public class Ranking {
             rankingRefreshRate = 0;
         }
 
-        boolean startWorker = false;
         if (contestRankingWorker.get(contest_id) == null) {
             if (rankingRefreshRate > 0) {
                 contestRankingTableMap.remove(contest_id);
                 new RankingWorker(contest_id).start();
-                startWorker = true;
             }
         } else {
             if (rankingRefreshRate > 0) {
@@ -261,11 +259,9 @@ public class Ranking {
             return createRankingTableForSeries(contest_id, series_id, type, date, admin);
         }
 
-        RankingTable rankingTable;
+        RankingTable rankingTable = null;
 
-        if (startWorker) {
-            rankingTable = getCachedRankingWithExpirationTime(seriesRankingTableMap, series_id, type, date, rankingRefreshRate * 1000);
-        } else {
+        if (rankingRefreshRate > 0) {
             rankingTable = getCachedRanking(seriesRankingTableMap, series_id, type);
         }
 
