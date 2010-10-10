@@ -28,19 +28,23 @@ public class ProblemsUtils {
 
     public Problems copyProblem(Problems sourceProblem, Series destinationSerie, String abbrev, String name/*, boolean copyUsersSolutions*/) {
         Problems destinationProblem = new Problems();
+
         if (abbrev == null || abbrev.isEmpty()) {
             destinationProblem.setAbbrev(sourceProblem.getAbbrev());
         } else {
             destinationProblem.setAbbrev(abbrev);
         }
+
         if (name == null || name.isEmpty()) {
             destinationProblem.setName(sourceProblem.getName());
         } else {
             destinationProblem.setName(name);
         }
+        
         destinationProblem.setClasses(sourceProblem.getClasses());
         destinationProblem.setMemlimit(sourceProblem.getMemlimit());
         destinationProblem.setCodesize(sourceProblem.getCodesize());
+        destinationProblem.setVisibleinranking(sourceProblem.getVisibleinranking());
 
         PDF pdf = sourceProblem.getPDF();
         if (pdf != null) {
