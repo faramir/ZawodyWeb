@@ -498,7 +498,7 @@ img {
     clear: right;
     width: 28px;
     height: 14px;
-    padding: 0px 0px;
+    padding: 0;
     background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
 }
 
