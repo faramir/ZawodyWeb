@@ -346,6 +346,15 @@ img {
     text-align: right;
 }
 
+.profilform div.zadanko div.address {
+    font-size: 11px;
+    border: solid #c7aaf1;
+    border-width: 0px 1px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    text-align: right;
+}
+
 .profilform div.zadanko div.notes {
     font-size: 11px;
     border: solid #c7aaf1;
@@ -481,6 +490,18 @@ img {
     background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
 }
 
+.profilform input.widecheck {
+    margin-right:371px;
+    margin-top: 12px;
+    border:1px solid #999999;
+    float:right;
+    clear: right;
+    width: 28px;
+    height: 14px;
+    padding: 0px 0px;
+    background: #decff4 url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+}
+
 .profilform input.check {
     margin-right:20px;
     margin-top: 12px;
@@ -564,7 +585,7 @@ img {
 
 /* TABLES */
 .profilform table {
-    width: 90%;
+    width: 95%;
     margin-right:auto;
     margin-left:auto;
     text-align: center;

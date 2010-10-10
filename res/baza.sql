@@ -42,7 +42,8 @@ CREATE TABLE SERIES (
         endDate             timestamp,
         freezeDate          timestamp,
         unfreezeDate        timestamp,
-        penaltyTime         int
+        penaltyTime         int,
+	visibleInRanking    boolean default true
 );
 
 CREATE TABLE CONTESTS (
@@ -66,7 +67,9 @@ CREATE TABLE SUBMITS (
         result              int,
         code                bytea,
         filename            varchar(255),
-        notes               text
+        notes               text,
+	clientIp            varchar(16) default '',
+	visibleInRanking    boolean default true
 );
 
 CREATE TABLE PROBLEMS ( 
@@ -76,7 +79,8 @@ CREATE TABLE PROBLEMS (
         abbrev              varchar(5),
         memlimit            int,
         codesize            int,
-        config              text
+        config              text,
+	visibleInRanking    boolean default true
 );
 
 CREATE TABLE QUESTIONS ( 

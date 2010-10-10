@@ -83,6 +83,12 @@
                             <br class="clear" />
                         </div>
                         <div>
+                            <h:outputLabel styleClass="required" for="visibleinranking">${messages.visible_in_ranking}:</h:outputLabel>
+                            <h:selectBooleanCheckbox id="visibleinranking" styleClass="widecheck" value="#{requestBean.editedSeries.visibleinranking}" />
+                            <h:message for="visibleinranking" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
                             <a4j:commandButton id="save" reRender="formEditSeries" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveSeries}" />
                             <h:message for="save" errorClass="error" />
                         </div>

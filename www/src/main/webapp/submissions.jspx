@@ -63,14 +63,13 @@
                                 <h:outputLink value="#{facesContext.externalContext.requestContextPath}/code/#{submit.id}/#{zw:filterUri(submit.problems.name)}.html" title="#{messages.solution_view}" styleClass="ikonka"><h:graphicImage alt="#{messages.solution_view}" title="#{messages.solution_view}" url="/media/images/view.png" /></h:outputLink>
                                 <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{submit.id}/code.html" title="#{messages.solution_download}" styleClass="ikonka"><h:graphicImage alt="#{messages.solution_download}" title="#{messages.solution_download}" url="/media/images/get.png" /></h:outputLink>
                             </td>
-                            <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
+                            <c:if test="#{!(requestBean.showOnlyMySubmissions) and zw:canRateAnySeries(rolesBean, requestBean.currentContest)}">
                                 <td class="cols">
                                 <zw:submission-link submission="#{submit}" type="rate" message="#{messages.submission_rate}" />
                                 </td>
-                            </c:if>
-                            <c:if test="#{!(requestBean.showOnlyMySubmissions) and zw:canRateAnySeries(rolesBean, requestBean.currentContest)}">
                                 <td class="cols2">
                                     <h:outputLink value="#" title="#{messages.delsubmit}" styleClass="ikonka" onclick="confirm(this,{nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/del/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.delsubmit}" title="#{messages.delsubmit}" url="/media/images/usun.png" /></h:outputLink>
+                                    <h:outputLink value="#" title="#{messages.visible_in_ranking}" rendered="#{zw:canRate(rolesBean, submit.problems.series.contests.id, submit.problems.series.id)}" styleClass="ikonka" onclick="confirm_ghost(this,{widocznosc:'#{submit.visibleinranking?messages.visible_no:messages.visible_yes}',nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/ghost/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.visible_in_ranking}" title="#{messages.visible_in_ranking}" url="/media/images/ghost.png" /></h:outputLink>
                                     <h:outputLink value="#" title="#{messages.rejudge_submit}" rendered="#{zw:canRate(rolesBean, submit.problems.series.contests.id, submit.problems.series.id)}" styleClass="ikonka" onclick="confirm_rejudge(this,{nazwa:'rozwiązanie #{submit.id}',link:'#{facesContext.externalContext.requestContextPath}/rejudge/#{submit.id}/submit.html'})"><h:graphicImage alt="#{messages.rejudge_submit}" title="#{messages.rejudge_submit}" url="/media/images/reJudge.png" /></h:outputLink>
                                 </td>
                             </c:if>

@@ -59,6 +59,8 @@ public class Submits implements Serializable {
      * Attribute notes.
      */
     private String notes;
+    private String clientip;
+    private Boolean visibleinranking = true;
     /**
      * Attribute problems
      */
@@ -175,9 +177,41 @@ public class Submits implements Serializable {
     }
 
     /**
+     * @return clientIp
+     */
+    @Basic
+    @Column(name = "clientip", length = 16)
+    public String getClientip() {
+        return clientip;
+    }
+
+    /**
+     * @param notes new value for notes
+     */
+    public void setClientip(String clientip) {
+        this.clientip = clientip;
+    }
+
+    /**
+     * @return visibleInRanking
+     */
+    @Basic
+    @Column(name = "visibleinranking")
+    public Boolean getVisibleinranking() {
+        return visibleinranking;
+    }
+
+    /**
+     * @param name new value for name
+     */
+    public void setVisibleinranking(Boolean visibleinranking) {
+        this.visibleinranking = visibleinranking;
+    }
+
+    /**
      * get problems
      */
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problemsid")
     public Problems getProblems() {
         return this.problems;
@@ -193,7 +227,7 @@ public class Submits implements Serializable {
     /**
      * get languages
      */
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "languagesid")
     public Languages getLanguages() {
         return this.languages;
@@ -206,7 +240,7 @@ public class Submits implements Serializable {
         this.languages = languages;
     }
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usersid")
     public Users getUsers() {
         return this.users;
@@ -223,8 +257,8 @@ public class Submits implements Serializable {
      * Get the list of Results
      */
     // resultsPK
-    @OneToMany(mappedBy = "submits", cascade=CascadeType.REMOVE)
-    @OrderBy(clause="id asc")
+    @OneToMany(mappedBy = "submits", cascade = CascadeType.REMOVE)
+    @OrderBy(clause = "id asc")
     public List<Results> getResultss() {
         return this.resultss;
     }

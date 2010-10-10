@@ -125,6 +125,12 @@
                             <br class="clear" />
                         </div>
                         <div>
+                            <h:outputLabel styleClass="required" for="visibleinranking">${messages.visible_in_ranking}:</h:outputLabel>
+                            <h:selectBooleanCheckbox id="visibleinranking" styleClass="widecheck" value="#{requestBean.editedProblem.visibleinranking}" />
+                            <h:message for="visibleinranking" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
                             <h:commandButton id="save" value="#{messages.save}" styleClass="submit" type="submit" action="#{requestBean.saveProblem}" />
                             <h:message for="save" errorClass="error" />
                         </div>

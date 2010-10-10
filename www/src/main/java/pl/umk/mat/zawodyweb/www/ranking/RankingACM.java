@@ -183,7 +183,8 @@ public class RankingACM implements RankingInteface {
 
         for (Series series : seriesDAO.findByContestsid(contest_id)) {
 
-            if (series_id != null && !series_id.equals(series.getId())) {
+            if ((series_id == null && series.getVisibleinranking() == false)
+                    || (series_id != null && series_id.equals(series.getId()) == false)) {
                 continue;
             }
 
@@ -212,6 +213,9 @@ public class RankingACM implements RankingInteface {
             }
 
             for (Problems problems : problemsDAO.findBySeriesid(series.getId())) {
+                if (problems.getVisibleinranking() == false) {
+                    continue;
+                }
 
                 // select sum(maxpoints) from tests where problemsid='7' and visibility=1
                 Number maxPoints = null;
@@ -252,43 +256,45 @@ public class RankingACM implements RankingInteface {
 
                 Query query = null;
                 if (allTests == true) {
-                    query = hibernateSession.createSQLQuery("" +
-                            "select usersid, min(sdate) " + // zapytanie zewnętrzne znajduję minimalną datę wysłania poprawnego rozwiązania dla każdego usera
-                            "from submits " +
-                            "where id in (" +
-                            "    select submits.id " + // zapytanie wewnętrzne znajduje wszystkie id, które zdobyły maksa punktów
-                            "    from submits,results,tests " +
-                            "    where submits.problemsid='" + problems.getId() + "' " +
-                            " 	   and submits.id=results.submitsid " +
-                            "	   and tests.id = results.testsid " +
-                            "      and results.submitresult='" + CheckerErrors.ACC + "' " +
-                            "      and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
-                            "      and sdate <= '" + checkTimestamp.toString() + "' " +
-                            //"	   and tests.visibility=1 " +
-                            "    group by submits.id,usersid,sdate " +
-                            "    having sum(points)='" + maxPoints + "' " +
-                            "      and count(points)='" + noTests + "' " +
-                            "  ) " +
-                            "group by usersid");
+                    query = hibernateSession.createSQLQuery(""
+                            + "select usersid, min(sdate) " + // zapytanie zewnętrzne znajduję minimalną datę wysłania poprawnego rozwiązania dla każdego usera
+                            "from submits "
+                            + "where id in ("
+                            + "    select submits.id " + // zapytanie wewnętrzne znajduje wszystkie id, które zdobyły maksa punktów
+                            "    from submits,results,tests "
+                            + "    where submits.problemsid='" + problems.getId() + "' "
+                            + " 	   and submits.id=results.submitsid "
+                            + "	   and tests.id = results.testsid "
+                            + "      and results.submitresult='" + CheckerErrors.ACC + "' "
+                            + "      and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
+                            + "      and sdate <= '" + checkTimestamp.toString() + "' "
+                            + "      and visibleInRanking=true"
+                            + //"	   and tests.visibility=1 " +
+                            "    group by submits.id,usersid,sdate "
+                            + "    having sum(points)='" + maxPoints + "' "
+                            + "      and count(points)='" + noTests + "' "
+                            + "  ) "
+                            + "group by usersid");
                 } else {
-                    query = hibernateSession.createSQLQuery("" +
-                            "select usersid, min(sdate) " +
-                            "from submits " +
-                            "where id in (" +
-                            "    select submits.id " +
-                            "    from submits,results,tests " +
-                            "    where submits.problemsid='" + problems.getId() + "' " +
-                            " 	   and submits.id=results.submitsid " +
-                            "	   and tests.id = results.testsid " +
-                            "      and results.submitresult='" + CheckerErrors.ACC + "' " +
-                            "      and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' " +
-                            "      and sdate <= '" + checkTimestamp.toString() + "' " +
-                            "	   and tests.visibility=1 " + // FIXME: should be ok
-                            "    group by submits.id,usersid,sdate " +
-                            "    having sum(points)='" + maxPoints + "' " +
-                            "      and count(points)='" + noTests + "' " +
-                            "  ) " +
-                            "group by usersid");
+                    query = hibernateSession.createSQLQuery(""
+                            + "select usersid, min(sdate) "
+                            + "from submits "
+                            + "where id in ("
+                            + "    select submits.id "
+                            + "    from submits,results,tests "
+                            + "    where submits.problemsid='" + problems.getId() + "' "
+                            + " 	   and submits.id=results.submitsid "
+                            + "	   and tests.id = results.testsid "
+                            + "      and results.submitresult='" + CheckerErrors.ACC + "' "
+                            + "      and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
+                            + "      and sdate <= '" + checkTimestamp.toString() + "' "
+                            + "      and visibleInRanking=true"
+                            + "	   and tests.visibility=1 " + // FIXME: should be ok
+                            "    group by submits.id,usersid,sdate "
+                            + "    having sum(points)='" + maxPoints + "' "
+                            + "      and count(points)='" + noTests + "' "
+                            + "  ) "
+                            + "group by usersid");
                 }
 
                 for (Object list : query.list()) { // tu jest zwrócona lista "zaakceptowanych" w danym momencie rozwiązań zadania

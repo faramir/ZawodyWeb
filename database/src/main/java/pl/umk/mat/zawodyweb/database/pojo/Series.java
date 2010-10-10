@@ -35,218 +35,224 @@ import org.hibernate.annotations.OrderBy;
 @SuppressWarnings("serial")
 public class Series implements Serializable {
 
-	/**
-	 * Attribute id.
-	 */
-	private Integer id;
-	
-	/**
-	 * Attribute name.
-	 */
-	private String name;
-	
-	/**
-	 * Attribute startdate.
-	 */
-	private Date startdate;
-	
-	/**
-	 * Attribute enddate.
-	 */
-	private Date enddate;
-	
-	/**
-	 * Attribute freezedate.
-	 */
-	private Date freezedate;
-	
-	/**
-	 * Attribute unfreezedate.
-	 */
-	private Date unfreezedate;
-	
-	/**
-	 * Attribute penaltytime.
-	 */
-	private Integer penaltytime;
-	
-	/**
-	 * Attribute contests
-	 */
-	 private Contests contests;	
+    /**
+     * Attribute id.
+     */
+    private Integer id;
+    /**
+     * Attribute name.
+     */
+    private String name;
+    /**
+     * Attribute startdate.
+     */
+    private Date startdate;
+    /**
+     * Attribute enddate.
+     */
+    private Date enddate;
+    /**
+     * Attribute freezedate.
+     */
+    private Date freezedate;
+    /**
+     * Attribute unfreezedate.
+     */
+    private Date unfreezedate;
+    /**
+     * Attribute penaltytime.
+     */
+    private Integer penaltytime;
+    /**
+     * Attribute contests
+     */
+    private Contests contests;
+    private Boolean visibleinranking = true;
+    /**
+     * List of Problems
+     */
+    private List<Problems> problemss = null;
+    /**
+     * List of Roles
+     */
+    private List<Roles> roless = null;
 
-	/**
-	 * List of Problems
-	 */
-	private List<Problems> problemss = null;
+    /**
+     * @return id
+     */
+    @Basic
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    public Integer getId() {
+        return id;
+    }
 
-	/**
-	 * List of Roles
-	 */
-	private List<Roles> roless = null;
+    /**
+     * @param id new value for id
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	
-	/**
-	 * @return id
-	 */
-	@Basic
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "id")
-		public Integer getId() {
-		return id;
-	}
+    /**
+     * @return name
+     */
+    @Basic
+    @Column(name = "name", length = 40)
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @param id new value for id 
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
-	/**
-	 * @return name
-	 */
-	@Basic
-	@Column(name = "name", length = 40)
-		public String getName() {
-		return name;
-	}
+    /**
+     * @param name new value for name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @param name new value for name 
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	/**
-	 * @return startdate
-	 */
-	@Basic
-	@Column(name = "startdate")
-		public Date getStartdate() {
-		return startdate;
-	}
+    /**
+     * @return startdate
+     */
+    @Basic
+    @Column(name = "startdate")
+    public Date getStartdate() {
+        return startdate;
+    }
 
-	/**
-	 * @param startdate new value for startdate 
-	 */
-	public void setStartdate(Date startdate) {
-		this.startdate = startdate;
-	}
-	
-	/**
-	 * @return enddate
-	 */
-	@Basic
-	@Column(name = "enddate")
-		public Date getEnddate() {
-		return enddate;
-	}
+    /**
+     * @param startdate new value for startdate
+     */
+    public void setStartdate(Date startdate) {
+        this.startdate = startdate;
+    }
 
-	/**
-	 * @param enddate new value for enddate 
-	 */
-	public void setEnddate(Date enddate) {
-		this.enddate = enddate;
-	}
-	
-	/**
-	 * @return freezedate
-	 */
-	@Basic
-	@Column(name = "freezedate")
-		public Date getFreezedate() {
-		return freezedate;
-	}
+    /**
+     * @return enddate
+     */
+    @Basic
+    @Column(name = "enddate")
+    public Date getEnddate() {
+        return enddate;
+    }
 
-	/**
-	 * @param freezedate new value for freezedate 
-	 */
-	public void setFreezedate(Date freezedate) {
-		this.freezedate = freezedate;
-	}
-	
-	/**
-	 * @return unfreezedate
-	 */
-	@Basic
-	@Column(name = "unfreezedate")
-		public Date getUnfreezedate() {
-		return unfreezedate;
-	}
+    /**
+     * @param enddate new value for enddate
+     */
+    public void setEnddate(Date enddate) {
+        this.enddate = enddate;
+    }
 
-	/**
-	 * @param unfreezedate new value for unfreezedate 
-	 */
-	public void setUnfreezedate(Date unfreezedate) {
-		this.unfreezedate = unfreezedate;
-	}
-	
-	/**
-	 * @return penaltytime
-	 */
-	@Basic
-	@Column(name = "penaltytime")
-		public Integer getPenaltytime() {
-		return penaltytime;
-	}
+    /**
+     * @return freezedate
+     */
+    @Basic
+    @Column(name = "freezedate")
+    public Date getFreezedate() {
+        return freezedate;
+    }
 
-	/**
-	 * @param penaltytime new value for penaltytime 
-	 */
-	public void setPenaltytime(Integer penaltytime) {
-		this.penaltytime = penaltytime;
-	}
-	
-	/**
-	 * get contests
-	 */
-	@ManyToOne(targetEntity=Contests.class)
-	@JoinColumn(name = "contestsid")
-	public Contests getContests() {
-		return this.contests;
-	}
-	
-	/**
-	 * set contests
-	 */
-	public void setContests(Contests contests) {
-		this.contests = contests;
-	}
+    /**
+     * @param freezedate new value for freezedate
+     */
+    public void setFreezedate(Date freezedate) {
+        this.freezedate = freezedate;
+    }
 
-	/**
-	 * Get the list of Problems
-	 */
-	 // problemsPK
-	 @OneToMany(mappedBy="series", cascade=CascadeType.REMOVE)
-     @OrderBy(clause="abbrev")
-	 public List<Problems> getProblemss() {
-	 	return this.problemss;
-	 }
-	 
-	/**
-	 * Set the list of Problems
-	 */
-	 public void setProblemss(List<Problems> problemss) {
-	 	this.problemss = problemss;
-	 }
-	/**
-	 * Get the list of Roles
-	 */
-	 // rolesPK
-	 @OneToMany(mappedBy="series", cascade=CascadeType.REMOVE)
-	 public List<Roles> getRoless() {
-	 	return this.roless;
-	 }
-	 
-	/**
-	 * Set the list of Roles
-	 */
-	 public void setRoless(List<Roles> roless) {
-	 	this.roless = roless;
-	 }
+    /**
+     * @return unfreezedate
+     */
+    @Basic
+    @Column(name = "unfreezedate")
+    public Date getUnfreezedate() {
+        return unfreezedate;
+    }
 
+    /**
+     * @param unfreezedate new value for unfreezedate
+     */
+    public void setUnfreezedate(Date unfreezedate) {
+        this.unfreezedate = unfreezedate;
+    }
 
+    /**
+     * @return penaltytime
+     */
+    @Basic
+    @Column(name = "penaltytime")
+    public Integer getPenaltytime() {
+        return penaltytime;
+    }
+
+    /**
+     * @param penaltytime new value for penaltytime
+     */
+    public void setPenaltytime(Integer penaltytime) {
+        this.penaltytime = penaltytime;
+    }
+
+    /**
+     * @return visibleInRanking
+     */
+    @Basic
+    @Column(name = "visibleinranking")
+    public Boolean getVisibleinranking() {
+        return visibleinranking;
+    }
+
+    /**
+     * @param name new value for name
+     */
+    public void setVisibleinranking(Boolean visibleinranking) {
+        this.visibleinranking = visibleinranking;
+    }
+
+    /**
+     * get contests
+     */
+    @ManyToOne(targetEntity = Contests.class)
+    @JoinColumn(name = "contestsid")
+    public Contests getContests() {
+        return this.contests;
+    }
+
+    /**
+     * set contests
+     */
+    public void setContests(Contests contests) {
+        this.contests = contests;
+    }
+
+    /**
+     * Get the list of Problems
+     */
+    // problemsPK
+    @OneToMany(mappedBy = "series", cascade = CascadeType.REMOVE)
+    @OrderBy(clause = "abbrev")
+    public List<Problems> getProblemss() {
+        return this.problemss;
+    }
+
+    /**
+     * Set the list of Problems
+     */
+    public void setProblemss(List<Problems> problemss) {
+        this.problemss = problemss;
+    }
+
+    /**
+     * Get the list of Roles
+     */
+    // rolesPK
+    @OneToMany(mappedBy = "series", cascade = CascadeType.REMOVE)
+    public List<Roles> getRoless() {
+        return this.roless;
+    }
+
+    /**
+     * Set the list of Roles
+     */
+    public void setRoless(List<Roles> roless) {
+        this.roless = roless;
+    }
 }

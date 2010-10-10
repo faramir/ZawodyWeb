@@ -129,7 +129,8 @@ public class RankingKI implements RankingInteface {
 
         for (Series series : seriesDAO.findByContestsid(contest_id)) {
 
-            if (series_id != null && !series_id.equals(series.getId())) {
+            if ((series_id == null && series.getVisibleinranking() == false)
+                    || (series_id != null && series_id.equals(series.getId()) == false)) {
                 continue;
             }
 
@@ -158,6 +159,10 @@ public class RankingKI implements RankingInteface {
             }
 
             for (Problems problems : problemsDAO.findBySeriesid(series.getId())) {
+                if (problems.getVisibleinranking() == false) {
+                    continue;
+                }
+
                 vectorProblemsKI.add(new ProblemsKI(problems.getId(), series.getStartdate().getTime(), problems.getAbbrev(), problems.getName(), frozenSeria));
 
                 Query query = null;
@@ -174,6 +179,7 @@ public class RankingKI implements RankingInteface {
                             + "        where submits.problemsid='" + problems.getId() + "' "
                             + "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
                             + "          and sdate <= '" + checkTimestamp.toString() + "' "
+                            + "          and visibleInRanking=true"
                             + //"	       and tests.visibility=1 " +
                             "	     group by usersid "
                             + "      ) "
@@ -192,6 +198,7 @@ public class RankingKI implements RankingInteface {
                             + "        where submits.problemsid='" + problems.getId() + "' "
                             + "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
                             + "          and sdate <= '" + checkTimestamp.toString() + "' "
+                            + "          and visibleInRanking=true"
                             + "	     group by usersid "
                             + "      ) "
                             + "group by usersid, submits.id");

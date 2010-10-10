@@ -14,6 +14,7 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.custom.datascroller.ScrollerActionEvent;
@@ -384,8 +385,10 @@ public class RequestBean {
             if (getCurrentContest() != null) {
                 s.createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
             }
-            s.add(Restrictions.or(Restrictions.isNull("enddate"), Restrictions.gt("enddate", new Date())));
-            s.add(Restrictions.le("startdate", new Date()));
+            if (getCurrentContest() == null || rolesBean.canEditProblem(getCurrentContest().getId(), null) == false) {
+                s.add(Restrictions.or(Restrictions.isNull("enddate"), Restrictions.gt("enddate", new Date())));
+                s.add(Restrictions.le("startdate", new Date()));
+            }
             s.addOrder(Order.desc("startdate"));
             c.addOrder(Order.asc("abbrev"));
             submittableProblems = c.list();
@@ -1656,6 +1659,20 @@ public class RequestBean {
         }
     }
 
+    @HttpAction(name = "ghostsubmit", pattern = "ghost/{id}/submit")
+    public String ghostSubmit(@Param(name = "id", encode = true) int id) {
+        Submits s = submitsDAO.getById(id);
+
+        if (s != null && rolesBean.canRate(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
+            s.setVisibleinranking(!s.getVisibleinranking());
+            submitsDAO.saveOrUpdate(s);
+            
+            return "submissions";
+        } else {
+            return null;
+        }
+    }
+
     @HttpAction(name = "addseries", pattern = "add/{id}/series")
     public String goToAddseries(@Param(name = "id", encode = true) int id) {
         temporaryContestId = id;
@@ -1975,7 +1992,9 @@ public class RequestBean {
                 return null;
             }
 
-            if (problem.getSeries().getStartdate().getTime() < submitTime && (problem.getSeries().getEnddate() == null || submitTime < problem.getSeries().getEnddate().getTime())) {
+            if (rolesBean.canEditProblem(problem.getSeries().getId(), problem.getSeries().getId()) == true
+                    || (problem.getSeries().getStartdate().getTime() < submitTime
+                    && (problem.getSeries().getEnddate() == null || submitTime < problem.getSeries().getEnddate().getTime()))) {
                 Submits submit = new Submits();
 
                 submit.setId(null);
@@ -1986,6 +2005,14 @@ public class RequestBean {
                 submit.setProblems(problem);
                 submit.setSdate(new Timestamp(submitTime));
                 submit.setUsers(usersDAO.getById(sessionBean.getCurrentUser().getId()));
+                submit.setClientip(((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRemoteAddr());
+                if (rolesBean.canEditProblem(problem.getSeries().getId(), problem.getSeries().getId()) == true
+                        && !(problem.getSeries().getStartdate().getTime() < submitTime
+                        && (problem.getSeries().getEnddate() == null || submitTime < problem.getSeries().getEnddate().getTime()))) {
+                    submit.setVisibleinranking(false);
+                } else {
+                    submit.setVisibleinranking(true);
+                }
                 selectContest(problem.getSeries().getContests().getId());
                 submitsDAO.saveOrUpdate(submit);
 
