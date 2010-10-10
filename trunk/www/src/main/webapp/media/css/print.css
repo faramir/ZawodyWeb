@@ -350,6 +350,24 @@ img {
     text-align: right;
 }
 
+.profilform div.zadanko div.visibility {
+    font-size: 11px;
+    border: solid black;
+    border-width: 0px 0px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.address {
+    font-size: 11px;
+    border: solid black;
+    border-width: 0px 0px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    text-align: right;
+}
+
 .profilform div.zadanko div.notes {
     font-size: 11px;
     border: solid black;

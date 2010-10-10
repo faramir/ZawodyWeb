@@ -37,7 +37,7 @@
                                     ${messages.submit_address}: ${requestBean.currentSubmit.clientip}
                                 </div>
                             </c:if>
-                            <div class="address">
+                            <div class="visibility">
                                 ${messages.visible_in_ranking}: ${requestBean.currentSubmit.visibleinranking?messages.yes:messages.no}
                             </div>
                         </c:if>

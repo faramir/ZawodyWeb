@@ -355,6 +355,15 @@ img {
     text-align: right;
 }
 
+.profilform div.zadanko div.visibility {
+    font-size: 11px;
+    border: solid #c7aaf1;
+    border-width: 0px 1px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    text-align: right;
+}
+
 .profilform div.zadanko div.notes {
     font-size: 11px;
     border: solid #c7aaf1;
