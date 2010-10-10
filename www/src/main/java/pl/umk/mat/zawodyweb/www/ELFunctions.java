@@ -94,7 +94,7 @@ public class ELFunctions {
     }
 
     public static Integer maxPoints(Submits s) {
-        if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().size() == 0) {
+        if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
             return -1;
         }
         int maxPoints = 0;
@@ -109,7 +109,7 @@ public class ELFunctions {
     }
 
     public static Integer points(Submits s) {
-        if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().size() == 0) {
+        if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
             return -1;
         }
 
@@ -125,7 +125,8 @@ public class ELFunctions {
     }
 
     public static Boolean submitDateOk(Problems p) {
-        return p.getSeries().getStartdate().before(new Date()) && (p.getSeries().getEnddate() == null || p.getSeries().getEnddate().after(new Date()));
+        Date now = new Date();
+        return p.getSeries().getStartdate().before(now) && (p.getSeries().getEnddate() == null || p.getSeries().getEnddate().after(now));
     }
 
     public static String dateAndHour(Timestamp t) {

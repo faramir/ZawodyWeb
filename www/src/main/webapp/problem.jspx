@@ -39,7 +39,7 @@
                     <h:outputText value="${zw:nlToBr(requestBean.currentProblem.text)}" escape="false" />
                 </div>
                 <div class="wyslij">
-                    <h:panelGroup rendered="${zw:submitDateOk(requestBean.currentProblem)}">
+                    <h:panelGroup rendered="${zw:submitDateOk(requestBean.currentProblem) or zw:canEditProblem(rolesBean, requestBean.currentProblem.series.contests.id, requestBean.currentProblem.series.id)}">
                         <zw:problem-link_button problem="${requestBean.currentProblem}" message="${messages.send_solution}" type="submit" />
                     </h:panelGroup>
                 </div>
