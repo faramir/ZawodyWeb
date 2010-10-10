@@ -17,3 +17,8 @@ function prompt_ranking(e, args)
 {
     jPrompt('Poka\u017c ranking z daty: ', args.def, 'Poka\u017c ranking', function(r){if(r){window.location=args.link+r+'.html';}});
 }
+
+function confirm_ghost(e, args)
+{
+    jConfirm('Ustawi\u0107 '+ args.nazwa + ' na ' + args.widocznosc + '?', 'Ghost', function(r){if(r){window.location=args.link;}});
+}

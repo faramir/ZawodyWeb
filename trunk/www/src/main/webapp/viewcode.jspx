@@ -31,6 +31,16 @@
                         <div class="language">
                             ${messages.submit_language}: ${requestBean.currentSubmit.languages.name} (.${requestBean.currentSubmit.languages.extension})
                         </div>
+                        <c:if test="#{zw:canRate(rolesBean, requestBean.currentSubmit.problems.series.contests.id, requestBean.currentSubmit.problems.series.id)}">
+                            <c:if test="#{requestBean.currentSubmit.clientip!=''}">
+                                <div class="address">
+                                    ${messages.submit_address}: ${requestBean.currentSubmit.clientip}
+                                </div>
+                            </c:if>
+                            <div class="address">
+                                ${messages.visible_in_ranking}: ${requestBean.currentSubmit.visibleinranking?messages.yes:messages.no}
+                            </div>
+                        </c:if>
                         <div class="notes">
                             <h:outputText value="#{zw:nlToBr(requestBean.currentSubmit.notes)}" escape="false"/>
                         </div>
