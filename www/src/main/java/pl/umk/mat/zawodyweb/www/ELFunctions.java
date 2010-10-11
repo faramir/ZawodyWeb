@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
@@ -50,6 +51,75 @@ public class ELFunctions {
         return in.replace("\n", "\n\n");
     }
 
+    public static String submitResults(Submits s) {
+        if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
+            return "";
+        }
+
+        int worseResult = Integer.MAX_VALUE;
+        String result = "";
+
+        int nowResult;
+        for (Results r : s.getResultss()) {
+            if (testVisible(r.getTests())) {
+                nowResult=0;
+                if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.UNDEF) {
+                    worseResult = nowResult;
+                    result = " (!)";
+                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.UNKNOWN) {
+                    worseResult = nowResult;
+                    result = " (?)";
+                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.RV) {
+                    worseResult = nowResult;
+                    result = " (RV)";
+                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.CTLE) {
+                    worseResult = nowResult;
+                    result = " (CTLE)";
+                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.CE) {
+                    worseResult = nowResult;
+                    result = " (CE)";
+                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.MLE) {
+                    worseResult = nowResult;
+                    result = " (MLE)";
+                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.RE) {
+                    worseResult = nowResult;
+                    result = " (RTE)";
+                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.TLE) {
+                    worseResult = nowResult;
+                    result = " (TLE)";
+                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.WA) {
+                    worseResult = nowResult;
+                    result = " (WA)";
+                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.ACC) {
+                    worseResult = nowResult;
+                    result = "";
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public static String coloring2(Submits s) {
+        int good = 0;
+        int size = 0;
+        if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
+        } else {
+            List<Results> results = s.getResultss();
+
+            for (Results r : results) {
+                if (testVisible(r.getTests())) {
+                    if (r.getSubmitResult() == CheckerErrors.ACC) {
+                        ++good;
+                    }
+                    ++size;
+                }
+            }
+        }
+
+        return coloring(points(s) + good, maxPoints(s) + size, CheckerErrors.ACC);
+    }
+
     public static String coloring(Integer in1, Integer in2, Integer submitResult) {
         if (in2 == 0) {
             in1 = 1;
@@ -82,8 +152,8 @@ public class ELFunctions {
     }
 
     public static Boolean testVisible(Tests t) {
-        return (t.getVisibility() != null && t.getVisibility().equals(1)) ||
-                (t.getProblems().getSeries().getEnddate() != null && t.getProblems().getSeries().getEnddate().before(Calendar.getInstance().getTime()));
+        return (t.getVisibility() != null && t.getVisibility().equals(1))
+                || (t.getProblems().getSeries().getEnddate() != null && t.getProblems().getSeries().getEnddate().before(Calendar.getInstance().getTime()));
     }
 
     public static Boolean hasMaxResult(Submits s) {

@@ -43,7 +43,7 @@
                             </tr>
                         </thead>
                         <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="#{requestBean.submissionsPerPage}" >
-                            <tr style="${(submit.result==2)?zw:coloring(zw:points(submit), zw:maxPoints(submit), pl.umk.mat.zawodyweb.database.CheckerErrors.ACC):'background: #e1d4f6'}">
+                            <tr style="${(submit.result==2)?zw:coloring2(submit):'background: #e1d4f6'}">
                                 <td class="cols"><h:outputText value="#{zw:formatDateAndHour(submit.sdate, 'yyyy-MM-dd HH:mm:ss')}" /></td>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                                     <td class="cols">
