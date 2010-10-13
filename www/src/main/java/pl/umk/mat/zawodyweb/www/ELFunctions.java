@@ -62,7 +62,7 @@ public class ELFunctions {
         int nowResult;
         for (Results r : s.getResultss()) {
             if (testVisible(r.getTests())) {
-                nowResult=0;
+                nowResult = 0;
                 if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.UNDEF) {
                     worseResult = nowResult;
                     result = " (!)";
@@ -103,12 +103,17 @@ public class ELFunctions {
     public static String coloring2(Submits s) {
         int good = 0;
         int size = 0;
+        int points = 0;
+        int maxPoints = 0;
+
         if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
         } else {
             List<Results> results = s.getResultss();
 
             for (Results r : results) {
                 if (testVisible(r.getTests())) {
+                    points += r.getPoints();
+                    maxPoints += r.getTests().getMaxpoints();
                     if (r.getSubmitResult() == CheckerErrors.ACC) {
                         ++good;
                     }
@@ -117,7 +122,7 @@ public class ELFunctions {
             }
         }
 
-        return coloring(points(s) + good, maxPoints(s) + size, CheckerErrors.ACC);
+        return coloring(points * size + good, maxPoints * size + size, CheckerErrors.ACC);
     }
 
     public static String coloring(Integer in1, Integer in2, Integer submitResult) {
