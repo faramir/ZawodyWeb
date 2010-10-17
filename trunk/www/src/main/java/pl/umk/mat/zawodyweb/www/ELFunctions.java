@@ -40,7 +40,7 @@ public class ELFunctions {
     }
 
     public static String nlToBr(String in) {
-        return in.replace("\n", "<br />");
+        return in.replaceAll("\n\r*\n\r*", "<br/>\n");
     }
 
     public static String esc(String in) {
