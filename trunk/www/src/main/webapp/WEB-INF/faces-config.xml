@@ -186,7 +186,7 @@
         <from-view-id>/admin/edittest.jspx</from-view-id>
         <navigation-case>
             <from-outcome>problems</from-outcome>
-            <to-view-id>/problems.jspx</to-view-id>
+            <to-view-id>/problem/#{requestBean.temporaryProblemId}/redirect.html</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>
@@ -214,6 +214,11 @@
         <navigation-case>
             <from-outcome>problems</from-outcome>
             <to-view-id>/problems.jspx</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>del_test</from-outcome>
+            <to-view-id>/problem/#{requestBean.temporaryProblemId}/redirect.html</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>

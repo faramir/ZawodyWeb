@@ -1666,7 +1666,7 @@ public class RequestBean {
         if (s != null && rolesBean.canRate(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
             s.setVisibleinranking(!s.getVisibleinranking());
             submitsDAO.saveOrUpdate(s);
-            
+
             return "submissions";
         } else {
             return null;
@@ -1694,8 +1694,9 @@ public class RequestBean {
     public String deleteTest(@Param(name = "id", encode = true) int id) {
         Tests s = testsDAO.getById(id);
         if (s != null && rolesBean.canEditProblem(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
+            temporaryProblemId = s.getProblems().getId();
             testsDAO.delete(s);
-            return "problems";
+            return "del_test";
         } else {
             return null;
         }

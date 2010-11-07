@@ -2,8 +2,11 @@ package pl.umk.mat.zawodyweb.www;
 
 import com.sun.facelets.FaceletViewHandler;
 import java.io.IOException;
+import javax.el.ExpressionFactory;
+import javax.el.ValueExpression;
 import javax.faces.FacesException;
 import javax.faces.application.ViewHandler;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
@@ -27,10 +30,25 @@ public class FaceletErrorHandler extends FaceletViewHandler {
             logger.error("Handled RenderException:", ex);
 
             if (context.getExternalContext().getResponse() instanceof HttpServletResponse) {
-                ((HttpServletResponse) context.getExternalContext().getResponse()).sendRedirect(context.getExternalContext().getRequestContextPath()+"/error500.jsp");
+                ((HttpServletResponse) context.getExternalContext().getResponse()).sendRedirect(context.getExternalContext().getRequestContextPath() + "/error500.jsp");
             }
         } catch (IOException e) {
             logger.fatal("Could not process redirect to handle application error", e);
         }
+    }
+
+    @Override
+    public String getActionURL(FacesContext context, String viewId) {
+        String result = super.getActionURL(context, viewId);
+
+        if (result.contains("#{")) {
+            ExpressionFactory expressionFactory = context.getApplication().getExpressionFactory();
+            ValueExpression valueExpression = expressionFactory.createValueExpression(context.getELContext(), viewId, String.class);
+            ExternalContext externalContext = context.getExternalContext();
+            String contextPath = externalContext.getRequestContextPath();
+            result = contextPath + ((String) valueExpression.getValue(context.getELContext()));
+        }
+
+        return result;
     }
 }
