@@ -84,8 +84,8 @@
         <display-name>editseries_to_index</display-name>
         <from-view-id>/admin/editseries.jspx</from-view-id>
         <navigation-case>
-            <from-outcome>start</from-outcome>
-            <to-view-id>/start.jspx</to-view-id>
+            <from-outcome>problems</from-outcome>
+            <to-view-id>/problems/#{requestBean.temporaryContestId}/redirect.html</to-view-id>
             <redirect />
         </navigation-case>
     </navigation-rule>

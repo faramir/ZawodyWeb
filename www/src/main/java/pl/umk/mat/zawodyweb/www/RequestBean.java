@@ -1041,7 +1041,7 @@ public class RequestBean {
             return null;
         }
 
-        return "start";
+        return "problems";
     }
 
     public String updateUserByAdmin() {
