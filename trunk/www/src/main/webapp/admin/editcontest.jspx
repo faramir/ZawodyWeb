@@ -28,7 +28,7 @@
                         <t:saveState id="saveid" value="#{requestBean.temporaryContestId}" />
                         <div>
                             <h:outputLabel styleClass="required" for="name">${messages.contest_name}:</h:outputLabel>
-                            <h:inputText id="name" required="true" value="#{requestBean.editedContest.name}" />
+                            <h:inputText id="name" required="true" maxlength="120" value="#{requestBean.editedContest.name}" />
                             <h:message for="name" errorClass="error" />
                             <br class="clear" />
                         </div>
@@ -56,7 +56,7 @@
                         </div>
                         <div>
                             <h:outputLabel for="subtypename">${messages.contest_subtype_name}:</h:outputLabel>
-                            <h:inputText id="subtypename" required="false" value="#{requestBean.editedContest.subtypename}" />
+                            <h:inputText id="subtypename" required="false" maxlength="120" value="#{requestBean.editedContest.subtypename}" />
                             <h:message for="subtypename" errorClass="error" />
                             <br class="clear" />
                         </div>

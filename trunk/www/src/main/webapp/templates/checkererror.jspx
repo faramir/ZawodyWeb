@@ -9,4 +9,5 @@
     <h:outputText value="#{messages.errorcode_rv}" rendered="#{code == 6}" />
     <h:outputText value="#{messages.errorcode_ctle}" rendered="#{code == 7}" />
     <h:outputText value="#{messages.errorcode_unknown}" rendered="#{code == 8}" />
+    <h:outputText value="#{messages.errorcode_manual}" rendered="#{code == 9}" />
 </h:panelGroup>
