@@ -10,9 +10,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Transaction;
@@ -41,7 +41,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Tests;
 public class MainJudge {
 
     private static final org.apache.log4j.Logger logger = Logger.getLogger(MainJudge.class);
-    private static Vector<ClassInfo> classes = new Vector<ClassInfo>();
+    private static ArrayList<ClassInfo> classes = new ArrayList<ClassInfo>();
     private static Properties properties = new Properties();
     private static long delayConnect;
 
@@ -164,6 +164,7 @@ public class MainJudge {
                     TestInput testInput;
                     TestOutput testOutput;
                     boolean undefinedResult = false;
+                    boolean manualResult = false;
 
                     /* TESTING */
                     logger.info("Starting tests...");
@@ -175,6 +176,9 @@ public class MainJudge {
                         if (result.getResult() == CheckerErrors.UNDEF) {
                             undefinedResult = true;
                             break;
+                        }
+                        if (result.getResult() == CheckerErrors.MANUAL) {
+                            manualResult = true;
                         }
 
                         /* saving result to database */
@@ -197,14 +201,19 @@ public class MainJudge {
                     program.closeProgram();
 
                     /* successfully completed? */
-                    if (undefinedResult == false) {
+                    if (undefinedResult == true) {
+                        logger.error("Some of the tests got UNDEFINED result -- this should not happend.");
+                        transaction.rollback();
+                    } else if (manualResult == true) {
+                        logger.info("Saving results to database (with manual).");
+                        submit.setResult(SubmitsResultEnum.MANUAL.getCode());
+                        DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
+                        transaction.commit();
+                    } else {
                         logger.info("Saving results to database.");
                         submit.setResult(SubmitsResultEnum.DONE.getCode());
                         DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
                         transaction.commit();
-                    } else {
-                        logger.error("Some of the tests got UNDEFINED result -- this should not happend.");
-                        transaction.rollback();
                     }
                 } catch (Exception e) {
                     logger.error("Exception occurs -- rolling back.", e);
@@ -219,8 +228,9 @@ public class MainJudge {
             }
             // dalton said: "never": HibernateUtil.getSessionFactory().getCurrentSession().close();
         } finally {
-            /* closing socket (when 15!=15) */
-            sock.close();
+            if (sock != null) {
+                sock.close();
+            }
         }
     }
 

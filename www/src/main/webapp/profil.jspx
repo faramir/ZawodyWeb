@@ -15,21 +15,21 @@
                     <fieldset>
                         <div>
                             <h:outputLabel for="email_profile" styleClass="required">${messages.email}:</h:outputLabel>
-                            <h:inputText id="email_profile" required="true" value="#{requestBean.editedUser.email}">
+                            <h:inputText id="email_profile" required="true" maxlength="40" value="#{requestBean.editedUser.email}">
                             </h:inputText>
                             <h:message for="email_profile" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="firstname_profile" styleClass="required">${messages.firstname}:</h:outputLabel>
-                            <h:inputText id="firstname_profile" required="true" value="#{requestBean.editedUser.firstname}">
+                            <h:inputText id="firstname_profile" required="true" maxlength="40" value="#{requestBean.editedUser.firstname}">
                             </h:inputText>
                             <h:message for="firstname_profile" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel for="lastname_profile" styleClass="required">${messages.lastname}:</h:outputLabel>
-                            <h:inputText id="lastname_profile" required="true" value="#{requestBean.editedUser.lastname}">
+                            <h:inputText id="lastname_profile" required="true" maxlength="40" value="#{requestBean.editedUser.lastname}">
                             </h:inputText>
                             <h:message for="lastname_profile" errorClass="error" />
                             <br class="clear" />
@@ -54,7 +54,7 @@
                         </div>
                         <div>
                             <h:outputLabel for="school_profile">${messages.school}:</h:outputLabel>
-                            <h:inputText id="school_profile" required="false" value="#{requestBean.editedUser.school}">
+                            <h:inputText id="school_profile" required="false" maxlength="80" value="#{requestBean.editedUser.school}">
                             </h:inputText>
                             <br class="clear" />
                         </div>

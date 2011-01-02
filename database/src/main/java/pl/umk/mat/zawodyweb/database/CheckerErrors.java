@@ -45,4 +45,8 @@ public class CheckerErrors {
      * What exactly happened is stated in result description.
      */
     public static final int UNKNOWN = 8;
+    /**
+     * What exactly happened is stated in result description.
+     */
+    public static final int MANUAL = 9;
 }

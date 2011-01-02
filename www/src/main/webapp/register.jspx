@@ -14,7 +14,7 @@
             <fieldset>
                 <div>
                     <h:outputLabel for="login" styleClass="required">${messages.login}:</h:outputLabel>
-                    <h:inputText id="login" required="true" value="#{requestBean.newUser.login}" />
+                    <h:inputText id="login" required="true" maxlength="64" value="#{requestBean.newUser.login}" />
                     <h:message for="login" errorClass="error" />
                     <br class="clear" />
                 </div>
@@ -36,19 +36,19 @@
                 </div>
                 <div>
                     <h:outputLabel for="email" styleClass="required">${messages.email}:</h:outputLabel>
-                    <h:inputText id="email" required="true" value="#{requestBean.newUser.email}" />
+                    <h:inputText id="email" required="true" maxlength="40" value="#{requestBean.newUser.email}" />
                     <h:message for="email" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
                     <h:outputLabel for="firstname" styleClass="required">${messages.firstname}:</h:outputLabel>
-                    <h:inputText id="firstname" required="true" value="#{requestBean.newUser.firstname}" />
+                    <h:inputText id="firstname" required="true" maxlength="40" value="#{requestBean.newUser.firstname}" />
                     <h:message for="firstname" errorClass="error" />
                     <br class="clear" />
                 </div>
                 <div>
                     <h:outputLabel for="lastname" styleClass="required">${messages.lastname}:</h:outputLabel>
-                    <h:inputText id="lastname" required="true" value="#{requestBean.newUser.lastname}" />
+                    <h:inputText id="lastname" required="true" maxlength="40" value="#{requestBean.newUser.lastname}" />
                     <h:message for="lastname" errorClass="error" />
                     <br class="clear" />
                 </div>
@@ -65,7 +65,7 @@
                 </div>
                 <div>
                     <h:outputLabel for="school">${messages.school}:</h:outputLabel>
-                    <h:inputText id="school" required="false" value="#{requestBean.newUser.school}" />
+                    <h:inputText id="school" required="false" maxlength="80" value="#{requestBean.newUser.school}" />
                     <br class="clear" />
                 </div>
                 <div>

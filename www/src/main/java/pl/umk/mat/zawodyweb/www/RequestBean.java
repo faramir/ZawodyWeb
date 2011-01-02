@@ -1520,18 +1520,18 @@ public class RequestBean {
 
     }
 
-    @HttpAction(name = "submissions_series", pattern = "submissions_series/{id}")
+    @HttpAction(name = "submissions_seria", pattern = "submissions_seria/{id}")
     public String goToSubmissionsSeries(@Param(name = "id", encode = true) int id) {
-        try {
-            Series s = seriesDAO.getById(id);
-            selectContest(s.getContests().getId());
-            sessionBean.setSubmissionsSeriesId(s.getId());
-        } catch (Exception e) {
-            return "/error/404";
-        }
         if (getCurrentContest() == null || sessionBean.isShowOnlyMySubmissions() == true) {
             return "/error/404";
         } else {
+            try {
+                Series s = seriesDAO.getById(id);
+                selectContest(s.getContests().getId());
+                sessionBean.setSubmissionsSeriesId(s.getId());
+            } catch (Exception e) {
+                return "/error/404";
+            }
             sessionBean.setSubmissionsPageIndex(0);
             return "submissions";
         }

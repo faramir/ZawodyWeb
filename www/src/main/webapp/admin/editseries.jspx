@@ -41,7 +41,7 @@
                         </div>
                         <div>
                             <h:outputLabel styleClass="required" for="name">${messages.series_name}:</h:outputLabel>
-                            <h:inputText id="name" required="true" value="#{requestBean.editedSeries.name}" />
+                            <h:inputText id="name" required="true" maxlength="40" value="#{requestBean.editedSeries.name}" />
                             <h:message for="name" errorClass="error" />
                             <br class="clear" />
                         </div>

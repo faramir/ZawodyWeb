@@ -28,7 +28,7 @@
                         <t:saveState id="saveid" value="#{requestBean.temporaryProblemId}" />
                         <div>
                             <h:outputLabel styleClass="required" for="name">${messages.problem_name}:</h:outputLabel>
-                            <h:inputText id="name" required="true" value="#{requestBean.editedProblem.name}" />
+                            <h:inputText id="name" required="true" maxlength="80" value="#{requestBean.editedProblem.name}" />
                             <h:message for="name" errorClass="error" />
                             <br class="clear" />
                         </div>
@@ -63,7 +63,7 @@
                         </c:if>
                         <div>
                             <h:outputLabel styleClass="required" for="abbrev">${messages.problem_abbrev}:</h:outputLabel>
-                            <h:inputText id="abbrev" required="true" value="#{requestBean.editedProblem.abbrev}" />
+                            <h:inputText id="abbrev" required="true" maxlength="5" value="#{requestBean.editedProblem.abbrev}" />
                             <h:message for="abbrev" errorClass="error" />
                             <br class="clear" />
                         </div>
