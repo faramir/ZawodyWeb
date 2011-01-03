@@ -102,7 +102,7 @@ public class JudgesListener extends Thread {
                                      * - jesli nie bylo problemow to normalnie
                                      */
                                     if (compilerErrorHandler.canUseCompiler(compilerId) == false) {
-                                        logger.info("There were problems with compiler("+compilerId+"). Not sending submit("+submitId+").");
+                                        logger.info("There were problems with compiler(" + compilerId + "). Not sending submit(" + submitId + ").");
                                         continue;
                                     }
 
@@ -110,13 +110,14 @@ public class JudgesListener extends Thread {
                                     logger.info("Sending submit(" + submitId + ") to Judge: " + judgeHost);
                                     out.flush();
                                     in.readInt();
-                                    
+
                                     /*
                                      * TODO: po sprawdzeniu rozwiazania, gdy wynikiem nie jest DONE i MANUAL
                                      *       dodajemy informacje do JudgeManager o problemie z kompilatorem K
                                      *       i wyswietlamy stosowny komunikat
                                      */
 
+                                    s = DAOFactory.DEFAULT.buildSubmitsDAO().getById(submitId);
                                     Integer result = s.getResult();
 
                                     if (result.equals(SubmitsResultEnum.DONE.getCode())
