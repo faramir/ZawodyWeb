@@ -91,6 +91,8 @@ public class JudgesListener extends Thread {
                                 if (s.getResult().equals(SubmitsResultEnum.WAIT.getCode()) == true) {
                                     int compilerId = s.getLanguages().getClasses().getId();
 
+                                    transaction.commit();
+
                                     /*
                                      * TODO: sprawdzanie, czy dany compiler dziala dobrze
                                      *       compiler to tez uruchamiacz - nie sprawdzamy porownywacza
@@ -117,6 +119,7 @@ public class JudgesListener extends Thread {
                                      *       i wyswietlamy stosowny komunikat
                                      */
 
+                                    transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
                                     s = DAOFactory.DEFAULT.buildSubmitsDAO().getById(submitId);
                                     Integer result = s.getResult();
 
