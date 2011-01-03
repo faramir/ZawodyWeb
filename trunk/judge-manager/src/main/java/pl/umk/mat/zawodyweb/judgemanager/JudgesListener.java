@@ -25,13 +25,16 @@ public class JudgesListener extends Thread {
     private static final Logger logger = Logger.getLogger(JudgesListener.class);
     private ServerSocket judgeSocket;
     private ConcurrentLinkedQueue<Integer> submitsQueue;
+    private CompilerErrorHandler compilerErrorHandler;
     private String[] addresses;
     private long queueDelayTime;
 
-    public JudgesListener(ServerSocket judgeSocket, Properties properties, ConcurrentLinkedQueue<Integer> submitsQueue) {
-        super();
+    public JudgesListener(ServerSocket judgeSocket, Properties properties,
+            ConcurrentLinkedQueue<Integer> submitsQueue,
+            CompilerErrorHandler compilerErrorHandler) {
         this.judgeSocket = judgeSocket;
         this.submitsQueue = submitsQueue;
+        this.compilerErrorHandler = compilerErrorHandler;
         addresses = properties.getProperty("JUDGE_ADDRESSES").split("[ ]+");
         queueDelayTime = Long.parseLong(properties.getProperty("JUDGE_DELAY"));
     }
@@ -86,11 +89,43 @@ public class JudgesListener extends Thread {
                             Submits s = DAOFactory.DEFAULT.buildSubmitsDAO().getById(submitId);
                             if (s != null) {
                                 if (s.getResult().equals(SubmitsResultEnum.WAIT.getCode()) == true) {
+                                    int compilerId = s.getLanguages().getClasses().getId();
+
+                                    /*
+                                     * TODO: sprawdzanie, czy dany compiler dziala dobrze
+                                     *       compiler to tez uruchamiacz - nie sprawdzamy porownywacza
+                                     *       ...
+                                     * Nalezy sprawdzic, czy w ostatnich M minutach (w calym JudgeManager)
+                                     * wystepowalo P problemow z danym compilerem:
+                                     * - jesli tak, to nie procesujemy zadania i nie wrzucamy na liste,
+                                     *   bo i tak po 10 minutach (DELAY_PROCESS) pojawi sie znowu
+                                     * - jesli nie bylo problemow to normalnie
+                                     */
+                                    if (compilerErrorHandler.canUseCompiler(compilerId) == false) {
+                                        logger.info("There were problems with compiler("+compilerId+"). Not sending submit("+submitId+").");
+                                        continue;
+                                    }
+
                                     out.writeInt(submitId);
-                                    logger.info("Send submit(" + submitId + ") to Judge: " + judgeHost);
+                                    logger.info("Sending submit(" + submitId + ") to Judge: " + judgeHost);
                                     out.flush();
                                     in.readInt();
-                                    logger.info("Checked submit(" + submitId + ") by Judge: " + judgeHost);
+                                    
+                                    /*
+                                     * TODO: po sprawdzeniu rozwiazania, gdy wynikiem nie jest DONE i MANUAL
+                                     *       dodajemy informacje do JudgeManager o problemie z kompilatorem K
+                                     *       i wyswietlamy stosowny komunikat
+                                     */
+
+                                    Integer result = s.getResult();
+
+                                    if (result.equals(SubmitsResultEnum.DONE.getCode())
+                                            || result.equals(SubmitsResultEnum.MANUAL.getCode())) {
+                                        logger.info("Checked submit(" + submitId + ") by Judge: " + judgeHost);
+                                    } else {
+                                        logger.error("Checked submit(" + submitId + ") with ERROR(" + result + ") by Judge: " + judgeHost);
+                                        compilerErrorHandler.addCompilerError(compilerId);
+                                    }
                                 } else {
                                     logger.info("Submit(" + submitId + ") don't have WAIT(" + SubmitsResultEnum.WAIT.getCode() + ") status - it have (" + s.getResult() + ")");
                                 }
@@ -114,7 +149,6 @@ public class JudgesListener extends Thread {
                 try {
                     logger.info("Judge disconnected: " + judgeHost);
                     judgeClient.close();
-
                 } catch (IOException ex) {
                 }
             }

@@ -67,7 +67,7 @@ public class LanguageJAVA implements CompilerInterface {
         try {
             timer = new InterruptTimer();
             Process p = new ProcessBuilder(command).start();
-            long time = new Date().getTime();
+            long time = System.currentTimeMillis();
             String outputText = "";
             try {
                 timer.schedule(Thread.currentThread(), input.getTimeLimit());
@@ -80,7 +80,7 @@ public class LanguageJAVA implements CompilerInterface {
                 BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
                 outputStream.write(input.getText());
                 outputStream.close();
-                logger.debug("Waiting for program after " + (new Date().getTime() - time) + "ms.");
+                logger.debug("Waiting for program after " + (System.currentTimeMillis() - time) + "ms.");
 
                 p.waitFor();
                 threadReaderEater.join();
@@ -95,7 +95,7 @@ public class LanguageJAVA implements CompilerInterface {
                 p.destroy();
                 output.setRuntime(input.getTimeLimit());
                 output.setResult(CheckerErrors.TLE);
-                logger.debug("TLE after " + (new Date().getTime() - time) + "ms.", ex);
+                logger.debug("TLE after " + (System.currentTimeMillis() - time) + "ms.", ex);
                 return output;
             } catch (IOException ex) {
                 logger.fatal("IOException", ex);
@@ -104,7 +104,7 @@ public class LanguageJAVA implements CompilerInterface {
                 logger.fatal("Fatal Exception", ex);
                 p.destroy();
             }
-            long currentTime = new Date().getTime();
+            long currentTime = System.currentTimeMillis();
             timer.cancel();
 
             if ((int) (currentTime - time) < input.getTimeLimit()) {
