@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Logger;
 import org.hibernate.Transaction;
@@ -27,10 +27,13 @@ public class MainJudgeManager {
 
     private static final Logger logger = Logger.getLogger(MainJudgeManager.class);
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    public static ConcurrentLinkedQueue<Integer> submitsQueue;
+    private static final ConcurrentLinkedQueue<Integer> submitsQueue = new ConcurrentLinkedQueue<Integer>();
+    private static CompilerErrorHandler compilerErrorHandler;
 
     public static void main(String[] args) {
         int delayProcess;
+        int compilerErrorTime;
+        int compilerErrorCount;
         logger.info("JudgeManager start at " + sdf.format(new Date()));
 
         /* getting properties */
@@ -49,6 +52,9 @@ public class MainJudgeManager {
         properties.setProperty("JUDGE_DELAY", "2500");
 
         properties.setProperty("DELAY_PROCESS", "600000");
+
+        properties.setProperty("COMPILER_ERROR_TIME", "2700000");
+        properties.setProperty("COMPILER_ERROR_COUNT", "6");
 
         try {
             String configFile = MainJudgeManager.class.getResource(".").getPath() + "configuration.xml";
@@ -78,16 +84,31 @@ public class MainJudgeManager {
 
         logger.info("DELAY_PROCESS = " + properties.getProperty("DELAY_PROCESS"));
 
+        logger.info("COMPILER_ERROR_TIME = " + properties.getProperty("COMPILER_ERROR_TIME"));
+        logger.info("COMPILER_ERROR_COUNT = " + properties.getProperty("COMPILER_ERROR_COUNT"));
+
         try {
             delayProcess = Integer.parseInt(properties.getProperty("DELAY_PROCESS"));
         } catch (NumberFormatException ex) {
             delayProcess = 30 * 60 * 1000;
         }
 
+        try {
+            compilerErrorTime = Integer.parseInt(properties.getProperty("COMPILER_ERROR_TIME"));
+        } catch (NumberFormatException ex) {
+            compilerErrorTime = 45 * 60 * 1000;
+        }
+
+        try {
+            compilerErrorCount = Integer.parseInt(properties.getProperty("COMPILER_ERROR_COUNT"));
+        } catch (NumberFormatException ex) {
+            compilerErrorCount = 6;
+        }
+
         /* checking database */
         logger.info("Checking database for waiting submits...");
 
-        submitsQueue = new ConcurrentLinkedQueue<Integer>();
+        compilerErrorHandler = new CompilerErrorHandler(compilerErrorTime, compilerErrorCount);
 
         SubmitsDAO submitsDAO = null;
         Transaction transaction = null;
@@ -135,7 +156,7 @@ public class MainJudgeManager {
         Runtime.getRuntime().addShutdownHook(new ExitHookThread(wwwSocket, judgeSocket));
 
         /* Listening for connection from Judges */
-        new JudgesListener(judgeSocket, properties, submitsQueue).start();
+        new JudgesListener(judgeSocket, properties, submitsQueue, compilerErrorHandler).start();
 
         /* Listening for connection from WWW */
         new WWWListener(wwwSocket, properties, submitsQueue).start();
@@ -149,31 +170,26 @@ public class MainJudgeManager {
                 Thread.sleep(delayProcess);
 
                 /* WAIT */
-
                 logger.info("Checking database for solutions in WAIT state...");
                 transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
                 submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
-                for(Submits submit: submitsDAO.findByResult(SubmitsResultEnum.WAIT.getCode())) {
+                for (Submits submit : submitsDAO.findByResult(SubmitsResultEnum.WAIT.getCode())) {
                     if (!submitsQueue.contains(submit.getId())) {
                         submitsQueue.add(submit.getId());
                         logger.info("Adding submit(" + submit.getId() + ") in status WAIT, which was not in submitsQueue, to submitsQueue.");
                     }
                 }
 
-
                 transaction.commit();
 
                 /* PROCESS */
-
                 logger.info("Checking database for solutions in PROCESS state...");
-
                 transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
+                ArrayList<Integer> now = new ArrayList<Integer>();
+
                 submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
-
-                Vector<Integer> now = new Vector<Integer>();
-
                 for (Submits submit : submitsDAO.findByResult(SubmitsResultEnum.PROCESS.getCode())) {
                     used = false;
 

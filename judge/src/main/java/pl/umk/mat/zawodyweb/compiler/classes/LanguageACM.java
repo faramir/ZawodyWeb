@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package pl.umk.mat.zawodyweb.compiler.classes;
 
 import java.io.BufferedReader;
@@ -12,7 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.Properties;
-import java.util.Vector;
+import java.util.ArrayList;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
@@ -45,13 +41,19 @@ public class LanguageACM implements CompilerInterface {
 
         String login = properties.getProperty("acm_uva.login");
         String password = properties.getProperty("acm_uva.password");
+        long maxTime = 0L;
+        try {
+            maxTime = Long.parseLong(properties.getProperty("acm_uva.max_time"));
+        } catch (NumberFormatException e) {
+            maxTime = 10L * 60;
+        }
 
         HttpClient client = new HttpClient();
         GetMethod logging = new GetMethod(acmSite);
         InputStream firstGet = null;
 
         HttpClientParams params = client.getParams();
-        params.setParameter("http.useragent", "Opera/9.64 (Windows NT 6.0; U; pl) Presto/2.1.1");
+        params.setParameter("http.useragent", "Opera/9.80 (Windows NT 6.1; U; pl) Presto/2.7.62 Version/11.00");
         client.setParams(params);
 
         try {
@@ -76,9 +78,9 @@ public class LanguageACM implements CompilerInterface {
         } catch (UnsupportedEncodingException e) {
         }
         String line, name, value;
-        Vector<NameValuePair> vectorLoginData = new Vector<NameValuePair>();
-        vectorLoginData.addElement(new NameValuePair("username", login));
-        vectorLoginData.addElement(new NameValuePair("passwd", password));
+        ArrayList<NameValuePair> vectorLoginData = new ArrayList<NameValuePair>();
+        vectorLoginData.add(new NameValuePair("username", login));
+        vectorLoginData.add(new NameValuePair("passwd", password));
         try {
             line = br.readLine();
             while (line != null && !line.matches(".*class=\"mod_login\".*")) {
@@ -88,12 +90,12 @@ public class LanguageACM implements CompilerInterface {
                 if (line.matches(".*hidden.*name=\".*value=\".*")) {
                     name = line.split("name=\"")[1].split("\"")[0];
                     value = line.split("value=\"")[1].split("\"")[0];
-                    vectorLoginData.addElement(new NameValuePair(name, value)); // FIXME: check if it's neccesary: URLDecoder.decode(value, "UTF-8"));
+                    vectorLoginData.add(new NameValuePair(name, value)); // FIXME: check if it's neccesary: URLDecoder.decode(value, "UTF-8"));
                 }
                 line = br.readLine();
             }
-            vectorLoginData.addElement(new NameValuePair("remember", "yes"));
-            vectorLoginData.addElement(new NameValuePair("Submit", "Login"));
+            vectorLoginData.add(new NameValuePair("remember", "yes"));
+            vectorLoginData.add(new NameValuePair("Submit", "Login"));
         } catch (IOException e) {
             result.setResult(CheckerErrors.UNDEF);
             result.setResultDesc(e.getMessage());
@@ -173,9 +175,8 @@ public class LanguageACM implements CompilerInterface {
             return result;
         }
         sendAnswer.releaseConnection();
-        int limit = 50;
-        int limitstart = 50;
-        int counter = 0;
+        int limitRise = 50;
+        int limitOnPage = 50;
         String statusSite = "";
         String stat;
         String time;
@@ -187,10 +188,10 @@ public class LanguageACM implements CompilerInterface {
             result.setText("InterruptedException");
             return result;
         }
-        long start_time = new Date().getTime();
+        long start_time = System.currentTimeMillis();
         do {
-            if (new Date().getTime() - start_time > 7L * 60L * 1000L) {
-                logger.info("7 minutes without answer. Destroy!");
+            if (System.currentTimeMillis() - start_time > maxTime * 1000L) {
+                logger.info(String.format("%.1f minutes without answer. Destroy!", maxTime / 60));
                 result.setResult(CheckerErrors.UNDEF);
                 result.setResultDesc("Too slow to answer.. destroy");
                 result.setText("In judge queue?");
@@ -201,7 +202,7 @@ public class LanguageACM implements CompilerInterface {
             time = "";
 
             logger.info("Checking answer on ACM");
-            logging = new GetMethod("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=9&limit=" + limitstart + "&limitstart=0");
+            logging = new GetMethod("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=9&limit=" + limitOnPage + "&limitstart=0");
             firstGet = null;
             try {
                 client.executeMethod(logging);
@@ -276,15 +277,6 @@ public class LanguageACM implements CompilerInterface {
                     }
                     break;
                 } else {
-                    if (stat.matches("")) {
-                        ++counter;
-                        if (counter > 50) {
-                            result.setResult(CheckerErrors.UNDEF);
-                            result.setResultDesc("counter > 0");
-                            result.setText("... :(");
-                            return result;
-                        }
-                    }
                     try {
                         Thread.sleep(7000);
                     } catch (InterruptedException e) {
@@ -295,7 +287,7 @@ public class LanguageACM implements CompilerInterface {
                     }
                 }
             } else {
-                limitstart += limit;
+                limitOnPage += limitRise;
             }
         } while (true);
         logging.releaseConnection();
@@ -320,8 +312,7 @@ public class LanguageACM implements CompilerInterface {
     }
 
     @Override
-    public byte[] precompile(
-            byte[] code) {
+    public byte[] precompile(byte[] code) {
         return code;
     }
 

@@ -8,15 +8,16 @@
     <entry key="JUDGEMANAGER_DELAY_CONNECT">10000</entry>
 
     <entry key="COMPILED_FILENAME">a.out</entry>
-    <entry key="COMPILED_DIR">/home/konkinf/zw30/submits/compiled</entry>
+    <entry key="COMPILED_DIR">compiled</entry>
 
     <entry key="CODE_FILENAME">a</entry>
-    <entry key="CODE_DIR">/home/konkinf/zw30/submits/sources</entry>
+    <entry key="CODE_DIR">sources</entry>
 
     <entry key="COMPILE_TIMEOUT">30000</entry>
 
     <entry key="acm_uva.login">spamz</entry>
     <entry key="acm_uva.password">spamz2</entry>
+    <entry key="acm_uva.max_time">720</entry>
 
     <entry key="opss.login">zawodyweb</entry>
     <entry key="opss.password">zawody.web.2009</entry>

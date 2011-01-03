@@ -67,11 +67,12 @@ public class MainJudge {
                     logger.error("Connection to JudgeManager closed, shutting down Judge...");
                     break;
                 }
-                logger.info("Setting submit status to PROCESS...");
 
-                /* change submit status to PROCESS */
                 Transaction transaction = null;
                 try {
+                    /* change submit status to PROCESS */
+                    logger.info("Setting submit status to PROCESS...");
+
                     transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
                     Submits submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
                     submit.setResult(SubmitsResultEnum.PROCESS.getCode());
@@ -80,10 +81,11 @@ public class MainJudge {
 
                     /* getting submit */
                     transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-                    if (!sock.isConnected()) {
-                        logger.error("Connection to JudgeManager closed, shutting down Judge...");
-                        break;
-                    }
+                    //if (!sock.isConnected()) { // FIXME: po co to było?!
+                    //    logger.error("Connection to JudgeManager closed, shutting down Judge...");
+                    //    break;
+                    //}
+
                     submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
                     byte[] codeText = submit.getCode();
                     String filename = submit.getFilename();
@@ -114,11 +116,9 @@ public class MainJudge {
                             classes.get(iVectorClassInfo).setCode(compilerClasses.getCode());
                             compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
                         }
-
                     } else {
                         classes.add(new ClassInfo(compilerClasses.getId(), compilerClasses.getFilename(), compilerClasses.getCode(), compilerClasses.getVersion()));
                         compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(compilerClasses.getFilename(), compilerClasses.getCode()).newInstance();
-
                     }
                     properties.setProperty("CODEFILE_EXTENSION", submit.getLanguages().getExtension());
                     compiler.setProperties(properties);
@@ -133,6 +133,7 @@ public class MainJudge {
                             break;
                         }
                     }
+                    
                     CheckerInterface checker;
                     if (found) {
                         if (classes.get(iVectorClassInfo).getVersion() >= diffClasses.getVersion()) {
@@ -142,11 +143,9 @@ public class MainJudge {
                             classes.get(iVectorClassInfo).setCode(diffClasses.getCode());
                             checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
                         }
-
                     } else {
                         classes.add(new ClassInfo(diffClasses.getId(), diffClasses.getFilename(), diffClasses.getCode(), diffClasses.getVersion()));
                         checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(diffClasses.getFilename(), diffClasses.getCode()).newInstance();
-
                     }
 
                     /* compilation */
