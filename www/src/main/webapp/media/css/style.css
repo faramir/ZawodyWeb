@@ -16,6 +16,18 @@ a:visited, a:link {
     color: #0000FF;
 }
 
+.jclock-big {
+    color: #0000FF;
+    float: right;
+    width: 95%;
+    height: 150px;
+    text-align: center;
+    font: 65px  Verdana, 'Trebuchet MS', Arial, Sans-serif;
+    font-weight: 900;
+    padding: 50px 0;
+    margin: auto;
+}
+
 .jclock {
     color: #0000FF;
     float: right;
