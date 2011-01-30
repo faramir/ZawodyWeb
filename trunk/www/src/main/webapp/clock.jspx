@@ -6,6 +6,6 @@
     </ui:define>
     <ui:define name="pageContent">
         <p id="bigjclock" class="jclock-big"></p>
-        <rich:jQuery selector="#bigjclock" name="jclock" query="jclock({format:'%d %B %Y r. %H:%M:%S',path:'#{facesContext.externalContext.requestContextPath}'})" timing="onload"/>
+        <rich:jQuery selector="#bigjclock" name="jclock" query="jclock({format:'%d %B %Y r.&lt;br/&gt;%H:%M:%S',path:'#{facesContext.externalContext.requestContextPath}'})" timing="onload"/>
     </ui:define>
 </ui:composition>

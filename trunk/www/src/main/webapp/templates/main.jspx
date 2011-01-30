@@ -27,7 +27,7 @@
         <h:graphicImage alt="logo" url="/media/images/logo.png" />
         <p id="jclock" class="jclock">
         </p>
-        <rich:jQuery selector="#jclock" name="jclock" query="jclock({format:'%d %B %Y r. %H:%M:%S',path:'#{facesContext.externalContext.requestContextPath}'})" timing="onload"/>
+        <rich:jQuery selector="#jclock" name="jclock" query="jclock({format:'%d %B %Y r.&lt;br/&gt;%H:%M:%S',path:'#{facesContext.externalContext.requestContextPath}'})" timing="onload"/>
         <h1>${messages.wmii}</h1>
         <h2>${messages.uni}</h2>
         <div id="page">

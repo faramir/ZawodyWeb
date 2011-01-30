@@ -213,6 +213,9 @@ public class ELFunctions {
     }
 
     public static String formatDateAndTime(Date d, String format) {
+        if (d == null || format == null) {
+            return "";
+        }
         return new SimpleDateFormat(format).format(d);
     }
 
