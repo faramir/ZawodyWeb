@@ -414,6 +414,26 @@ public class RequestBean {
         return currentContestSeries;
     }
 
+    public Boolean getHaveUnansweredQuestions() {
+        if (getCurrentContest() == null) {
+            return false;
+        }
+        
+        Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Questions.class);
+        c.setProjection(Projections.rowCount());
+        c.add(Restrictions.eq("contests.id", getCurrentContest().getId()));
+        c.add(Restrictions.eq("adate", new Timestamp(0)));
+
+        if (rolesBean.canAddProblem(getCurrentContest().getId(), null) == false) {
+            c.add(Restrictions.or(Restrictions.eq("qtype", 1), Restrictions.eq("users.id", sessionBean.getCurrentUser().getId())));
+        }
+
+        Number number = (Number) c.uniqueResult();
+
+
+        return number.intValue() > 0;
+    }
+
     public List<Questions> getCurrentContestQuestions() {
         if (currentContestQuestions == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Questions.class);
