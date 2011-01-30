@@ -11,7 +11,12 @@
                 ${messages.problem_name}:
             </div>
             <div class="title">
-                <zw:problem-link problem="${requestBean.editedQuestion.problems}" message="${requestBean.editedQuestion.problems.name}" type="problem" />
+                <h:panelGroup rendered="#{question.problems == null}">
+                    <zw:contest-link id="link" contest="${question.contests}" type="problems" message="${messages.questions_general}" />
+                </h:panelGroup>
+                <h:panelGroup rendered="#{question.problems != null}">
+                    <zw:problem-link problem="#{requestBean.editedQuestion.problems}" message="#{requestBean.editedQuestion.problems.name}" type="problem" />
+                </h:panelGroup>
             </div>
 
             <div class="subject">
