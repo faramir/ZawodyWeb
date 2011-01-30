@@ -54,7 +54,7 @@
                     </li>
                 </c:if>
                 <li>
-                    <zw:contest-link contest="${requestBean.currentContest}" type="questions" message="#{messages.questions}" />
+                    <zw:contest-link contest="${requestBean.currentContest}" type="questions" message="#{messages.questions}#{requestBean.haveUnansweredQuestions?'*':''}" />
                 </li>
                 <li>
                     <zw:contest-link_button contest="${requestBean.currentContest}" type="submissions" message="#{messages.submissions}" />
