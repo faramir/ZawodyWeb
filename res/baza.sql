@@ -51,14 +51,14 @@ CREATE TABLE CONTESTS (
         name                varchar(120) unique,
         type                int,
         subtype             int DEFAULT 0,
-        subtypename         varchar(120) DEFAULT ''	
+        subtypename         varchar(120) DEFAULT '',	
         pass                varchar(32),
         startDate           timestamp,
         about               text,
         rules               text,
         tech                text,
         rankingRefreshRate  int,
-        visibility          int
+    visibility          boolean DEFAULT TRUE
 );
 
 CREATE TABLE SUBMITS ( 
