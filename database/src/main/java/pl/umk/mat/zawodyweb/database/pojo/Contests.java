@@ -76,7 +76,7 @@ public class Contests implements Serializable {
     /**
      * Attribute visibility.
      */
-    private Integer visibility;
+    private Boolean visibility = true;
     /**
      * List of Questions
      */
@@ -283,14 +283,14 @@ public class Contests implements Serializable {
      */
     @Basic
     @Column(name = "visibility")
-    public Integer getVisibility() {
+    public Boolean getVisibility() {
         return visibility;
     }
 
     /**
      * @param visibility new value for visibility
      */
-    public void setVisibility(Integer visibility) {
+    public void setVisibility(Boolean visibility) {
         this.visibility = visibility;
     }
 

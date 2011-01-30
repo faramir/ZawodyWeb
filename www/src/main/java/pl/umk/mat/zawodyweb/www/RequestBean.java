@@ -253,7 +253,18 @@ public class RequestBean {
         if (contests == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Contests.class);
             c.addOrder(Order.desc("startdate"));
-            contests = c.list();
+
+            contests = new ArrayList<Contests>();
+
+            for (Contests contest : (List<Contests>) c.list()) {
+                if (rolesBean.canAddProblem(contest.getId(), null)) {
+                    contests.add(contest);
+                } else if (rolesBean.canEditProblem(contest.getId(), null)) {
+                    contests.add(contest);
+                } else if (contest.getVisibility()) {
+                    contests.add(contest);
+                }
+            }
         }
 
         return contests;
@@ -263,7 +274,9 @@ public class RequestBean {
         if (contests == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Contests.class);
             c.addOrder(Order.desc("startdate"));
+
             contests = new ArrayList<Contests>();
+
             for (Contests contest : (List<Contests>) c.list()) {
                 if (ELFunctions.isNullOrZero(temporaryProblemId) && rolesBean.canAddProblem(contest.getId(), null)) {
                     contests.add(contest);
@@ -418,7 +431,7 @@ public class RequestBean {
         if (getCurrentContest() == null) {
             return false;
         }
-        
+
         Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Questions.class);
         c.setProjection(Projections.rowCount());
         c.add(Restrictions.eq("contests.id", getCurrentContest().getId()));
@@ -429,7 +442,6 @@ public class RequestBean {
         }
 
         Number number = (Number) c.uniqueResult();
-
 
         return number.intValue() > 0;
     }
@@ -693,6 +705,12 @@ public class RequestBean {
         if (currentContest == null) {
             if (sessionBean.getCurrentContestId() != null) {
                 currentContest = contestsDAO.getById(sessionBean.getCurrentContestId());
+
+                if (currentContest.getVisibility() == false
+                        && rolesBean.canAddProblem(currentContest.getId(), null) == false
+                        && rolesBean.canEditProblem(currentContest.getId(), null) == false) {
+                    currentContest = null;
+                }
             }
         }
 
@@ -1371,6 +1389,7 @@ public class RequestBean {
     @HttpAction(name = "problems", pattern = "problems/{id}/{title}")
     public String goToProblems(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
+
         if (getCurrentContest() == null) {
             return "/error/404";
         } else {
@@ -1610,7 +1629,10 @@ public class RequestBean {
     public String goToProblem(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         currentProblem = problemsDAO.getById(id);
 
-        if (currentProblem != null && currentProblem.getSeries().getStartdate().after(new Date()) && !rolesBean.canAddProblem(currentProblem.getSeries().getContests().getId(), null)) {
+        if (currentProblem != null
+                && (currentProblem.getSeries().getStartdate().after(new Date())
+                || currentProblem.getSeries().getContests().getVisibility() == false)
+                && !rolesBean.canAddProblem(currentProblem.getSeries().getContests().getId(), null)) {
             currentProblem = null;
         }
 
@@ -1794,10 +1816,18 @@ public class RequestBean {
         byte[] content = null;
 
         if (type.equals("pdf")) {
-            Problems p = problemsDAO.getById(id);
-            if (p != null && p.getPDF() != null) {
-                name = p.getName() + ".pdf";
-                content = p.getPDF().getPdf();
+            Problems problem = problemsDAO.getById(id);
+
+            if (problem != null
+                    && (problem.getSeries().getStartdate().after(new Date())
+                    || problem.getSeries().getContests().getVisibility() == false)
+                    && !rolesBean.canAddProblem(problem.getSeries().getContests().getId(), null)) {
+                problem = null;
+            }
+
+            if (problem != null && problem.getPDF() != null) {
+                name = problem.getName() + ".pdf";
+                content = problem.getPDF().getPdf();
                 mimetype = "application/pdf";
             }
         } else if (type.equals("code")) {
