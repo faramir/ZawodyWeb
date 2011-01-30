@@ -45,7 +45,13 @@
                         </div>
                     </h:panelGroup>
                     <div class="questions">
-                        <t:dataTable id="questions" var="question" footerClass="paginator" value="#{requestBean.currentContestQuestions}" preserveDataModel="false" rows="10" rowClasses="linia2,linia1" columnClasses="col1,col2">
+                        <t:dataTable id="questions" var="question" footerClass="paginator" value="#{requestBean.currentContestQuestions}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols,cols,cols2,cols">
+                            <h:column>
+                                <f:facet name="header">
+                                    ${messages.submission_date}
+                                </f:facet>
+                                <h:outputText value="#{zw:formatDateAndHour(question.qdate, 'yyyy-MM-dd HH:mm:ss')}" />
+                            </h:column>
                             <h:column>
                                 <f:facet name="header">
                                     ${messages.question}
@@ -64,6 +70,12 @@
                                         <zw:problem-link problem="#{question.problems}" message="#{question.problems.name}" type="problem" />
                                     </h:panelGroup>
                                 </c:catch>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    ${messages.question_answer}
+                                </f:facet>
+                                <h:outputText value="#{question.adate==null||question.adate.time==0 ? messages.no : messages.yes}"/>
                             </h:column>
                         </t:dataTable>
                     </div>

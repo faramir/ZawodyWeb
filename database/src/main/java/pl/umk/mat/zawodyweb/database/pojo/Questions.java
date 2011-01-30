@@ -60,6 +60,14 @@ public class Questions implements Serializable {
      * Attribute problems
      */
     private Problems problems;
+    /**
+     * Attribute question date.
+     */
+    private Timestamp qdate;
+    /**
+     * Attribute answer date.
+     */
+    private Timestamp adate;
 
     /**
      * @return id
@@ -141,6 +149,37 @@ public class Questions implements Serializable {
      */
     public void setQtype(Integer qtype) {
         this.qtype = qtype;
+    }
+
+     /**
+     * @return qdate
+     */
+    @Basic
+    @Column(name = "qdate")
+    public Timestamp getQdate() {
+        return qdate;
+    }
+
+    /**
+     * @param adate new value of adate
+     */
+    public void setQdate(Timestamp qdate) {
+        this.qdate = qdate;
+    }
+     /**
+     * @return adate
+     */
+    @Basic
+    @Column(name = "adate")
+    public Timestamp getAdate() {
+        return adate;
+    }
+
+    /**
+     * @param adate new value of adate
+     */
+    public void setAdate(Timestamp adate) {
+        this.adate = adate;
     }
 
     /**

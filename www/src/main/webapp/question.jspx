@@ -8,17 +8,35 @@
         <a4j:form id="formQuestion" styleClass="profilform">
             <t:saveState id="saveid" value="#{requestBean.temporaryQuestionId}" />
             <div class="subject">
+                ${messages.problem_name}:
+            </div>
+            <div class="title">
+                <zw:problem-link problem="${requestBean.editedQuestion.problems}" message="${requestBean.editedQuestion.problems.name}" type="problem" />
+            </div>
+
+            <div class="subject">
                 ${messages.question_subject}:
             </div>
             <div class="title">
                 ${requestBean.editedQuestion.subject}
             </div>
+
+            <c:if test="#{zw:canEditProblem(rolesBean, requestBean.editedQuestion.contests.id, requestBean.editedQuestion.problems.id)}">
+                <div class="subject">
+                    ${messages.submission_user}:
+                </div>
+                <div class="autor" style="text-align:center">
+                    ${requestBean.editedQuestion.users.firstname} ${requestBean.editedQuestion.users.lastname} (${requestBean.editedQuestion.users.login})
+                </div>
+            </c:if>
+
             <div class="subject">
                 ${messages.question_text}:
             </div>
             <div class="text">
                 <h:outputText value="${zw:escape(requestBean.editedQuestion.question)}" escape="false" />
             </div>
+
             <c:if test="#{zw:canEditProblem(rolesBean, requestBean.editedQuestion.contests.id, requestBean.editedQuestion.problems.id)}">
                 <div class="subject">
                     <h:outputLabel styleClass="required" for="text">${messages.question_answer}:</h:outputLabel>

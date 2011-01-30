@@ -416,8 +416,21 @@ public class RequestBean {
 
     public List<Questions> getCurrentContestQuestions() {
         if (currentContestQuestions == null) {
-            currentContestQuestions = questionsDAO.findByCriteria(Restrictions.eq("contests.id", getCurrentContest().getId()),
-                    Restrictions.or(Restrictions.eq("qtype", 1), Restrictions.eq("users.id", sessionBean.getCurrentUser().getId())));
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Questions.class);
+
+            c.add(Restrictions.eq("contests.id", getCurrentContest().getId()));
+
+            if (rolesBean.canAddProblem(getCurrentContest().getId(), null) == true) {
+                c.addOrder(Order.asc("adate"));
+                c.addOrder(Order.asc("qdate"));
+            } else {
+                c.addOrder(Order.desc("adate"));
+                c.addOrder(Order.desc("qdate"));
+
+                c.add(Restrictions.or(Restrictions.eq("qtype", 1), Restrictions.eq("users.id", sessionBean.getCurrentUser().getId())));
+            }
+
+            currentContestQuestions = c.list();
         }
 
         return currentContestQuestions;
@@ -1243,6 +1256,8 @@ public class RequestBean {
             getEditedQuestion().setProblems(problemsDAO.getById(temporaryProblemId));
             getEditedQuestion().setQtype(0);
             getEditedQuestion().setUsers(sessionBean.getCurrentUser());
+            getEditedQuestion().setQdate(new Timestamp(System.currentTimeMillis()));
+            getEditedQuestion().setAdate(new Timestamp(0));
 
             questionsDAO.save(getEditedQuestion());
 
@@ -1261,6 +1276,7 @@ public class RequestBean {
             tmp = ">".concat(tmp).concat("\n\n").concat(answer);
             getEditedQuestion().setQuestion(tmp);
             getEditedQuestion().setQtype(publicAnswer ? 1 : 0);
+            getEditedQuestion().setAdate(new Timestamp(System.currentTimeMillis()));
             questionsDAO.saveOrUpdate(getEditedQuestion());
             return "questions";
         } catch (Exception e) {

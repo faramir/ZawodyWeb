@@ -26,6 +26,7 @@ a:visited, a:link {
     font-weight: 900;
     padding: 50px 0;
     margin: auto;
+    white-space: nowrap;
 }
 
 .jclock {
@@ -35,6 +36,7 @@ a:visited, a:link {
     text-align: center;
     font: 0.9em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
     padding: 0 20px 80px 0;
+    white-space: nowrap;
 }
 
 #home h1 {
