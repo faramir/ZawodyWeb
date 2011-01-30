@@ -89,8 +89,8 @@ CREATE TABLE QUESTIONS (
         question            text,
         visibility          int,
         qtype               int,
-    qdate timestamp without time zone;
-    adate timestamp without time zone;
+    qdate timestamp without time zone,
+    adate timestamp without time zone
 );
 
 CREATE TABLE RESULTS (
