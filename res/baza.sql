@@ -88,7 +88,9 @@ CREATE TABLE QUESTIONS (
         subject             varchar(50),
         question            text,
         visibility          int,
-        qtype               int
+        qtype               int,
+    qdate timestamp without time zone;
+    adate timestamp without time zone;
 );
 
 CREATE TABLE RESULTS (
