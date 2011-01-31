@@ -7,7 +7,7 @@ CREATE TABLE USERS (
         id                  serial primary key,
         firstName           varchar(40),
         lastName            varchar(40),
-        eMail               varchar(40) unique,
+        eMail               varchar(40),
         birthDate           timestamp,
         login               varchar(64) unique,
         pass                varchar(40),

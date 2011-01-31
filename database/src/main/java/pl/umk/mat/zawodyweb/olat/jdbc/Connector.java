@@ -17,7 +17,7 @@ import pl.umk.mat.zawodyweb.olat.User;
  */
 public class Connector {
 
-    private static Log log = LogFactory.getLog(Configuration.class);
+    private static Log log = LogFactory.getLog(Connector.class);
     private String propUrl;
     private String propUsername;
     private String propPassword;
