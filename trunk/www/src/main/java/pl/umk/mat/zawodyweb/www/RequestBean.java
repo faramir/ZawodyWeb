@@ -252,7 +252,9 @@ public class RequestBean {
     public List<Contests> getContests() {
         if (contests == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Contests.class);
+//            c.addOrder(Order.desc("visibility")); // FIXME: niewidoczne na końcu, czy pomiędzy?
             c.addOrder(Order.desc("startdate"));
+            c.addOrder(Order.desc("id"));
 
             contests = new ArrayList<Contests>();
 
@@ -274,6 +276,7 @@ public class RequestBean {
         if (contests == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Contests.class);
             c.addOrder(Order.desc("startdate"));
+            c.addOrder(Order.desc("id"));
 
             contests = new ArrayList<Contests>();
 
@@ -350,7 +353,8 @@ public class RequestBean {
 
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Series.class);
             c.createCriteria("contests").add(Restrictions.eq("id", temporaryContestId));
-            c.addOrder(Order.asc("startdate"));
+            c.addOrder(Order.desc("startdate"));
+            c.addOrder(Order.desc("id"));
             contestsSeries = new ArrayList<Series>();
             for (Series serie : (List<Series>) c.list()) {
                 if (ELFunctions.isNullOrZero(temporaryProblemId) && rolesBean.canAddProblem(serie.getContests().getId(), serie.getId())) {
@@ -403,6 +407,7 @@ public class RequestBean {
                 s.add(Restrictions.le("startdate", new Date()));
             }
             s.addOrder(Order.desc("startdate"));
+            s.addOrder(Order.desc("id"));
             c.addOrder(Order.asc("abbrev"));
             submittableProblems = c.list();
         }
@@ -417,6 +422,7 @@ public class RequestBean {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Series.class);
             c.addOrder(Order.desc("startdate"));
             c.addOrder(Order.asc("enddate"));
+            c.addOrder(Order.desc("id"));
             c.add(Restrictions.eq("contests.id", getCurrentContest().getId()));
             if (!rolesBean.canAddProblem(getCurrentContest().getId(), null)) {
                 c.add(Restrictions.le("startdate", new Date()));
@@ -1812,7 +1818,6 @@ public class RequestBean {
 //
 //        return "/admin/editclass";
 //    }
-
     @HttpAction(name = "getfile", pattern = "get/{id}/{type}")
     public String getFile(@Param(name = "id", encode = true) int id, @Param(name = "type", encode = true) String type) throws IOException {
         String name = StringUtils.EMPTY;
@@ -1824,7 +1829,7 @@ public class RequestBean {
 
             if (problem != null
                     && (problem.getSeries().getStartdate().after(new Date())
-                        || problem.getSeries().getContests().getVisibility() == false)
+                    || problem.getSeries().getContests().getVisibility() == false)
                     && !rolesBean.canAddProblem(problem.getSeries().getContests().getId(), null)) {
                 problem = null;
             }
@@ -1985,11 +1990,26 @@ public class RequestBean {
             Languages language = null;
 
             if (fileName == null) {
-                if (temporaryProblemId != 0) {
+                if (temporaryProblemId == 0) {
+                    List<Problems> p = getSubmittableProblems();
+                    if (p.size() == 1) {
+                        problem = p.get(0);
+                    }
+                } else {
                     problem = problemsDAO.getById(temporaryProblemId);
                 }
-                if (temporaryLanguageId != 0) {
+
+                if (temporaryLanguageId == 0) {
+                    if (problem != null) {
+                        List<LanguagesProblems> lp = problem.getLanguagesProblemss();
+                        if (lp.size() == 1) {
+                            language = lp.get(0).getLanguages();
+                        }
+                    }
+                } else {
                     language = languagesDAO.getById(temporaryLanguageId);
+                }
+                if (problem != null && language != null) {
                     fileName = "source_" + problem.getAbbrev().replaceAll("[^A-Za-z0-9_-]", "_") + "." + language.getExtension();
                 }
             } else {

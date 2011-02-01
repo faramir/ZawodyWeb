@@ -120,6 +120,12 @@ img {
     padding: 20px 0 0 40px;
 }
 
+img.nomargin {
+    float: none;
+    margin: 0;
+    padding: 2px;
+}
+
 /* MENU */
 #top_menu {
     float: left;

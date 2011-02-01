@@ -9,6 +9,7 @@
                     <f:facet name="header">
                         ${messages.contest_name}
                     </f:facet>
+                    <h:graphicImage rendered="#{contest.visibility==false}" style="float:left" styleClass="nomargin" alt="#{messages.contest_notvisible}" title="#{messages.contest_notvisible}" url="/media/images/ghost.png" />
                     <zw:contest-link id="link" contest="${contest}" type="problems" message="#{contest.name}" />
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editcontest.html?id=#{contest.id}" rendered="#{zw:canEditContest(rolesBean, contest.id, null)}" styleClass="ikonka"><h:graphicImage alt="${messages.contest_editing}" title="${messages.contest_editing}" url="/media/images/edytuj.png" /></h:outputLink>
                     <h:outputLink value="#" rendered="#{zw:canDeleteContest(rolesBean, contest.id, null)}" styleClass="ikonka" onclick="confirm(this,{nazwa:'konkurs #{contest.name}',link:'#{facesContext.externalContext.requestContextPath}/del/#{contest.id}/contest.html'})"><h:graphicImage alt="${messages.contest_deleting}" title="${messages.contest_deleting}" url="/media/images/usun.png" /></h:outputLink>
