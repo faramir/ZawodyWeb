@@ -656,7 +656,7 @@ public class RequestBean {
         if (editedClass == null) {
             FacesContext context = FacesContext.getCurrentInstance();
 
-            if (!WWWHelper.isPost(context)) {
+            if (!WWWHelper.isPost(context) && temporaryClassId == null) {
                 try {
                     temporaryClassId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
                 } catch (Exception e) {
@@ -678,7 +678,7 @@ public class RequestBean {
         if (editedUser == null) {
             FacesContext context = FacesContext.getCurrentInstance();
 
-            if (!WWWHelper.isPost(context)) {
+            if (!WWWHelper.isPost(context) && temporaryUserId == null) {
                 try {
                     temporaryUserId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
                 } catch (Exception e) {
@@ -687,6 +687,9 @@ public class RequestBean {
             }
 
             if (ELFunctions.isNullOrZero(temporaryUserId)) {
+                if (sessionBean.getCurrentUser() == null) {
+                    return null;
+                }
                 editedUser = usersDAO.getById(sessionBean.getCurrentUser().getId());
             } else {
                 editedUser = usersDAO.getById(temporaryUserId);
@@ -1024,6 +1027,7 @@ public class RequestBean {
         try {
             try {
                 newUser.savePass(newUser.getPass());
+                newUser.setRdate(new Timestamp(System.currentTimeMillis()));
                 usersDAO.save(newUser);
             } catch (ConstraintViolationException e) {
                 String summary = messages.getString("login_exists");
@@ -1576,7 +1580,7 @@ public class RequestBean {
     }
 
     @HttpAction(name = "submissions_seria", pattern = "submissions_seria/{id}")
-    public String goToSubmissionsSeries(@Param(name = "id", encode = true) int id) {
+    public String goToSubmissionsSeries(@Param(name = "id", encode = true) Integer id) {
         if (getCurrentContest() == null || sessionBean.isShowOnlyMySubmissions() == true) {
             return "/error/404";
         } else {
@@ -1795,19 +1799,19 @@ public class RequestBean {
         return "/admin/edittest";
     }
 
-    @HttpAction(name = "edituser", pattern = "edit/{id}/user")
-    public String goToEdituser(@Param(name = "id", encode = true) int id) {
-        temporaryUserId = id;
-
-        return "/admin/edituser";
-    }
-
-    @HttpAction(name = "editclass", pattern = "edit/{id}/class")
-    public String goToEditclass(@Param(name = "id", encode = true) int id) {
-        temporaryClassId = id;
-
-        return "/admin/edituser";
-    }
+//    @HttpAction(name = "edituser", pattern = "edit/{id}/user")
+//    public String goToEdituser(@Param(name = "id", encode = true) int id) {
+//        temporaryUserId = id;
+//
+//        return "/admin/edituser";
+//    }
+//
+//    @HttpAction(name = "editclass", pattern = "edit/{id}/class")
+//    public String goToEditclass(@Param(name = "id", encode = true) int id) {
+//        temporaryClassId = id;
+//
+//        return "/admin/editclass";
+//    }
 
     @HttpAction(name = "getfile", pattern = "get/{id}/{type}")
     public String getFile(@Param(name = "id", encode = true) int id, @Param(name = "type", encode = true) String type) throws IOException {
@@ -1820,7 +1824,7 @@ public class RequestBean {
 
             if (problem != null
                     && (problem.getSeries().getStartdate().after(new Date())
-                    || problem.getSeries().getContests().getVisibility() == false)
+                        || problem.getSeries().getContests().getVisibility() == false)
                     && !rolesBean.canAddProblem(problem.getSeries().getContests().getId(), null)) {
                 problem = null;
             }
