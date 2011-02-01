@@ -294,7 +294,9 @@ public class RequestBean {
 
     public List<Roles> getRoles() {
         if (roles == null) {
-            roles = rolesDAO.findAll();
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Roles.class);
+            c.addOrder(Order.asc("id"));
+            roles = c.list();
         }
         return roles;
     }
@@ -529,6 +531,9 @@ public class RequestBean {
                     if (rolesBean.canRate(getCurrentContest().getId(), s.getId())) {
                         ratableSeries.add(s.getId());
                     }
+                }
+                if (ratableSeries.isEmpty()) {
+                    ratableSeries.add(0);
                 }
             }
 
@@ -2126,9 +2131,12 @@ public class RequestBean {
     }
 
     private void selectContest(int id) {
-        if (getCurrentContest() == null || !getCurrentContest().getId().equals(id)) {
+        if (getCurrentContest() == null || getCurrentContest().getId() != id) {
             sessionBean.setCurrentContestId(id);
             currentContest = null;
+            if (rolesBean.canRateAnySeries(getCurrentContest()) == false) {
+                sessionBean.setShowOnlyMySubmissions(true);
+            }
         }
     }
 
