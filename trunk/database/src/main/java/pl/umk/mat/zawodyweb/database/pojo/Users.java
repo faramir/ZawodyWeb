@@ -88,6 +88,18 @@ public class Users implements Serializable {
      */
     private Integer emailnotification;
     /**
+     * Attribute login date.
+     */
+    private Timestamp rdate;
+    /**
+     * Attribute login date.
+     */
+    private Timestamp ldate;
+    /**
+     * Attribute login date.
+     */
+    private Timestamp fdate;
+    /**
      * List of Questions
      */
     private List<Questions> questionss = null;
@@ -173,7 +185,7 @@ public class Users implements Serializable {
     /**
      * @return email
      */
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "email", length = 40)
     public String getEmail() {
         return email;
@@ -190,7 +202,7 @@ public class Users implements Serializable {
     /**
      * @return birthTimestamp
      */
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "birthdate")
     public Date getBirthdate() {
         return birthdate;
@@ -234,7 +246,7 @@ public class Users implements Serializable {
      * checkPass(String passToCheck)
      * @return pass hash of the password (<b>NOT</b> plaintext password)
      */
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "pass", length = 40)
     public String getPass() {
         return pass;
@@ -273,7 +285,7 @@ public class Users implements Serializable {
     /**
      * @return address
      */
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "address", length = 80)
     public String getAddress() {
         return address;
@@ -290,7 +302,7 @@ public class Users implements Serializable {
     /**
      * @return school
      */
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "school", length = 80)
     public String getSchool() {
         return school;
@@ -307,7 +319,7 @@ public class Users implements Serializable {
     /**
      * @return tutor
      */
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "tutor", length = 2147483647)
     public String getTutor() {
         return tutor;
@@ -341,7 +353,7 @@ public class Users implements Serializable {
     /**
      * @return emailnotification
      */
-    @Basic(fetch=FetchType.LAZY)
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "emailnotification")
     public Integer getEmailnotification() {
         return emailnotification;
@@ -352,6 +364,54 @@ public class Users implements Serializable {
      */
     public void setEmailnotification(Integer emailnotification) {
         this.emailnotification = emailnotification;
+    }
+
+    /**
+     * @return adate
+     */
+    @Basic
+    @Column(name = "rdate")
+    public Timestamp getRdate() {
+        return rdate;
+    }
+
+    /**
+     * @param adate new value of adate
+     */
+    public void setRdate(Timestamp rdate) {
+        this.rdate = rdate;
+    }
+
+    /**
+     * @return adate
+     */
+    @Basic
+    @Column(name = "ldate")
+    public Timestamp getLdate() {
+        return ldate;
+    }
+
+    /**
+     * @return adate
+     */
+    @Basic
+    @Column(name = "fdate")
+    public Timestamp getFdate() {
+        return fdate;
+    }
+
+    /**
+     * @param adate new value of adate
+     */
+    public void setFdate(Timestamp fdate) {
+        this.fdate = fdate;
+    }
+
+    /**
+     * @param adate new value of adate
+     */
+    public void setLdate(Timestamp ldate) {
+        this.ldate = ldate;
     }
 
     /**

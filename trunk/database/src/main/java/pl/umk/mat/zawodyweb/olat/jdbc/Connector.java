@@ -5,11 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import pl.umk.mat.zawodyweb.olat.User;
+import pl.umk.mat.zawodyweb.database.pojo.Users;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
@@ -50,8 +49,8 @@ public class Connector {
         return INSTANCE;
     }
 
-    public User getUser(String username) {
-        User user = new User();
+    public Users getUser(String username) {
+        Users user = new Users();
         user.setLogin(username);
         try {
             PreparedStatement statment = db.prepareStatement("select propname,propvalue from o_userproperty where fk_user_id=(select fk_user_id from o_bs_identity where id=(select identity_fk from o_bs_authentication where provider='OLAT' and authusername=?))");

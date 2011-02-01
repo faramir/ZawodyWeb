@@ -15,7 +15,10 @@ CREATE TABLE USERS (
         school              varchar(80),
         tutor               text,
         eMailNotification   int,
-	schooltype          varchar(16) DEFAULT '-'
+	schooltype          varchar(16) DEFAULT '-',
+    rdate               timestamp,
+    ldate               timestamp,
+    fdate               timestamp
 );
 
 CREATE TABLE ROLES (  

@@ -21,6 +21,7 @@
                     <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                         <div class="ikona">
                             <h:commandLink action="#{requestBean.noop}" title="#{messages.submissions_refresh}"><h:graphicImage alt="#{messages.submissions_refresh}" title="#{messages.submissions_refresh}" url="/media/images/reJudge.png" /></h:commandLink>
+                            <h:outputLink value="#" title="#{messages.submissions_filtering}" styleClass="ikonka" onclick="prompt(this,{nazwa:'id serii',def:'',link:'#{facesContext.externalContext.requestContextPath}/submissions_seria/'})"><h:graphicImage alt="#{messages.submissions_filtering}" title="#{messages.submissions_filtering}" url="/media/images/view.png" /></h:outputLink>
                         </div>
                         <br style="clear:both"/>
                     </c:if>
@@ -31,7 +32,7 @@
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                                     <th>${messages.submission_user}<h:outputLink value="#" title="#{messages.submissions_filtering}" styleClass="ikonka" onclick="prompt(this,{nazwa:'nazwa użytkownika',def:'#{sessionBean.currentUser.login}',link:'#{facesContext.externalContext.requestContextPath}/submissions_username/'})"><h:graphicImage alt="#{messages.submissions_filtering}" title="#{messages.submissions_filtering}" url="/media/images/view.png" /></h:outputLink></th>
                                 </c:if>
-                                <th>${messages.submission_problem}</th>
+                                <th>${messages.submission_problem}<h:outputLink rendered="#{!(requestBean.showOnlyMySubmissions)}" value="#" title="#{messages.submissions_filtering}" styleClass="ikonka" onclick="prompt(this,{nazwa:'id zadania',def:'',link:'#{facesContext.externalContext.requestContextPath}/submissions_problem/'})"><h:graphicImage alt="#{messages.submissions_filtering}" title="#{messages.submissions_filtering}" url="/media/images/view.png" /></h:outputLink></th>
                                 <th>${messages.submission_result}</th>
                                 <th class="cols2"></th>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
@@ -47,7 +48,7 @@
                                 <td class="cols"><h:outputText value="#{zw:formatDateAndHour(submit.sdate, 'yyyy-MM-dd HH:mm:ss')}" /></td>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                                     <td class="cols">
-                                        <h:outputText value="#{submit.users.login}" title="#{submit.users.firstname} #{submit.users.lastname}"/>
+                                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/submissions_username/#{submit.users.login}.html"><h:outputText value="#{submit.users.login}" title="#{submit.users.firstname} #{submit.users.lastname}"/></h:outputLink>
                                     </td>
                                 </c:if>
                                 <td class="cols"><zw:problem-link problem="${submit.problems}" message="${submit.problems.name}" type="problem" /></td>

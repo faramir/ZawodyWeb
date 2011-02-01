@@ -44,6 +44,8 @@
                             <br class="clear" />
                         </div>
                     </h:panelGroup>
+                </a4j:form>
+                <a4j:form id="listQuestions" styleClass="profilform">
                     <div class="questions">
                         <t:dataTable id="questions" var="question" footerClass="paginator" value="#{requestBean.currentContestQuestions}" preserveDataModel="false" rows="16" rowClasses="linia2,linia1" columnClasses="cols,cols,cols2,cols">
                             <h:column>
@@ -88,7 +90,6 @@
                                 </f:facet>
                             </t:dataScroller>
                         </h:panelGrid>
-
                     </div>
                 </a4j:form>
             </c:otherwise>

@@ -151,7 +151,7 @@ public class Questions implements Serializable {
         this.qtype = qtype;
     }
 
-     /**
+    /**
      * @return qdate
      */
     @Basic
@@ -161,12 +161,13 @@ public class Questions implements Serializable {
     }
 
     /**
-     * @param adate new value of adate
+     * @param qdate new value of qdate
      */
     public void setQdate(Timestamp qdate) {
         this.qdate = qdate;
     }
-     /**
+
+    /**
      * @return adate
      */
     @Basic

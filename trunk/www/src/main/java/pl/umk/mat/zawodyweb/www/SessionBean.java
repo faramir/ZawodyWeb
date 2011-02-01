@@ -4,6 +4,7 @@
  */
 package pl.umk.mat.zawodyweb.www;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
@@ -20,7 +21,6 @@ import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 import pl.umk.mat.zawodyweb.ldap.LdapConnector;
-import pl.umk.mat.zawodyweb.olat.User;
 import pl.umk.mat.zawodyweb.olat.jdbc.Connector;
 
 /**
@@ -89,6 +89,7 @@ public class SessionBean {
             Users user = null;
             if (users.isEmpty()) {
                 user = new Users();
+                user.setRdate(new Timestamp(System.currentTimeMillis()));
             } else {
                 user = users.get(0);
                 if (OPENID_PASS.equals(user.getPass()) == false) {
@@ -102,6 +103,7 @@ public class SessionBean {
             user.setLastname(openIdConsumer.getLastname());
             user.setEmail(openIdConsumer.getEmail());
             user.setPass(OPENID_PASS);
+            user.setLdate(new Timestamp(System.currentTimeMillis()));
 
             dao.saveOrUpdate(user);
 
@@ -119,14 +121,13 @@ public class SessionBean {
      * @param username
      * @return
      */
-    public Users olatSaveUser(UsersDAO dao, Users user, String username) {
-        User olatUser = Connector.getInstance().getUser(currentUser.getLogin());
-
+    public Users olatSaveUser(UsersDAO dao, Users user, Users olatUser) {
         user.setLogin(olatUser.getLogin());
         user.setFirstname(olatUser.getFirstname());
         user.setLastname(olatUser.getLastname());
         user.setEmail(olatUser.getEmail());
         user.setSchooltype(olatUser.getSchooltype());
+        user.setLdate(new Timestamp(System.currentTimeMillis()));
         user.setPass(OLAT_PASS);
 
         dao.saveOrUpdate(user);
@@ -146,6 +147,7 @@ public class SessionBean {
         user.setFirstname(ldapUser.getFirstname());
         user.setLastname(ldapUser.getLastname());
         user.setEmail(ldapUser.getEmail());
+        user.setLdate(new Timestamp(System.currentTimeMillis()));
         user.setPass(LDAP_PASS);
 
         dao.saveOrUpdate(user);
@@ -154,6 +156,10 @@ public class SessionBean {
     }
 
     public String logIn() {
+        if (loggedIn == true) {
+            return "start";
+        }
+
         FacesContext context = FacesContext.getCurrentInstance();
 
         Cookie cookie = new Cookie("login", currentUser.getLogin());
@@ -173,7 +179,8 @@ public class SessionBean {
                 if (OLAT_PASS.equals(user.getPass())) {
                     /* OLAT */
                     if (Connector.getInstance().checkPassword(currentUser.getLogin(), currentUser.getPass())) {
-                        currentUser = olatSaveUser(dao, user, currentUser.getLogin());
+                        Users olatUser = Connector.getInstance().getUser(currentUser.getLogin());
+                        currentUser = olatSaveUser(dao, user, olatUser);
                         loggedIn = true;
                     }
                 } else if (LDAP_PASS.equals(user.getPass())) {
@@ -198,19 +205,32 @@ public class SessionBean {
                     currentUser = user;
                     loggedIn = true;
                 }
+
+                if (loggedIn == false) {
+                    user.setFdate(new Timestamp(System.currentTimeMillis()));
+                    dao.saveOrUpdate(user);
+                }
             } else {
-                /* User not found */
+                /* User not found - registering */
                 Users ldapUser = null;
-                if (currentUser.getPass() != null && Connector.getInstance().checkPassword(currentUser.getLogin(), currentUser.getPass())) {
+                Users newUser = new Users();
+                newUser.setRdate(new Timestamp(System.currentTimeMillis()));
+                if (currentUser.getPass() != null
+                        && Connector.getInstance().checkPassword(currentUser.getLogin(), currentUser.getPass())) {
                     /* OLAT */
-                    currentUser = olatSaveUser(dao, new Users(), currentUser.getLogin());
+
+                    Users olatUser = Connector.getInstance().getUser(currentUser.getLogin());
+                    currentUser = olatSaveUser(dao, newUser, olatUser);
                     loggedIn = true;
-                } else if (currentUser.getAddress() != null && (ldapUser = LdapConnector.retieveUser(currentUser.getLogin(), currentUser.getPass())) != null) {
+                } else if (currentUser.getPass() != null
+                        && (ldapUser = LdapConnector.retieveUser(currentUser.getLogin(), currentUser.getPass())) != null) {
                     /* LDAP */
-                    currentUser = ldapSaveUser(dao, users.get(0), ldapUser);
+
+                    currentUser = ldapSaveUser(dao, newUser, ldapUser);
                     loggedIn = true;
                 } else {
                     /* OpenID */
+
                     String contextPath = ((HttpServletRequest) context.getExternalContext().getRequest()).getRequestURL().toString();
                     contextPath = contextPath.replaceFirst(context.getExternalContext().getRequestServletPath() + ".*$", "");
                     openIdConsumer = new OpenIdConsumer(contextPath + "/openid.html");
@@ -225,7 +245,7 @@ public class SessionBean {
             loggedIn = false;
         }
 
-        if (!loggedIn) {
+        if (loggedIn == false) {
             String summary = messages.getString("bad_login_data");
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "login", summary, null);
             return null;
