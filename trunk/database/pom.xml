@@ -29,7 +29,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <excludes>
-                    <exclude>pl/umk/mat/zawodyweb/database/xml/**</exclude>
+                    <exclude>xml/**</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -92,7 +92,7 @@
                 </executions>
                 <configuration>
                     <generatePackage>pl.umk.mat.zawodyweb.database.xml</generatePackage>
-                    <schemaDirectory>src/main/resources/pl/umk/mat/zawodyweb/database/xml</schemaDirectory>
+                    <schemaDirectory>src/main/resources/xml</schemaDirectory>
                 </configuration>
             </plugin>
         </plugins>
