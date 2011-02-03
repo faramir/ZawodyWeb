@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://zawodyweb.mat.umk.pl/"
+    xmlns:zw="http://zawodyweb.mat.umk.pl/"
+    elementFormDefault="qualified">
+
+    <xsd:complexType name="test">
+        <xsd:sequence>
+            <xsd:element name="input" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="output" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="maxpoints" minOccurs="0">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:int">
+                        <xsd:minInclusive value="0"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="timelimit" minOccurs="0">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:int">
+                        <xsd:minInclusive value="0"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="order" type="xsd:int" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>
