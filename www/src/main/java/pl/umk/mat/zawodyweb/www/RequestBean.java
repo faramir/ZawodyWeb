@@ -1361,7 +1361,7 @@ public class RequestBean {
             SubmitsUtils.getInstance().reJudge(s);
             return "/submissions";
         } else {
-            return null;
+            return "/error/404";
         }
     }
 
@@ -1373,7 +1373,7 @@ public class RequestBean {
             ProblemsUtils.getInstance().reJudge(p);
             return "/problems";
         } else {
-            return null;
+            return "/error/404";
         }
     }
 
@@ -1385,7 +1385,7 @@ public class RequestBean {
             SeriesUtils.getInstance().reJudge(s);
             return "/problems";
         } else {
-            return null;
+            return "/error/404";
         }
     }
 
@@ -1397,7 +1397,7 @@ public class RequestBean {
             ContestsUtils.getInstance().reJudge(c);
             return "/start";
         } else {
-            return null;
+            return "/error/404";
         }
     }
 
@@ -1696,7 +1696,7 @@ public class RequestBean {
             }
             return "/start";
         } else {
-            return null;
+            return "/error/404";
         }
     }
 
@@ -1706,7 +1706,7 @@ public class RequestBean {
             languagesDAO.deleteById(id);
             return "/admin/listlanguages";
         } else {
-            return null;
+            return "/error/404";
         }
     }
 
@@ -1716,7 +1716,7 @@ public class RequestBean {
             classesDAO.deleteById(id);
             return "/admin/listclasses";
         } else {
-            return null;
+            return "/error/404";
         }
     }
 
@@ -1728,7 +1728,7 @@ public class RequestBean {
             submitsDAO.deleteById(id);
             return "submissions";
         } else {
-            return null;
+            return "/error/404";
         }
     }
 
@@ -1742,7 +1742,7 @@ public class RequestBean {
 
             return "submissions";
         } else {
-            return null;
+            return "/error/404";
         }
     }
 
@@ -1759,7 +1759,7 @@ public class RequestBean {
             seriesDAO.delete(s);
             return "problems";
         } else {
-            return null;
+            return "/error/404";
         }
     }
 
@@ -1771,7 +1771,7 @@ public class RequestBean {
             testsDAO.delete(s);
             return "del_test";
         } else {
-            return null;
+            return "/error/404";
         }
     }
 
@@ -1794,7 +1794,7 @@ public class RequestBean {
             problemsDAO.delete(p);
             return "problems";
         } else {
-            return null;
+            return "/error/404";
         }
     }
 
@@ -1810,13 +1810,20 @@ public class RequestBean {
         return "/admin/edittest";
     }
 
-//    @HttpAction(name = "edituser", pattern = "edit/{id}/user")
-//    public String goToEdituser(@Param(name = "id", encode = true) int id) {
-//        temporaryUserId = id;
-//
-//        return "/admin/edituser";
-//    }
-//
+    @HttpAction(name = "edituser", pattern = "edit/{id}/user")
+    public String goToEdituser(@Param(name = "id", encode = true) String username) {
+        if (!rolesBean.canEditUsers()) {
+            return "/error/404";
+        }
+
+        try {
+            temporaryUserId = usersDAO.findByLogin(username).get(0).getId();
+            return "/admin/edituser";
+        } catch (Exception ex) {
+            return "listusers";
+        }
+    }
+
 //    @HttpAction(name = "editclass", pattern = "edit/{id}/class")
 //    public String goToEditclass(@Param(name = "id", encode = true) int id) {
 //        temporaryClassId = id;
