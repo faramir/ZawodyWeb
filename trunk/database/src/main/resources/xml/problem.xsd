@@ -5,7 +5,7 @@
     xmlns:test="http://zawodyweb.mat.umk.pl/test"
     elementFormDefault="qualified">
 
-    <xsd:include schemaLocation="tests.xsd"/>
+    <xsd:include schemaLocation="test.xsd"/>
     
     <xsd:element name="problem">
         <xsd:complexType>
@@ -71,7 +71,13 @@
                         </xsd:sequence>
                     </xsd:complexType>
                 </xsd:element>
-                <xsd:element name="tests" type="zw:tests" minOccurs="0"/>
+                <xsd:element name="tests" minOccurs="0">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="test" type="zw:test" maxOccurs="unbounded" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>

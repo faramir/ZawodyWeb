@@ -65,6 +65,7 @@ import pl.umk.mat.zawodyweb.www.util.ContestsUtils;
 import pl.umk.mat.zawodyweb.www.util.ProblemsUtils;
 import pl.umk.mat.zawodyweb.www.util.SeriesUtils;
 import pl.umk.mat.zawodyweb.www.util.SubmitsUtils;
+import pl.umk.mat.zawodyweb.www.zip.ZipFile;
 
 /**
  *
@@ -1832,62 +1833,84 @@ public class RequestBean {
 //    }
     @HttpAction(name = "getfile", pattern = "get/{id}/{type}")
     public String getFile(@Param(name = "id", encode = true) int id, @Param(name = "type", encode = true) String type) throws IOException {
-        String name = StringUtils.EMPTY;
-        String mimetype = StringUtils.EMPTY;
-        byte[] content = null;
+        try {
+            String name = StringUtils.EMPTY;
+            String mimetype = StringUtils.EMPTY;
+            byte[] content = null;
 
-        if (type.equals("pdf")) {
-            Problems problem = problemsDAO.getById(id);
+            if (type.equals("pdf")) {
+                Problems problem = problemsDAO.getById(id);
 
-            if (problem != null
-                    && (problem.getSeries().getStartdate().after(new Date())
-                    || problem.getSeries().getContests().getVisibility() == false)
-                    && !rolesBean.canAddProblem(problem.getSeries().getContests().getId(), null)) {
-                problem = null;
-            }
+                if (problem != null
+                        && (problem.getSeries().getStartdate().after(new Date())
+                        || problem.getSeries().getContests().getVisibility() == false)
+                        && !rolesBean.canEditProblem(problem.getSeries().getContests().getId(), null)) {
+                    problem = null;
+                }
 
-            if (problem != null && problem.getPDF() != null) {
-                name = problem.getName() + ".pdf";
-                content = problem.getPDF().getPdf();
-                mimetype = "application/pdf";
-            }
-        } else if (type.equals("code")) {
-            Submits s = submitsDAO.getById(id);
-            if (s.getUsers().getId().equals(sessionBean.getCurrentUser().getId()) || rolesBean.canRate(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getContests().getId())) {
-                if (s != null && s.getCode() != null) {
-                    name = s.getFilename();
-                    content = s.getCode();
+                if (problem != null && problem.getPDF() != null) {
+                    name = problem.getName() + ".pdf";
+                    content = problem.getPDF().getPdf();
+                    mimetype = "application/pdf";
+                }
+            } else if (type.equals("code")) {
+                Submits s = submitsDAO.getById(id);
+                if (s.getUsers().getId().equals(sessionBean.getCurrentUser().getId()) || rolesBean.canRate(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getContests().getId())) {
+                    if (s != null && s.getCode() != null) {
+                        name = s.getFilename();
+                        content = s.getCode();
+                        mimetype = "application/force-download";
+                    }
+                }
+            } else if (type.equals("class")) {
+                if (rolesBean.canEditAnyProblem()) {
+                    Classes c = classesDAO.getById(id);
+                    if (c != null && c.getCode() != null) {
+                        name = c.getFilename() + ".class";
+                        content = c.getCode();
+                        mimetype = "application/force-download";
+                    }
+                }
+            } else if (type.equals("problem")) {
+                Problems problem = problemsDAO.getById(id);
+
+                if (problem != null
+                        && (problem.getSeries().getStartdate().after(new Date())
+                        || problem.getSeries().getContests().getVisibility() == false)
+                        && !rolesBean.canEditProblem(problem.getSeries().getContests().getId(), null)) {
+                    problem = null;
+                }
+
+                if (problem != null) {
+                    ZipFile zip = new ZipFile();
+                    zip.setProblem(problem);
+                    content = zip.finish();
+                    name = ELFunctions.filterUri(problem.getAbbrev()) + "_" + ELFunctions.filterUri(problem.getName()) + ".zip";
                     mimetype = "application/force-download";
                 }
             }
-        } else if (type.equals("class")) {
-            if (rolesBean.canEditAnyProblem()) {
-                Classes c = classesDAO.getById(id);
-                if (c != null && c.getCode() != null) {
-                    name = c.getFilename() + ".class";
-                    content = c.getCode();
-                    mimetype = "application/force-download";
-                }
+
+            if (content != null) {
+                FacesContext context = FacesContext.getCurrentInstance();
+
+                HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+                response.setContentLength(content.length);
+                response.setContentType(mimetype);
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + name + "\"");
+                response.setHeader("Content-Description", "File Transfer");
+                response.setHeader("Content-Transfer-Encoding", "binary");
+                response.getOutputStream().write(content);
+                response.getOutputStream().flush();
+                response.getOutputStream().close();
+                context.responseComplete();
+                return null;
+            } else {
+                return "/error/404";
             }
-        }
-
-        if (content != null) {
-            FacesContext context = FacesContext.getCurrentInstance();
-
-            HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
-            response.setContentLength(content.length);
-            response.setContentType(mimetype);
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + name + "\"");
-            response.setHeader("Content-Description", "File Transfer");
-            response.setHeader("Content-Transfer-Encoding", "binary");
-            response.getOutputStream().write(content);
-            response.getOutputStream().flush();
-            response.getOutputStream().close();
-            context.responseComplete();
-            return null;
-        } else {
+        } catch (Exception ex) {
             return "/error/404";
         }
+
     }
 
     public String saveTest() {
