@@ -11,9 +11,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public class Configuration {
 
-    private static Log log = LogFactory.getLog(Configuration.class);
-    private static Properties properties;
-    private static Configuration INSTANCE = new Configuration();
+    private static final Log log = LogFactory.getLog(Configuration.class);
+    private static final Properties properties = new Properties();
+    private static final Configuration INSTANCE = new Configuration();
 
     /**
      * @return the INSTANCE
@@ -24,8 +24,6 @@ public class Configuration {
 
     private Configuration() {
         String resource = "/jdbc-olat.cfg.xml";
-
-        properties = new Properties();
 
         try {
             log.info("Reading configuration file: " + resource);

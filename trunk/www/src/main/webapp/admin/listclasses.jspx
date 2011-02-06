@@ -33,7 +33,7 @@
                         <h:column>
                             <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{class.id}/class.html" title="#{messages.class_download}" styleClass="ikonka"><h:graphicImage alt="#{messages.class_download}" title="#{messages.class_download}" url="/media/images/get.png"/></h:outputLink>
                             <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editclass.html?id=#{class.id}" title="#{messages.editclass}" styleClass="ikonka"><h:graphicImage alt="#{messages.editclass}" title="#{messages.editclass}" url="/media/images/edytuj.png" /></h:outputLink>
-                            <h:outputLink value="#" title="#{messages.delclass}" styleClass="ikonka" onclick="confirm(this,{nazwa:'klasę #{class.description}',link:'#{facesContext.externalContext.requestContextPath}/del/#{class.id}/class.html'})"><h:graphicImage alt="#{messages.delclass}" title="#{messages.delclass}" url="/media/images/usun.png" /></h:outputLink>
+                            <h:graphicImage alt="#{messages.delclass}" title="#{messages.delclass}" url="/media/images/usun.png" styleClass="click" onclick="confirm(this,{nazwa:'klasę #{class.description}',link:'#{facesContext.externalContext.requestContextPath}/del/#{class.id}/class.html'})"/>
                         </h:column>
                     </t:dataTable>
                     <div class="ikona" style="margin-left:-40px">

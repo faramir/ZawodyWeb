@@ -444,6 +444,13 @@ img.nomargin {
     border: none;
 }
 
+.profilform img.click {
+    margin: 0px;
+    padding: 0 2px 0 2px;
+    float: right;
+    cursor: pointer;
+}
+
 .profilform a.ikonka img {
     margin: 0px;
     padding: 0 2px 0 2px;

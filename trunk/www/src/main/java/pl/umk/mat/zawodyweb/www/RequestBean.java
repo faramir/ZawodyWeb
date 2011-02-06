@@ -65,7 +65,8 @@ import pl.umk.mat.zawodyweb.www.util.ContestsUtils;
 import pl.umk.mat.zawodyweb.www.util.ProblemsUtils;
 import pl.umk.mat.zawodyweb.www.util.SeriesUtils;
 import pl.umk.mat.zawodyweb.www.util.SubmitsUtils;
-import pl.umk.mat.zawodyweb.www.zip.ZipFile;
+import pl.umk.mat.zawodyweb.www.zip.UnzipProblem;
+import pl.umk.mat.zawodyweb.www.zip.ZipProblem;
 
 /**
  *
@@ -1227,6 +1228,32 @@ public class RequestBean {
         return sendSolution(temporarySource.getBytes(), null, "formSubmit:sendcode");
     }
 
+    public String uploadProblem() {
+        if (!rolesBean.canAddProblem(temporaryContestId, temporarySeriesId)) {
+            return null;
+        }
+        if (temporaryFile == null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditProblem::classfile", messages.getString("javax.faces.component.UIInput.REQUIRED"), null);
+            return null;
+        }
+
+        try {
+            Problems unzippedProblem = new UnzipProblem(getLanguages(), getDiffClasses()).getProblem(temporaryFile.getBytes());
+            Series newSeries = seriesDAO.getById(temporarySeriesId);
+
+            Problems newProblem = ProblemsUtils.getInstance().copyProblem(unzippedProblem, newSeries, unzippedProblem.getAbbrev(), unzippedProblem.getName());
+
+            selectContest(newProblem.getSeries().getContests().getId());
+        } catch (Exception e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditProblem:save", summary, null);
+            return null;
+        }
+        return "problems";
+    }
+
     public String copyProblem() {
         Integer id = temporaryProblemId;
         if ((ELFunctions.isNullOrZero(id) && !rolesBean.canEditProblem(temporaryContestId, temporarySeriesId)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditProblem(temporaryContestId, temporarySeriesId))) {
@@ -1787,6 +1814,17 @@ public class RequestBean {
         return "/admin/editproblem";
     }
 
+    @HttpAction(name = "putproblem", pattern = "put/{id}/problem")
+    public String goToPutProblem(@Param(name = "id", encode = true) int id) {
+        Series s = seriesDAO.getById(id);
+        if (s != null) {
+            temporarySeriesId = id;
+            temporaryContestId = s.getContests().getId();
+        }
+
+        return "/admin/uploadproblem";
+    }
+
     @HttpAction(name = "delproblem", pattern = "del/{id}/problem")
     public String deleteProblem(@Param(name = "id", encode = true) int id) {
         Problems p = problemsDAO.getById(id);
@@ -1882,7 +1920,7 @@ public class RequestBean {
                 }
 
                 if (problem != null) {
-                    ZipFile zip = new ZipFile();
+                    ZipProblem zip = new ZipProblem();
                     zip.setProblem(problem);
                     content = zip.finish();
                     name = ELFunctions.filterUri(problem.getAbbrev()) + "_" + ELFunctions.filterUri(problem.getName()) + ".zip";

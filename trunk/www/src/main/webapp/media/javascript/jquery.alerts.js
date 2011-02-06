@@ -30,12 +30,12 @@
 		
 		// These properties can be read/written by accessing $.alerts.propertyName from your scripts at any time
 		
-		verticalOffset: -75,                // vertical offset of the dialog from center screen, in pixels
+		verticalOffset: 0,                // vertical offset of the dialog from center screen, in pixels
 		horizontalOffset: 0,                // horizontal offset of the dialog from center screen, in pixels/
 		repositionOnResize: true,           // re-centers the dialog on window resize
 		overlayOpacity: .01,                // transparency level of overlay
 		overlayColor: '#FFF',               // base color of overlay
-		draggable: true,                    // make the dialogs draggable (requires UI Draggables plugin)
+		draggable: false,                    // make the dialogs draggable (requires UI Draggables plugin)
 		okButton: '&nbsp;Tak&nbsp;',         // text for the OK button
 		cancelButton: '&nbsp;Nie&nbsp;', // text for the Cancel button
 		dialogClass: null,                  // if specified, this class will be applied to all dialogs
@@ -82,7 +82,7 @@
 			
 			// IE6 Fix
 			var pos = ($.browser.msie && parseInt($.browser.version) <= 6 ) ? 'absolute' : 'fixed'; 
-			
+
 			$("#popup_container").css({
 				position: pos,
 				zIndex: 99999,
