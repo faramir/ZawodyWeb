@@ -51,7 +51,7 @@ public class ZipProblem {
         Problem.Tests tests = new Problem.Tests();
         xmlProblem.setTests(tests);
 
-        List<String> langs = languages.getLanguage();
+        List<String> langs = languages.getLanguages();
         for (LanguagesProblems lp : problem.getLanguagesProblemss()) {
             langs.add(lp.getLanguages().getName());
         }
@@ -84,7 +84,7 @@ public class ZipProblem {
         xmlTest.setTimelimit(test.getTimelimit());
 
         ++testsCount;
-        xmlProblem.getTests().getTest().add(xmlTest);
+        xmlProblem.getTests().getTests().add(xmlTest);
     }
 
     private void setText(String text) throws IOException {

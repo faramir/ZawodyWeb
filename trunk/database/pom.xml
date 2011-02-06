@@ -82,7 +82,6 @@
             <plugin>
                 <groupId>com.sun.tools.xjc.maven2</groupId>
                 <artifactId>maven-jaxb-plugin</artifactId>
-                <version>1.1.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -92,7 +91,9 @@
                 </executions>
                 <configuration>
                     <generatePackage>pl.umk.mat.zawodyweb.database.xml</generatePackage>
+                    <generateDirectory>${project.build.directory}/generated-sources/jaxb</generateDirectory>
                     <schemaDirectory>src/main/resources/xml</schemaDirectory>
+                    <extension>true</extension>
                 </configuration>
             </plugin>
         </plugins>

@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class UnzipProblem {
         this.diffClasses = diffClasses;
     }
 
-    public Problems getProblem(byte[] zipfile) throws IOException, JAXBException {
+    private void fillEntries(byte[] zipfile) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(zipfile);
         ZipInputStream in = new ZipInputStream(bais);
 
@@ -62,6 +63,10 @@ public class UnzipProblem {
 
             entries.put(entry.getName(), baos.toByteArray());
         }
+    }
+
+    public Problems getProblem(byte[] zipfile) throws IOException, JAXBException {
+        fillEntries(zipfile);
 
         if (entries.containsKey("problem.xml") == false) {
             throw new FileNotFoundException("Problem description file not found in zip archive: problem.xml");
@@ -81,28 +86,55 @@ public class UnzipProblem {
         problem.setPDF(getPdf(xmlProblem.getPdf()));
 
         problem.setClasses(getDiff(xmlProblem.getDiff()));
-        problem.setLanguagesProblemss(getLanguageProblem(xmlProblem.getLanguages().getLanguage()));
 
-        /*
-        Problem.Languages languages = new Problem.Languages();
-        problem.setLanguages(languages);
+        problem.setLanguagesProblemss(getLanguageProblem(xmlProblem.getLanguages().getLanguages()));
 
-        List<String> langs = languages.getLanguage();
-        for (LanguagesProblems lp : xmlProblem.getLanguagesProblemss()) {
-        langs.add(lp.getLanguages().getName());
-        }
-         */
+        problem.setTestss(getTests(xmlProblem.getTests().getTests()));
 
+        return problem;
+    }
+
+    private List<Tests> getTests(List<Test> xmlTest) throws IOException {
         List<Tests> tests = new ArrayList<Tests>();
-        for (Test test : xmlProblem.getTests().getTest()) {
+
+        for (Test test : xmlTest) {
             Tests t = getTest(test);
             if (t != null) {
                 tests.add(t);
             }
         }
-        problem.setTestss(tests);
 
-        return problem;
+        return tests;
+    }
+
+    public static void main(String[] args) throws Throwable {
+        new UnzipProblem().getTests(new byte[0]);
+    }
+
+    public List<Tests> getTests(byte[] zipfile) throws IOException, JAXBException {
+        fillEntries(zipfile);
+
+        List<Test> tests = null;
+
+        if (entries.containsKey("problem.xml") == true) {
+            Problem xmlProblem = (Problem) xmlParser.parseString(new String(entries.get("problem.xml"), "UTF-8"));
+            tests = xmlProblem.getTests().getTests();
+        } else if (entries.containsKey("tests.xml") == true) {
+            pl.umk.mat.zawodyweb.database.xml.Tests xmlTests =
+                    (pl.umk.mat.zawodyweb.database.xml.Tests) xmlParser.parseString(new String(entries.get("tests.xml"), "UTF-8"));
+            tests = xmlTests.getTests();
+        } else if (entries.containsKey("test.xml") == true) {
+            Test xmlTest = (Test) xmlParser.parseString(new String(entries.get("test.xml"), "UTF-8"));
+            tests = Arrays.asList(new Test[]{xmlTest});
+        } else {
+            throw new FileNotFoundException("Description file (problem.xml, tests.xml, test.xml) not found in zip archive");
+        }
+
+        if (tests == null) {
+            throw new NullPointerException("Tests desciption not found");
+        }
+
+        return getTests(tests);
     }
 
     private Classes getDiff(String diff) {
