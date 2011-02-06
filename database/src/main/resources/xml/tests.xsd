@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://zawodyweb.mat.umk.pl/"
+    xmlns:zw="http://zawodyweb.mat.umk.pl/"
+    xmlns:type-test="http://zawodyweb.mat.umk.pl/type-test"
+    elementFormDefault="qualified">
+
+    <xsd:include schemaLocation="type-test.xsd"/>
+    
+    <xsd:element name="tests">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="test" type="zw:type-test" maxOccurs="unbounded" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

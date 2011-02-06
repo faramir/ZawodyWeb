@@ -2,10 +2,10 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://zawodyweb.mat.umk.pl/"
     xmlns:zw="http://zawodyweb.mat.umk.pl/"
-    xmlns:test="http://zawodyweb.mat.umk.pl/test"
+    xmlns:type-test="http://zawodyweb.mat.umk.pl/type-test"
     elementFormDefault="qualified">
 
-    <xsd:include schemaLocation="test.xsd"/>
+    <xsd:include schemaLocation="type-test.xsd"/>
     
     <xsd:element name="problem">
         <xsd:complexType>
@@ -74,7 +74,7 @@
                 <xsd:element name="tests" minOccurs="0">
                     <xsd:complexType>
                         <xsd:sequence>
-                            <xsd:element name="test" type="zw:test" maxOccurs="unbounded" minOccurs="0"/>
+                            <xsd:element name="test" type="zw:type-test" maxOccurs="unbounded" minOccurs="0"/>
                         </xsd:sequence>
                     </xsd:complexType>
                 </xsd:element>
