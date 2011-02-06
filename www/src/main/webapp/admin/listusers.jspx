@@ -11,7 +11,7 @@
             </c:when>
             <c:otherwise>
                 <a4j:form id="listUsers" styleClass="profilform">
-                    <h:outputLink value="#" title="#{messages.edituser}" styleClass="ikonka" onclick="prompt_user(this,{def:'#{sessionBean.currentUser.login}',link:'#{facesContext.externalContext.requestContextPath}/edit/',suffix:'/user'})"><h:graphicImage alt="#{messages.edituser}" title="#{messages.edituser}" url="/media/images/view.png" /></h:outputLink>
+                    <h:graphicImage alt="#{messages.edituser}" title="#{messages.edituser}" url="/media/images/view.png" styleClass="click" onclick="prompt_user(this,{def:'#{sessionBean.currentUser.login}',link:'#{facesContext.externalContext.requestContextPath}/edit/',suffix:'/user'})"/>
                     <t:dataTable id="users" var="user" footerClass="paginator" styleClass="seria" value="#{requestBean.users}" preserveDataModel="false" rows="96" rowClasses="linia2,linia1" columnClasses="cols">
                         <h:column>
                             <f:facet name="header">

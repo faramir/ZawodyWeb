@@ -32,7 +32,7 @@
                         </h:column>
                         <h:column>
                             <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editlanguage.html?id=#{language.id}" title="#{messages.editlanguage}" styleClass="ikonka"><h:graphicImage alt="#{messages.editlanguage}" title="#{messages.editlanguage}" url="/media/images/edytuj.png" /></h:outputLink>
-                            <h:outputLink value="#" title="#{messages.dellanguage}" styleClass="ikonka" onclick="confirm(this,{nazwa:'język #{language.name}',link:'#{facesContext.externalContext.requestContextPath}/del/#{language.id}/language.html'})"><h:graphicImage alt="#{messages.dellanguage}" title="#{messages.dellanguage}" url="/media/images/usun.png" /></h:outputLink>
+                            <h:graphicImage alt="#{messages.dellanguage}" title="#{messages.dellanguage}" url="/media/images/usun.png" styleClass="click" onclick="confirm(this,{nazwa:'język #{language.name}',link:'#{facesContext.externalContext.requestContextPath}/del/#{language.id}/language.html'})"/>
                         </h:column>
                     </t:dataTable>
                     <div class="ikona" style="margin-left:-40px">

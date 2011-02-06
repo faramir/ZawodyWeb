@@ -40,7 +40,7 @@ public class ProblemsUtils {
         } else {
             destinationProblem.setName(name);
         }
-        
+
         destinationProblem.setClasses(sourceProblem.getClasses());
         destinationProblem.setMemlimit(sourceProblem.getMemlimit());
         destinationProblem.setCodesize(sourceProblem.getCodesize());
@@ -57,17 +57,17 @@ public class ProblemsUtils {
         destinationProblem.setSeries(destinationSerie);
         destinationProblem.setText(sourceProblem.getText());
         DAOFactory.DEFAULT.buildProblemsDAO().saveOrUpdate(destinationProblem);
-        List<LanguagesProblems> findByProblemsid = DAOFactory.DEFAULT.buildLanguagesProblemsDAO().findByProblemsid(sourceProblem.getId());
+
         LanguagesProblemsDAO languagesProblemsDAO = DAOFactory.DEFAULT.buildLanguagesProblemsDAO();
-        for (LanguagesProblems oldLanguage : findByProblemsid) {
+        for (LanguagesProblems oldLanguage : sourceProblem.getLanguagesProblemss()) {
             LanguagesProblems newLanguage = new LanguagesProblems();
             newLanguage.setLanguages(oldLanguage.getLanguages());
             newLanguage.setProblems(destinationProblem);
             languagesProblemsDAO.saveOrUpdate(newLanguage);
         }
-        List<Tests> findByProblemsid1 = DAOFactory.DEFAULT.buildTestsDAO().findByProblemsid(sourceProblem.getId());
+
         TestsDAO testsDAO = DAOFactory.DEFAULT.buildTestsDAO();
-        for (Tests oldTest : findByProblemsid1) {
+        for (Tests oldTest : sourceProblem.getTestss()) {
             Tests newTest = new Tests();
             newTest.setInput(oldTest.getInput());
             newTest.setMaxpoints(oldTest.getMaxpoints());
@@ -78,6 +78,7 @@ public class ProblemsUtils {
             newTest.setVisibility(oldTest.getVisibility());
             testsDAO.saveOrUpdate(newTest);
         }
+
         /*
          * FIXME: Connection: Tests <--> Results is broken in new Result(?)
          */

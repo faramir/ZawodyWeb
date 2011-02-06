@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package pl.umk.mat.zawodyweb.ldap;
 
 import java.io.InputStream;
@@ -16,9 +15,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LdapConfiguration {
 
-    private static Log log = LogFactory.getLog(LdapConfiguration.class);
-    private static Properties properties;
-    private static LdapConfiguration INSTANCE = new LdapConfiguration();
+    private static final Log log = LogFactory.getLog(LdapConfiguration.class);
+    private static final LdapConfiguration INSTANCE = new LdapConfiguration();
+    private static final Properties properties = new Properties();
 
     /**
      * @return the INSTANCE
@@ -29,8 +28,6 @@ public class LdapConfiguration {
 
     private LdapConfiguration() {
         String resource = "/ldap.cfg.xml";
-
-        properties = new Properties();
 
         try {
             log.info("Reading configuration file: " + resource);
@@ -64,5 +61,4 @@ public class LdapConfiguration {
 
         return stream;
     }
-
 }

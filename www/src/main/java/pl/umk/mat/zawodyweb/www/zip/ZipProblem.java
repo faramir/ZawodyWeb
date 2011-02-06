@@ -17,7 +17,7 @@ import pl.umk.mat.zawodyweb.database.xml.Test;
  *
  * @author faramir
  */
-public class ZipFile {
+public class ZipProblem {
 
     private static final XmlParser xmlParser = new XmlParser();
     private ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -26,7 +26,7 @@ public class ZipFile {
     private int testsCount;
     private Problem xmlProblem;
 
-    public ZipFile() {
+    public ZipProblem() {
         out = new ZipOutputStream(baos);
         out.setMethod(ZipOutputStream.DEFLATED);
         out.setLevel(7);
@@ -67,13 +67,13 @@ public class ZipFile {
         String inputFile = String.format("in%02d.txt", testsCount);
         entry = new ZipEntry(inputFile);
         out.putNextEntry(entry);
-        out.write(test.getInput().getBytes());
+        out.write(test.getInput().getBytes("UTF-8"));
         out.closeEntry();
 
         String outputFile = String.format("out%02d.txt", testsCount);
         entry = new ZipEntry(outputFile);
         out.putNextEntry(entry);
-        out.write(test.getOutput().getBytes());
+        out.write(test.getOutput().getBytes("UTF-8"));
         out.closeEntry();
 
         Test xmlTest = new Test();
@@ -91,7 +91,7 @@ public class ZipFile {
         String textFile = "problem.html";
         ZipEntry entry = new ZipEntry(textFile);
         out.putNextEntry(entry);
-        out.write(text.getBytes());
+        out.write(text.getBytes("UTF-8"));
         out.closeEntry();
 
         xmlProblem.setText(textFile);
@@ -114,7 +114,7 @@ public class ZipFile {
     public byte[] finish() throws IOException, JAXBException {
         ZipEntry entry = new ZipEntry("problem.xml");
         out.putNextEntry(entry);
-        out.write(xmlParser.toString(xmlProblem).getBytes());
+        out.write(xmlParser.toString(xmlProblem).getBytes("UTF-8"));
         out.closeEntry();
 
         out.close();
