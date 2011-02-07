@@ -1234,7 +1234,7 @@ public class RequestBean {
         }
         if (temporaryFile == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditProblem::classfile", messages.getString("javax.faces.component.UIInput.REQUIRED"), null);
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditProblem::problemfile", messages.getString("javax.faces.component.UIInput.REQUIRED"), null);
             return null;
         }
 
@@ -1245,6 +1245,33 @@ public class RequestBean {
             Problems newProblem = ProblemsUtils.getInstance().copyProblem(unzippedProblem, newSeries, unzippedProblem.getAbbrev(), unzippedProblem.getName());
 
             selectContest(newProblem.getSeries().getContests().getId());
+        } catch (Exception e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditProblem:save", summary, null);
+            return null;
+        }
+        return "problems";
+    }
+
+    public String uploadTest() {
+        if (!rolesBean.canEditProblem(temporaryContestId, temporarySeriesId)) {
+            return null;
+        }
+
+        if (temporaryFile == null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditProblem::testfile", messages.getString("javax.faces.component.UIInput.REQUIRED"), null);
+            return null;
+        }
+
+        try {
+            List<Tests> tests = new UnzipProblem().getTests(temporaryFile.getBytes());
+            Problems problem = problemsDAO.getById(temporaryProblemId);
+            for (Tests test : tests) {
+                test.setProblems(problem);
+                testsDAO.saveOrUpdate(test);
+            }
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
@@ -1825,6 +1852,18 @@ public class RequestBean {
         return "/admin/uploadproblem";
     }
 
+    @HttpAction(name = "puttest", pattern = "put/{id}/test")
+    public String goToPutTest(@Param(name = "id", encode = true) int id) {
+        Problems p = problemsDAO.getById(id);
+        if (p != null) {
+            temporaryProblemId = id;
+            temporarySeriesId = p.getSeries().getId();
+            temporaryContestId = p.getSeries().getContests().getId();
+        }
+
+        return "/admin/uploadtest";
+    }
+
     @HttpAction(name = "delproblem", pattern = "del/{id}/problem")
     public String deleteProblem(@Param(name = "id", encode = true) int id) {
         Problems p = problemsDAO.getById(id);
@@ -1924,6 +1963,19 @@ public class RequestBean {
                     zip.setProblem(problem);
                     content = zip.finish();
                     name = ELFunctions.filterUri(problem.getAbbrev()) + "_" + ELFunctions.filterUri(problem.getName()) + ".zip";
+                    mimetype = "application/force-download";
+                }
+            } else if (type.equals("test")) {
+                Tests test = testsDAO.getById(id);
+                Problems problem = test.getProblems();
+                if (test != null && !rolesBean.canEditProblem(problem.getSeries().getContests().getId(), null)) {
+                    test = null;
+                }
+                if (test != null) {
+                    ZipProblem zip = new ZipProblem();
+                    zip.setTest(test);
+                    content = zip.finish();
+                    name = ELFunctions.filterUri(problem.getAbbrev()) + "_" + test.getTestorder() + ".zip";
                     mimetype = "application/force-download";
                 }
             }

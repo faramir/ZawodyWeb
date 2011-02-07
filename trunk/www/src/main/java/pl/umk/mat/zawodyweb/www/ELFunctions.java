@@ -252,4 +252,15 @@ public class ELFunctions {
     public static String getSubmitCodeString(Submits submits) {
         return new String(submits.getCode());
     }
+
+    public static Integer getStringLength(String s) {
+        return s.length();
+    }
+
+    public static String getPrefix(String s, Integer length) {
+        if (length > s.length()) {
+            return s;
+        }
+        return s.substring(0, length);
+    }
 }
