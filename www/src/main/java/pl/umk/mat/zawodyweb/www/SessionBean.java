@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.openid4java.discovery.Identifier;
 import org.restfaces.annotation.HttpAction;
 import org.restfaces.annotation.Instance;
@@ -30,6 +31,7 @@ import pl.umk.mat.zawodyweb.olat.jdbc.Connector;
 @Instance("#{sessionBean}")
 public class SessionBean {
 
+    private static final Logger logger = Logger.getLogger(SessionBean.class);
     private final String OLAT_PASS = "OLAT";
     private final String LDAP_PASS = "LDAP";
     private final String OPENID_PASS = "OPENID";
@@ -241,7 +243,8 @@ public class SessionBean {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            logger.error("Exception while logging in as <" + currentUser.getLogin() + ">", ex);
             loggedIn = false;
         }
 
