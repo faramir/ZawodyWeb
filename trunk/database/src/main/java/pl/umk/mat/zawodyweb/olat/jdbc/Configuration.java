@@ -13,16 +13,8 @@ public class Configuration {
 
     private static final Log log = LogFactory.getLog(Configuration.class);
     private static final Properties properties = new Properties();
-    private static final Configuration INSTANCE = new Configuration();
 
-    /**
-     * @return the INSTANCE
-     */
-    public static Configuration getINSTANCE() {
-        return INSTANCE;
-    }
-
-    private Configuration() {
+    static {
         String resource = "/jdbc-olat.cfg.xml";
 
         try {

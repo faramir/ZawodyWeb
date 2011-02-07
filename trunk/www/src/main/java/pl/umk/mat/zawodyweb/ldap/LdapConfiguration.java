@@ -16,17 +16,9 @@ import org.apache.commons.logging.LogFactory;
 public class LdapConfiguration {
 
     private static final Log log = LogFactory.getLog(LdapConfiguration.class);
-    private static final LdapConfiguration INSTANCE = new LdapConfiguration();
     private static final Properties properties = new Properties();
 
-    /**
-     * @return the INSTANCE
-     */
-    public static LdapConfiguration getINSTANCE() {
-        return INSTANCE;
-    }
-
-    private LdapConfiguration() {
+    static {
         String resource = "/ldap.cfg.xml";
 
         try {
