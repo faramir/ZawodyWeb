@@ -28,14 +28,26 @@
                         <t:saveState id="saveid" value="#{requestBean.temporaryTestId}" />
                         <div>
                             <h:outputLabel styleClass="required" for="input">${messages.test_input}:</h:outputLabel>
-                            <h:inputTextarea id="input" styleClass="bigHeight" value="#{requestBean.editedTest.input}">
-                            </h:inputTextarea>
+                            <c:choose>
+                                <c:when test="#{zw:length(requestBean.editedTest.input) le 61440}">
+                                    <h:inputTextarea id="input" styleClass="bigHeight" value="#{requestBean.editedTest.input}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <h:inputTextarea id="input" styleClass="bigHeight" readonly="true" value="#{messages.testlimit_exceeded} (#{zw:length(requestBean.editedTest.input)} B): #{zw:getPrefix(requestBean.editedTest.input, 1024)}..."/>
+                                </c:otherwise>
+                            </c:choose>
                             <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel styleClass="required" for="output">${messages.test_output}:</h:outputLabel>
-                            <h:inputTextarea id="output" styleClass="bigHeight" value="#{requestBean.editedTest.output}">
-                            </h:inputTextarea>
+                            <c:choose>
+                                <c:when test="#{zw:length(requestBean.editedTest.output) le 61440}">
+                                    <h:inputTextarea id="output" styleClass="bigHeight" value="#{requestBean.editedTest.output}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <h:inputTextarea id="output" styleClass="bigHeight" readonly="true" value="#{messages.testlimit_exceeded} (#{zw:length(requestBean.editedTest.output)} B): #{zw:getPrefix(requestBean.editedTest.output, 1024)}..."/>
+                                </c:otherwise>
+                            </c:choose>
                             <br class="clear" />
                         </div>
                         <div>

@@ -25,6 +25,7 @@ public class ZipProblem {
     private ZipOutputStream out;
     private int testsCount;
     private Problem xmlProblem;
+    private Test xmlTest;
 
     public ZipProblem() {
         out = new ZipOutputStream(baos);
@@ -32,7 +33,19 @@ public class ZipProblem {
         out.setLevel(7);
     }
 
+    public void setTest(Tests test) throws IOException {
+        if (test.getTestorder() != null) {
+            testsCount = test.getTestorder();
+        } else {
+            testsCount = 0;
+        }
+        xmlProblem = null;
+        xmlTest = addTest(test);
+    }
+
     public void setProblem(Problems problem) throws IOException {
+        testsCount = 0;
+        xmlTest = null;
         xmlProblem = new Problem();
 
         xmlProblem.setName(problem.getName());
@@ -42,8 +55,8 @@ public class ZipProblem {
         xmlProblem.setDiff(problem.getClasses().getDescription());
         xmlProblem.setVisible(problem.getVisibleinranking());
 
-        setText(problem.getText());
-        setPDF(problem.getPDF());
+        xmlProblem.setText(setText(problem.getText()));
+        xmlProblem.setPdf(setPDF(problem.getPDF()));
 
         Problem.Languages languages = new Problem.Languages();
         xmlProblem.setLanguages(languages);
@@ -57,11 +70,12 @@ public class ZipProblem {
         }
 
         for (Tests test : problem.getTestss()) {
-            addTest(test);
+            xmlProblem.getTests().getTests().add(addTest(test));
+            ++testsCount;
         }
     }
 
-    private void addTest(Tests test) throws IOException {
+    private Test addTest(Tests test) throws IOException {
         ZipEntry entry;
 
         String inputFile = String.format("in%02d.txt", testsCount);
@@ -76,30 +90,29 @@ public class ZipProblem {
         out.write(test.getOutput().getBytes("UTF-8"));
         out.closeEntry();
 
-        Test xmlTest = new Test();
-        xmlTest.setInput(inputFile);
-        xmlTest.setOutput(outputFile);
-        xmlTest.setMaxpoints(test.getMaxpoints());
-        xmlTest.setOrder(test.getTestorder());
-        xmlTest.setTimelimit(test.getTimelimit());
+        Test xTest = new Test();
+        xTest.setInput(inputFile);
+        xTest.setOutput(outputFile);
+        xTest.setMaxpoints(test.getMaxpoints());
+        xTest.setOrder(test.getTestorder());
+        xTest.setTimelimit(test.getTimelimit());
 
-        ++testsCount;
-        xmlProblem.getTests().getTests().add(xmlTest);
+        return xTest;
     }
 
-    private void setText(String text) throws IOException {
+    private String setText(String text) throws IOException {
         String textFile = "problem.html";
         ZipEntry entry = new ZipEntry(textFile);
         out.putNextEntry(entry);
         out.write(text.getBytes("UTF-8"));
         out.closeEntry();
 
-        xmlProblem.setText(textFile);
+        return textFile;
     }
 
-    private void setPDF(PDF pdf) throws IOException {
+    private String setPDF(PDF pdf) throws IOException {
         if (pdf == null) {
-            return;
+            return null;
         }
 
         String pdfFile = "problem.pdf";
@@ -108,14 +121,21 @@ public class ZipProblem {
         out.write(pdf.getPdf());
         out.closeEntry();
 
-        xmlProblem.setPdf(pdfFile);
+        return pdfFile;
     }
 
     public byte[] finish() throws IOException, JAXBException {
-        ZipEntry entry = new ZipEntry("problem.xml");
-        out.putNextEntry(entry);
-        out.write(xmlParser.toString(xmlProblem).getBytes("UTF-8"));
-        out.closeEntry();
+        if (xmlProblem != null) {
+            ZipEntry entry = new ZipEntry("problem.xml");
+            out.putNextEntry(entry);
+            out.write(xmlParser.toString(xmlProblem).getBytes("UTF-8"));
+            out.closeEntry();
+        } else if (xmlTest != null) {
+            ZipEntry entry = new ZipEntry("test.xml");
+            out.putNextEntry(entry);
+            out.write(xmlParser.toString(xmlTest).getBytes("UTF-8"));
+            out.closeEntry();
+        }
 
         out.close();
 
