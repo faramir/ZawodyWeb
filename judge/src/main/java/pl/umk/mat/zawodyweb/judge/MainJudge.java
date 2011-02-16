@@ -133,7 +133,7 @@ public class MainJudge {
                             break;
                         }
                     }
-                    
+
                     CheckerInterface checker;
                     if (found) {
                         if (classes.get(iVectorClassInfo).getVersion() >= diffClasses.getVersion()) {
@@ -171,9 +171,17 @@ public class MainJudge {
                         logger.info("Test " + test.getTestorder() + " started.");
                         testInput = new TestInput(test.getInput(), test.getMaxpoints(), test.getTimelimit(), submit.getProblems().getMemlimit());
                         testOutput = new TestOutput(test.getOutput());
+                        /*
+                         * tutaj przydaloby sie wykonywanie w petli,
+                         * poki checker.check() nie skonczy liczyc,
+                         * ustawianie statusu na progress (np. co 10 sekund - to ustawienia)..
+                         *
+                         * ale czy mozna otworzyc druga transakcje?
+                         */
                         CheckerResult result = checker.check(program, testInput, testOutput);
                         if (result.getResult() == CheckerErrors.UNDEF) {
                             undefinedResult = true;
+                            logger.info("Test " + test.getTestorder() + " has result UNDEFINDED. Stopping.");
                             break;
                         }
                         if (result.getResult() == CheckerErrors.MANUAL) {
@@ -192,7 +200,7 @@ public class MainJudge {
                         dbResult.setSubmits(submit);
                         dbResult.setTests(test);
                         DAOFactory.DEFAULT.buildResultsDAO().save(dbResult);
-                        logger.info("Test " + test.getTestorder() + " finished.");
+                        logger.info("Test " + test.getTestorder() + " finished with result " + result.getResult() + "(" + result.getDescription() + ").");
                     }
 
                     /* finish testing */

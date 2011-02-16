@@ -2,10 +2,10 @@
                 xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
                 xmlns:zw="http://zawodyweb.mat.umk.pl/">
     <ui:define name="pageTitle">
-        ${messages.about_zawodyweb}
+        ${messages.clock}
     </ui:define>
     <ui:define name="pageContent">
-        <p id="bigjclock" class="jclock-big"></p>
-        <rich:jQuery selector="#bigjclock" name="jclock" query="jclock({format:'%d %B %Y r.&lt;br/&gt;%H:%M:%S',path:'#{facesContext.externalContext.requestContextPath}'})" timing="onload"/>
+        <p id="jcountdown" class="jclock-big" title="#{zw:formatDateAndHour(requestBean.temporaryDate, 'yyyy-MM-dd HH:mm')}"></p>
+        <rich:jQuery selector="#jcountdown" name="jcountdown" query="jcountdown({endDate:'#{requestBean.temporaryDate.time}',endString:'#{messages.countdown_end}',path:'#{facesContext.externalContext.requestContextPath}'})" timing="onload"/>
     </ui:define>
 </ui:composition>

@@ -290,4 +290,12 @@
             <to-view-id>/viewcode.jspx</to-view-id>
         </navigation-case>
     </navigation-rule>
+    <navigation-rule>
+        <display-name>goToClock</display-name>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>clock</from-outcome>
+            <to-view-id>/clock.jspx</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 </faces-config>

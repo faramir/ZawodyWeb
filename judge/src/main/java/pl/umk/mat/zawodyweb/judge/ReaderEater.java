@@ -5,7 +5,6 @@
 package pl.umk.mat.zawodyweb.judge;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 
 /**
  *
