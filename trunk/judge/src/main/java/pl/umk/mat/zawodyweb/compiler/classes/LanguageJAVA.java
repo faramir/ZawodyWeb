@@ -12,7 +12,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 import javax.tools.JavaCompiler;
@@ -54,7 +54,7 @@ public class LanguageJAVA implements CompilerInterface {
         }
         BufferedReader inputStream = null;
         System.gc();
-        ArrayList<String> command = new ArrayList<String>(Arrays.asList("java", "-Xmx" + input.getMemoryLimit() + "m",
+        List<String> command = new ArrayList<String>(Arrays.asList(System.getProperty("java.home") + "/bin/java", "-Xmx" + input.getMemoryLimit() + "m",
                 "-Xms" + input.getMemoryLimit() + "m", "-Xss" + input.getMemoryLimit() + "m"));
         if (!security.isEmpty()) {
             command.add("-Djava.security.manager");
@@ -63,9 +63,31 @@ public class LanguageJAVA implements CompilerInterface {
         command.add("-cp");
         command.add(path.substring(0, path.lastIndexOf(File.separator)));
         command.add(path.substring(path.lastIndexOf(File.separator) + 1, path.lastIndexOf(".")));
-        InterruptTimer timer = null;
+        if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
+            StringBuilder sb = new StringBuilder();
+            for (String s : command) {
+                sb.append("'");
+                sb.append(s);
+                sb.append("' ");
+            }
+            command = Arrays.asList("bash", "-c", "ulimit -t " + (5 + input.getTimeLimit() / 1000) + " && " + sb.toString() + "");
+            //command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && " + sb.toString() + "");
+        } else {
+            logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
+        }
+        /*{
+         *   StringBuilder sb = new StringBuilder();
+         *   for (String s : command) {
+         *       sb.append(s);
+         *       sb.append(" ");
+         *   }
+         *   logger.error("command: " + sb.toString());
+        }*/
+
+        boolean exception = false;
         try {
-            timer = new InterruptTimer();
+            InterruptTimer timer = new InterruptTimer();
+            Thread threadReaderEater = null;
             Process p = new ProcessBuilder(command).start();
             long time = System.currentTimeMillis();
             String outputText = "";
@@ -74,7 +96,7 @@ public class LanguageJAVA implements CompilerInterface {
                 inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
                 ReaderEater readerEater = new ReaderEater(inputStream);
-                Thread threadReaderEater = new Thread(readerEater);
+                threadReaderEater = new Thread(readerEater);
                 threadReaderEater.start();
 
                 BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
@@ -91,32 +113,44 @@ public class LanguageJAVA implements CompilerInterface {
 
                 outputText = readerEater.getOutputText();
             } catch (InterruptedException ex) {
-                timer.cancel();
                 p.destroy();
                 output.setRuntime(input.getTimeLimit());
                 output.setResult(CheckerErrors.TLE);
                 logger.debug("TLE after " + (System.currentTimeMillis() - time) + "ms.", ex);
                 return output;
             } catch (IOException ex) {
+                p.destroy();
                 logger.fatal("IOException", ex);
-                p.destroy();
+                exception = true;
             } catch (Exception ex) {
-                logger.fatal("Fatal Exception", ex);
                 p.destroy();
+                logger.fatal("Fatal Exception", ex);
+                exception = true;
+            } finally {
+                if (timer != null) {
+                    timer.cancel();
+                }
+                if (threadReaderEater != null) {
+                    threadReaderEater.interrupt();
+                }
             }
+
             long currentTime = System.currentTimeMillis();
-            timer.cancel();
 
             if ((int) (currentTime - time) < input.getTimeLimit()) {
                 output.setRuntime((int) (currentTime - time));
             } else {
-                if (input.getTimeLimit() > 0) {
+                if (exception && (int) (currentTime - time) >= input.getTimeLimit()) {
+                    output.setRuntime(input.getTimeLimit());
+                    output.setResult(CheckerErrors.TLE);
+                    logger.debug("TLE after " + (currentTime - time) + "ms with Exception");
+                } else if (input.getTimeLimit() > 0) {
                     output.setRuntime(input.getTimeLimit() - 1);
                 }
             }
 
             try {
-                if (p.exitValue() != 0) {
+                if (p.exitValue() != 0 && output.getResult() != CheckerErrors.TLE) {
                     output.setResult(CheckerErrors.RE);
                     output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
                     return output;
@@ -134,11 +168,8 @@ public class LanguageJAVA implements CompilerInterface {
             p.destroy();
         } catch (Exception ex) {
             logger.fatal("Fatal Exception (timer may not be canceled)", ex);
-        } finally {
-            if (timer != null) {
-                timer.cancel();
-            }
         }
+
         return output;
     }
 

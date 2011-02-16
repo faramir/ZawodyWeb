@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -123,6 +124,7 @@ public class RequestBean {
     private RankingTable currentContestSubranking = null;
     private PagedDataModel submissions = null;
     private Date temporaryRankingDate;
+    private Date temporaryDate;
     private Boolean temporaryAdminBoolean;
     private Integer temporaryContestId;
     private Integer temporarySeriesId;
@@ -1267,9 +1269,8 @@ public class RequestBean {
 
         try {
             List<Tests> tests = new UnzipProblem().getTests(temporaryFile.getBytes());
-            Problems problem = problemsDAO.getById(temporaryProblemId);
             for (Tests test : tests) {
-                test.setProblems(problem);
+                test.setProblems(problemsDAO.getById(temporaryProblemId));
                 testsDAO.saveOrUpdate(test);
             }
         } catch (Exception e) {
@@ -1902,6 +1903,38 @@ public class RequestBean {
         }
     }
 
+    @HttpAction(name = "clock", pattern = "clock/{date}")
+    public String goToClock(@Param(name = "date", encode = true) String date) {
+        try {
+            temporaryDate = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(date);
+        } catch (Exception e) {
+        }
+        if (temporaryDate == null) {
+            try {
+                Calendar c = Calendar.getInstance();
+                Calendar d = Calendar.getInstance();
+                d.setTime(new SimpleDateFormat("HH:mm").parse(date));
+
+                c.set(Calendar.HOUR_OF_DAY, d.get(Calendar.HOUR_OF_DAY));
+                c.set(Calendar.MINUTE, d.get(Calendar.MINUTE));
+                c.set(Calendar.SECOND, d.get(Calendar.SECOND));
+                c.set(Calendar.MILLISECOND, d.get(Calendar.MILLISECOND));
+
+                temporaryDate = c.getTime();
+            } catch (Exception e) {
+            }
+        }
+        if (temporaryDate == null) {
+            try {
+
+                temporaryDate = new Date(System.currentTimeMillis() + Integer.parseInt(date) * 1000L);
+            } catch (Exception e) {
+                temporaryDate = new Date(System.currentTimeMillis() + 10 * 60 * 1000);
+            }
+        }
+        return "clock";
+    }
+
 //    @HttpAction(name = "editclass", pattern = "edit/{id}/class")
 //    public String goToEditclass(@Param(name = "id", encode = true) int id) {
 //        temporaryClassId = id;
@@ -2304,5 +2337,19 @@ public class RequestBean {
 
     public void setTemporarySubmitResultId(Integer id) {
         temporarySubmitResultId = id;
+    }
+
+    /**
+     * @return the temporaryDate
+     */
+    public Date getTemporaryDate() {
+        return temporaryDate;
+    }
+
+    /**
+     * @param temporaryDate the temporaryDate to set
+     */
+    public void setTemporaryDate(Date temporaryDate) {
+        this.temporaryDate = temporaryDate;
     }
 }
