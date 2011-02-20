@@ -4,12 +4,10 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -20,6 +18,7 @@ import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.judge.InterruptTimer;
 import pl.umk.mat.zawodyweb.judge.ReaderEater;
+import pl.umk.mat.zawodyweb.judge.WriterFeeder;
 
 /**
  *
@@ -47,7 +46,7 @@ public class LanguageCPP implements CompilerInterface {
             }
             return output;
         }
-        BufferedReader inputStream = null;
+
         System.gc();
         List<String> command = Arrays.asList(path);
         if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
@@ -55,54 +54,76 @@ public class LanguageCPP implements CompilerInterface {
         } else {
             logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
         }
-        InterruptTimer timer = null;
+
+        boolean exception = false;
         try {
-            timer = new InterruptTimer();
+            InterruptTimer timer = new InterruptTimer();
+            Thread threadReaderEater = null;
+            Thread threadWriterFeeder = null;
+
             Process p = new ProcessBuilder(command).start();
             long time = System.currentTimeMillis();
             String outputText = "";
             try {
                 timer.schedule(Thread.currentThread(), input.getTimeLimit());
-                inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
 
                 ReaderEater readerEater = new ReaderEater(inputStream);
-                Thread threadReaderEater = new Thread(readerEater);
+                threadReaderEater = new Thread(readerEater);
                 threadReaderEater.start();
 
-                BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
-                outputStream.write(input.getText());
-                outputStream.close();
+                WriterFeeder writerFeeder = new WriterFeeder(outputStream, input.getText());
+                threadWriterFeeder = new Thread(writerFeeder);
+                threadWriterFeeder.start();
+
                 logger.debug("Waiting for program after " + (System.currentTimeMillis() - time) + "ms.");
 
                 p.waitFor();
                 threadReaderEater.join();
+                threadWriterFeeder.join();
 
-                if (readerEater.getException() != null) {
-                    throw readerEater.getException();
-                }
+//                if (readerEater.getException() != null) {
+//                    throw readerEater.getException();
+//                }
 
                 outputText = readerEater.getOutputText();
             } catch (InterruptedException ex) {
-                timer.cancel();
-                p.destroy();
                 output.setRuntime(input.getTimeLimit());
                 output.setResult(CheckerErrors.TLE);
                 logger.debug("TLE after " + (System.currentTimeMillis() - time) + "ms.", ex);
                 return output;
-            } catch (IOException ex) {
-                logger.fatal("IOException", ex);
-                p.destroy();
+//            } catch (IOException ex) {
+//                logger.fatal("IOException", ex);
+//                p.destroy();
             } catch (Exception ex) {
                 logger.fatal("Fatal Exception", ex);
-                p.destroy();
+                exception = true;
+            } finally {
+                if (timer != null) {
+                    timer.cancel();
+                }
+                if (p != null) {
+                    p.destroy();
+                }
+                if (threadReaderEater != null) {
+                    threadReaderEater.interrupt();
+                }
+                if (threadWriterFeeder != null) {
+                    threadWriterFeeder.interrupt();
+                }
             }
+
             long currentTime = System.currentTimeMillis();
-            timer.cancel();
 
             if ((int) (currentTime - time) < input.getTimeLimit()) {
                 output.setRuntime((int) (currentTime - time));
             } else {
-                if (input.getTimeLimit() > 0) {
+                if (exception && (int) (currentTime - time) >= input.getTimeLimit()) {
+                    output.setRuntime(input.getTimeLimit());
+                    output.setResult(CheckerErrors.TLE);
+                    logger.debug("TLE after " + (currentTime - time) + "ms with Exception");
+                } else if (input.getTimeLimit() > 0) {
                     output.setRuntime(input.getTimeLimit() - 1);
                 }
             }
@@ -115,21 +136,14 @@ public class LanguageCPP implements CompilerInterface {
                 }
             } catch (java.lang.IllegalThreadStateException ex) {
                 logger.fatal("Fatal Exception", ex);
-                p.destroy();
                 output.setResult(CheckerErrors.RE);
                 output.setResultDesc("Abnormal Program termination.");
                 return output;
             }
 
             output.setText(outputText);
-
-            p.destroy();
         } catch (Exception ex) {
             logger.fatal("Fatal Exception (timer may not be canceled)", ex);
-        } finally {
-            if (timer != null) {
-                timer.cancel();
-            }
         }
         return output;
     }
