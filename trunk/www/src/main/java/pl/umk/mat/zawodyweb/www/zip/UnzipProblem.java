@@ -200,6 +200,7 @@ public class UnzipProblem {
         tests.setMaxpoints(maxpoints);
         tests.setTestorder(testorder);
         tests.setTimelimit(timelimit);
+        tests.setVisibility(1); // FIXME: należy wartość pobrać z pliku XML (brak)
 
         return tests;
     }
