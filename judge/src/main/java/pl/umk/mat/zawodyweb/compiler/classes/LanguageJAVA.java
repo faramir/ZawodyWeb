@@ -6,7 +6,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -24,6 +23,7 @@ import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.judge.InterruptTimer;
 import pl.umk.mat.zawodyweb.judge.ReaderEater;
+import pl.umk.mat.zawodyweb.judge.WriterFeeder;
 
 /**
  *
@@ -52,7 +52,7 @@ public class LanguageJAVA implements CompilerInterface {
             }
             return output;
         }
-        BufferedReader inputStream = null;
+
         System.gc();
         List<String> command = new ArrayList<String>(Arrays.asList(System.getProperty("java.home") + "/bin/java", "-Xmx" + input.getMemoryLimit() + "m",
                 "-Xms" + input.getMemoryLimit() + "m", "-Xss" + input.getMemoryLimit() + "m"));
@@ -88,50 +88,58 @@ public class LanguageJAVA implements CompilerInterface {
         try {
             InterruptTimer timer = new InterruptTimer();
             Thread threadReaderEater = null;
+            Thread threadWriterFeeder = null;
             Process p = new ProcessBuilder(command).start();
             long time = System.currentTimeMillis();
             String outputText = "";
             try {
                 timer.schedule(Thread.currentThread(), input.getTimeLimit());
-                inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
 
                 ReaderEater readerEater = new ReaderEater(inputStream);
                 threadReaderEater = new Thread(readerEater);
                 threadReaderEater.start();
 
-                BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
-                outputStream.write(input.getText());
-                outputStream.close();
+                WriterFeeder writerFeeder = new WriterFeeder(outputStream, input.getText());
+                threadWriterFeeder = new Thread(writerFeeder);
+                threadWriterFeeder.start();
+
                 logger.debug("Waiting for program after " + (System.currentTimeMillis() - time) + "ms.");
 
                 p.waitFor();
                 threadReaderEater.join();
+                threadWriterFeeder.join();
 
-                if (readerEater.getException() != null) {
-                    throw readerEater.getException();
-                }
+//                if (readerEater.getException() != null) {
+//                    throw readerEater.getException();
+//                }
 
                 outputText = readerEater.getOutputText();
             } catch (InterruptedException ex) {
-                p.destroy();
                 output.setRuntime(input.getTimeLimit());
                 output.setResult(CheckerErrors.TLE);
                 logger.debug("TLE after " + (System.currentTimeMillis() - time) + "ms.", ex);
                 return output;
-            } catch (IOException ex) {
-                p.destroy();
-                logger.fatal("IOException", ex);
-                exception = true;
+//            } catch (IOException ex) {
+//                p.destroy();
+//                logger.fatal("IOException", ex);
+//                exception = true;
             } catch (Exception ex) {
-                p.destroy();
                 logger.fatal("Fatal Exception", ex);
                 exception = true;
             } finally {
                 if (timer != null) {
                     timer.cancel();
                 }
+                if (p != null) {
+                    p.destroy();
+                }
                 if (threadReaderEater != null) {
                     threadReaderEater.interrupt();
+                }
+                if (threadWriterFeeder != null) {
+                    threadWriterFeeder.interrupt();
                 }
             }
 
@@ -157,15 +165,12 @@ public class LanguageJAVA implements CompilerInterface {
                 }
             } catch (java.lang.IllegalThreadStateException ex) {
                 logger.fatal("Fatal Exception", ex);
-                p.destroy();
                 output.setResult(CheckerErrors.RE);
                 output.setResultDesc("Abnormal Program termination.");
                 return output;
             }
 
             output.setText(outputText);
-
-            p.destroy();
         } catch (Exception ex) {
             logger.fatal("Fatal Exception (timer may not be canceled)", ex);
         }

@@ -28,6 +28,7 @@ public class ReaderEater implements Runnable {
             while ((line = reader.readLine()) != null) {
                 outputText.append(line).append("\n");
             }
+            reader.close();
         } catch (Exception ex) {
             this.exception = ex;
         }
