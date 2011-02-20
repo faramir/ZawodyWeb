@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import pl.umk.mat.zawodyweb.checker.TestInput;
@@ -29,7 +30,7 @@ public class LanguageCPP implements CompilerInterface {
     public static final org.apache.log4j.Logger logger = Logger.getLogger(LanguageCPP.class);
     Properties properties;
     int compileResult = CheckerErrors.UNDEF;
-    String compileDesc = new String();
+    String compileDesc = "";
 
     @Override
     public void setProperties(Properties properties) {
@@ -61,7 +62,9 @@ public class LanguageCPP implements CompilerInterface {
             Thread threadReaderEater = null;
             Thread threadWriterFeeder = null;
 
-            Process p = new ProcessBuilder(command).start();
+            ProcessBuilder pb = new ProcessBuilder(command);
+            pb.redirectErrorStream(true);
+            Process p = pb.start();
             long time = System.currentTimeMillis();
             String outputText = "";
             try {
@@ -212,7 +215,7 @@ public class LanguageCPP implements CompilerInterface {
     public String compile(byte[] code) {
         String compilefile = null;
         if (compileResult != CheckerErrors.UNDEF) {
-            return new String();
+            return "";
         }
         try {
             String line, codefile, compileddir, codedir;
@@ -230,39 +233,50 @@ public class LanguageCPP implements CompilerInterface {
             is.write(code);
             is.close();
             System.gc();
+
             Process p = null;
+            InterruptTimer timer = new InterruptTimer();
+            Thread threadReaderEater = null;
             try {
                 p = new ProcessBuilder("g++", "-O2", "-static", "-o", compilefile, codefile, "-lm").start();
+                BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+                timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
+
+                ReaderEater readerEater = new ReaderEater(inputStream);
+                threadReaderEater = new Thread(readerEater);
+                threadReaderEater.start();
+
+                p.waitFor();
+                threadReaderEater.interrupt();
+
+                compileDesc = readerEater.getOutputText();
+            } catch (InterruptedException ex) {
+                logger.error("Compile Time Limit Exceeded", ex);
+                compileResult = CheckerErrors.CTLE;
+                return compilefile;
             } catch (Exception ex) {
                 logger.error("No g++ found.");
                 compileResult = CheckerErrors.UNKNOWN;
                 compileDesc = "No g++ found";
                 return compilefile;
+            } finally {
+                if (timer != null) {
+                    timer.cancel();
+                }
+                if (p != null) {
+                    p.destroy();
+                }
+                if (threadReaderEater != null) {
+                    threadReaderEater.interrupt();
+                }
             }
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            InterruptTimer timer = new InterruptTimer();
-            try {
-                timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
-                p.waitFor();
-            } catch (InterruptedException ex) {
-                timer.cancel();
-                logger.error("Compile Time Limit Exceeded", ex);
-                p.destroy();
-                compileResult = CheckerErrors.CTLE;
-                return compilefile;
-            }
-            timer.cancel();
 
             if (p.exitValue() != 0) {
                 compileResult = CheckerErrors.CE;
-                while ((line = input.readLine()) != null) {
-                    line = line.replaceAll("^.*" + Pattern.quote(codefile), properties.getProperty("CODE_FILENAME"));
-                    compileDesc = compileDesc + line + "\n";
-                }
-                input.close();
+                compileDesc = compileDesc.replaceAll("(?m)^.*" + Pattern.quote(codefile),  Matcher.quoteReplacement(properties.getProperty("CODE_FILENAME")));
             }
             new File(codefile).delete();
-            p.destroy();
         } catch (Exception err) {
             logger.fatal("Fatal Exception (timer may not be canceled)", err);
         }
