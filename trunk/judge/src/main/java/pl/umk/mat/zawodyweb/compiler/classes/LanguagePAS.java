@@ -4,12 +4,10 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import org.apache.log4j.Logger;
@@ -19,6 +17,7 @@ import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.judge.InterruptTimer;
 import pl.umk.mat.zawodyweb.judge.ReaderEater;
+import pl.umk.mat.zawodyweb.judge.WriterFeeder;
 
 /**
  *
@@ -30,7 +29,7 @@ public class LanguagePAS implements CompilerInterface {
     Properties properties;
     String ofile;
     int compileResult = CheckerErrors.UNDEF;
-    String compileDesc = new String();
+    String compileDesc = "";
 
     @Override
     public void setProperties(Properties properties) {
@@ -47,62 +46,87 @@ public class LanguagePAS implements CompilerInterface {
             }
             return output;
         }
-        BufferedReader inputStream = null;
+
         System.gc();
+
         List<String> command = Arrays.asList(path);
         if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
             command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && '" + path + "'");
         } else {
             logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
         }
-        InterruptTimer timer = null;
+
+        boolean exception = false;
         try {
-            timer = new InterruptTimer();
-            Process p = new ProcessBuilder(command).start();
+            InterruptTimer timer = new InterruptTimer();
+            Thread threadReaderEater = null;
+            Thread threadWriterFeeder = null;
+
+            ProcessBuilder pb = new ProcessBuilder(command);
+            pb.redirectErrorStream(true);
+            Process p = pb.start();
             long time = System.currentTimeMillis();
             String outputText = "";
             try {
                 timer.schedule(Thread.currentThread(), input.getTimeLimit());
-                inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
 
                 ReaderEater readerEater = new ReaderEater(inputStream);
-                Thread threadReaderEater = new Thread(readerEater);
+                threadReaderEater = new Thread(readerEater);
                 threadReaderEater.start();
 
-                BufferedWriter outputStream = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
-                outputStream.write(input.getText());
-                outputStream.close();
+                WriterFeeder writerFeeder = new WriterFeeder(outputStream, input.getText());
+                threadWriterFeeder = new Thread(writerFeeder);
+                threadWriterFeeder.start();
+
                 logger.debug("Waiting for program after " + (System.currentTimeMillis() - time) + "ms.");
 
                 p.waitFor();
                 threadReaderEater.join();
+                threadWriterFeeder.join();
 
-                if (readerEater.getException() != null) {
-                    throw readerEater.getException();
-                }
+//                if (readerEater.getException() != null) {
+//                    throw readerEater.getException();
+//                }
 
                 outputText = readerEater.getOutputText();
             } catch (InterruptedException ex) {
-                timer.cancel();
-                p.destroy();
                 output.setRuntime(input.getTimeLimit());
                 output.setResult(CheckerErrors.TLE);
                 logger.debug("TLE after " + (System.currentTimeMillis() - time) + "ms.");
                 return output;
-            } catch (IOException ex) {
-                logger.fatal("IOException", ex);
-                p.destroy();
+//            } catch (IOException ex) {
+//                logger.fatal("IOException", ex);
+//                p.destroy();
             } catch (Exception ex) {
                 logger.fatal("Fatal Exception", ex);
-                p.destroy();
+                exception = true;
+            } finally {
+                if (timer != null) {
+                    timer.cancel();
+                }
+                if (p != null) {
+                    p.destroy();
+                }
+                if (threadReaderEater != null) {
+                    threadReaderEater.interrupt();
+                }
+                if (threadWriterFeeder != null) {
+                    threadWriterFeeder.interrupt();
+                }
             }
+
             long currentTime = System.currentTimeMillis();
-            timer.cancel();
 
             if ((int) (currentTime - time) < input.getTimeLimit()) {
                 output.setRuntime((int) (currentTime - time));
             } else {
-                if (input.getTimeLimit() > 0) {
+                if (exception && (int) (currentTime - time) >= input.getTimeLimit()) {
+                    output.setRuntime(input.getTimeLimit());
+                    output.setResult(CheckerErrors.TLE);
+                    logger.debug("TLE after " + (currentTime - time) + "ms with Exception");
+                } else if (input.getTimeLimit() > 0) {
                     output.setRuntime(input.getTimeLimit() - 1);
                 }
             }
@@ -115,7 +139,6 @@ public class LanguagePAS implements CompilerInterface {
                 }
             } catch (java.lang.IllegalThreadStateException ex) {
                 logger.fatal("Fatal Exception", ex);
-                p.destroy();
                 output.setResult(CheckerErrors.RE);
                 output.setResultDesc("Abnormal Program termination.");
                 return output;
@@ -123,14 +146,10 @@ public class LanguagePAS implements CompilerInterface {
 
             output.setText(outputText);
 
-            p.destroy();
         } catch (Exception ex) {
             logger.fatal("Fatal Exception (timer may not be canceled)", ex);
-        } finally {
-            if (timer != null) {
-                timer.cancel();
-            }
         }
+
         return output;
     }
 
@@ -159,7 +178,7 @@ public class LanguagePAS implements CompilerInterface {
                 + "setpgid setpgrp setregid setreuid setsid setuid setusershell setvbuf signal sleep swab symlink "
                 + "sync sysconf tcgetpgrp tcsetpgrp tempnam tmpfile64 tmpfile tmpnam tmpnam_r truncate64 truncate "
                 + "ttyname ttyname_r ttyslot ualarm ungetc unlink usleep vfork vfprintf vfscanf vhangup";
-        String strWithoutComments = new String();
+        String strWithoutComments = "";
         int len = str.length() - 1;
         try {
             for (int i = 0; i < len; i++) {
@@ -191,7 +210,7 @@ public class LanguagePAS implements CompilerInterface {
     public String compile(byte[] code) {
         String compilefile = null;
         if (compileResult != CheckerErrors.UNDEF) {
-            return new String();
+            return "";
         }
         try {
             String line, codefile, compileddir, codedir;
@@ -209,44 +228,51 @@ public class LanguagePAS implements CompilerInterface {
             OutputStream is = new FileOutputStream(codefile);
             is.write(code);
             is.close();
+
             System.gc();
+
             Process p = null;
+            Thread threadReaderEater = null;
+            InterruptTimer timer = new InterruptTimer();
             try {
                 p = new ProcessBuilder("fpc", "-O2", "-XS", "-Xt", "-o" + compilefile, codefile).start();
+                BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
+
+                ReaderEater readerEater = new ReaderEater(inputStream);
+                threadReaderEater = new Thread(readerEater);
+                threadReaderEater.start();
+
+                p.waitFor();
+                threadReaderEater.interrupt();
+
+                compileDesc = readerEater.getOutputText();
+            } catch (InterruptedException ex) {
+                logger.error("Compile Time Limit Exceeded", ex);
+                compileResult = CheckerErrors.CTLE;
+                return compilefile;
             } catch (Exception ex) {
                 logger.error("No ppc386 found.");
                 compileResult = CheckerErrors.UNKNOWN;
                 compileDesc = "No ppc386 found";
                 return compilefile;
+            } finally {
+                if (timer != null) {
+                    timer.cancel();
+                }
+                if (p != null) {
+                    p.destroy();
+                }
+                if (threadReaderEater != null) {
+                    threadReaderEater.interrupt();
+                }
             }
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            InterruptTimer timer = new InterruptTimer();
-            try {
-                timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
-                p.waitFor();
-            } catch (InterruptedException ex) {
-                timer.cancel();
-                logger.error("Compile Time Limit Exceeded", ex);
-                p.destroy();
-                compileResult = CheckerErrors.CTLE;
-                return compilefile;
-            }
-            timer.cancel();
 
             if (p.exitValue() != 0) {
-
                 compileResult = CheckerErrors.CE;
-                int i = 1;
-                while ((line = input.readLine()) != null) {
-                    if (i > 4) {
-                        compileDesc = compileDesc + line + "\n";
-                    }
-                    i++;
-                }
-                input.close();
+                compileDesc = compileDesc.replaceAll("(?-s)^(.*\n){4}", "");
             }
             new File(codefile).delete();
-            p.destroy();
         } catch (Exception err) {
             logger.fatal("Fatal Exception (timer may not be canceled)", err);
         }

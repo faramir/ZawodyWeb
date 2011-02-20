@@ -34,7 +34,7 @@ public class LanguageJAVA implements CompilerInterface {
     public static final org.apache.log4j.Logger logger = Logger.getLogger(LanguageJAVA.class);
     Properties properties;
     int compileResult = CheckerErrors.UNDEF;
-    String compileDesc = new String();
+    String compileDesc = "";
 
     @Override
     public void setProperties(Properties properties) {
@@ -89,7 +89,10 @@ public class LanguageJAVA implements CompilerInterface {
             InterruptTimer timer = new InterruptTimer();
             Thread threadReaderEater = null;
             Thread threadWriterFeeder = null;
-            Process p = new ProcessBuilder(command).start();
+
+            ProcessBuilder pb = new ProcessBuilder(command);
+            pb.redirectErrorStream(true);
+            Process p = pb.start();
             long time = System.currentTimeMillis();
             String outputText = "";
             try {
@@ -187,7 +190,7 @@ public class LanguageJAVA implements CompilerInterface {
     public String compile(byte[] code) {
         String codefile = null;
         if (compileResult != CheckerErrors.UNDEF) {
-            return new String();
+            return "";
         }
         try {
             String codedir;
@@ -203,7 +206,7 @@ public class LanguageJAVA implements CompilerInterface {
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
             ByteArrayOutputStream err = new ByteArrayOutputStream();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            if (compiler.run(new ByteArrayInputStream(new String().getBytes()), out, err, codefile) != 0) {
+            if (compiler.run(new ByteArrayInputStream("".getBytes()), out, err, codefile) != 0) {
                 compileResult = CheckerErrors.CE;
                 for (String line : err.toString().split("\n")) {
                     line = line.replaceAll("^.*" + Pattern.quote(codefile), properties.getProperty("CODE_FILENAME"));
