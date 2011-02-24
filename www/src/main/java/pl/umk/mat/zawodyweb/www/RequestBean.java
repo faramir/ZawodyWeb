@@ -2241,7 +2241,7 @@ public class RequestBean {
                 return null;
             }
 
-            if (rolesBean.canEditProblem(problem.getSeries().getId(), problem.getSeries().getId()) == true
+            if (rolesBean.canEditProblem(problem.getSeries().getContests().getId(), problem.getSeries().getId()) == true
                     || (problem.getSeries().getStartdate().getTime() < submitTime
                     && (problem.getSeries().getEnddate() == null || submitTime < problem.getSeries().getEnddate().getTime()))) {
                 Submits submit = new Submits();
@@ -2255,7 +2255,7 @@ public class RequestBean {
                 submit.setSdate(new Timestamp(submitTime));
                 submit.setUsers(usersDAO.getById(sessionBean.getCurrentUser().getId()));
                 submit.setClientip(((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRemoteAddr());
-                if (rolesBean.canEditProblem(problem.getSeries().getId(), problem.getSeries().getId()) == true
+                if (rolesBean.canEditProblem(problem.getSeries().getContests().getId(), problem.getSeries().getId()) == true
                         && !(problem.getSeries().getStartdate().getTime() < submitTime
                         && (problem.getSeries().getEnddate() == null || submitTime < problem.getSeries().getEnddate().getTime()))) {
                     submit.setVisibleinranking(false);
