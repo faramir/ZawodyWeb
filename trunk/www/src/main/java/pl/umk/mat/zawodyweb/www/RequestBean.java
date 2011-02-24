@@ -2343,6 +2343,9 @@ public class RequestBean {
      * @return the temporaryDate
      */
     public Date getTemporaryDate() {
+        if (temporaryDate == null) {
+            temporaryDate = new Date();
+        }
         return temporaryDate;
     }
 

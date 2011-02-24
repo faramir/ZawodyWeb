@@ -96,7 +96,7 @@
     el.roznica = 0;
     sendRequest("get", el.path+"/Time",
         function(el) {
-            return function() {
+            return function(http) {
                 if(http.readyState == 4 && http.status == 200){
                     el.roznica = new Date().getTime() - Number(http.responseText);
                     el.pobrane = true;

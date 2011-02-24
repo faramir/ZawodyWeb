@@ -5,6 +5,7 @@
         ${messages.clock}
     </ui:define>
     <ui:define name="pageContent">
+        <h:graphicImage alt="#{messages.clock}" title="#{messages.clock}" url="/media/images/view.png" styleClass="click" onclick="prompt_clock(this,{def:'#{zw:formatDateAndHour(requestBean.temporaryDate, 'yyyy-MM-dd HH:mm')}',link:'#{facesContext.externalContext.requestContextPath}/clock/'})"/>
         <p id="jcountdown" class="jclock-big" title="#{zw:formatDateAndHour(requestBean.temporaryDate, 'yyyy-MM-dd HH:mm')}"></p>
         <rich:jQuery selector="#jcountdown" name="jcountdown" query="jcountdown({endDate:'#{requestBean.temporaryDate.time}',endString:'#{messages.countdown_end}',path:'#{facesContext.externalContext.requestContextPath}'})" timing="onload"/>
     </ui:define>

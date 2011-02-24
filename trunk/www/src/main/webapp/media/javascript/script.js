@@ -28,3 +28,8 @@ function prompt_user(e,args){
         if(r)window.location=args.link+r+args.suffix+'.html';
     });
 }
+function prompt_clock(e,args){
+    jPrompt('Podaj warto\u015b\u0107: ',args.def,'Odliczanie do...',function(r){
+        if(r)window.location=args.link+r+'.html';
+    });
+}
