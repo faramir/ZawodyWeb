@@ -19,6 +19,7 @@ import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.judge.InterruptTimer;
 import pl.umk.mat.zawodyweb.judge.ReaderEater;
+import pl.umk.mat.zawodyweb.judge.WriterFeeder;
 
 /**
  *
@@ -75,8 +76,10 @@ public class LanguageC implements CompilerInterface {
                 threadReaderEater = new Thread(readerEater);
                 threadReaderEater.start();
 
-                outputStream.write(input.getText());
-                outputStream.close();
+                WriterFeeder writerFeeder = new WriterFeeder(outputStream, input.getText());
+                threadWriterFeeder = new Thread(writerFeeder);
+                threadWriterFeeder.start();
+
                 logger.debug("Waiting for program after " + (System.currentTimeMillis() - time) + "ms.");
 
                 p.waitFor();
@@ -96,6 +99,10 @@ public class LanguageC implements CompilerInterface {
 //            } catch (IOException ex) {
 //                logger.fatal("IOException", ex);
 //                p.destroy();
+//            } catch (NullPointerException ex) {
+//                logger.fatal("NullPointer Exception",ex);
+//                output.setResult(CheckerErrors.UNDEF);
+//                return output;
             } catch (Exception ex) {
                 logger.fatal("Fatal Exception", ex);
                 exception = true;
@@ -115,7 +122,6 @@ public class LanguageC implements CompilerInterface {
             }
 
             long currentTime = System.currentTimeMillis();
-            timer.cancel();
 
             if ((int) (currentTime - time) < input.getTimeLimit()) {
                 output.setRuntime((int) (currentTime - time));
