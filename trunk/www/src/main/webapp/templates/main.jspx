@@ -114,7 +114,7 @@
                 <ui:insert name="pageContent" />
             </div>
             <div id="copy">
-                <h:outputText value="&amp;copy; 2009-2010 - Wydział Matematyki i Informatyki UMK" escape="false" />
+                <h:outputText value="&amp;copy; 2009-2011 - Wydział Matematyki i Informatyki UMK" escape="false" />
             </div>
         </div>
     </body>
