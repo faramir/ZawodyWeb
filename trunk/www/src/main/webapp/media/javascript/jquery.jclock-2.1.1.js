@@ -171,6 +171,8 @@
           return (el.monthsFullNames[dateObject.getMonth()]);
       case "d": // day 01-31
           return ((dateObject.getDate() <  10) ? "0" : "") + dateObject.getDate();
+      case "D": // day 1-31
+          return dateObject.getDate();
       case "H": // hour as a decimal number using a 24-hour clock (range 00 to 23)
           return ((dateObject.getHours() <  10) ? "0" : "") + dateObject.getHours();
       case "I": // hour as a decimal number using a 12-hour clock (range 01 to 12)

@@ -443,19 +443,21 @@ public class RequestBean {
         if (getCurrentContest() == null) {
             return false;
         }
+        try {
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Questions.class);
+            c.setProjection(Projections.rowCount());
+            c.add(Restrictions.eq("contests.id", getCurrentContest().getId()));
+            c.add(Restrictions.eq("adate", new Timestamp(0)));
 
-        Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Questions.class);
-        c.setProjection(Projections.rowCount());
-        c.add(Restrictions.eq("contests.id", getCurrentContest().getId()));
-        c.add(Restrictions.eq("adate", new Timestamp(0)));
+            if (rolesBean.canAddProblem(getCurrentContest().getId(), null) == false) {
+                c.add(Restrictions.or(Restrictions.eq("qtype", 1), Restrictions.eq("users.id", sessionBean.getCurrentUser().getId())));
+            }
 
-        if (rolesBean.canAddProblem(getCurrentContest().getId(), null) == false) {
-            c.add(Restrictions.or(Restrictions.eq("qtype", 1), Restrictions.eq("users.id", sessionBean.getCurrentUser().getId())));
+            Number number = (Number) c.uniqueResult();
+            return number.intValue() > 0;
+        } catch (Exception e) {
+            return false;
         }
-
-        Number number = (Number) c.uniqueResult();
-
-        return number.intValue() > 0;
     }
 
     public List<Questions> getCurrentContestQuestions() {
@@ -1311,27 +1313,12 @@ public class RequestBean {
         }
 
         try {
-            if (temporaryFile != null) {
-                PDF current = getEditedProblem().getPDF();
-                if (current == null) {
-                    current = new PDF();
-                }
+            Problems tmpProblem = getEditedProblem();
 
-                current.setPdf(temporaryFile.getBytes());
-                pdfDAO.saveOrUpdate(current);
-                getEditedProblem().setPDF(current);
-            }
+            tmpProblem.setSeries(seriesDAO.getById(temporarySeriesId));
+            tmpProblem.setClasses(classesDAO.getById(temporaryClassId));
 
-            if (deletePdf) {
-                PDF tmp = getEditedProblem().getPDF();
-                getEditedProblem().setPDF(null);
-                pdfDAO.delete(tmp);
-            }
-
-            getEditedProblem().setSeries(seriesDAO.getById(temporarySeriesId));
-            getEditedProblem().setClasses(classesDAO.getById(temporaryClassId));
-
-            List<LanguagesProblems> tmpList = languagesProblemsDAO.findByProblemsid(getEditedProblem().getId());
+            List<LanguagesProblems> tmpList = languagesProblemsDAO.findByProblemsid(tmpProblem.getId());
 
             if (tmpList != null) {
                 for (LanguagesProblems lp : tmpList) {
@@ -1342,11 +1329,28 @@ public class RequestBean {
             for (Integer lid : temporaryLanguagesIds) {
                 LanguagesProblems lp = new LanguagesProblems();
                 lp.setLanguages(languagesDAO.getById(lid));
-                lp.setProblems(getEditedProblem());
+                lp.setProblems(tmpProblem);
                 languagesProblemsDAO.saveOrUpdate(lp);
             }
+            
+            if (temporaryFile != null) {
+                PDF current = tmpProblem.getPDF();
+                if (current == null) {
+                    current = new PDF();
+                }
 
-            problemsDAO.saveOrUpdate(getEditedProblem());
+                current.setPdf(temporaryFile.getBytes());
+                pdfDAO.saveOrUpdate(current);
+                tmpProblem.setPDF(current);
+            }
+
+            if (deletePdf) {
+                //PDF tmp = tmpProblem.getPDF();
+                //pdfDAO.delete(tmp);
+                tmpProblem.setPDF(null);
+            }
+
+            problemsDAO.saveOrUpdate(tmpProblem);
 
             selectContest(editedProblem.getSeries().getContests().getId());
         } catch (Exception e) {
