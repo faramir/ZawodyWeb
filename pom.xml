@@ -44,7 +44,7 @@
     <repositories>
         <repository>
             <id>alfred</id>
-            <url>http://alfred.studmat.umk.pl/maven2_repository</url>
+            <url>http://alfred.mat.umk.pl/maven2_repository</url>
         </repository>
         <repository>
             <id>central</id>
