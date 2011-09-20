@@ -91,6 +91,12 @@
                             <h:selectBooleanCheckbox id="visible" styleClass="widecheck" value="#{requestBean.editedContest.visibility}" />
                             <h:message for="visible" errorClass="error" />
                             <br class="clear" />
+                        </div> 
+                        <div>
+                            <h:outputLabel for="email">${messages.contest_email}:</h:outputLabel>
+                            <h:inputText id="email" required="false" value="#{requestBean.editedContest.email}" />
+                            <h:message for="email" errorClass="error" />
+                            <br class="clear" />
                         </div>
                         <div>
                             <a4j:commandButton id="save" reRender="formEditContest" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveContest}" />

@@ -415,7 +415,15 @@ public class RequestBean {
             s.addOrder(Order.desc("startdate"));
             s.addOrder(Order.desc("id"));
             c.addOrder(Order.asc("abbrev"));
-            submittableProblems = c.list();
+
+            String clientIp = getClientIp();
+            List<Problems> problems = c.list();
+            submittableProblems = new ArrayList<Problems>();
+            for (Problems problem : problems) {
+                if (isValidIP(problem.getSeries().getVisibleips(false), clientIp)) {
+                    submittableProblems.add(problem);
+                }
+            }
         }
 
         return submittableProblems;
@@ -433,7 +441,21 @@ public class RequestBean {
             if (!rolesBean.canAddProblem(getCurrentContest().getId(), null)) {
                 c.add(Restrictions.le("startdate", new Date()));
             }
-            currentContestSeries = c.list();
+
+            List<Series> series = c.list();
+
+            if (!rolesBean.canAddProblem(getCurrentContest().getId(), null)) {
+                currentContestSeries = new ArrayList<Series>();
+
+                String clientIp = getClientIp();
+                for (Series serie : series) {
+                    if (isValidIP(serie.getVisibleips(false), clientIp)) {
+                        currentContestSeries.add(serie);
+                    }
+                }
+            } else {
+                currentContestSeries = series;
+            }
         }
 
         return currentContestSeries;
@@ -1332,7 +1354,7 @@ public class RequestBean {
                 lp.setProblems(tmpProblem);
                 languagesProblemsDAO.saveOrUpdate(lp);
             }
-            
+
             if (temporaryFile != null) {
                 PDF current = tmpProblem.getPDF();
                 if (current == null) {
@@ -2143,6 +2165,22 @@ public class RequestBean {
         }
     }
 
+    private String getClientIp() {
+        return ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRemoteAddr();
+    }
+
+    private boolean isValidIP(String[] ips, String clientIp) {
+        if (ips == null || ips.length == 0) {
+            return true;
+        }
+        for (String ip : ips) {
+            if (clientIp.startsWith(ip)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private String sendSolution(byte[] bytes, String fileName, String controlId) {
         FacesContext context = FacesContext.getCurrentInstance();
         long submitTime = System.currentTimeMillis();
@@ -2245,8 +2283,10 @@ public class RequestBean {
                 return null;
             }
 
+            String clientIp = getClientIp();
             if (rolesBean.canEditProblem(problem.getSeries().getContests().getId(), problem.getSeries().getId()) == true
-                    || (problem.getSeries().getStartdate().getTime() < submitTime
+                    || (isValidIP(problem.getSeries().getVisibleips(false), clientIp)
+                    && problem.getSeries().getStartdate().getTime() < submitTime
                     && (problem.getSeries().getEnddate() == null || submitTime < problem.getSeries().getEnddate().getTime()))) {
                 Submits submit = new Submits();
 
@@ -2258,7 +2298,7 @@ public class RequestBean {
                 submit.setProblems(problem);
                 submit.setSdate(new Timestamp(submitTime));
                 submit.setUsers(usersDAO.getById(sessionBean.getCurrentUser().getId()));
-                submit.setClientip(((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRemoteAddr());
+                submit.setClientip(clientIp);
                 if (rolesBean.canEditProblem(problem.getSeries().getContests().getId(), problem.getSeries().getId()) == true
                         && !(problem.getSeries().getStartdate().getTime() < submitTime
                         && (problem.getSeries().getEnddate() == null || submitTime < problem.getSeries().getEnddate().getTime()))) {

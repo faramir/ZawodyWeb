@@ -2,6 +2,7 @@ package pl.umk.mat.zawodyweb.database.pojo;
 
 import java.util.List;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -11,16 +12,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-import javax.persistence.Embeddable;
 import javax.persistence.GenerationType;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.OrderBy;
 
 /**
@@ -67,7 +62,14 @@ public class Series implements Serializable {
      * Attribute contests
      */
     private Contests contests;
+    /**
+     * Attribute visibleinranking
+     */
     private Boolean visibleinranking = true;
+    /**
+     * Attribute visibleinranking
+     */
+    private String visibleips;
     /**
      * List of Problems
      */
@@ -207,6 +209,39 @@ public class Series implements Serializable {
         this.visibleinranking = visibleinranking;
     }
 
+    /**
+     * @return visibleInRanking
+     */
+    @Basic
+    @Column(name = "visibleips", length = 2147483647)
+    public String getVisibleips() {
+        return visibleips;
+    }
+
+    /**
+     * @param name new value for name
+     */
+    public void setVisibleips(String visibleips) {
+        this.visibleips = visibleips;
+    }
+
+    
+    public String[] getVisibleips(boolean dummy) {
+        if (visibleips == null) {
+            return null;
+        }
+
+        List<String> visibleIPs = new ArrayList<String>();
+        for (String e : visibleips.split("[ ;,]")) {
+            e = e.trim();
+            if (e.isEmpty() == false) {
+                visibleIPs.add(e);
+            }
+        }
+
+        return visibleIPs.toArray(new String[0]);
+    }
+    
     /**
      * get contests
      */
