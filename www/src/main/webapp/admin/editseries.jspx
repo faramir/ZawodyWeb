@@ -89,6 +89,12 @@
                             <br class="clear" />
                         </div>
                         <div>
+                            <h:outputLabel for="visibleips">${messages.visibleips}:</h:outputLabel>
+                            <h:inputText id="visibleips" value="#{requestBean.editedSeries.visibleips}" />
+                            <h:message for="visibleips" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
                             <a4j:commandButton id="save" reRender="formEditSeries" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveSeries}" />
                             <h:message for="save" errorClass="error" />
                         </div>

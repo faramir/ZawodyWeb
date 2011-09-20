@@ -2,8 +2,8 @@ package pl.umk.mat.zawodyweb.database.pojo;
 
 import java.util.List;
 import java.io.Serializable;
-import java.sql.Timestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -12,13 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-import javax.persistence.Embeddable;
 import javax.persistence.GenerationType;
 
 /**
@@ -69,6 +63,10 @@ public class Contests implements Serializable {
      * Attribute tech.
      */
     private String tech;
+    /**
+     * Attribute email.
+     */
+    private String email;
     /**
      * Attribute rankingRefreshRate
      */
@@ -258,6 +256,39 @@ public class Contests implements Serializable {
      */
     public void setTech(String tech) {
         this.tech = tech;
+    }
+
+    /* liste transiente */
+    /**
+     * @return tech
+     */
+    @Basic
+    @Column(name = "email", length = 2147483647)
+    public String getEmail() {
+        return email;
+    }
+
+    public String[] getEmail(boolean dummy) {
+        if (email == null) {
+            return null;
+        }
+
+        List<String> emails = new ArrayList<String>();
+        for (String e : email.split("[ ;,]")) {
+            e = e.trim();
+            if (e.isEmpty() == false && e.contains("@")) {
+                emails.add(e);
+            }
+        }
+
+        return emails.toArray(new String[0]);
+    }
+
+    /**
+     * @param tech new value for tech
+     */
+    public void setEmail(String tech) {
+        this.email = email;
     }
 
     /* liste transiente */
