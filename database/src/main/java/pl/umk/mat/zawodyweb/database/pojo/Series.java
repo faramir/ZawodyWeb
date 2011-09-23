@@ -69,7 +69,11 @@ public class Series implements Serializable {
     /**
      * Attribute visibleinranking
      */
-    private String visibleips;
+    private String openips;
+    /**
+     * Attribute visibleinranking
+     */
+    private Boolean hiddenblocked = false;
     /**
      * List of Problems
      */
@@ -213,35 +217,50 @@ public class Series implements Serializable {
      * @return visibleInRanking
      */
     @Basic
-    @Column(name = "visibleips", length = 2147483647)
-    public String getVisibleips() {
-        return visibleips;
+    @Column(name = "openips", length = 2147483647)
+    public String getOpenips() {
+        return openips;
     }
 
     /**
      * @param name new value for name
      */
-    public void setVisibleips(String visibleips) {
-        this.visibleips = visibleips;
+    public void setOpenips(String openips) {
+        this.openips = openips;
     }
 
-    
-    public String[] getVisibleips(boolean dummy) {
-        if (visibleips == null) {
+    public String[] getOpenips(boolean dummy) {
+        if (openips == null) {
             return null;
         }
 
-        List<String> visibleIPs = new ArrayList<String>();
-        for (String e : visibleips.split("[ ;,]")) {
+        List<String> openIPs = new ArrayList<String>();
+        for (String e : openips.split("[ ;,]")) {
             e = e.trim();
             if (e.isEmpty() == false) {
-                visibleIPs.add(e);
+                openIPs.add(e);
             }
         }
 
-        return visibleIPs.toArray(new String[0]);
+        return openIPs.toArray(new String[0]);
     }
-    
+
+    /**
+     * @return visibleInRanking
+     */
+    @Basic
+    @Column(name = "hiddenblocked")
+    public Boolean getHiddenblocked() {
+        return hiddenblocked;
+    }
+
+    /**
+     * @param name new value for name
+     */
+    public void setHiddenblocked(Boolean hiddenblocked) {
+        this.hiddenblocked = hiddenblocked;
+    }
+
     /**
      * get contests
      */
