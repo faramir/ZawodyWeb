@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="email.host">poczta1.mat.umk.pl</entry>
+    <entry key="email.port">25</entry>
+    <entry key="email.user">konkinf</entry>
+    <entry key="email.password"></entry>
+    <entry key="email.from">ZawodyWeb &lt;konkinf@mat.umk.pl&gt;</entry>
+    <entry key="email.subject">[ZawodyWeb] </entry>
+</properties>
