@@ -15,7 +15,6 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
@@ -422,7 +421,7 @@ public class RequestBean {
             List<Problems> problems = c.list();
             submittableProblems = new ArrayList<Problems>();
             for (Problems problem : problems) {
-                if (isValidIP(problem.getSeries().getVisibleips(false), clientIp)) {
+                if (ELFunctions.isValidIP(problem.getSeries().getOpenips(false), clientIp)) {
                     submittableProblems.add(problem);
                 }
             }
@@ -451,7 +450,7 @@ public class RequestBean {
 
                 String clientIp = getClientIp();
                 for (Series serie : series) {
-                    if (isValidIP(serie.getVisibleips(false), clientIp)) {
+                    if (serie.getHiddenblocked() == false || ELFunctions.isValidIP(serie.getOpenips(false), clientIp)) {
                         currentContestSeries.add(serie);
                     }
                 }
@@ -2206,20 +2205,8 @@ public class RequestBean {
         }
     }
 
-    private String getClientIp() {
+    public String getClientIp() {
         return ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRemoteAddr();
-    }
-
-    private boolean isValidIP(String[] ips, String clientIp) {
-        if (ips == null || ips.length == 0) {
-            return true;
-        }
-        for (String ip : ips) {
-            if (clientIp.startsWith(ip)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private String sendSolution(byte[] bytes, String fileName, String controlId) {
@@ -2326,7 +2313,7 @@ public class RequestBean {
 
             String clientIp = getClientIp();
             if (rolesBean.canEditProblem(problem.getSeries().getContests().getId(), problem.getSeries().getId()) == true
-                    || (isValidIP(problem.getSeries().getVisibleips(false), clientIp)
+                    || (ELFunctions.isValidIP(problem.getSeries().getOpenips(false), clientIp)
                     && problem.getSeries().getStartdate().getTime() < submitTime
                     && (problem.getSeries().getEnddate() == null || submitTime < problem.getSeries().getEnddate().getTime()))) {
                 Submits submit = new Submits();

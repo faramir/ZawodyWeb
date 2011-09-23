@@ -205,6 +205,22 @@ public class ELFunctions {
         return p.getSeries().getStartdate().before(now) && (p.getSeries().getEnddate() == null || p.getSeries().getEnddate().after(now));
     }
 
+    public static boolean isValidIP(String[] ips, String clientIp) {
+        if (ips == null || ips.length == 0) {
+            return true;
+        }
+        for (String ip : ips) {
+            if (clientIp.startsWith(ip)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static Boolean submitIpOk(Problems p, String clientIp) {
+        return isValidIP(p.getSeries().getOpenips(false), clientIp);
+    }
+
     public static String dateAndHour(Timestamp t) {
         if (t == null) {
             return "";
