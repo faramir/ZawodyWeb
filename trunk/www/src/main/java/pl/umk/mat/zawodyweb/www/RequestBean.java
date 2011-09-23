@@ -1766,11 +1766,16 @@ public class RequestBean {
     public String goToProblem(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         currentProblem = problemsDAO.getById(id);
 
-        if (currentProblem != null
-                && (currentProblem.getSeries().getStartdate().after(new Date())
-                || currentProblem.getSeries().getContests().getVisibility() == false)
-                && !rolesBean.canAddProblem(currentProblem.getSeries().getContests().getId(), null)) {
-            currentProblem = null;
+        if (currentProblem != null) {
+            Series serie = currentProblem.getSeries();
+
+            if (((ELFunctions.isValidIP(serie.getOpenips(false), getClientIp()) == false
+                    && serie.getHiddenblocked() == true)
+                    || serie.getStartdate().after(new Date())
+                    || serie.getContests().getVisibility() == false)
+                    && !rolesBean.canAddProblem(serie.getContests().getId(), null)) {
+                currentProblem = null;
+            }
         }
 
         if (currentProblem == null) {
