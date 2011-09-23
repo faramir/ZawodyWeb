@@ -15,6 +15,7 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
@@ -68,6 +69,7 @@ import pl.umk.mat.zawodyweb.www.util.SeriesUtils;
 import pl.umk.mat.zawodyweb.www.util.SubmitsUtils;
 import pl.umk.mat.zawodyweb.www.zip.UnzipProblem;
 import pl.umk.mat.zawodyweb.www.zip.ZipProblem;
+import pl.umk.mat.zawodyweb.email.EmailSender;
 
 /**
  *
@@ -1387,15 +1389,54 @@ public class RequestBean {
 
     public String addQuestion() {
         try {
-            getEditedQuestion().setContests(getCurrentContest());
-            getEditedQuestion().setProblems(problemsDAO.getById(temporaryProblemId));
-            getEditedQuestion().setQtype(0);
-            getEditedQuestion().setUsers(sessionBean.getCurrentUser());
-            getEditedQuestion().setQdate(new Timestamp(System.currentTimeMillis()));
-            getEditedQuestion().setAdate(new Timestamp(0));
+            Problems problem = problemsDAO.getById(temporaryProblemId);
+            Questions question = getEditedQuestion();
+            question.setContests(getCurrentContest());
+            question.setProblems(problem);
+            question.setQtype(0);
+            question.setUsers(sessionBean.getCurrentUser());
+            question.setQdate(new Timestamp(System.currentTimeMillis()));
+            question.setAdate(new Timestamp(0));
 
-            questionsDAO.save(getEditedQuestion());
+            questionsDAO.save(question);
 
+            String emails = getCurrentContest().getEmail();
+            if (emails != null && emails.isEmpty() == false) {
+                HibernateUtil.getSessionFactory().getCurrentSession().flush();
+
+                HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+                String url = request.getRequestURL().
+                        delete(request.getRequestURL().length() - request.getRequestURI().length(), request.getRequestURL().length()).
+                        append(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath()).
+                        append("/question/").
+                        append(question.getId()).
+                        append("/").
+                        append(ELFunctions.filterUri(question.getSubject())).
+                        append(".html").
+                        toString();
+
+                String subject = messages.getString("email_question_subject").
+                        replace("%SUBJECT%", question.getSubject()).
+                        replace("%TEXT%", question.getQuestion()).
+                        replace("%CONTEST%", question.getContests().getName()).
+                        replace("%URL%", url).
+                        replace("%PROBLEM%", (problem == null || problem.getId() == 0)
+                        ? messages.getString("questions_general")
+                        : problem.getName()).
+                        trim();
+
+                String text = messages.getString("email_question_text").
+                        replace("%SUBJECT%", question.getSubject()).
+                        replace("%TEXT%", question.getQuestion()).
+                        replace("%CONTEST%", question.getContests().getName()).
+                        replace("%URL%", url).
+                        replace("%PROBLEM%", (problem == null || problem.getId() == 0)
+                        ? messages.getString("questions_general")
+                        : problem.getName()).
+                        trim();
+
+                EmailSender.send(emails, subject, text);
+            }
             return "questions";
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();

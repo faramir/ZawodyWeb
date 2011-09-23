@@ -268,26 +268,10 @@ public class Contests implements Serializable {
         return email;
     }
 
-    public String[] getEmail(boolean dummy) {
-        if (email == null) {
-            return null;
-        }
-
-        List<String> emails = new ArrayList<String>();
-        for (String e : email.split("[ ;,]")) {
-            e = e.trim();
-            if (e.isEmpty() == false && e.contains("@")) {
-                emails.add(e);
-            }
-        }
-
-        return emails.toArray(new String[0]);
-    }
-
     /**
      * @param tech new value for tech
      */
-    public void setEmail(String tech) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
