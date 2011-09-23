@@ -1582,12 +1582,14 @@ public class RequestBean {
 
     @HttpAction(name = "ranking_seria", pattern = "ranking_seria/{id}/{title}")
     public String goToRankingSeria(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
-        Series s = seriesDAO.getById(id);
-        if (s == null) {
+        Series serie = seriesDAO.getById(id);
+        if (serie == null
+                || (ELFunctions.isValidIP(serie.getOpenips(false), getClientIp()) == false
+                && serie.getHiddenblocked() == true)) {
             return "/error/404";
         }
 
-        selectContest(s.getContests().getId());
+        selectContest(serie.getContests().getId());
 
         if (getCurrentContest() == null) {
             return "/error/404";
