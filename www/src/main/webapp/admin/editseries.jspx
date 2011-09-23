@@ -89,9 +89,15 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="visibleips">${messages.visibleips}:</h:outputLabel>
-                            <h:inputText id="visibleips" value="#{requestBean.editedSeries.visibleips}" />
-                            <h:message for="visibleips" errorClass="error" />
+                            <h:outputLabel for="openips">${messages.openips}:</h:outputLabel>
+                            <h:inputText id="openips" value="#{requestBean.editedSeries.openips}" />
+                            <h:message for="openips" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel styleClass="required" for="hiddenblocked">${messages.hiddenblocked}:</h:outputLabel>
+                            <h:selectBooleanCheckbox id="hiddenblocked" styleClass="widecheck" value="#{requestBean.editedSeries.hiddenblocked}" />
+                            <h:message for="hiddenblocked" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>
