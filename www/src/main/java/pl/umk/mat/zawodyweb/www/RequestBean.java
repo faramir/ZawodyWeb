@@ -426,6 +426,8 @@ public class RequestBean {
                         submittableProblems.add(problem);
                     }
                 }
+            } else {
+                submittableProblems = c.list();
             }
         }
 
