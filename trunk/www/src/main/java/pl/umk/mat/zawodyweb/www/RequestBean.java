@@ -417,12 +417,14 @@ public class RequestBean {
             s.addOrder(Order.desc("id"));
             c.addOrder(Order.asc("abbrev"));
 
-            String clientIp = getClientIp();
-            List<Problems> problems = c.list();
-            submittableProblems = new ArrayList<Problems>();
-            for (Problems problem : problems) {
-                if (ELFunctions.isValidIP(problem.getSeries().getOpenips(false), clientIp)) {
-                    submittableProblems.add(problem);
+            if (getCurrentContest() == null || rolesBean.canEditProblem(getCurrentContest().getId(), null) == false) {
+                String clientIp = getClientIp();
+                List<Problems> problems = c.list();
+                submittableProblems = new ArrayList<Problems>();
+                for (Problems problem : problems) {
+                    if (ELFunctions.isValidIP(problem.getSeries().getOpenips(false), clientIp)) {
+                        submittableProblems.add(problem);
+                    }
                 }
             }
         }
