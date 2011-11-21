@@ -24,9 +24,9 @@ import pl.umk.mat.zawodyweb.database.CheckerErrors;
  *
  * @author Jakub Prabucki
  */
-public class LanguageACM implements CompilerInterface {
+public class LanguageLA implements CompilerInterface {
 
-    public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageACM.class);
+    public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageLA.class);
     private Properties properties;
 
     @Override
@@ -37,13 +37,13 @@ public class LanguageACM implements CompilerInterface {
     @Override
     public TestOutput runTest(String path, TestInput input) {
         TestOutput result = new TestOutput(null);
-        String acmSite = "http://uva.onlinejudge.org/";
+        String acmSite = "http://livearchive.onlinejudge.org/";
 
-        String login = properties.getProperty("acm_uva.login");
-        String password = properties.getProperty("acm_uva.password");
+        String login = properties.getProperty("livearchive.login");
+        String password = properties.getProperty("livearchive.password");
         long maxTime = 0L;
         try {
-            maxTime = Long.parseLong(properties.getProperty("acm_uva.max_time"));
+            maxTime = Long.parseLong(properties.getProperty("livearchive.max_time"));
         } catch (NumberFormatException e) {
             maxTime = 10L * 60;
         }
@@ -104,7 +104,7 @@ public class LanguageACM implements CompilerInterface {
             return result;
         }
         logging.releaseConnection();
-        PostMethod sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=com_comprofiler&task=login");
+        PostMethod sendAnswer = new PostMethod("http://livearchive.onlinejudge.org/index.php?option=com_comprofiler&task=login");
         sendAnswer.setRequestHeader("Referer", acmSite);
         NameValuePair[] loginData = new NameValuePair[0];
         loginData = vectorLoginData.toArray(loginData);
@@ -126,7 +126,7 @@ public class LanguageACM implements CompilerInterface {
         }
         sendAnswer.releaseConnection();
         logger.info("Logged to ACM");
-        sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=save_submission");
+        sendAnswer = new PostMethod("http://livearchive.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=save_submission");
         String lang = properties.getProperty("CODEFILE_EXTENSION");
         if (lang.equals("c")) {
             lang = "1";
@@ -202,7 +202,7 @@ public class LanguageACM implements CompilerInterface {
             time = "";
 
             logger.info("Checking answer on ACM");
-            logging = new GetMethod("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=9&limit=" + limitOnPage + "&limitstart=0");
+            logging = new GetMethod("http://livearchive.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=9&limit=" + limitOnPage + "&limitstart=0");
             firstGet = null;
             try {
                 client.executeMethod(logging);
@@ -291,10 +291,10 @@ public class LanguageACM implements CompilerInterface {
             }
         } while (true);
         logging.releaseConnection();
-        sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=logout");
+        sendAnswer = new PostMethod("http://livearchive.onlinejudge.org/index.php?option=logout");
         NameValuePair[] logout = {
             new NameValuePair("op2", "logout"),
-            new NameValuePair("return", "http://uva.onlinejudge.org"),
+            new NameValuePair("return", "http://livearchive.onlinejudge.org"),
             new NameValuePair("lang", "english"),
             new NameValuePair("message", "0"),
             new NameValuePair("Submit", "Logout")

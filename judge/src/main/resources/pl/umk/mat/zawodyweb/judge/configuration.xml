@@ -15,9 +15,13 @@
 
     <entry key="COMPILE_TIMEOUT">30000</entry>
 
-    <entry key="acm_uva.login">spamz</entry>
-    <entry key="acm_uva.password">spamz2</entry>
-    <entry key="acm_uva.max_time">720</entry>
+    <entry key="uva.login">spamz</entry>
+    <entry key="uva.password">spamz2</entry>
+    <entry key="uva.max_time">720</entry>
+
+    <entry key="livearchive.login">spamz</entry>
+    <entry key="livearchive.password">spamz2</entry>
+    <entry key="livearchive.max_time">720</entry>
 
     <entry key="opss.login">zawodyweb</entry>
     <entry key="opss.password">zawody.web.2009</entry>
