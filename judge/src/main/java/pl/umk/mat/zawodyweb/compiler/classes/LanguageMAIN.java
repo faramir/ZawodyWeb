@@ -123,7 +123,7 @@ public class LanguageMAIN implements CompilerInterface {
         logger.debug("Task id = " + task_id);
         logger.debug("Max points = " + max_points);
 
-        String loginUrl = "http://main.edu.pl/user.phtml?op=login";
+        String loginUrl = "http://main.edu.pl/pl/login";
         String login = properties.getProperty("main_edu_pl.login");
         String password = properties.getProperty("main_edu_pl.password");
 
