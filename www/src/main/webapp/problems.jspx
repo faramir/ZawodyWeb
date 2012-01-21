@@ -13,6 +13,9 @@
             </c:when>
             <c:otherwise>
                 <div id="formProblems" class="profilform">
+                    <div class="ikona" style="margin-left:-40px">
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{requestBean.currentContest.id}/series.html" title="${messages.addseries}" rendered="#{zw:canAddSeries(rolesBean, requestBean.currentContest.id, null)}"><h:graphicImage alt="${messages.addseries}" title="${messages.addseries}" url="/media/images/dodaj.png" /></h:outputLink>
+                    </div>
                     <c:forEach var="series" items="#{requestBean.currentContestSeries}">
                         <div class="seria">
                             <h:outputLabel for="problems#{series.id}" styleClass="seria">
@@ -23,9 +26,9 @@
                                         <h:outputText value=" - #{zw:formatDateAndHour(series.enddate, 'yyyy-MM-dd HH:mm')}" title="#{messages.series_enddate}" />
                                     </c:if>
                                     <c:if test="#{series.freezedate!=null}">
-                                    <div class="ranking_frozen">
-                                        <h:outputText value="(#{zw:formatDateAndHour(series.freezedate, 'yyyy-MM-dd HH:mm')})" title="${messages.series_freezedate}" />
-                                    </div>
+                                        <div class="ranking_frozen">
+                                            <h:outputText value="(#{zw:formatDateAndHour(series.freezedate, 'yyyy-MM-dd HH:mm')})" title="${messages.series_freezedate}" />
+                                        </div>
                                     </c:if>
                                 </div>
                             </h:outputLabel>

@@ -11,6 +11,9 @@
             </c:when>
             <c:otherwise>
                 <div id="formEditContest" class="profilform">
+                    <div class="ikona" style="margin-left:-40px">
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editlanguage.html" title="#{messages.addlanguage}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addlanguage}" title="#{messages.addlanguage}" url="/media/images/dodaj.png" /></h:outputLink>
+                    </div>
                     <t:dataTable id="languages" var="language" styleClass="seria" value="#{requestBean.languages}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols">
                         <h:column>
                             <f:facet name="header">
