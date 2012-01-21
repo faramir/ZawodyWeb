@@ -19,7 +19,9 @@ import org.openid4java.discovery.Identifier;
 import org.restfaces.annotation.HttpAction;
 import org.restfaces.annotation.Instance;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.UserLogDAO;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
+import pl.umk.mat.zawodyweb.database.pojo.UserLog;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 import pl.umk.mat.zawodyweb.ldap.LdapConnector;
 import pl.umk.mat.zawodyweb.olat.jdbc.Connector;
@@ -40,7 +42,9 @@ public class SessionBean {
     private Integer currentContestId;
     private boolean loggedIn;
     private Boolean rememberMe;
-    /* */
+    /*
+     *
+     */
     private boolean showOnlyMySubmissions = true;
     private int submissionsContestId = 0;
     private int submissionsPageIndex = 0;
@@ -72,8 +76,20 @@ public class SessionBean {
         return loggedIn;
     }
 
+    private void logUser() {
+        UserLog ul = new UserLog();
+        UserLogDAO dao = DAOFactory.DEFAULT.buildUserLogDAO();
+
+        ul.setUsername(currentUser.getLogin());
+        ul.setLogdate(new Timestamp(System.currentTimeMillis()));
+        ul.setIp(((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRemoteAddr());
+
+        dao.save(ul);
+    }
+
     /**
      * Redirect here when using OpenID functionality
+     *
      * @return
      */
     @HttpAction(name = "openid", pattern = "openid")
@@ -85,7 +101,9 @@ public class SessionBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "login", summary, null);
             return "login";
         } else {
-            /* Login using OpenID successful */
+            /*
+             * Login using OpenID successful
+             */
             UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
             List<Users> users = dao.findByLogin(openIdConsumer.getLogin());
             Users user = null;
@@ -111,6 +129,7 @@ public class SessionBean {
 
             currentUser = user;
             loggedIn = true;
+            logUser();
         }
 
         return "start";
@@ -118,6 +137,7 @@ public class SessionBean {
 
     /**
      * Inserts or updates user using OLAT data
+     *
      * @param dao
      * @param user
      * @param username
@@ -139,6 +159,7 @@ public class SessionBean {
 
     /**
      * Inserts or updates user using OLAT data
+     *
      * @param dao
      * @param user
      * @param username
@@ -179,21 +200,29 @@ public class SessionBean {
             if (users.isEmpty() == false) {
                 Users user = users.get(0);
                 if (OLAT_PASS.equals(user.getPass())) {
-                    /* OLAT */
+                    /*
+                     * OLAT
+                     */
                     if (Connector.getInstance().checkPassword(currentUser.getLogin(), currentUser.getPass())) {
                         Users olatUser = Connector.getInstance().getUser(currentUser.getLogin());
                         currentUser = olatSaveUser(dao, user, olatUser);
                         loggedIn = true;
+                        logUser();
                     }
                 } else if (LDAP_PASS.equals(user.getPass())) {
-                    /* LDAP */
+                    /*
+                     * LDAP
+                     */
                     Users ldapUser = LdapConnector.retieveUser(currentUser.getLogin(), currentUser.getPass());
                     if (ldapUser != null) {
                         currentUser = ldapSaveUser(dao, user, ldapUser);
                         loggedIn = true;
+                        logUser();
                     }
                 } else if (OPENID_PASS.equals(user.getPass())) {
-                    /* OpenID */
+                    /*
+                     * OpenID
+                     */
                     String contextPath = ((HttpServletRequest) context.getExternalContext().getRequest()).getRequestURL().toString();
                     contextPath = contextPath.replaceFirst(context.getExternalContext().getRequestServletPath() + ".*$", "");
                     openIdConsumer = new OpenIdConsumer(contextPath + "/openid.html");
@@ -203,9 +232,12 @@ public class SessionBean {
                         loggedIn = false;
                     }
                 } else if (user.checkPass(currentUser.getPass())) {
-                    /* Normal */
+                    /*
+                     * Normal
+                     */
                     currentUser = user;
                     loggedIn = true;
+                    logUser();
                 }
 
                 if (loggedIn == false) {
@@ -213,25 +245,35 @@ public class SessionBean {
                     dao.saveOrUpdate(user);
                 }
             } else {
-                /* User not found - registering */
+                /*
+                 * User not found - registering
+                 */
                 Users ldapUser = null;
                 Users newUser = new Users();
                 newUser.setRdate(new Timestamp(System.currentTimeMillis()));
                 if (currentUser.getPass() != null
                         && Connector.getInstance().checkPassword(currentUser.getLogin(), currentUser.getPass())) {
-                    /* OLAT */
+                    /*
+                     * OLAT
+                     */
 
                     Users olatUser = Connector.getInstance().getUser(currentUser.getLogin());
                     currentUser = olatSaveUser(dao, newUser, olatUser);
                     loggedIn = true;
+                    logUser();
                 } else if (currentUser.getPass() != null
                         && (ldapUser = LdapConnector.retieveUser(currentUser.getLogin(), currentUser.getPass())) != null) {
-                    /* LDAP */
+                    /*
+                     * LDAP
+                     */
 
                     currentUser = ldapSaveUser(dao, newUser, ldapUser);
                     loggedIn = true;
+                    logUser();
                 } else {
-                    /* OpenID */
+                    /*
+                     * OpenID
+                     */
 
                     String contextPath = ((HttpServletRequest) context.getExternalContext().getRequest()).getRequestURL().toString();
                     contextPath = contextPath.replaceFirst(context.getExternalContext().getRequestServletPath() + ".*$", "");

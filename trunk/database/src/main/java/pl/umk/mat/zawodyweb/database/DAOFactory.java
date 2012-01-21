@@ -46,7 +46,9 @@ public abstract class DAOFactory {
 	
 	public abstract QuestionsDAO buildQuestionsDAO();
 	
-	public abstract UsersRolesDAO buildUsersRolesDAO();
+	public abstract UserLogDAO buildUserLogDAO();
+	
+        public abstract UsersRolesDAO buildUsersRolesDAO();
 	
 	public abstract RolesDAO buildRolesDAO();
 	

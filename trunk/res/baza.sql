@@ -135,6 +135,12 @@ CREATE TABLE PDF (
         pdf             bytea
 );
 
+CREATE TABLE USERLOG ( 
+        id                  serial primary key,
+        userame             varchar(64),
+	ip                  varchar(40),
+        logdate             timestamp
+);
 
 /* Powiazadania jeden do wielu */
 ALTER TABLE SERIES ADD contestsId int REFERENCES CONTESTS(id);
