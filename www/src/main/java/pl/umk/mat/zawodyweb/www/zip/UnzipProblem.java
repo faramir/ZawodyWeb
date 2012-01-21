@@ -79,7 +79,7 @@ public class UnzipProblem {
         problem.setAbbrev(xmlProblem.getAbbrev());
         problem.setMemlimit(xmlProblem.getMemlimit());
         problem.setCodesize(xmlProblem.getCodesize());
-        problem.setVisibleinranking(xmlProblem.isVisible());
+        problem.setVisibleinranking(xmlProblem.getVisible());
 
         problem.setText(getText(xmlProblem.getText()));
 

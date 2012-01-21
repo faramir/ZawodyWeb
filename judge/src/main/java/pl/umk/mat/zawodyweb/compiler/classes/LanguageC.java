@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -28,9 +29,9 @@ import pl.umk.mat.zawodyweb.judge.WriterFeeder;
 public class LanguageC implements CompilerInterface {
 
     public static final org.apache.log4j.Logger logger = Logger.getLogger(LanguageC.class);
-    Properties properties;
-    int compileResult = CheckerErrors.UNDEF;
-    String compileDesc = "";
+    private Properties properties;
+    private int compileResult = CheckerErrors.UNDEF;
+    private String compileDesc = "";
 
     @Override
     public void setProperties(Properties properties) {
@@ -244,7 +245,15 @@ public class LanguageC implements CompilerInterface {
             Thread threadReaderEater = null;
             InterruptTimer timer = new InterruptTimer();
             try {
-                p = new ProcessBuilder("gcc", "-O2", "-static", "-o", compilefile, codefile, "-lm").start();
+                List<String> command = new ArrayList<String>(
+                        Arrays.asList("gcc", "-O2", "-static", "-o", compilefile, codefile, "-lm"));
+
+                if (properties.getProperty("PROPERTY") != null
+                        && properties.getProperty("PROPERTY").isEmpty() == false) {
+                    command.addAll(Arrays.asList(properties.getProperty("PROPERTY").split(" ")));
+                }
+
+                p = new ProcessBuilder(command).start();
                 BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
                 timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
@@ -280,7 +289,7 @@ public class LanguageC implements CompilerInterface {
 
             if (p.exitValue() != 0) {
                 compileResult = CheckerErrors.CE;
-                compileDesc = compileDesc.replaceAll("(?m)^.*" + Pattern.quote(codefile),  Matcher.quoteReplacement(properties.getProperty("CODE_FILENAME")));
+                compileDesc = compileDesc.replaceAll("(?m)^.*" + Pattern.quote(codefile), Matcher.quoteReplacement(properties.getProperty("CODE_FILENAME")));
             }
             new File(codefile).delete();
         } catch (Exception err) {

@@ -121,6 +121,7 @@ public class MainJudge {
                         compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(compilerClasses.getFilename(), compilerClasses.getCode()).newInstance();
                     }
                     properties.setProperty("CODEFILE_EXTENSION", submit.getLanguages().getExtension());
+                    properties.setProperty("PROPERTY", submit.getLanguages().getProperty());
                     compiler.setProperties(properties);
 
                     /* downloading diff class */

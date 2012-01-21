@@ -30,12 +30,12 @@ public class RankingTest {
 
     @Before
     public void setUp() {
-        t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        //t = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
     }
 
     @After
     public void tearDown() {
-        t.commit();
+        //t.commit();
     }
 
     private void display(RankingTable rankingTable, String name) {

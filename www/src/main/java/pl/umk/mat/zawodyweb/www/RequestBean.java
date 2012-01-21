@@ -1589,7 +1589,8 @@ public class RequestBean {
         Series serie = seriesDAO.getById(id);
         if (serie == null
                 || (ELFunctions.isValidIP(serie.getOpenips(false), getClientIp()) == false
-                && serie.getHiddenblocked() == true)) {
+                && serie.getHiddenblocked() == true
+                && !rolesBean.canAddProblem(serie.getContests().getId(), id))) {
             return "/error/404";
         }
 
@@ -1611,12 +1612,15 @@ public class RequestBean {
 
     @HttpAction(name = "ranking_seria_date", pattern = "ranking_seria/{id}/{title}/{date}")
     public String goToRankingSeriaDate(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy, @Param(name = "date", encode = true) String date) {
-        Series s = seriesDAO.getById(id);
-        if (s == null) {
+        Series serie = seriesDAO.getById(id);
+        if (serie == null
+                || (ELFunctions.isValidIP(serie.getOpenips(false), getClientIp()) == false
+                && serie.getHiddenblocked() == true
+                && !rolesBean.canAddProblem(serie.getContests().getId(), id))) {
             return "/error/404";
         }
 
-        selectContest(s.getContests().getId());
+        selectContest(serie.getContests().getId());
 
         if (getCurrentContest() == null) {
             return "/error/404";
@@ -1779,7 +1783,7 @@ public class RequestBean {
                     && serie.getHiddenblocked() == true)
                     || serie.getStartdate().after(new Date())
                     || serie.getContests().getVisibility() == false)
-                    && !rolesBean.canAddProblem(serie.getContests().getId(), null)) {
+                    && !rolesBean.canAddProblem(serie.getContests().getId(), serie.getId())) {
                 currentProblem = null;
             }
         }
@@ -2146,12 +2150,9 @@ public class RequestBean {
     /**
      * Validates component with captcha text entered.
      *
-     * @param context
-     *            faces context in which component resides
-     * @param component
-     *            component to be validated
-     * @param obj
-     *            data entered in component
+     * @param context faces context in which component resides
+     * @param component component to be validated
+     * @param obj data entered in component
      */
     public void validateCaptcha(FacesContext context, UIComponent component, Object obj) {
         String captcha = (String) obj;
@@ -2254,7 +2255,9 @@ public class RequestBean {
             } else {
                 fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
                 fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
-                /* odgadywanie zadania z nazwy */
+                /*
+                 * odgadywanie zadania z nazwy
+                 */
                 if (temporaryProblemId == 0) {
                     String filename_tmp = fileName;
 
@@ -2285,8 +2288,9 @@ public class RequestBean {
                 }
             }
 
-            /* upewnijmy się, że rozwiązanie jest wysłane w języku,
-             * który jest akceptowany przez zadanie
+            /*
+             * upewnijmy się, że rozwiązanie jest wysłane w języku, który jest
+             * akceptowany przez zadanie
              */
             if (problem != null && language != null) {
                 boolean hack = true;
