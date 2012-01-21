@@ -36,6 +36,12 @@
                             <br class="clear" />
                         </div>
                         <div>
+                            <h:outputLabel for="property" >${messages.property}:</h:outputLabel>
+                            <h:inputText id="property" maxlength="255" value="#{requestBean.editedLanguage.property}" />
+                            <h:message for="property" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
                             <h:outputLabel for="class_used" styleClass="required">${messages.class_used}:</h:outputLabel>
                             <h:selectOneMenu id="class_used" required="true" value="#{requestBean.temporaryClassId}">
                                 <f:selectItem itemValue="" itemLabel="" />

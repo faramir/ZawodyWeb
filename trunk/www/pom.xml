@@ -76,8 +76,12 @@
             </snapshots>
             <id>repository.jboss.com</id>
             <name>Jboss Repository for Maven</name>
-            <url>http://repository.jboss.com/maven2/</url>
+            <url>http://maven.glassfish.org/content/repositories/JBoss/</url>
             <layout>default</layout>
+        </repository>
+        <repository>
+            <id>repository.apache.org</id>
+            <url>https://repository.apache.org/index.html</url>
         </repository>
     </repositories>
     <!-- -->
