@@ -13,7 +13,6 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.*;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
@@ -140,20 +139,15 @@ public class LanguageUVA implements CompilerInterface {
         } else if (lang.equals("pas")) {
             lang = "4";
         }
-        String filename = properties.getProperty("CODE_FILENAME", "source.file");
-
-        ByteArrayPartSource sourceCodeFile = new ByteArrayPartSource(filename, code.getBytes());
-
-        Part[] parts = {
-            new StringPart("problemid", ""),
-            new StringPart("category", ""),
-            new StringPart("localid", input.getText()),
-            new StringPart("language", lang),
-            //new StringPart("code", code),
-            new StringPart("submit", "Submit"),
-            new FilePart("codeupl", sourceCodeFile)
+        NameValuePair[] dataSendAnswer = {
+            new NameValuePair("problemid", ""),
+            new NameValuePair("category", ""),
+            new NameValuePair("localid", input.getText()),
+            new NameValuePair("language", lang),
+            new NameValuePair("code", code),
+            new NameValuePair("submit", "Submit")
         };
-        sendAnswer.setRequestEntity(new MultipartRequestEntity(parts, sendAnswer.getParams()));
+        sendAnswer.setRequestBody(dataSendAnswer);
 
         int id;
         try {
