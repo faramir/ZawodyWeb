@@ -22,8 +22,7 @@ import pl.umk.mat.zawodyweb.judge.ReaderEater;
 import pl.umk.mat.zawodyweb.judge.WriterFeeder;
 
 /**
- *
- * @author lukash2k
+ * @author lukash2k modified by faramir
  */
 public class LanguageCPP implements CompilerInterface {
 
@@ -229,6 +228,7 @@ public class LanguageCPP implements CompilerInterface {
             compileddir = compileddir.replaceAll(File.separator + "$", "");
             codefile = codedir + File.separator + codefile + ".cpp";
             compilefile = compileddir + File.separator + compilefile + ".exe";
+
             OutputStream is = new FileOutputStream(codefile);
             is.write(code);
             is.close();
@@ -274,7 +274,7 @@ public class LanguageCPP implements CompilerInterface {
 
             if (p.exitValue() != 0) {
                 compileResult = CheckerErrors.CE;
-                compileDesc = compileDesc.replaceAll("(?m)^.*" + Pattern.quote(codefile),  Matcher.quoteReplacement(properties.getProperty("CODE_FILENAME")));
+                compileDesc = compileDesc.replaceAll("(?m)^.*" + Pattern.quote(codefile), Matcher.quoteReplacement(properties.getProperty("CODE_FILENAME")));
             }
             new File(codefile).delete();
         } catch (Exception err) {

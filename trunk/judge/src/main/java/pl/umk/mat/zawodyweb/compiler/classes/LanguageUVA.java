@@ -13,6 +13,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.*;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
@@ -21,7 +22,7 @@ import pl.umk.mat.zawodyweb.database.CheckerErrors;
 
 /**
  *
- * @author Jakub Prabucki
+ * @author Jakub Prabucki (modified by faramir)
  */
 public class LanguageUVA implements CompilerInterface {
 
@@ -34,13 +35,13 @@ public class LanguageUVA implements CompilerInterface {
     }
 
     @Override
-    public TestOutput runTest(String path, TestInput input) {
+    public TestOutput runTest(String code, TestInput input) {
         TestOutput result = new TestOutput(null);
         String acmSite = "http://uva.onlinejudge.org/";
 
         String login = properties.getProperty("uva.login");
         String password = properties.getProperty("uva.password");
-        long maxTime = 0L;
+        long maxTime;
         try {
             maxTime = Long.parseLong(properties.getProperty("uva.max_time"));
         } catch (NumberFormatException e) {
@@ -49,7 +50,7 @@ public class LanguageUVA implements CompilerInterface {
 
         HttpClient client = new HttpClient();
         GetMethod logging = new GetMethod(acmSite);
-        InputStream firstGet = null;
+        InputStream firstGet;
 
         HttpClientParams params = client.getParams();
         params.setParameter("http.useragent", "Opera/9.80 (Windows NT 6.1; U; pl) Presto/2.7.62 Version/11.00");
@@ -103,6 +104,7 @@ public class LanguageUVA implements CompilerInterface {
             return result;
         }
         logging.releaseConnection();
+
         PostMethod sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=com_comprofiler&task=login");
         sendAnswer.setRequestHeader("Referer", acmSite);
         NameValuePair[] loginData = new NameValuePair[0];
@@ -124,7 +126,9 @@ public class LanguageUVA implements CompilerInterface {
             return result;
         }
         sendAnswer.releaseConnection();
+
         logger.info("Logged to ACM");
+
         sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=save_submission");
         String lang = properties.getProperty("CODEFILE_EXTENSION");
         if (lang.equals("c")) {
@@ -136,15 +140,20 @@ public class LanguageUVA implements CompilerInterface {
         } else if (lang.equals("pas")) {
             lang = "4";
         }
-        NameValuePair[] dataSendAnswer = {
-            new NameValuePair("problemid", ""),
-            new NameValuePair("category", ""),
-            new NameValuePair("localid", input.getText()),
-            new NameValuePair("language", lang),
-            new NameValuePair("code", path),
-            new NameValuePair("submit", "Submit")
+        String filename = properties.getProperty("CODE_FILENAME", "source.file");
+
+        ByteArrayPartSource sourceCodeFile = new ByteArrayPartSource(filename, code.getBytes());
+
+        Part[] parts = {
+            new StringPart("problemid", ""),
+            new StringPart("category", ""),
+            new StringPart("localid", input.getText()),
+            new StringPart("language", lang),
+            //new StringPart("code", code),
+            new StringPart("submit", "Submit"),
+            new FilePart("codeupl", sourceCodeFile)
         };
-        sendAnswer.setRequestBody(dataSendAnswer);
+        sendAnswer.setRequestEntity(new MultipartRequestEntity(parts, sendAnswer.getParams()));
 
         int id;
         try {
@@ -174,6 +183,7 @@ public class LanguageUVA implements CompilerInterface {
             return result;
         }
         sendAnswer.releaseConnection();
+
         int limitRise = 50;
         int limitOnPage = 50;
         String statusSite = "";
@@ -187,6 +197,7 @@ public class LanguageUVA implements CompilerInterface {
             result.setText("InterruptedException");
             return result;
         }
+
         long start_time = System.currentTimeMillis();
         do {
             if (System.currentTimeMillis() - start_time > maxTime * 1000L) {
