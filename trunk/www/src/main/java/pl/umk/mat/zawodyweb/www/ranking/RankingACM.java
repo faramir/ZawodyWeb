@@ -24,8 +24,8 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$
- * Date: $Date$
+ * @version $Rev$ Date: $Date: 2010-10-10 02:53:49 +0200 (N, 10 paź 2010)
+ * $
  */
 public class RankingACM implements RankingInteface {
 
@@ -169,6 +169,9 @@ public class RankingACM implements RankingInteface {
         Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
         Timestamp checkTimestamp;
+        String checkTimestampStr;
+        Timestamp visibleTimestamp;
+        String visibleTimestampStr;
 
         UsersDAO usersDAO = DAOFactory.DEFAULT.buildUsersDAO();
         SeriesDAO seriesDAO = DAOFactory.DEFAULT.buildSeriesDAO();
@@ -206,6 +209,14 @@ public class RankingACM implements RankingInteface {
                 }
             }
 
+            checkTimestampStr = checkTimestamp.toString();
+            if (checkTimestamp.before(series.getStartdate())) {
+                visibleTimestamp = new Timestamp(0);
+            } else {
+                visibleTimestamp = new Timestamp(series.getStartdate().getTime());
+            }
+            visibleTimestampStr = visibleTimestamp.toString();
+
             if (series.getUnfreezedate() != null) {
                 if (checkDate.after(series.getUnfreezedate())) {
                     allTests = true;
@@ -218,8 +229,8 @@ public class RankingACM implements RankingInteface {
                 }
 
                 // select sum(maxpoints) from tests where problemsid='7' and visibility=1
-                Number maxPoints = null;
-                Number noTests = null;
+                Number maxPoints;
+                Number noTests;
                 if (allTests) {
                     Object[] o = (Object[]) hibernateSession.createCriteria(Tests.class).setProjection(
                             Projections.projectionList().add(Projections.sum("maxpoints")).add(Projections.rowCount())).add(Restrictions.eq("problems.id", problems.getId())).uniqueResult();
@@ -244,10 +255,13 @@ public class RankingACM implements RankingInteface {
                 // FIXME: wrócimy tu, gdy Hibernate będzie obsługiwał klauzulę having ;-)
                 /*
                  * Criteria c = hibernateSession.createCriteria(Submits.class);
-                 * c.setProjection(Projections.min("sdate")).add(Restrictions.eq("problems.id", problems.getId()));
-                 * c.createCriteria("resultss", "r").setProjection(Projections.sum("r.points").as("sumPoints").add(Restrictions.eq("sum(r.points)", maxPoints));
-                 * c.createCriteria("r.tests").add(Restrictions.eq("visibility", 1));
-                 * // c.add(Restrictions.sqlRestriction("1=1 having sumPoints=" + maxPoints));
+                 * c.setProjection(Projections.min("sdate")).add(Restrictions.eq("problems.id",
+                 * problems.getId())); c.createCriteria("resultss",
+                 * "r").setProjection(Projections.sum("r.points").as("sumPoints").add(Restrictions.eq("sum(r.points)",
+                 * maxPoints));
+                 * c.createCriteria("r.tests").add(Restrictions.eq("visibility",
+                 * 1)); // c.add(Restrictions.sqlRestriction("1=1 having
+                 * sumPoints=" + maxPoints));
                  */
                 // FIXME: BAAAAAAAAAAAAAAAAAAARDZO NIEKOSZERNIE!
 
@@ -264,10 +278,11 @@ public class RankingACM implements RankingInteface {
                             "    from submits,results,tests "
                             + "    where submits.problemsid='" + problems.getId() + "' "
                             + " 	   and submits.id=results.submitsid "
-                            + "	   and tests.id = results.testsid "
+                            + "	     and tests.id = results.testsid "
                             + "      and results.submitresult='" + CheckerErrors.ACC + "' "
                             + "      and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
-                            + "      and sdate <= '" + checkTimestamp.toString() + "' "
+                            + "      and sdate <= '" + checkTimestampStr + "' "
+                            + "      and sdate >= '" + visibleTimestampStr + "' "
                             + "      and visibleInRanking=true"
                             + //"	   and tests.visibility=1 " +
                             "    group by submits.id,usersid,sdate "
@@ -287,7 +302,8 @@ public class RankingACM implements RankingInteface {
                             + "	   and tests.id = results.testsid "
                             + "      and results.submitresult='" + CheckerErrors.ACC + "' "
                             + "      and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
-                            + "      and sdate <= '" + checkTimestamp.toString() + "' "
+                            + "      and sdate <= '" + checkTimestampStr + "' "
+                            + "      and sdate >= '" + visibleTimestampStr + "' "
                             + "      and visibleInRanking=true"
                             + "	   and tests.visibility=1 " + // FIXME: should be ok
                             "    group by submits.id,usersid,sdate "
@@ -328,24 +344,32 @@ public class RankingACM implements RankingInteface {
 
         }
 
-        /* Tworzenie rankingu z danych */
+        /*
+         * Tworzenie rankingu z danych
+         */
         ArrayList<UserACM> cre = new ArrayList<UserACM>();
         cre.addAll(mapUserACM.values());
         Collections.sort(cre);
 
-        /* nazwy kolumn */
+        /*
+         * nazwy kolumn
+         */
         ArrayList<String> columnsCaptions = new ArrayList<String>();
         columnsCaptions.add(messages.getString("points"));
         columnsCaptions.add(messages.getString("time"));
         columnsCaptions.add(messages.getString("solutions"));
 
-        /* nazwy klas css-owych dla kolumn  */
+        /*
+         * nazwy klas css-owych dla kolumn
+         */
         ArrayList<String> columnsCSS = new ArrayList<String>();
         columnsCSS.add("small");    // points
         columnsCSS.add("nowrap small");    // time
         columnsCSS.add("big left");      // solutions
 
-        /* tabelka z rankingiem */
+        /*
+         * tabelka z rankingiem
+         */
         ArrayList<RankingEntry> vectorRankingEntry = new ArrayList<RankingEntry>();
         int place = 0;
         long totalTime = -1;

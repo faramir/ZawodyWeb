@@ -19,8 +19,8 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$
- * Date: $Date$
+ * @version $Rev$ Date: $Date: 2010-10-10 02:53:49 +0200 (N, 10 paź 2010)
+ * $
  */
 public class RankingPA implements RankingInteface {
 
@@ -112,16 +112,13 @@ public class RankingPA implements RankingInteface {
                 }
                 return -1;
             }
-            /* // jeśli mają tyle samo punktów,
-             * // ale punkty nie różnią się wśród zrobionych,
-             * // znaczy, że różnią się wśród niezrobionych(?) lub tych z 0
-             * // nie dajemy takim lepszego miejsca.
+            /*
+             * // jeśli mają tyle samo punktów, // ale punkty nie różnią się
+             * wśród zrobionych, // znaczy, że różnią się wśród niezrobionych(?)
+             * lub tych z 0 // nie dajemy takim lepszego miejsca.
              *
-             * if (this.vPoints.size() < u2.vPoints.size()) {
-             *     return 1;
-             * } else if (this.vPoints.size() > u2.vPoints.size()) {
-             *     return -1;
-             * }
+             * if (this.vPoints.size() < u2.vPoints.size()) { return 1; } else
+             * if (this.vPoints.size() > u2.vPoints.size()) { return -1; }
              */
             return 0;
         }
@@ -154,6 +151,9 @@ public class RankingPA implements RankingInteface {
         Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
         Timestamp checkTimestamp;
+        String checkTimestampStr;
+        Timestamp visibleTimestamp;
+        String visibleTimestampStr;
 
         UsersDAO usersDAO = DAOFactory.DEFAULT.buildUsersDAO();
         SeriesDAO seriesDAO = DAOFactory.DEFAULT.buildSeriesDAO();
@@ -192,6 +192,15 @@ public class RankingPA implements RankingInteface {
                 }
             }
 
+            checkTimestampStr = checkTimestamp.toString();
+            if (checkTimestamp.before(series.getStartdate())) {
+                visibleTimestamp = new Timestamp(0);
+            } else {
+                visibleTimestamp = new Timestamp(series.getStartdate().getTime());
+            }
+            visibleTimestampStr = visibleTimestamp.toString();
+
+
             if (series.getUnfreezedate() != null) {
                 if (checkDate.after(series.getUnfreezedate())) {
                     allTests = true;
@@ -205,7 +214,7 @@ public class RankingPA implements RankingInteface {
 
                 vectorProblemsKI.add(new ProblemsKI(problems.getId(), series.getStartdate().getTime(), problems.getAbbrev(), problems.getName(), frozenSeria));
 
-                Query query = null;
+                Query query;
                 if (allTests == true) {
                     query = hibernateSession.createSQLQuery(""
                             + "select usersid, sum(points) "
@@ -218,7 +227,8 @@ public class RankingPA implements RankingInteface {
                             + "	     from submits "
                             + "        where submits.problemsid='" + problems.getId() + "' "
                             + "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
-                            + "          and sdate <= '" + checkTimestamp.toString() + "' "
+                            + "          and sdate <= '" + checkTimestampStr + "' "
+                            + "          and sdate >= '" + visibleTimestampStr + "' "
                             + "          and visibleInRanking=true"
                             + //"	       and tests.visibility=1 " +
                             "	     group by usersid "
@@ -237,7 +247,8 @@ public class RankingPA implements RankingInteface {
                             + "	     from submits "
                             + "        where submits.problemsid='" + problems.getId() + "' "
                             + "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
-                            + "          and sdate <= '" + checkTimestamp.toString() + "' "
+                            + "          and sdate <= '" + checkTimestampStr + "' "
+                            + "          and sdate >= '" + visibleTimestampStr + "' "
                             + "          and visibleInRanking=true"
                             + "	     group by usersid "
                             + "      ) "
@@ -260,14 +271,18 @@ public class RankingPA implements RankingInteface {
             }
         }
 
-        /* Tworzenie rankingu z danych */
+        /*
+         * Tworzenie rankingu z danych
+         */
         ArrayList<UserKI> cre = new ArrayList<UserKI>();
         cre.addAll(mapUserKI.values());
         Collections.sort(cre);
 
         Collections.sort(vectorProblemsKI);
 
-        /* nazwy kolumn i CSSy */
+        /*
+         * nazwy kolumn i CSSy
+         */
         ArrayList<String> columnsCSS = new ArrayList<String>();
         ArrayList<String> columnsCaptions = new ArrayList<String>();
         for (ProblemsKI problemsKI : vectorProblemsKI) {
@@ -277,7 +292,9 @@ public class RankingPA implements RankingInteface {
         columnsCaptions.add(messages.getString("points"));
         columnsCSS.add("small");
 
-        /* tabelka z rankingiem */
+        /*
+         * tabelka z rankingiem
+         */
         ArrayList<RankingEntry> vectorRankingEntry = new ArrayList<RankingEntry>();
         int place = 1;
         UserKI userTmp = cre.get(0);

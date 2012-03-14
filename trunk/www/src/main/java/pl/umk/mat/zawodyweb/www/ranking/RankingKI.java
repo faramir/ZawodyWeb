@@ -114,6 +114,9 @@ public class RankingKI implements RankingInteface {
         Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
         Timestamp checkTimestamp;
+        String checkTimestampStr;
+        Timestamp visibleTimestamp;
+        String visibleTimestampStr;
 
         UsersDAO usersDAO = DAOFactory.DEFAULT.buildUsersDAO();
         SeriesDAO seriesDAO = DAOFactory.DEFAULT.buildSeriesDAO();
@@ -152,6 +155,14 @@ public class RankingKI implements RankingInteface {
                 }
             }
 
+            checkTimestampStr = checkTimestamp.toString();
+            if (checkTimestamp.before(series.getStartdate())) {
+                visibleTimestamp = new Timestamp(0);
+            } else {
+                visibleTimestamp = new Timestamp(series.getStartdate().getTime());
+            }
+            visibleTimestampStr = visibleTimestamp.toString();
+
             if (series.getUnfreezedate() != null) {
                 if (checkDate.after(series.getUnfreezedate())) {
                     allTests = true;
@@ -178,7 +189,8 @@ public class RankingKI implements RankingInteface {
                             + "	     from submits "
                             + "        where submits.problemsid='" + problems.getId() + "' "
                             + "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
-                            + "          and sdate <= '" + checkTimestamp.toString() + "' "
+                            + "          and sdate <= '" + checkTimestampStr + "' "
+                            + "          and sdate >= '" + visibleTimestampStr + "' "
                             + "          and visibleInRanking=true"
                             + //"	       and tests.visibility=1 " +
                             "	     group by usersid "
@@ -197,7 +209,8 @@ public class RankingKI implements RankingInteface {
                             + "	     from submits "
                             + "        where submits.problemsid='" + problems.getId() + "' "
                             + "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
-                            + "          and sdate <= '" + checkTimestamp.toString() + "' "
+                            + "          and sdate <= '" + checkTimestampStr + "' "
+                            + "          and sdate >= '" + visibleTimestampStr + "' "
                             + "          and visibleInRanking=true"
                             + "	     group by usersid "
                             + "      ) "

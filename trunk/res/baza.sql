@@ -137,7 +137,7 @@ CREATE TABLE PDF (
 
 CREATE TABLE USERLOG ( 
         id                  serial primary key,
-        userame             varchar(64),
+        username             varchar(64),
 	ip                  varchar(40),
         logdate             timestamp
 );
