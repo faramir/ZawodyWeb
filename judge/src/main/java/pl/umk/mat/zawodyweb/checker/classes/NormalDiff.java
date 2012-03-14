@@ -1,8 +1,11 @@
 package pl.umk.mat.zawodyweb.checker.classes;
 
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
-import pl.umk.mat.zawodyweb.checker.*;
+import pl.umk.mat.zawodyweb.checker.CheckerInterface;
+import pl.umk.mat.zawodyweb.checker.CheckerResult;
+import pl.umk.mat.zawodyweb.checker.TestInput;
+import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.Program;
+import pl.umk.mat.zawodyweb.database.CheckerErrors;
 
 /**
  *
