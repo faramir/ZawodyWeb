@@ -25,7 +25,7 @@ import pl.umk.mat.zawodyweb.database.CheckerErrors;
 
 /**
  *
- * @author Jakub Prabucki
+ * @author Jakub Prabucki (modified by faramir)
  */
 public class LanguageOPSS implements CompilerInterface {
 

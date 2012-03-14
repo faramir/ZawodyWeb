@@ -24,7 +24,7 @@ import pl.umk.mat.zawodyweb.judge.WriterFeeder;
 
 /**
  *
- * @author lukash2k
+ * @author lukash2k (modified by faramir)
  */
 public class LanguageC implements CompilerInterface {
 

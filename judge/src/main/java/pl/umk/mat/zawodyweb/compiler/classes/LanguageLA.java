@@ -22,7 +22,7 @@ import pl.umk.mat.zawodyweb.database.CheckerErrors;
 
 /**
  *
- * @author Jakub Prabucki
+ * @author faramir
  */
 public class LanguageLA implements CompilerInterface {
 
