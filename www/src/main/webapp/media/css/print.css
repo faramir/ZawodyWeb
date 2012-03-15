@@ -1280,3 +1280,7 @@ pre.code {
     border: none;
     padding: 4px;
 }
+
+#efs {
+    display: none;
+}
