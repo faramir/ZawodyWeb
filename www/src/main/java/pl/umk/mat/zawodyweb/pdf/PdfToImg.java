@@ -7,13 +7,12 @@ package pl.umk.mat.zawodyweb.pdf;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
-import javax.imageio.ImageIO;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
-import pl.umk.mat.zawodyweb.database.PDFDAO;
 
 /**
  *
@@ -63,31 +62,31 @@ public class PdfToImg {
                 }
             }
         } catch (Exception ex) {
-            // TODO: log
+            throw new RuntimeException("Exception converting pdf to image: ", ex);
         } finally {
             if (pdf != null) {
                 try {
                     pdf.close();
                 } catch (IOException ex) {
-                    // TODO: log
+                    throw new RuntimeException("Exception when closing pdf: ", ex);
                 }
             }
         }
         return output;
     }
-
-    public static void main(String[] args) throws IOException {
-        for (String fn : new String[]{"c_comm", "lu", "pcj-ispa_12", "pcj-para_12", "pcj-apmm_12"}) {
-            System.out.println("Processing file: " + fn);
-            try {
-                long time = System.currentTimeMillis();
-                InputStream is = new BufferedInputStream(new FileInputStream("C:\\Users\\faramir\\Desktop\\" + fn + ".pdf"));
-                BufferedImage output = PdfToImg.process(is);
-                ImageIO.write(output, "jpg", new File("C:\\Users\\faramir\\Desktop\\" + fn + ".jpg"));
-                System.out.println("finished after: " + (System.currentTimeMillis() - time) / 10e3 + "s");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
+//
+//    public static void main(String[] args) throws IOException {
+//        for (String fn : new String[]{"c_comm", "lu", "pcj-ispa_12", "pcj-para_12", "pcj-apmm_12"}) {
+//            System.out.println("Processing file: " + fn);
+//            try {
+//                long time = System.currentTimeMillis();
+//                InputStream is = new BufferedInputStream(new FileInputStream("C:\\Users\\faramir\\Desktop\\" + fn + ".pdf"));
+//                BufferedImage output = PdfToImg.process(is);
+//                ImageIO.write(output, "jpg", new File("C:\\Users\\faramir\\Desktop\\" + fn + ".jpg"));
+//                System.out.println("finished after: " + (System.currentTimeMillis() - time) / 10e3 + "s");
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//            }
+//        }
+//    }
 }
