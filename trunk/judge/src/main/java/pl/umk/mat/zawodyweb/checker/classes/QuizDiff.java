@@ -25,16 +25,17 @@ public class QuizDiff implements CheckerInterface {
 
     @Override
     public CheckerResult check(Program program, TestInput input, TestOutput output) {
+
         TestOutput codeOutput = program.runTest(input);
         if (codeOutput.getResult() != CheckerErrors.UNDEF) {
             return new CheckerResult(codeOutput.getResult(), codeOutput.getResultDesc());
         }
         CheckerResult result = new CheckerResult();
-        
+
         String codeText = codeOutput.getText();
         String rightText = output.getText();
         double p = diff(codeText, rightText);
-        
+
         int points = (int) Math.round(p * input.getMaxPoints());
         result.setPoints(points);
 
