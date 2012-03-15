@@ -14,29 +14,29 @@
                     <div class="ikona" style="margin-left:-40px">
                         <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editclass.html" title="#{messages.addclass}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addclass}" title="#{messages.addclass}" url="/media/images/dodaj.png" /></h:outputLink>
                     </div>
-                    <t:dataTable id="classes" var="class" styleClass="seria" value="#{requestBean.allClasses}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols">
+                    <t:dataTable id="classes" var="clazz" styleClass="seria" value="#{requestBean.allClasses}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols">
                         <h:column>
                             <f:facet name="header">
                                 ${messages.description}
                             </f:facet>
-                            <h:outputText value="#{class.description}" styleClass="nowrap"/>
+                            <h:outputText value="#{clazz.description}" styleClass="nowrap"/>
                         </h:column>
                         <h:column>
                             <f:facet name="header">
                                 ${messages.classname}
                             </f:facet>
-                            <h:outputText value="#{class.filename}" />
+                            <h:outputText value="#{clazz.filename}" />
                         </h:column>
                         <h:column>
                             <f:facet name="header">
                                 ${messages.version}
                             </f:facet>
-                            <h:outputText value="#{class.version}"/>
+                            <h:outputText value="#{clazz.version}"/>
                         </h:column>
                         <h:column>
-                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{class.id}/class.html" title="#{messages.class_download}" styleClass="ikonka"><h:graphicImage alt="#{messages.class_download}" title="#{messages.class_download}" url="/media/images/get.png"/></h:outputLink>
-                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editclass.html?id=#{class.id}" title="#{messages.editclass}" styleClass="ikonka"><h:graphicImage alt="#{messages.editclass}" title="#{messages.editclass}" url="/media/images/edytuj.png" /></h:outputLink>
-                            <h:graphicImage alt="#{messages.delclass}" title="#{messages.delclass}" url="/media/images/usun.png" styleClass="click" onclick="confirm(this,{nazwa:'klasę #{class.description}',link:'#{facesContext.externalContext.requestContextPath}/del/#{class.id}/class.html'})"/>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{clazz.id}/class.html" title="#{messages.class_download}" styleClass="ikonka"><h:graphicImage alt="#{messages.class_download}" title="#{messages.class_download}" url="/media/images/get.png"/></h:outputLink>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editclass.html?id=#{clazz.id}" title="#{messages.editclass}" styleClass="ikonka"><h:graphicImage alt="#{messages.editclass}" title="#{messages.editclass}" url="/media/images/edytuj.png" /></h:outputLink>
+                            <h:graphicImage alt="#{messages.delclass}" title="#{messages.delclass}" url="/media/images/usun.png" styleClass="click" onclick="confirm(this,{nazwa:'klasę #{clazz.description}',link:'#{facesContext.externalContext.requestContextPath}/del/#{clazz.id}/class.html'})"/>
                         </h:column>
                     </t:dataTable>
                     <div class="ikona" style="margin-left:-40px">

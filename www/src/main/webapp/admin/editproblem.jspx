@@ -62,6 +62,11 @@
                             </div>
                         </c:if>
                         <div>
+                            <h:outputLabel for="viewpdf">${messages.problem_viewpdf}</h:outputLabel>
+                            <h:selectBooleanCheckbox id="viewpdf" value="#{requestBean.editedProblem.viewpdf}" styleClass="check" />
+                            <br class="clear" />                                
+                        </div>
+                        <div>
                             <h:outputLabel styleClass="required" for="abbrev">${messages.problem_abbrev}:</h:outputLabel>
                             <h:inputText id="abbrev" required="true" maxlength="5" value="#{requestBean.editedProblem.abbrev}" />
                             <h:message for="abbrev" errorClass="error" />
@@ -117,8 +122,8 @@
                             <h:outputLabel styleClass="required" for="class">${messages.problem_class}:</h:outputLabel>
                             <h:selectOneMenu id="class" required="true" value="#{requestBean.temporaryClassId}">
                                 <f:selectItem itemValue="" itemLabel="" />
-                                <c:forEach var="class" items="#{requestBean.diffClasses}">
-                                    <f:selectItem itemValue="#{class.id}" itemLabel="#{class.description}" />
+                                <c:forEach var="clazz" items="#{requestBean.diffClasses}">
+                                    <f:selectItem itemValue="#{clazz.id}" itemLabel="#{clazz.description}" />
                                 </c:forEach>
                             </h:selectOneMenu>
                             <h:message for="class" errorClass="error" />

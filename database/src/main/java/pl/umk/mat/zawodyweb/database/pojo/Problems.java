@@ -86,6 +86,7 @@ public class Problems implements Serializable {
     private PDF pdfData = null;
     private String config;
     private Boolean visibleinranking = true;
+    private Boolean viewpdf = false;
 
     /**
      * @return id
@@ -301,6 +302,22 @@ public class Problems implements Serializable {
      */
     public void setVisibleinranking(Boolean visibleinranking) {
         this.visibleinranking = visibleinranking;
+    }
+
+    /**
+     * @return visibleInRanking
+     */
+    @Basic
+    @Column(name = "viewpdf")
+    public Boolean getViewpdf() {
+        return viewpdf;
+    }
+
+    /**
+     * @param name new value for name
+     */
+    public void setViewpdf(Boolean viewpdf) {
+        this.viewpdf = viewpdf;
     }
 
     /**
