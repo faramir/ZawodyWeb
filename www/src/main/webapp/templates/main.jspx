@@ -114,7 +114,15 @@
                 <ui:insert name="pageContent" />
             </div>
             <div id="copy">
-                <h:outputText value="&amp;copy; 2009-2011 - Wydział Matematyki i Informatyki UMK" escape="false" />
+                <h:outputText value="&amp;copy; 2009-2012 - Wydział Matematyki i Informatyki UMK" escape="false" />
+            </div>
+            <div style="background:white;padding:5px;margin-top:15px;text-align: center" id="efs">
+                <div style="background:url(#{facesContext.externalContext.requestContextPath}/media/images/efs-kl.png) no-repeat center center; float:left; height:55px; width: 160px" ></div>
+                <div style="background:url(#{facesContext.externalContext.requestContextPath}/media/images/efs-ue.png) no-repeat center center; float:right; height:55px; width: 200px" ></div>
+                <br style="clear:both"/>
+                <div style="font-size:13px;font-family:arial;">
+                    Projekt współfinansowany ze środków Unii Europejskiej w ramach Europejskiego Funduszu Społecznego
+                </div>
             </div>
         </div>
     </body>
