@@ -117,8 +117,8 @@
                 <h:outputText value="&amp;copy; 2009-2012 - Wydział Matematyki i Informatyki UMK" escape="false" />
             </div>
             <div id="efs">
-                <h:graphicImage url="/media/images/efs-kl.png" style="float:left"/>
-                <h:graphicImage url="/media/images/efs-ue.png" style="float:right"/>
+                <h:graphicImage alt="" url="/media/images/efs-kl.png" style="float:left"/>
+                <h:graphicImage alt="" url="/media/images/efs-ue.png" style="float:right"/>
                 <div id="text">
                     Projekt współfinansowany ze środków Unii Europejskiej<br/>w ramach Europejskiego Funduszu Społecznego
                 </div>

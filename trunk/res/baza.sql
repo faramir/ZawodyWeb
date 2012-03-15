@@ -83,7 +83,8 @@ CREATE TABLE PROBLEMS (
         memlimit            int,
         codesize            int,
         config              text,
-	visibleInRanking    boolean default true
+	visibleInRanking    boolean default true,
+	viewpdf             boolean default false
 );
 
 CREATE TABLE QUESTIONS ( 

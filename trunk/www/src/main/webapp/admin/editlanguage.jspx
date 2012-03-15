@@ -45,8 +45,8 @@
                             <h:outputLabel for="class_used" styleClass="required">${messages.class_used}:</h:outputLabel>
                             <h:selectOneMenu id="class_used" required="true" value="#{requestBean.temporaryClassId}">
                                 <f:selectItem itemValue="" itemLabel="" />
-                                <c:forEach var="class" items="#{requestBean.allClasses}">
-                                    <f:selectItem itemValue="#{class.id}" itemLabel="#{class.description}" />
+                                <c:forEach var="clazz" items="#{requestBean.allClasses}">
+                                    <f:selectItem itemValue="#{clazz.id}" itemLabel="#{clazz.description}" />
                                 </c:forEach>
                             </h:selectOneMenu>
                             <h:message for="class_used" errorClass="error" />

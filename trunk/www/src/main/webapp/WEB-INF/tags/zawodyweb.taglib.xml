@@ -37,6 +37,10 @@
         <source>../../templates/problem-link_img.jspx</source>
     </tag>
     <tag>
+        <tag-name>problem-pdf</tag-name>
+        <source>../../templates/problem-pdf.jspx</source>
+    </tag>
+    <tag>
         <tag-name>question-link</tag-name>
         <source>../../templates/question-link.jspx</source>
     </tag>

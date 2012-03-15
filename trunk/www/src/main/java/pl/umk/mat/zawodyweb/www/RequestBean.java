@@ -1,5 +1,6 @@
 package pl.umk.mat.zawodyweb.www;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -69,6 +70,7 @@ import pl.umk.mat.zawodyweb.www.util.SubmitsUtils;
 import pl.umk.mat.zawodyweb.www.zip.UnzipProblem;
 import pl.umk.mat.zawodyweb.www.zip.ZipProblem;
 import pl.umk.mat.zawodyweb.email.EmailSender;
+import pl.umk.mat.zawodyweb.pdf.PdfToImage;
 
 /**
  *
@@ -2016,12 +2018,49 @@ public class RequestBean {
         return "clock";
     }
 
-//    @HttpAction(name = "editclass", pattern = "edit/{id}/class")
-//    public String goToEditclass(@Param(name = "id", encode = true) int id) {
-//        temporaryClassId = id;
-//
-//        return "/admin/editclass";
-//    }
+    @HttpAction(name = "viewpdfasimage", pattern = "view/{id}/pdf")
+    public String viewPdfAsImage(@Param(name = "id", encode = true) int id) throws IOException {
+        try {
+            String name = StringUtils.EMPTY;
+            String mimetype = StringUtils.EMPTY;
+            byte[] content = null;
+
+            Problems problem = problemsDAO.getById(id);
+
+            if (problem != null
+                    && (problem.getSeries().getStartdate().after(new Date())
+                    || problem.getSeries().getContests().getVisibility() == false)
+                    && !rolesBean.canEditProblem(problem.getSeries().getContests().getId(), null)) {
+                problem = null;
+            }
+
+            if (problem != null && problem.getPDF() != null) {
+                name = problem.getName() + ".jpg";
+                content = PdfToImage.convertPdf(problem.getPDF().getPdf());
+                mimetype = "image/jpeg";
+            }
+
+            if (content != null) {
+                FacesContext context = FacesContext.getCurrentInstance();
+
+                HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+                response.setContentLength(content.length);
+                response.setContentType(mimetype);
+                response.setHeader("Content-Description", "File Transfer");
+                response.setHeader("Content-Transfer-Encoding", "binary");
+                response.getOutputStream().write(content);
+                response.getOutputStream().flush();
+                response.getOutputStream().close();
+                context.responseComplete();
+                return null;
+            } else {
+                return "/error/404";
+            }
+        } catch (Exception ex) {
+            return "/error/404";
+        }
+    }
+
     @HttpAction(name = "getfile", pattern = "get/{id}/{type}")
     public String getFile(@Param(name = "id", encode = true) int id, @Param(name = "type", encode = true) String type) throws IOException {
         try {

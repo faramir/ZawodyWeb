@@ -7,10 +7,18 @@ package pl.umk.mat.zawodyweb.pdf;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
+import javax.imageio.stream.ImageOutputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
@@ -18,7 +26,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
  *
  * @author faramir
  */
-public class PdfToImg {
+public class PdfToImage {
 
     public static BufferedImage process(InputStream pdfFile) {
         PDDocument pdf = null;
@@ -74,6 +82,31 @@ public class PdfToImg {
         }
         return output;
     }
+
+    public static byte[] convertPdf(byte[] pdf) {
+        try {
+            ByteArrayInputStream bais = new ByteArrayInputStream(pdf);
+            BufferedImage bi = process(bais);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageWriter converter = ImageIO.getImageWritersByMIMEType("image/jpeg").next();
+
+            IIOImage image = new IIOImage(bi, null, null);
+            ImageOutputStream output = ImageIO.createImageOutputStream(baos);
+            converter.setOutput(output);
+
+            ImageWriteParam jpegParams = converter.getDefaultWriteParam();
+            jpegParams.setCompressionMode(JPEGImageWriteParam.MODE_EXPLICIT);
+            jpegParams.setCompressionQuality(0.3f);
+
+            converter.write(null, image, jpegParams);
+            converter.dispose();
+
+            return baos.toByteArray();
+        } catch (Exception ex) {
+            throw new RuntimeException("Exception in converting pdf", ex);
+        }
+    }
 //
 //    public static void main(String[] args) throws IOException {
 //        for (String fn : new String[]{"c_comm", "lu", "pcj-ispa_12", "pcj-para_12", "pcj-apmm_12"}) {
@@ -81,7 +114,7 @@ public class PdfToImg {
 //            try {
 //                long time = System.currentTimeMillis();
 //                InputStream is = new BufferedInputStream(new FileInputStream("C:\\Users\\faramir\\Desktop\\" + fn + ".pdf"));
-//                BufferedImage output = PdfToImg.process(is);
+//                BufferedImage output = PdfToImage.process(is);
 //                ImageIO.write(output, "jpg", new File("C:\\Users\\faramir\\Desktop\\" + fn + ".jpg"));
 //                System.out.println("finished after: " + (System.currentTimeMillis() - time) / 10e3 + "s");
 //            } catch (Exception ex) {
