@@ -85,6 +85,10 @@
             <layout>default</layout>
         </repository>
         <repository>
+            <id>repo.maven.apache.org</id>
+            <url>http://repo.maven.apache.org/maven2/</url>
+        </repository>
+        <repository>
             <id>repository.apache.org</id>
             <url>https://repository.apache.org/index.html</url>
         </repository>
@@ -238,6 +242,11 @@
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
             <version>1.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>1.6.0</version>
         </dependency>
     </dependencies>
     <!-- -->
