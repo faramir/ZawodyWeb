@@ -147,7 +147,7 @@ public class RankingPA implements RankingInteface {
         }
     }
 
-    private RankingTable getRankingKI(int contest_id, Timestamp checkDate, boolean admin, Integer series_id) {
+    private RankingTable getRankingPA(int contest_id, Timestamp checkDate, boolean admin, Integer series_id) {
         Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
         Timestamp checkTimestamp;
@@ -217,7 +217,7 @@ public class RankingPA implements RankingInteface {
                 Query query;
                 if (allTests == true) {
                     query = hibernateSession.createSQLQuery(""
-                            + "select usersid, sum(points) "
+                            + "select usersid, sum(points), submits.id sid "
                             + "from submits,results,tests "
                             + "where submits.problemsid='" + problems.getId() + "' "
                             + "  and submits.id=results.submitsid "
@@ -236,7 +236,7 @@ public class RankingPA implements RankingInteface {
                             + "group by usersid, submits.id");
                 } else {
                     query = hibernateSession.createSQLQuery(""
-                            + "select usersid, sum(points) "
+                            + "select usersid, sum(points), submits.id sid "
                             + "from submits,results,tests "
                             + "where submits.problemsid='" + problems.getId() + "' "
                             + "  and submits.id=results.submitsid "
@@ -321,22 +321,17 @@ public class RankingPA implements RankingInteface {
     }
 
     @Override
-    public RankingTable getRanking(int contest_id, Timestamp checkDate) {
-        return getRankingKI(contest_id, checkDate, false, null);
+    public RankingTable getRanking(int contest_id, Timestamp checkDate, boolean admin) {
+        return getRankingPA(contest_id, checkDate, admin, null);
     }
 
     @Override
-    public RankingTable getRankingForAdmin(int contest_id, Timestamp checkDate) {
-        return getRankingKI(contest_id, checkDate, true, null);
+    public RankingTable getRankingForSeries(int contest_id, int series_id, Timestamp checkDate, boolean admin) {
+        return getRankingPA(contest_id, checkDate, admin, series_id);
     }
 
     @Override
-    public RankingTable getRankingForSeries(int contest_id, int series_id, Timestamp checkDate) {
-        return getRankingKI(contest_id, checkDate, false, series_id);
-    }
-
-    @Override
-    public RankingTable getRankingForSeriesForAdmin(int contest_id, int series_id, Timestamp checkDate) {
-        return getRankingKI(contest_id, checkDate, true, series_id);
+    public int[] getRankingSolutions(int contest_id, Integer seriesId, Timestamp checkDate, boolean admin) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

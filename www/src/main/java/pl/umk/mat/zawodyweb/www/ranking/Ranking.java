@@ -13,8 +13,8 @@ import pl.umk.mat.zawodyweb.database.pojo.Series;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$
- * Date: $Date$
+ * @version $Rev$ Date: $Date: 2010-10-05 20:59:31 +0200 (Wt, 05 paź 2010)
+ * $
  */
 public class Ranking {
 
@@ -147,11 +147,7 @@ public class Ranking {
             ranking = new RankingKI();
         }
 
-        if (admin == true) {
-            rankingTable = ranking.getRankingForAdmin(contest_id, new Timestamp(date.getTime()));
-        } else {
-            rankingTable = ranking.getRanking(contest_id, new Timestamp(date.getTime()));
-        }
+        rankingTable = ranking.getRanking(contest_id, new Timestamp(date.getTime()), admin);
 
         rankingTable.setType(type);
         rankingTable.generateHtml(admin);
@@ -175,11 +171,7 @@ public class Ranking {
             ranking = new RankingKI();
         }
 
-        if (admin == true) {
-            rankingTable = ranking.getRankingForSeriesForAdmin(contest_id, series_id, new Timestamp(date.getTime()));
-        } else {
-            rankingTable = ranking.getRankingForSeries(contest_id, series_id, new Timestamp(date.getTime()));
-        }
+        rankingTable = ranking.getRankingForSeries(contest_id, series_id, new Timestamp(date.getTime()), admin);
 
         rankingTable.setType(type);
         rankingTable.generateHtml(admin);
@@ -285,11 +277,7 @@ public class Ranking {
             ranking = new SubrankingKI("s2");
         }
 
-        if (admin == true) {
-            rankingTable = ranking.getRankingForAdmin(contest_id, new Timestamp(date.getTime()));
-        } else {
-            rankingTable = ranking.getRanking(contest_id, new Timestamp(date.getTime()));
-        }
+        rankingTable = ranking.getRanking(contest_id, new Timestamp(date.getTime()), admin);
 
         rankingTable.setType(type);
         rankingTable.generateHtml(admin);
