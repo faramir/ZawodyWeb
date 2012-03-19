@@ -1,17 +1,13 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import pl.umk.mat.zawodyweb.database.DAOFactory;
-import pl.umk.mat.zawodyweb.database.ProblemsDAO;
-import pl.umk.mat.zawodyweb.database.SeriesDAO;
-import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
-import pl.umk.mat.zawodyweb.database.UsersDAO;
+import pl.umk.mat.zawodyweb.database.*;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
@@ -19,8 +15,8 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$
- * Date: $Date$
+ * @version $Rev$ Date: $Date: 2012-03-14 17:47:45 +0100 (Śr, 14 mar 2012)
+ * $
  */
 public class RankingKI implements RankingInteface {
 
@@ -179,26 +175,26 @@ public class RankingKI implements RankingInteface {
                 Query query = null;
                 if (allTests == true) {
                     query = hibernateSession.createSQLQuery(""
-                            + "select usersid, sum(points) "
+                            + "select usersid, sum(points), submits.id sid "
                             + "from submits,results,tests "
                             + "where submits.problemsid='" + problems.getId() + "' "
                             + "  and submits.id=results.submitsid "
                             + "  and tests.id=results.testsid"
                             + "  and sdate in ( "
-                            + "        select max(sdate) "
+                            + "      select max(sdate) "
                             + "	     from submits "
                             + "        where submits.problemsid='" + problems.getId() + "' "
                             + "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
                             + "          and sdate <= '" + checkTimestampStr + "' "
                             + "          and sdate >= '" + visibleTimestampStr + "' "
                             + "          and visibleInRanking=true"
-                            + //"	       and tests.visibility=1 " +
-                            "	     group by usersid "
+                            //+ "          and tests.visibility=1 " +
+                            + "      group by usersid "
                             + "      ) "
                             + "group by usersid, submits.id");
                 } else {
                     query = hibernateSession.createSQLQuery(""
-                            + "select usersid, sum(points) "
+                            + "select usersid, sum(points), submits.id sid "
                             + "from submits,results,tests "
                             + "where submits.problemsid='" + problems.getId() + "' "
                             + "  and submits.id=results.submitsid "
@@ -233,14 +229,18 @@ public class RankingKI implements RankingInteface {
             }
         }
 
-        /* Tworzenie rankingu z danych */
+        /*
+         * Tworzenie rankingu z danych
+         */
         ArrayList<UserKI> cre = new ArrayList<UserKI>();
         cre.addAll(mapUserKI.values());
         Collections.sort(cre);
 
         Collections.sort(vectorProblemsKI);
 
-        /* nazwy kolumn i CSSy */
+        /*
+         * nazwy kolumn i CSSy
+         */
         ArrayList<String> columnsCSS = new ArrayList<String>();
         ArrayList<String> columnsCaptions = new ArrayList<String>();
         for (ProblemsKI problemsKI : vectorProblemsKI) {
@@ -250,7 +250,9 @@ public class RankingKI implements RankingInteface {
         columnsCaptions.add(messages.getString("points"));
         columnsCSS.add("small");
 
-        /* tabelka z rankingiem */
+        /*
+         * tabelka z rankingiem
+         */
         ArrayList<RankingEntry> vectorRankingEntry = new ArrayList<RankingEntry>();
         int place = 0;
         int points = Integer.MAX_VALUE;
@@ -277,22 +279,17 @@ public class RankingKI implements RankingInteface {
     }
 
     @Override
-    public RankingTable getRanking(int contest_id, Timestamp checkDate) {
-        return getRankingKI(contest_id, checkDate, false, null);
+    public RankingTable getRanking(int contest_id, Timestamp checkDate, boolean admin) {
+        return getRankingKI(contest_id, checkDate, admin, null);
     }
 
     @Override
-    public RankingTable getRankingForAdmin(int contest_id, Timestamp checkDate) {
-        return getRankingKI(contest_id, checkDate, true, null);
+    public RankingTable getRankingForSeries(int contest_id, int series_id, Timestamp checkDate, boolean admin) {
+        return getRankingKI(contest_id, checkDate, admin, series_id);
     }
 
     @Override
-    public RankingTable getRankingForSeries(int contest_id, int series_id, Timestamp checkDate) {
-        return getRankingKI(contest_id, checkDate, false, series_id);
-    }
-
-    @Override
-    public RankingTable getRankingForSeriesForAdmin(int contest_id, int series_id, Timestamp checkDate) {
-        return getRankingKI(contest_id, checkDate, true, series_id);
+    public int[] getRankingSolutions(int contest_id, Integer seriesId, Timestamp checkDate, boolean admin) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

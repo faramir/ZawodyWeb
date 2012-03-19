@@ -1,26 +1,17 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
-import pl.umk.mat.zawodyweb.database.DAOFactory;
-import pl.umk.mat.zawodyweb.database.ProblemsDAO;
-import pl.umk.mat.zawodyweb.database.SeriesDAO;
-import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
-import pl.umk.mat.zawodyweb.database.UsersDAO;
+import pl.umk.mat.zawodyweb.database.*;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
-import pl.umk.mat.zawodyweb.database.pojo.Problems;
-import pl.umk.mat.zawodyweb.database.pojo.Series;
-import pl.umk.mat.zawodyweb.database.pojo.Submits;
-import pl.umk.mat.zawodyweb.database.pojo.Tests;
-import pl.umk.mat.zawodyweb.database.pojo.Users;
+import pl.umk.mat.zawodyweb.database.pojo.*;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
@@ -249,64 +240,45 @@ public class RankingACM implements RankingInteface {
                     noTests = 0; // To nie powinno się zdarzyć nigdy.
                 }
 
-                //System.out.println("maxPoints = " + maxPoints);
-                //System.out.println("noTests = " + noTests);
-
-                // FIXME: wrócimy tu, gdy Hibernate będzie obsługiwał klauzulę having ;-)
-                /*
-                 * Criteria c = hibernateSession.createCriteria(Submits.class);
-                 * c.setProjection(Projections.min("sdate")).add(Restrictions.eq("problems.id",
-                 * problems.getId())); c.createCriteria("resultss",
-                 * "r").setProjection(Projections.sum("r.points").as("sumPoints").add(Restrictions.eq("sum(r.points)",
-                 * maxPoints));
-                 * c.createCriteria("r.tests").add(Restrictions.eq("visibility",
-                 * 1)); // c.add(Restrictions.sqlRestriction("1=1 having
-                 * sumPoints=" + maxPoints));
-                 */
-                // FIXME: BAAAAAAAAAAAAAAAAAAARDZO NIEKOSZERNIE!
-
-                //System.out.println("problems.getId() = " + problems.getId());
-                //System.out.println("allTests = " + allTests);
-
                 Query query = null;
                 if (allTests == true) {
                     query = hibernateSession.createSQLQuery(""
-                            + "select usersid, min(sdate) " + // zapytanie zewnętrzne znajduję minimalną datę wysłania poprawnego rozwiązania dla każdego usera
-                            "from submits "
+                            + "select usersid, min(sdate) sdate, min(id) sid " // zapytanie zewnętrzne znajduję minimalną datę wysłania poprawnego rozwiązania dla każdego usera
+                            + "from submits "
                             + "where id in ("
-                            + "    select submits.id " + // zapytanie wewnętrzne znajduje wszystkie id, które zdobyły maksa punktów
-                            "    from submits,results,tests "
+                            + "    select submits.id " // zapytanie wewnętrzne znajduje wszystkie id, które zdobyły maksa punktów
+                            + "    from submits,results,tests "
                             + "    where submits.problemsid='" + problems.getId() + "' "
-                            + " 	   and submits.id=results.submitsid "
+                            + "      and submits.id=results.submitsid "
                             + "	     and tests.id = results.testsid "
                             + "      and results.submitresult='" + CheckerErrors.ACC + "' "
                             + "      and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
                             + "      and sdate <= '" + checkTimestampStr + "' "
                             + "      and sdate >= '" + visibleTimestampStr + "' "
                             + "      and visibleInRanking=true"
-                            + //"	   and tests.visibility=1 " +
-                            "    group by submits.id,usersid,sdate "
+                            //+ "      and tests.visibility=1 "
+                            + "    group by submits.id,usersid,sdate "
                             + "    having sum(points)='" + maxPoints + "' "
                             + "      and count(points)='" + noTests + "' "
                             + "  ) "
                             + "group by usersid");
                 } else {
                     query = hibernateSession.createSQLQuery(""
-                            + "select usersid, min(sdate) "
+                            + "select usersid, min(sdate) sdate, min(id) sid "
                             + "from submits "
                             + "where id in ("
                             + "    select submits.id "
                             + "    from submits,results,tests "
                             + "    where submits.problemsid='" + problems.getId() + "' "
-                            + " 	   and submits.id=results.submitsid "
-                            + "	   and tests.id = results.testsid "
+                            + "      and submits.id=results.submitsid "
+                            + "	     and tests.id = results.testsid "
                             + "      and results.submitresult='" + CheckerErrors.ACC + "' "
                             + "      and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
                             + "      and sdate <= '" + checkTimestampStr + "' "
                             + "      and sdate >= '" + visibleTimestampStr + "' "
                             + "      and visibleInRanking=true"
-                            + "	   and tests.visibility=1 " + // FIXME: should be ok
-                            "    group by submits.id,usersid,sdate "
+                            + "	     and tests.visibility=1 " // FIXME: should be ok
+                            + "    group by submits.id,usersid,sdate "
                             + "    having sum(points)='" + maxPoints + "' "
                             + "      and count(points)='" + noTests + "' "
                             + "  ) "
@@ -314,7 +286,7 @@ public class RankingACM implements RankingInteface {
                 }
 
                 for (Object list : query.list()) { // tu jest zwrócona lista "zaakceptowanych" w danym momencie rozwiązań zadania
-                    Object[] o = (Object[]) list; // 0 - user.id, 1 - sdate
+                    Object[] o = (Object[]) list; // 0 - user.id, 1 - sdate, 2 - submits.id
 
                     Number bombs = (Number) hibernateSession.createCriteria(Submits.class).setProjection(Projections.rowCount()).add(Restrictions.eq("problems.id", (Number) problems.getId())).add(Restrictions.eq("users.id", (Number) o[0])).add(Restrictions.lt("sdate", (Timestamp) o[1])).uniqueResult();
 
@@ -392,22 +364,17 @@ public class RankingACM implements RankingInteface {
     }
 
     @Override
-    public RankingTable getRanking(int contest_id, Timestamp checkDate) {
-        return getRankingACM(contest_id, checkDate, false, null);
+    public RankingTable getRanking(int contest_id, Timestamp checkDate, boolean admin) {
+        return getRankingACM(contest_id, checkDate, admin, null);
     }
 
     @Override
-    public RankingTable getRankingForAdmin(int contest_id, Timestamp checkDate) {
-        return getRankingACM(contest_id, checkDate, true, null);
+    public RankingTable getRankingForSeries(int contest_id, int series_id, Timestamp checkDate, boolean admin) {
+        return getRankingACM(contest_id, checkDate, admin, series_id);
     }
 
     @Override
-    public RankingTable getRankingForSeries(int contest_id, int series_id, Timestamp checkDate) {
-        return getRankingACM(contest_id, checkDate, false, series_id);
-    }
-
-    @Override
-    public RankingTable getRankingForSeriesForAdmin(int contest_id, int series_id, Timestamp checkDate) {
-        return getRankingACM(contest_id, checkDate, true, series_id);
+    public int[] getRankingSolutions(int contest_id, Integer seriesId, Timestamp checkDate, boolean admin) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
