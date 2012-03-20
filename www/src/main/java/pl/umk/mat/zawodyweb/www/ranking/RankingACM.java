@@ -1,10 +1,7 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.ResourceBundle;
+import java.util.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
@@ -18,7 +15,7 @@ import pl.umk.mat.zawodyweb.database.pojo.*;
  * @version $Rev$ Date: $Date: 2010-10-10 02:53:49 +0200 (N, 10 paź 2010)
  * $
  */
-public class RankingACM implements RankingInteface {
+public class RankingACM implements RankingInterface {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
 
@@ -243,7 +240,7 @@ public class RankingACM implements RankingInteface {
                 Query query = null;
                 if (allTests == true) {
                     query = hibernateSession.createSQLQuery(""
-                            + "select usersid, min(sdate) sdate, min(id) sid " // zapytanie zewnętrzne znajduję minimalną datę wysłania poprawnego rozwiązania dla każdego usera
+                            + "select usersid, min(sdate) sdate " // zapytanie zewnętrzne znajduję minimalną datę wysłania poprawnego rozwiązania dla każdego usera
                             + "from submits "
                             + "where id in ("
                             + "    select submits.id " // zapytanie wewnętrzne znajduje wszystkie id, które zdobyły maksa punktów
@@ -264,7 +261,7 @@ public class RankingACM implements RankingInteface {
                             + "group by usersid");
                 } else {
                     query = hibernateSession.createSQLQuery(""
-                            + "select usersid, min(sdate) sdate, min(id) sid "
+                            + "select usersid, min(sdate) sdate "
                             + "from submits "
                             + "where id in ("
                             + "    select submits.id "
@@ -286,7 +283,7 @@ public class RankingACM implements RankingInteface {
                 }
 
                 for (Object list : query.list()) { // tu jest zwrócona lista "zaakceptowanych" w danym momencie rozwiązań zadania
-                    Object[] o = (Object[]) list; // 0 - user.id, 1 - sdate, 2 - submits.id
+                    Object[] o = (Object[]) list;
 
                     Number bombs = (Number) hibernateSession.createCriteria(Submits.class).setProjection(Projections.rowCount()).add(Restrictions.eq("problems.id", (Number) problems.getId())).add(Restrictions.eq("users.id", (Number) o[0])).add(Restrictions.lt("sdate", (Timestamp) o[1])).uniqueResult();
 
@@ -374,7 +371,136 @@ public class RankingACM implements RankingInteface {
     }
 
     @Override
-    public int[] getRankingSolutions(int contest_id, Integer seriesId, Timestamp checkDate, boolean admin) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<Integer> getRankingSolutions(int contest_id, Integer series_id, Timestamp checkDate, boolean admin) {
+        Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
+
+        Timestamp checkTimestamp;
+        String checkTimestampStr;
+        Timestamp visibleTimestamp;
+        String visibleTimestampStr;
+
+        SeriesDAO seriesDAO = DAOFactory.DEFAULT.buildSeriesDAO();
+        ProblemsDAO problemsDAO = DAOFactory.DEFAULT.buildProblemsDAO();
+
+        List<Integer> submits = new ArrayList<Integer>();
+        
+        boolean allTests;
+
+        long lCheckDate = checkDate.getTime();
+
+        for (Series series : seriesDAO.findByContestsid(contest_id)) {
+
+            if ((series_id == null && series.getVisibleinranking() == false)
+                    || (series_id != null && series_id.equals(series.getId()) == false)) {
+                continue;
+            }
+
+            if (series.getStartdate().getTime() > lCheckDate) {
+                continue;
+            }
+
+            checkTimestamp = checkDate;
+            allTests = admin;
+
+            if (!admin && series.getFreezedate() != null) {
+                if (lCheckDate > series.getFreezedate().getTime() && (series.getUnfreezedate() == null || lCheckDate < series.getUnfreezedate().getTime())) {
+                    checkTimestamp = new Timestamp(series.getFreezedate().getTime());
+                }
+            }
+
+            checkTimestampStr = checkTimestamp.toString();
+            if (checkTimestamp.before(series.getStartdate())) {
+                visibleTimestamp = new Timestamp(0);
+            } else {
+                visibleTimestamp = new Timestamp(series.getStartdate().getTime());
+            }
+            visibleTimestampStr = visibleTimestamp.toString();
+
+            if (series.getUnfreezedate() != null) {
+                if (checkDate.after(series.getUnfreezedate())) {
+                    allTests = true;
+                }
+            }
+
+            for (Problems problems : problemsDAO.findBySeriesid(series.getId())) {
+                if (problems.getVisibleinranking() == false) {
+                    continue;
+                }
+
+                // select sum(maxpoints) from tests where problemsid='7' and visibility=1
+                Number maxPoints;
+                Number noTests;
+                if (allTests) {
+                    Object[] o = (Object[]) hibernateSession.createCriteria(Tests.class).setProjection(
+                            Projections.projectionList().add(Projections.sum("maxpoints")).add(Projections.rowCount())).add(Restrictions.eq("problems.id", problems.getId())).uniqueResult();
+                    maxPoints = (Number) o[0];
+                    noTests = (Number) o[1];
+                } else {
+                    Object[] o = (Object[]) hibernateSession.createCriteria(Tests.class).setProjection(
+                            Projections.projectionList().add(Projections.sum("maxpoints")).add(Projections.rowCount())).add(Restrictions.and(Restrictions.eq("problems.id", problems.getId()), Restrictions.eq("visibility", 1))).uniqueResult();
+                    maxPoints = (Number) o[0];
+                    noTests = (Number) o[1];
+                }
+                if (maxPoints == null) {
+                    maxPoints = 0; // To nie powinno się nigdy zdarzyć ;).. chyba, że nie ma testu przy zadaniu?
+                }
+                if (noTests == null) {
+                    noTests = 0; // To nie powinno się zdarzyć nigdy.
+                }
+
+                Query query = null;
+                if (allTests == true) {
+                    query = hibernateSession.createSQLQuery(""
+                            + "select min(id) sid " // zapytanie zewnętrzne znajduję minimalną datę wysłania poprawnego rozwiązania dla każdego usera
+                            + "from submits "
+                            + "where id in ("
+                            + "    select submits.id " // zapytanie wewnętrzne znajduje wszystkie id, które zdobyły maksa punktów
+                            + "    from submits,results,tests "
+                            + "    where submits.problemsid='" + problems.getId() + "' "
+                            + "      and submits.id=results.submitsid "
+                            + "	     and tests.id = results.testsid "
+                            + "      and results.submitresult='" + CheckerErrors.ACC + "' "
+                            + "      and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
+                            + "      and sdate <= '" + checkTimestampStr + "' "
+                            + "      and sdate >= '" + visibleTimestampStr + "' "
+                            + "      and visibleInRanking=true"
+                            //+ "      and tests.visibility=1 "
+                            + "    group by submits.id,usersid,sdate "
+                            + "    having sum(points)='" + maxPoints + "' "
+                            + "      and count(points)='" + noTests + "' "
+                            + "  ) "
+                            + "group by usersid");
+                } else {
+                    query = hibernateSession.createSQLQuery(""
+                            + "select min(id) sid "
+                            + "from submits "
+                            + "where id in ("
+                            + "    select submits.id "
+                            + "    from submits,results,tests "
+                            + "    where submits.problemsid='" + problems.getId() + "' "
+                            + "      and submits.id=results.submitsid "
+                            + "	     and tests.id = results.testsid "
+                            + "      and results.submitresult='" + CheckerErrors.ACC + "' "
+                            + "      and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
+                            + "      and sdate <= '" + checkTimestampStr + "' "
+                            + "      and sdate >= '" + visibleTimestampStr + "' "
+                            + "      and visibleInRanking=true"
+                            + "	     and tests.visibility=1 " // FIXME: should be ok
+                            + "    group by submits.id,usersid,sdate "
+                            + "    having sum(points)='" + maxPoints + "' "
+                            + "      and count(points)='" + noTests + "' "
+                            + "  ) "
+                            + "group by usersid");
+                }
+
+                for (Object list : query.list()) { // tu jest zwrócona lista "zaakceptowanych" w danym momencie rozwiązań zadania
+                    Object[] o = (Object[]) list;
+
+                    submits.add((Integer) o[0]);
+                }
+            }
+        }
+
+        return submits;
     }
 }

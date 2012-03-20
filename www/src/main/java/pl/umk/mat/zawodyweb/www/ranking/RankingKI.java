@@ -1,10 +1,7 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.ResourceBundle;
+import java.util.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import pl.umk.mat.zawodyweb.database.*;
@@ -18,7 +15,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
  * @version $Rev$ Date: $Date: 2012-03-14 17:47:45 +0100 (Śr, 14 mar 2012)
  * $
  */
-public class RankingKI implements RankingInteface {
+public class RankingKI implements RankingInterface {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
 
@@ -175,7 +172,7 @@ public class RankingKI implements RankingInteface {
                 Query query = null;
                 if (allTests == true) {
                     query = hibernateSession.createSQLQuery(""
-                            + "select usersid, sum(points), submits.id sid "
+                            + "select usersid, sum(points) "
                             + "from submits,results,tests "
                             + "where submits.problemsid='" + problems.getId() + "' "
                             + "  and submits.id=results.submitsid "
@@ -194,7 +191,7 @@ public class RankingKI implements RankingInteface {
                             + "group by usersid, submits.id");
                 } else {
                     query = hibernateSession.createSQLQuery(""
-                            + "select usersid, sum(points), submits.id sid "
+                            + "select usersid, sum(points) "
                             + "from submits,results,tests "
                             + "where submits.problemsid='" + problems.getId() + "' "
                             + "  and submits.id=results.submitsid "
@@ -289,7 +286,111 @@ public class RankingKI implements RankingInteface {
     }
 
     @Override
-    public int[] getRankingSolutions(int contest_id, Integer seriesId, Timestamp checkDate, boolean admin) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<Integer> getRankingSolutions(int contest_id, Integer series_id, Timestamp checkDate, boolean admin) {
+        Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
+
+        Timestamp checkTimestamp;
+        String checkTimestampStr;
+        Timestamp visibleTimestamp;
+        String visibleTimestampStr;
+
+        SeriesDAO seriesDAO = DAOFactory.DEFAULT.buildSeriesDAO();
+        ProblemsDAO problemsDAO = DAOFactory.DEFAULT.buildProblemsDAO();
+
+        List<Integer> submits = new ArrayList<Integer>();
+
+        boolean allTests;
+
+        long lCheckDate = checkDate.getTime();
+
+        for (Series series : seriesDAO.findByContestsid(contest_id)) {
+
+            if ((series_id == null && series.getVisibleinranking() == false)
+                    || (series_id != null && series_id.equals(series.getId()) == false)) {
+                continue;
+            }
+
+            if (series.getStartdate().getTime() > lCheckDate) {
+                continue;
+            }
+
+            checkTimestamp = checkDate;
+            allTests = admin;
+
+            if (!admin && series.getFreezedate() != null) {
+                if (lCheckDate > series.getFreezedate().getTime() && (series.getUnfreezedate() == null || lCheckDate < series.getUnfreezedate().getTime())) {
+                    checkTimestamp = new Timestamp(series.getFreezedate().getTime());
+                }
+            }
+
+            checkTimestampStr = checkTimestamp.toString();
+            if (checkTimestamp.before(series.getStartdate())) {
+                visibleTimestamp = new Timestamp(0);
+            } else {
+                visibleTimestamp = new Timestamp(series.getStartdate().getTime());
+            }
+            visibleTimestampStr = visibleTimestamp.toString();
+
+            if (series.getUnfreezedate() != null) {
+                if (checkDate.after(series.getUnfreezedate())) {
+                    allTests = true;
+                }
+            }
+
+            for (Problems problems : problemsDAO.findBySeriesid(series.getId())) {
+                if (problems.getVisibleinranking() == false) {
+                    continue;
+                }
+
+                Query query;
+                if (allTests == true) {
+                    query = hibernateSession.createSQLQuery(""
+                            + "select submits.id sid "
+                            + "from submits,results,tests "
+                            + "where submits.problemsid='" + problems.getId() + "' "
+                            + "  and submits.id=results.submitsid "
+                            + "  and tests.id=results.testsid"
+                            + "  and sdate in ( "
+                            + "      select max(sdate) "
+                            + "	     from submits "
+                            + "        where submits.problemsid='" + problems.getId() + "' "
+                            + "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
+                            + "          and sdate <= '" + checkTimestampStr + "' "
+                            + "          and sdate >= '" + visibleTimestampStr + "' "
+                            + "          and visibleInRanking=true"
+                            //+ "          and tests.visibility=1 " +
+                            + "      group by usersid "
+                            + "      ) "
+                            + "group by usersid, submits.id");
+                } else {
+                    query = hibernateSession.createSQLQuery(""
+                            + "select submits.id sid "
+                            + "from submits,results,tests "
+                            + "where submits.problemsid='" + problems.getId() + "' "
+                            + "  and submits.id=results.submitsid "
+                            + "  and tests.id=results.testsid"
+                            + "  and tests.visibility=1 " + // FIXME: should be ok
+                            "  and sdate in ( "
+                            + "        select max(sdate) "
+                            + "	     from submits "
+                            + "        where submits.problemsid='" + problems.getId() + "' "
+                            + "          and submits.result='" + SubmitsResultEnum.DONE.getCode() + "' "
+                            + "          and sdate <= '" + checkTimestampStr + "' "
+                            + "          and sdate >= '" + visibleTimestampStr + "' "
+                            + "          and visibleInRanking=true"
+                            + "	     group by usersid "
+                            + "      ) "
+                            + "group by usersid, submits.id");
+                }
+
+                for (Object list : query.list()) {
+                    Object[] o = (Object[]) list;
+
+                    submits.add((Integer) o[0]);
+                }
+            }
+        }
+
+        return submits;
     }
 }

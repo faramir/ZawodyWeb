@@ -1,14 +1,9 @@
 package pl.umk.mat.zawodyweb.www;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputSecret;
@@ -29,37 +24,11 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.restfaces.annotation.HttpAction;
 import org.restfaces.annotation.Instance;
 import org.restfaces.annotation.Param;
-import pl.umk.mat.zawodyweb.database.ClassesDAO;
-import pl.umk.mat.zawodyweb.database.ContestsDAO;
-import pl.umk.mat.zawodyweb.database.DAOFactory;
-import pl.umk.mat.zawodyweb.database.LanguagesDAO;
-import pl.umk.mat.zawodyweb.database.LanguagesProblemsDAO;
-import pl.umk.mat.zawodyweb.database.PDFDAO;
-import pl.umk.mat.zawodyweb.database.ProblemsDAO;
-import pl.umk.mat.zawodyweb.database.QuestionsDAO;
-import pl.umk.mat.zawodyweb.database.ResultsDAO;
-import pl.umk.mat.zawodyweb.database.RolesDAO;
-import pl.umk.mat.zawodyweb.database.SeriesDAO;
-import pl.umk.mat.zawodyweb.database.SubmitsDAO;
-import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
-import pl.umk.mat.zawodyweb.database.TestsDAO;
-import pl.umk.mat.zawodyweb.database.UsersDAO;
-import pl.umk.mat.zawodyweb.database.UsersRolesDAO;
+import pl.umk.mat.zawodyweb.database.*;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
-import pl.umk.mat.zawodyweb.database.pojo.Classes;
-import pl.umk.mat.zawodyweb.database.pojo.Contests;
-import pl.umk.mat.zawodyweb.database.pojo.Languages;
-import pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems;
-import pl.umk.mat.zawodyweb.database.pojo.PDF;
-import pl.umk.mat.zawodyweb.database.pojo.Problems;
-import pl.umk.mat.zawodyweb.database.pojo.Questions;
-import pl.umk.mat.zawodyweb.database.pojo.Results;
-import pl.umk.mat.zawodyweb.database.pojo.Roles;
-import pl.umk.mat.zawodyweb.database.pojo.Series;
-import pl.umk.mat.zawodyweb.database.pojo.Submits;
-import pl.umk.mat.zawodyweb.database.pojo.Tests;
-import pl.umk.mat.zawodyweb.database.pojo.Users;
-import pl.umk.mat.zawodyweb.database.pojo.UsersRoles;
+import pl.umk.mat.zawodyweb.database.pojo.*;
+import pl.umk.mat.zawodyweb.email.EmailSender;
+import pl.umk.mat.zawodyweb.pdf.PdfToImage;
 import pl.umk.mat.zawodyweb.www.datamodels.PagedDataModel;
 import pl.umk.mat.zawodyweb.www.ranking.Ranking;
 import pl.umk.mat.zawodyweb.www.ranking.RankingTable;
@@ -69,8 +38,6 @@ import pl.umk.mat.zawodyweb.www.util.SeriesUtils;
 import pl.umk.mat.zawodyweb.www.util.SubmitsUtils;
 import pl.umk.mat.zawodyweb.www.zip.UnzipProblem;
 import pl.umk.mat.zawodyweb.www.zip.ZipProblem;
-import pl.umk.mat.zawodyweb.email.EmailSender;
-import pl.umk.mat.zawodyweb.pdf.PdfToImage;
 
 /**
  *
@@ -2060,7 +2027,7 @@ public class RequestBean {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "getfile", pattern = "get/{id}/{type}")
     public String getFile(@Param(name = "id", encode = true) int id, @Param(name = "type", encode = true) String type) throws IOException {
         try {
