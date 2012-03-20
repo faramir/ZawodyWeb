@@ -2,6 +2,7 @@ package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
@@ -101,6 +102,28 @@ public class Ranking {
     private Ranking() {
     }
 
+    private RankingInterface getRankingInterface(Integer type, Integer subtype) {
+        if (subtype != null) {
+            switch (subtype) {
+                case 1:
+                    return new SubrankingKI("s1");
+                case 2:
+                    return new SubrankingKI("s2");
+            }
+        }
+        if (type != null) {
+            switch (type) {
+                case 0:
+                    return new RankingACM();
+                case 1:
+                    return new RankingPA();
+                case 2:
+                    return new RankingKI();
+            }
+        }
+        return null;
+    }
+
     /**
      * @return the instance
      */
@@ -137,15 +160,7 @@ public class Ranking {
         RankingTable rankingTable = null;
         long start = new Date().getTime();
 
-        RankingInteface ranking = null;
-
-        if (type == 0) { // ACM
-            ranking = new RankingACM();
-        } else if (type == 1) { // PA
-            ranking = new RankingPA();
-        } else if (type == 2) { // KI
-            ranking = new RankingKI();
-        }
+        RankingInterface ranking = getRankingInterface(type, null);
 
         rankingTable = ranking.getRanking(contest_id, new Timestamp(date.getTime()), admin);
 
@@ -161,15 +176,7 @@ public class Ranking {
         RankingTable rankingTable = null;
         long start = new Date().getTime();
 
-        RankingInteface ranking = null;
-
-        if (type == 0) { // ACM
-            ranking = new RankingACM();
-        } else if (type == 1) { // PA
-            ranking = new RankingPA();
-        } else if (type == 2) { // KI
-            ranking = new RankingKI();
-        }
+        RankingInterface ranking = getRankingInterface(type, null);
 
         rankingTable = ranking.getRankingForSeries(contest_id, series_id, new Timestamp(date.getTime()), admin);
 
@@ -265,21 +272,15 @@ public class Ranking {
         return rankingTable;
     }
 
-    private RankingTable createSubrankingTable(int contest_id, int type, Date date, boolean admin) {
+    private RankingTable createSubrankingTable(int contest_id, int subtype, Date date, boolean admin) {
         RankingTable rankingTable = null;
         long start = new Date().getTime();
 
-        RankingInteface ranking = null;
-
-        if (type == 1) { // KI s1
-            ranking = new SubrankingKI("s1");
-        } else if (type == 2) { // KI s2
-            ranking = new SubrankingKI("s2");
-        }
+        RankingInterface ranking = getRankingInterface(null, subtype);
 
         rankingTable = ranking.getRanking(contest_id, new Timestamp(date.getTime()), admin);
 
-        rankingTable.setType(type);
+        rankingTable.setType(subtype);
         rankingTable.generateHtml(admin);
         rankingTable.setGenerationDate(date);
         rankingTable.setGenerationTime(new Date().getTime() - start);
@@ -326,5 +327,15 @@ public class Ranking {
         }
 
         return rankingTable;
+    }
+
+    public List<Integer> getRankingSolutions(int contest_id, Integer series_id, Integer type, Integer subtype, Timestamp checkDate, boolean admin) {
+        RankingInterface ranking = getRankingInterface(type, subtype);
+
+        if (ranking == null) {
+            return null;
+        }
+
+        return ranking.getRankingSolutions(contest_id, series_id, checkDate, admin);
     }
 }
