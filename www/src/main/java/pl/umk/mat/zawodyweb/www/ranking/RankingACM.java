@@ -67,8 +67,13 @@ public class RankingACM implements RankingInterface {
             this.solutions = new ArrayList<SolutionACM>();
 
             this.login = users.getLogin();
-            this.firstname = users.getFirstname();
-            this.lastname = users.getLastname();
+            if (users.getOnlylogin() == false) {
+                this.firstname = users.getFirstname();
+                this.lastname = users.getLastname();
+            } else {
+                this.firstname = "-";
+                this.lastname = "-";
+            }
         }
 
         String formatName() {
@@ -382,7 +387,7 @@ public class RankingACM implements RankingInterface {
         ProblemsDAO problemsDAO = DAOFactory.DEFAULT.buildProblemsDAO();
 
         List<Integer> submits = new ArrayList<Integer>();
-        
+
         boolean allTests;
 
         long lCheckDate = checkDate.getTime();

@@ -63,8 +63,13 @@ public class RankingKI implements RankingInterface {
             this.solutions = new HashMap<Integer, Integer>();
 
             this.login = users.getLogin();
-            this.firstname = users.getFirstname();
-            this.lastname = users.getLastname();
+            if (users.getOnlylogin() == false) {
+                this.firstname = users.getFirstname();
+                this.lastname = users.getLastname();
+            } else {
+                this.firstname = "-";
+                this.lastname = "-";
+            }
         }
 
         String formatName() {

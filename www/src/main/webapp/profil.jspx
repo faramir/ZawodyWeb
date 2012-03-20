@@ -65,6 +65,11 @@
                             <br class="clear" />
                         </div>
                         <div>
+                            <h:outputLabel for="viewpdf">${messages.onlylogin}</h:outputLabel>
+                            <h:selectBooleanCheckbox id="viewpdf" value="#{requestBean.editedUser.onlylogin}" styleClass="check" />
+                            <br class="clear" />                                
+                        </div>
+                        <div>
                             <a4j:commandButton id="save_profile" reRender="formProfile" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.updateUser}" />
                         </div>
                     </fieldset>

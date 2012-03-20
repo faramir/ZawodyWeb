@@ -99,6 +99,7 @@ public class Users implements Serializable {
      * Attribute login date.
      */
     private Timestamp fdate;
+    private Boolean onlylogin;
     /**
      * List of Questions
      */
@@ -414,6 +415,23 @@ public class Users implements Serializable {
         this.ldate = ldate;
     }
 
+    
+        /**
+     * @return viewPDF
+     */
+    @Basic
+    @Column(name = "onlylogin")
+    public Boolean getOnlylogin() {
+        return onlylogin;
+    }
+
+    /**
+     * @param viewpdf new value for viewpdf
+     */
+    public void setOnlylogin(Boolean onlylogin) {
+        this.onlylogin = onlylogin;
+    }
+    
     /**
      * Get the list of Questions
      */

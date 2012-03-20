@@ -67,8 +67,13 @@ public class RankingPA implements RankingInterface {
             this.solutions = new HashMap<Integer, Integer>();
 
             this.login = users.getLogin();
-            this.firstname = users.getFirstname();
-            this.lastname = users.getLastname();
+            if (users.getOnlylogin() == false) {
+                this.firstname = users.getFirstname();
+                this.lastname = users.getLastname();
+            } else {
+                this.firstname = "-";
+                this.lastname = "-";
+            }
         }
 
         String formatName() {
@@ -324,7 +329,7 @@ public class RankingPA implements RankingInterface {
 
     @Override
     public List<Integer> getRankingSolutions(int contest_id, Integer series_id, Timestamp checkDate, boolean admin) {
-    Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
+        Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
         Timestamp checkTimestamp;
         String checkTimestampStr;
