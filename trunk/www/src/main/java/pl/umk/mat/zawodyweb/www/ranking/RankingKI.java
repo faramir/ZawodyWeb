@@ -12,8 +12,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Users;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$ Date: $Date: 2012-03-14 17:47:45 +0100 (Śr, 14 mar 2012)
- * $
+ * @version $Rev$ $Date: 2012-03-14 17:47:45 +0100 (Śr, 14 mar 2012)$
  */
 public class RankingKI implements RankingInterface {
 
@@ -383,10 +382,8 @@ public class RankingKI implements RankingInterface {
                             + "group by usersid, submits.id");
                 }
 
-                for (Object list : query.list()) {
-                    Object[] o = (Object[]) list;
-
-                    submits.add((Integer) o[0]);
+                for (Object id : query.list()) {
+                    submits.add((Integer) id);
                 }
             }
         }
