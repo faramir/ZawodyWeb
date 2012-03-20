@@ -12,8 +12,7 @@ import pl.umk.mat.zawodyweb.database.pojo.*;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$ Date: $Date: 2010-10-10 02:53:49 +0200 (N, 10 paź 2010)
- * $
+ * @version $Rev$ $Date: 2010-10-10 02:53:49 +0200 (N, 10 paź 2010)$
  */
 public class RankingACM implements RankingInterface {
 
@@ -493,10 +492,8 @@ public class RankingACM implements RankingInterface {
                             + "group by usersid");
                 }
 
-                for (Object list : query.list()) { // tu jest zwrócona lista "zaakceptowanych" w danym momencie rozwiązań zadania
-                    Object[] o = (Object[]) list;
-
-                    submits.add((Integer) o[0]);
+                for (Object id : query.list()) { // tu jest zwrócona lista "zaakceptowanych" w danym momencie rozwiązań zadania
+                    submits.add((Integer) id);
                 }
             }
         }

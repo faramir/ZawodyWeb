@@ -21,6 +21,7 @@
                                 <c:otherwise>
                                     <h:outputLink rendered="#{!requestBean.temporaryAdminBoolean}" value="#{facesContext.externalContext.requestContextPath}/ranking/#{requestBean.currentContest.id}/__admin__.html">${messages.view_unfrozen_ranking}</h:outputLink>
                                     <h:outputLink rendered="#{requestBean.temporaryAdminBoolean}" value="#{facesContext.externalContext.requestContextPath}/ranking/#{requestBean.currentContest.id}/#{zw:filterUri(requestBean.currentContest.name)}.html">${messages.view_normal_ranking}</h:outputLink>
+                                    <h:outputLink rendered="#{!requestBean.temporaryAdminBoolean}" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentContest.id}/solutions.html" styleClass="ikonka"><h:graphicImage alt="#{messages.solutions_download}" title="#{messages.solutions_download}" url="/media/images/get.png"/></h:outputLink>
                                 </c:otherwise>
                             </c:choose>
                         </div>

@@ -14,14 +14,13 @@ import pl.umk.mat.zawodyweb.database.pojo.Series;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$ Date: $Date: 2010-10-05 20:59:31 +0200 (Wt, 05 paź 2010)
- * $
+ * @version $Rev$ Date: $Date: 2010-10-05 20:59:31 +0200 (Wt, 05 paź 2010)$
  */
 public class Ranking {
 
     private static final Logger logger = Logger.getLogger(Ranking.class);
     static private final Ranking instance = new Ranking();
-    private static final long rankingWorkerLive = 3 * 60 * 60 * 1000; //3h
+    private static final long rankingWorkerLive = 60 * 60 * 1000; //1h
     private Map<Integer, RankingWorker> contestRankingWorker = new ConcurrentHashMap<Integer, RankingWorker>();
     private Map<Integer, RankingTable> contestRankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
     private Map<Integer, RankingTable> contestSubrankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
@@ -329,13 +328,13 @@ public class Ranking {
         return rankingTable;
     }
 
-    public List<Integer> getRankingSolutions(int contest_id, Integer series_id, Integer type, Integer subtype, Timestamp checkDate, boolean admin) {
-        RankingInterface ranking = getRankingInterface(type, subtype);
+    public List<Integer> getSolutions(int contest_id, Integer series_id, int type, Date date, boolean admin) {
+        RankingInterface ranking = getRankingInterface(type, null);
 
         if (ranking == null) {
             return null;
         }
 
-        return ranking.getRankingSolutions(contest_id, series_id, checkDate, admin);
+        return ranking.getRankingSolutions(contest_id, series_id, new Timestamp(date.getTime()), admin);
     }
 }
