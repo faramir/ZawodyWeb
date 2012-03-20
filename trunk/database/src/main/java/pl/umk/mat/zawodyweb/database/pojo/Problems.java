@@ -298,14 +298,14 @@ public class Problems implements Serializable {
     }
 
     /**
-     * @param name new value for name
+     * @param visibleinranking new value for visibleinranking
      */
     public void setVisibleinranking(Boolean visibleinranking) {
         this.visibleinranking = visibleinranking;
     }
 
     /**
-     * @return visibleInRanking
+     * @return viewPDF
      */
     @Basic
     @Column(name = "viewpdf")
@@ -314,7 +314,7 @@ public class Problems implements Serializable {
     }
 
     /**
-     * @param name new value for name
+     * @param viewpdf new value for viewpdf
      */
     public void setViewpdf(Boolean viewpdf) {
         this.viewpdf = viewpdf;
