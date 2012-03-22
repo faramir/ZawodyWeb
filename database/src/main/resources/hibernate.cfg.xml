@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-  <session-factory>
-    <!-- You need to complete the configuration here. This is just a sample, you should use a connection pool -->
-    <property name="connection.url">jdbc:postgresql://localhost:15432/zawodyweb</property>
-    <!--property name="connection.url">jdbc:postgresql://localhost:15432/zawodyweb</property-->
-    <property name="connection.username">zawody</property>
-    <property name="connection.driver_class">org.postgresql.Driver</property>
-    <!-- Your database is PostgreSQL 8.3 -->
-    <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
-    <!-- You can also use org.hibernate.dialect.MySQLInnoDBDialect if all your tables are InnoDBs or org.hibernate.dialect.MySQLMyISAMDialect if all your tables are MyISAMs.-->
-    <property name="connection.password">Z4wody@</property>
-    <property name="show_sql">false</property>
-    <!-- Remove this property if you use JTA -->
-    <property name="current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</property>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.Series"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.Users"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.Languages"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.Tests"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.Results"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.Classes"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.Submits"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.Contests"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.Problems"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.Questions"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.UsersRoles"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.UserLog"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.Roles"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems"/>
-    <mapping class="pl.umk.mat.zawodyweb.database.pojo.PDF"/>
-  </session-factory>
+    <session-factory>
+        <!-- You need to complete the configuration here. This is just a sample, you should use a connection pool -->
+        <property name="connection.url">jdbc:postgresql://localhost:5432/zawodyweb</property>
+        <property name="connection.username"></property>
+        <property name="connection.password"></property>
+        <!-- Your database is PostgreSQL 8.3 -->
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="show_sql">false</property>
+        <property name="format_sql">false</property>
+        <!-- Remove this property if you use JTA -->
+        <property name="current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</property>
+        <!-- mappings classes -->    
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.Series"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.Users"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.Languages"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.Tests"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.Results"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.Classes"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.Submits"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.Contests"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.Problems"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.Questions"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.UsersRoles"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.UserLog"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.Roles"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.PDF"/> 
+    </session-factory>
 </hibernate-configuration>
