@@ -479,6 +479,12 @@ public class RequestBean {
         return currentContestQuestions;
     }
 
+    public String getCurrentContestRankingHtml() {
+        RankingTable table = getCurrentContestRanking();
+
+        return table.getHtml(sessionBean.isLoggedIn());
+    }
+
     public RankingTable getCurrentContestRanking() {
         if (currentContestRanking == null && getCurrentContest() != null) {
             Integer contests_id = getCurrentContest().getId();
@@ -499,6 +505,12 @@ public class RequestBean {
         }
 
         return currentContestRanking;
+    }
+
+    public String getCurrentContestSubrankingHtml() {
+        RankingTable table = getCurrentContestSubranking();
+
+        return table.getHtml(sessionBean.isLoggedIn());
     }
 
     public RankingTable getCurrentContestSubranking() {
@@ -2028,14 +2040,14 @@ public class RequestBean {
             return "/error/404";
         }
     }
-    
+
     @HttpAction(name = "getfile", pattern = "get/{id}/{type}")
     public String getFile(@Param(name = "id", encode = true) int id, @Param(name = "type", encode = true) String type) throws IOException {
         try {
             String name = StringUtils.EMPTY;
             String mimetype = StringUtils.EMPTY;
             byte[] content = null;
-            System.err.println("type:"+type+", id:"+id);
+            System.err.println("type:" + type + ", id:" + id);
             if ("pdf".equals(type)) {
                 Problems problem = problemsDAO.getById(id);
 
@@ -2099,8 +2111,8 @@ public class RequestBean {
                     name = ELFunctions.filterUri(problem.getAbbrev()) + "_" + test.getTestorder() + ".zip";
                     mimetype = "application/force-download";
                 }
-            } else if("solutions".equals(type)) {
-                System.err.println("solutions!"+id);
+            } else if ("solutions".equals(type)) {
+                System.err.println("solutions!" + id);
                 Contests contest = contestsDAO.getById(id);
                 List<Integer> submissionsList = Ranking.getInstance().getSolutions(id, null, contest.getType(), new Date(), false);
                 ZipSolutions zip = new ZipSolutions();
@@ -2108,7 +2120,7 @@ public class RequestBean {
                     zip.addSubmit(submitsDAO.getById(sid));
                 }
                 content = zip.finish();
-                name = ELFunctions.filterUri(contest.getName())+"_solutions.zip";
+                name = ELFunctions.filterUri(contest.getName()) + "_solutions.zip";
                 mimetype = "application/force-download";
             }
 

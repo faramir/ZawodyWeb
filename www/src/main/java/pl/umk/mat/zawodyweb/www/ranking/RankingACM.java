@@ -55,6 +55,7 @@ public class RankingACM implements RankingInterface {
         String login;
         String firstname;
         String lastname;
+        boolean loginOnly;
         int id_user;
         int points;
         long totalTime;
@@ -67,17 +68,9 @@ public class RankingACM implements RankingInterface {
             this.solutions = new ArrayList<SolutionACM>();
 
             this.login = users.getLogin();
-            if (users.getOnlylogin() == false) {
-                this.firstname = users.getFirstname();
-                this.lastname = users.getLastname();
-            } else {
-                this.firstname = "-";
-                this.lastname = "-";
-            }
-        }
-
-        String formatName() {
-            return String.format("%s %s (%s)", firstname, lastname, login);
+            this.firstname = users.getFirstname();
+            this.lastname = users.getLastname();
+            this.loginOnly = users.getOnlylogin();
         }
 
         void add(int points, SolutionACM solutionACM) {
@@ -358,7 +351,7 @@ public class RankingACM implements RankingInterface {
             v.add(parseTime(user.totalTime));
             v.add(user.getSolutionsForRanking());
 
-            vectorRankingEntry.add(new RankingEntry(place, user.formatName(), v));
+            vectorRankingEntry.add(new RankingEntry(place, user.firstname, user.lastname, user.login, user.loginOnly, v));
         }
 
         return new RankingTable(columnsCaptions, columnsCSS, vectorRankingEntry, frozenRanking);
