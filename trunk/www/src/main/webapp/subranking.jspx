@@ -18,6 +18,11 @@
                             <h:outputLink rendered="#{requestBean.temporaryAdminBoolean}" value="#{facesContext.externalContext.requestContextPath}/subranking/#{requestBean.currentContest.id}/#{zw:filterUri(requestBean.currentContest.name)}.html">${messages.view_normal_ranking}</h:outputLink>
                         </div>
                     </c:if>
+                    <c:if test="#{zw:getDate().time - requestBean.currentContestSubranking.generationDate.time gt 5*60*1000}">
+                        <div class="ranking_old" style="clear:both">
+                            <h:outputText value="#{messages.ranking_old}"/>
+                        </div>
+                    </c:if>
                     <c:if test="#{requestBean.currentContestSubranking.frozenRanking}">
                         <div class="ranking_frozen" style="clear:both">
                             <h:outputText value="#{messages.ranking_frozen}"/>

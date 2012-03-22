@@ -1215,6 +1215,10 @@ tbody {
     display: none;
 }
 
+.ranking_old {
+    display: none;
+}
+
 .ranking_frozen {
     font-size: 11px;
     text-align: center;

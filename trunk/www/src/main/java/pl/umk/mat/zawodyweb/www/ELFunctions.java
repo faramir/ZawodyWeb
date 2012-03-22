@@ -16,6 +16,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
+import pl.umk.mat.zawodyweb.www.ranking.RankingTable;
 
 /**
  *
@@ -200,6 +201,10 @@ public class ELFunctions {
         return points;
     }
 
+    public static Date getDate() {
+        return new Date();
+    }
+    
     public static Boolean submitDateOk(Problems p) {
         Date now = new Date();
         return p.getSeries().getStartdate().before(now) && (p.getSeries().getEnddate() == null || p.getSeries().getEnddate().after(now));
