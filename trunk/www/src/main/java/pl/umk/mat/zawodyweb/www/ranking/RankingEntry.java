@@ -4,24 +4,32 @@ import java.util.ArrayList;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$
- * Date: $Date$
+ * @version $Rev$ Date: $Date$
  */
 public class RankingEntry {
 
     private int place;
-    private String username;
+    private String name;
+    private String surname;
+    private String login;
+    private boolean loginOnly;
     private ArrayList<String> table;
 
     RankingEntry() {
         place = -1;
-        username = "";
+        name = "";
+        surname = "";
+        login = "";
+        loginOnly = false;
         table = new ArrayList<String>();
     }
 
-    public RankingEntry(int place, String username, ArrayList<String> table) {
+    public RankingEntry(int place, String name, String surname, String login, boolean loginOnly, ArrayList<String> table) {
         this.place = place;
-        this.username = username;
+        this.name = name;
+        this.surname = surname;
+        this.login = login;
+        this.loginOnly = loginOnly;
         this.table = table;
     }
 
@@ -42,15 +50,12 @@ public class RankingEntry {
     /**
      * @return the name
      */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * @param name the name to set
-     */
-    public void setUsername(String username) {
-        this.username = username;
+    public String getUsername(boolean loggedIn) {
+        if (loggedIn || !loginOnly) {
+            return String.format("%s %s (%s)", name, surname, login);
+        } else {
+            return String.format("%s - (%s)", name, login);
+        }
     }
 
     /**

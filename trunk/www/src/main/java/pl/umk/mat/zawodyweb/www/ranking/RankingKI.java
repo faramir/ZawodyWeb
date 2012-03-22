@@ -54,6 +54,7 @@ public class RankingKI implements RankingInterface {
         String lastname;
         String firstname;
         String login;
+        boolean loginOnly;
         int id_user;
         int points;
         HashMap<Integer, Integer> solutions;
@@ -63,17 +64,9 @@ public class RankingKI implements RankingInterface {
             this.solutions = new HashMap<Integer, Integer>();
 
             this.login = users.getLogin();
-            if (users.getOnlylogin() == false) {
-                this.firstname = users.getFirstname();
-                this.lastname = users.getLastname();
-            } else {
-                this.firstname = "-";
-                this.lastname = "-";
-            }
-        }
-
-        String formatName() {
-            return String.format("%s %s (%s)", firstname, lastname, login);
+            this.firstname = users.getFirstname();
+            this.lastname = users.getLastname();
+            this.loginOnly = users.getOnlylogin();
         }
 
         void add(int problem_id, int points) {
@@ -273,7 +266,7 @@ public class RankingKI implements RankingInterface {
             }
             v.add(Integer.toString(user.points));
 
-            vectorRankingEntry.add(new RankingEntry(place, user.formatName(), v));
+            vectorRankingEntry.add(new RankingEntry(place, user.firstname, user.lastname, user.login, user.loginOnly, v));
         }
 
         return new RankingTable(columnsCaptions, columnsCSS, vectorRankingEntry, frozenRanking);

@@ -164,7 +164,6 @@ public class Ranking {
         rankingTable = ranking.getRanking(contest_id, new Timestamp(date.getTime()), admin);
 
         rankingTable.setType(type);
-        rankingTable.generateHtml(admin);
         rankingTable.setGenerationDate(date);
         rankingTable.setGenerationTime(new Date().getTime() - start);
 
@@ -180,7 +179,6 @@ public class Ranking {
         rankingTable = ranking.getRankingForSeries(contest_id, series_id, new Timestamp(date.getTime()), admin);
 
         rankingTable.setType(type);
-        rankingTable.generateHtml(admin);
         rankingTable.setGenerationDate(date);
         rankingTable.setGenerationTime(new Date().getTime() - start);
 
@@ -280,7 +278,6 @@ public class Ranking {
         rankingTable = ranking.getRanking(contest_id, new Timestamp(date.getTime()), admin);
 
         rankingTable.setType(subtype);
-        rankingTable.generateHtml(admin);
         rankingTable.setGenerationDate(date);
         rankingTable.setGenerationTime(new Date().getTime() - start);
 

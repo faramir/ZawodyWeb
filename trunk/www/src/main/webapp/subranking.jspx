@@ -26,7 +26,7 @@
                     <div id="scroll" style="clear:both">
                         <table class="ranking">
                             <thead><tr><th class="small">${messages.position}</th><th class="big">${messages.competitor}</th><c:set var="itc" value="0" /><c:forEach var="column" items="#{requestBean.currentContestSubranking.columnsCaptions}"><th class="${requestBean.currentContestSubranking.columnsCSS[itc]}"><h:outputText escape="false" value="#{column}" /></th><c:set var="itc" value="#{itc + 1}" /></c:forEach></tr></thead>
-                            <tbody><h:outputText value="#{requestBean.currentContestSubranking.html}" escape="false" /></tbody>
+                            <tbody><h:outputText value="#{requestBean.currentContestSubrankingHtml}" escape="false" /></tbody>
                         </table>
                     </div>
                     <div class="ranking_generated" style="clear:both">

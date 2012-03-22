@@ -4,11 +4,12 @@ import java.text.Collator;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$ Date: $Date$
+ * @version $Rev$ Date: $Date: 2009-12-08 15:16:30 +0100 (Wt, 08 gru 2009)
+ * $
  */
 public class RankingUtils {
 
-    private static Collator collator;
+    private static final Collator collator;
 
     static {
         collator = Collator.getInstance();
@@ -23,7 +24,7 @@ public class RankingUtils {
         return collator.compare(str1, str2);
     }
 
-    public static String generateHtml(RankingTable ranking, boolean showRowNumber) {
+    public static String generateHtml(RankingTable ranking, boolean loggedIn) {
         int itc;
         int itr;
         StringBuilder out = new StringBuilder();
@@ -32,13 +33,9 @@ public class RankingUtils {
         for (RankingEntry entry : ranking.getTable()) { // <c:forEach var="entry" items="#{requestBean.currentContestRanking.table}">
             out.append("<tr class=\"").append(itr % 2 == 0 ? "linia1" : "linia2").append("\">"); // <tr class="${itr % 2 == 0 ? 'linia1' : 'linia2'}">
             out.append("<td class=\"small\">"); // <td class="small">
-            if (showRowNumber) {
-                out.append("<span title=\"").append(itr).append("\">").append(entry.getPlace()).append("</span>"); // <h:outputText value="#{entry.place}" title="#{itr}" rendered="#{requestBean.temporaryAdminBoolean == true}" />
-            } else {
-                out.append(entry.getPlace()); // <h:outputText value="#{entry.place}" rendered="#{requestBean.temporaryAdminBoolean == false}" />
-            }
+            out.append("<span title=\"").append(itr).append("\">").append(entry.getPlace()).append("</span>"); // <h:outputText value="#{entry.place}" title="#{itr}" rendered="#{requestBean.temporaryAdminBoolean == true}" />
 
-            out.append("</td><td class=\"big\">").append(org.apache.commons.lang.StringEscapeUtils.escapeHtml(entry.getUsername())).append("</td>"); // </td><td class="big"><h:outputText value="#{entry.username}" /></td>
+            out.append("</td><td class=\"big\">").append(org.apache.commons.lang.StringEscapeUtils.escapeHtml(entry.getUsername(loggedIn))).append("</td>"); // </td><td class="big"><h:outputText value="#{entry.username}" /></td>
 
             itc = 0; //<c:set var="itc" value="0" />
             for (String column : entry.getTable()) { // <c:forEach var="column" items="#{entry.table}">

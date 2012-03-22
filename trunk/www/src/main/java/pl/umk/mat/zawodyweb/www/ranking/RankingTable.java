@@ -1,7 +1,7 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
@@ -17,7 +17,6 @@ public class RankingTable {
     private Date generationDate;
     private long generationTime;
     private int type;
-    private String html;
 
     public RankingTable() {
     }
@@ -123,11 +122,7 @@ public class RankingTable {
     /**
      * @return the html
      */
-    public String getHtml() {
-        return html;
-    }
-
-    public void generateHtml(boolean admin) {
-        html = RankingUtils.generateHtml(this, admin);
+    public String getHtml(boolean loggedIn) {
+        return RankingUtils.generateHtml(this, loggedIn);
     }
 }
