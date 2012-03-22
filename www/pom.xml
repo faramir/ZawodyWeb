@@ -250,5 +250,7 @@
         </dependency>
     </dependencies>
     <!-- -->
-    <properties></properties>
+    <properties>
+        <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
+    </properties>
 </project>

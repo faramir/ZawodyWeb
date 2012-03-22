@@ -1,11 +1,16 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.log4j.Logger;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
@@ -14,88 +19,90 @@ import pl.umk.mat.zawodyweb.database.pojo.Series;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$ Date: $Date: 2010-10-05 20:59:31 +0200 (Wt, 05 paź 2010)$
+ * @version $Rev$ Date: $Date: 2010-10-05 20:59:31 +0200 (Wt, 05 paź
+ * 2010)$
  */
 public class Ranking {
 
-    private static final Logger logger = Logger.getLogger(Ranking.class);
-    static private final Ranking instance = new Ranking();
-    private static final long rankingWorkerLive = 60 * 60 * 1000; //1h
-    private Map<Integer, RankingWorker> contestRankingWorker = new ConcurrentHashMap<Integer, RankingWorker>();
-    private Map<Integer, RankingTable> contestRankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
-    private Map<Integer, RankingTable> contestSubrankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
-    private Map<Integer, RankingTable> seriesRankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
+    private static final Ranking instance = new Ranking();
+    private static final Executor executor = Executors.newFixedThreadPool(8);
 
-    class RankingWorker extends Thread {
+    private class RankingWorker implements Runnable {
 
-        int contest_id;
-        long start_date;
+        Integer contest_id;
+        Integer serie_id;
+        Integer subcontest_id;
 
-        public RankingWorker(int contest_id) {
+        public RankingWorker(Integer contest_id, Integer series_id, Integer subranking) {
             this.contest_id = contest_id;
-            start_date = new Date().getTime();
-        }
-
-        public void setStartDate(long start_date) {
-            this.start_date = start_date;
+            this.serie_id = series_id;
+            this.subcontest_id = subranking;
         }
 
         @Override
         public void run() {
             Transaction transaction = null;
             try {
-                logger.warn("[" + contest_id + "] Adding RankingWorker to Map...");
-                contestRankingWorker.put(contest_id, this);
-                Contests contest = null;
-                while (start_date > (new Date().getTime() - rankingWorkerLive)) {
-                    transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-                    contest = DAOFactory.DEFAULT.buildContestsDAO().getById(contest_id);
 
-                    if (contest == null) {
-                        logger.warn("[" + contest_id + "] Contest not found in database, ending RankingWorker...");
-                        break;
-                    }
+                transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
-                    logger.warn("[" + contest_id + "] Creating RankingTable for contest: " + contest.getName() + " (" + contest.getId() + ")");
+                if (contest_id != null) {
+                    Contests contest = DAOFactory.DEFAULT.buildContestsDAO().getById(contest_id);
+                    contestRankingTableMap.put(contest_id, createRankingTable(contest_id, contest.getType(), new Date(), false));
+                    contestWorker.remove(contest_id);
+                }
+                if (serie_id != null) {
+                    Series serie = DAOFactory.DEFAULT.buildSeriesDAO().getById(serie_id);
+                    Contests contest = serie.getContests();
+                    seriesRankingTableMap.put(serie_id, createRankingTableForSeries(contest.getId(), serie_id, contest.getType(), new Date(), false));
+                    seriesWorker.remove(serie_id);
+                }
 
-                    contestRankingTableMap.put(contest.getId(), createRankingTable(contest.getId(), contest.getType(), new Date(), false));
-
-                    for (Series serie : DAOFactory.DEFAULT.buildSeriesDAO().findByContestsid(contest.getId())) {
-                        logger.warn("[" + contest_id + "] Creating RankingTable for serie: " + serie.getName() + " (" + serie.getId() + ")");
-                        seriesRankingTableMap.put(serie.getId(), createRankingTableForSeries(contest.getId(), serie.getId(), contest.getType(), new Date(), false));
-                    }
-
+                if (subcontest_id != null) {
+                    Contests contest = DAOFactory.DEFAULT.buildContestsDAO().getById(subcontest_id);
                     if (contest.getSubtype() != 0) {
-                        logger.warn("[" + contest_id + "] Creating RankingTable for contests' subranking: " + contest.getName() + " (" + contest.getId() + ")");
-                        contestSubrankingTableMap.put(contest.getId(), createSubrankingTable(contest.getId(), contest.getSubtype(), new Date(), false));
+                        contestSubrankingTableMap.put(subcontest_id, createSubrankingTable(subcontest_id, contest.getSubtype(), new Date(), false));
                     } else {
                         contestSubrankingTableMap.remove(contest.getId());
                     }
-
-                    transaction.commit();
-
-                    if (contest.getRankingrefreshrate() <= 0) {
-                        logger.warn("[" + contest_id + "] Contest RefreshRate <= 0, ending RankingWorker...");
-                        break;
-                    }
-
-                    logger.warn("[" + contest_id + "] Waiting " + contest.getRankingrefreshrate() + " seconds...");
-                    Thread.sleep(contest.getRankingrefreshrate() * 1000);
+                    subrankingWorker.remove(subcontest_id);
                 }
-                logger.warn("[" + contest_id + "] RankingWorker live time elapsed (" + new Date(start_date) + " >  (" + new Date() + ")");
+
+                transaction.commit();
             } catch (Exception ex) {
-                logger.fatal("[" + contest_id + "] Fatal exception", ex);
             } finally {
-                logger.warn("[" + contest_id + "] Removing RankingWorker from Map...");
-                contestRankingWorker.remove(contest_id);
                 try {
                     if (transaction != null) {
                         transaction.rollback();
                     }
                 } catch (Exception e) {
                 }
+
+                if (contest_id != null) {
+                    contestWorker.remove(contest_id);
+                }
+                if (serie_id != null) {
+                    seriesWorker.remove(serie_id);
+                }
+                if (subcontest_id != null) {
+                    subrankingWorker.remove(subcontest_id);
+                }
             }
         }
+    }
+    private final Map<Integer, RankingTable> contestRankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
+    private final Map<Integer, RankingTable> contestSubrankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
+    private final Map<Integer, RankingTable> seriesRankingTableMap = new ConcurrentHashMap<Integer, RankingTable>();
+    private final ConcurrentMap<Integer, Object> contestWorking = new ConcurrentHashMap<Integer, Object>();
+    private final ConcurrentMap<Integer, Object> seriesWorking = new ConcurrentHashMap<Integer, Object>();
+    private final ConcurrentMap<Integer, Object> subrankingWorking = new ConcurrentHashMap<Integer, Object>();
+    private final Set<Integer> contestWorker = Collections.synchronizedSet(new HashSet<Integer>());
+    private final Set<Integer> seriesWorker = Collections.synchronizedSet(new HashSet<Integer>());
+    private final Set<Integer> subrankingWorker = Collections.synchronizedSet(new HashSet<Integer>());
+
+    private Object getCacheSyncObject(ConcurrentMap<Integer, Object> map, final Integer id) {
+        map.putIfAbsent(id, new Object());
+        return map.get(id);
     }
 
     private Ranking() {
@@ -130,20 +137,6 @@ public class Ranking {
         return instance;
     }
 
-    private RankingTable getCachedRankingWithExpirationTime(Map<Integer, RankingTable> map, int key, int type, Date data, int rankingRefreshRate) {
-        RankingTable ranking = map.get(key);
-        if (ranking == null) {
-            return null;
-        }
-        if (ranking.getType() != type) {
-            return null;
-        }
-        if (ranking.getGenerationDate().getTime() <= data.getTime() - rankingRefreshRate) {
-            return null;
-        }
-        return ranking;
-    }
-
     private RankingTable getCachedRanking(Map<Integer, RankingTable> map, int key, int type) {
         RankingTable ranking = map.get(key);
         if (ranking == null) {
@@ -156,7 +149,7 @@ public class Ranking {
     }
 
     private RankingTable createRankingTable(int contest_id, int type, Date date, boolean admin) {
-        RankingTable rankingTable = null;
+        RankingTable rankingTable;
         long start = new Date().getTime();
 
         RankingInterface ranking = getRankingInterface(type, null);
@@ -171,7 +164,7 @@ public class Ranking {
     }
 
     private RankingTable createRankingTableForSeries(int contest_id, int series_id, int type, Date date, boolean admin) {
-        RankingTable rankingTable = null;
+        RankingTable rankingTable;
         long start = new Date().getTime();
 
         RankingInterface ranking = getRankingInterface(type, null);
@@ -185,92 +178,8 @@ public class Ranking {
         return rankingTable;
     }
 
-    public RankingTable getRanking(int contest_id, int type, int rankingRefreshRate, Date date, boolean admin) {
-        if (!(type == 0 || type == 1 || type == 2)) {
-            return null;
-        }
-
-        if (rankingRefreshRate < 0) {
-            rankingRefreshRate = 0;
-        }
-
-        if (contestRankingWorker.get(contest_id) == null) {
-            if (rankingRefreshRate > 0) {
-                contestRankingTableMap.remove(contest_id);
-                new RankingWorker(contest_id).start();
-            }
-        } else {
-            if (rankingRefreshRate > 0) {
-                contestRankingWorker.get(contest_id).setStartDate(new Date().getTime());
-            } else {
-                contestRankingWorker.get(contest_id).interrupt();
-            }
-        }
-
-        if (admin == true) {
-            return createRankingTable(contest_id, type, date, admin);
-        }
-        if (Math.abs(date.getTime() - new Date().getTime()) > (rankingRefreshRate + 1) * 1000) {
-            return createRankingTable(contest_id, type, date, admin);
-        }
-
-        RankingTable rankingTable = null;
-        if (rankingRefreshRate > 0) {
-            rankingTable = getCachedRanking(contestRankingTableMap, contest_id, type);
-        }
-        if (rankingTable == null) {
-            rankingTable = createRankingTable(contest_id, type, date, admin);
-            contestRankingTableMap.put(contest_id, rankingTable);
-        }
-
-        return rankingTable;
-    }
-
-    public RankingTable getRankingForSeries(int contest_id, int series_id, int type, int rankingRefreshRate, Date date, boolean admin) {
-        if (!(type == 0 || type == 1 || type == 2)) {
-            return null;
-        }
-
-        if (rankingRefreshRate < 0) {
-            rankingRefreshRate = 0;
-        }
-
-        if (contestRankingWorker.get(contest_id) == null) {
-            if (rankingRefreshRate > 0) {
-                contestRankingTableMap.remove(contest_id);
-                new RankingWorker(contest_id).start();
-            }
-        } else {
-            if (rankingRefreshRate > 0) {
-                contestRankingWorker.get(contest_id).setStartDate(new Date().getTime());
-            } else {
-                contestRankingWorker.get(contest_id).interrupt();
-            }
-        }
-
-        if (admin == true) {
-            return createRankingTableForSeries(contest_id, series_id, type, date, admin);
-        }
-        if (Math.abs(date.getTime() - new Date().getTime()) > (rankingRefreshRate + 1) * 1000) {
-            return createRankingTableForSeries(contest_id, series_id, type, date, admin);
-        }
-
-        RankingTable rankingTable = null;
-
-        if (rankingRefreshRate > 0) {
-            rankingTable = getCachedRanking(seriesRankingTableMap, series_id, type);
-        }
-
-        if (rankingTable == null) {
-            rankingTable = createRankingTableForSeries(contest_id, series_id, type, date, admin);
-            seriesRankingTableMap.put(series_id, rankingTable);
-        }
-
-        return rankingTable;
-    }
-
     private RankingTable createSubrankingTable(int contest_id, int subtype, Date date, boolean admin) {
-        RankingTable rankingTable = null;
+        RankingTable rankingTable;
         long start = new Date().getTime();
 
         RankingInterface ranking = getRankingInterface(null, subtype);
@@ -284,42 +193,103 @@ public class Ranking {
         return rankingTable;
     }
 
-    public RankingTable getSubranking(int contest_id, int type, int rankingRefreshRate, Date date, boolean admin) {
-        if (!(type == 1 || type == 2)) {
+    public RankingTable getRanking(int contest_id, int type, int rankingRefreshRate, Date rankingDate, boolean admin) {
+        if (!(type == 0 || type == 1 || type == 2)) {
             return null;
+        }
+
+        if (admin == true) {
+            return createRankingTable(contest_id, type, rankingDate, admin);
         }
 
         if (rankingRefreshRate < 0) {
             rankingRefreshRate = 0;
         }
+        if (Math.abs(rankingDate.getTime() - new Date().getTime()) > (rankingRefreshRate + 5) * 1000) {
+            return createRankingTable(contest_id, type, rankingDate, admin);
+        }
 
-        if (contestRankingWorker.get(contest_id) == null) {
-            if (rankingRefreshRate > 0) {
-                contestRankingTableMap.remove(contest_id);
-                new RankingWorker(contest_id).start();
-            }
-        } else {
-            if (rankingRefreshRate > 0) {
-                contestRankingWorker.get(contest_id).setStartDate(new Date().getTime());
+        RankingTable rankingTable;
+        synchronized (getCacheSyncObject(contestWorking, contest_id)) {
+            rankingTable = getCachedRanking(contestRankingTableMap, contest_id, type);
+
+            if (rankingTable == null) {
+                rankingTable = createRankingTable(contest_id, type, rankingDate, admin);
+                contestRankingTableMap.put(contest_id, rankingTable);
             } else {
-                contestRankingWorker.get(contest_id).interrupt();
+                if (!contestWorker.contains(contest_id) && (new Date().getTime() - rankingTable.getGenerationDate().getTime() > (rankingRefreshRate + 1) * 1000)) {
+                    contestWorker.add(contest_id);
+                    executor.execute(new RankingWorker(contest_id, null, null));
+                }
             }
+        }
+
+        return rankingTable;
+    }
+
+    public RankingTable getRankingForSeries(int contest_id, int series_id, int type, int rankingRefreshRate, Date rankingDate, boolean admin) {
+        if (!(type == 0 || type == 1 || type == 2)) {
+            return null;
         }
 
         if (admin == true) {
-            return createSubrankingTable(contest_id, type, date, admin);
-        }
-        if (Math.abs(date.getTime() - new Date().getTime()) > (rankingRefreshRate + 1) * 1000) {
-            return createSubrankingTable(contest_id, type, date, admin);
+            return createRankingTableForSeries(contest_id, series_id, type, rankingDate, admin);
         }
 
-        RankingTable rankingTable = null;
-        if (rankingRefreshRate > 0) {
-            rankingTable = getCachedRanking(contestSubrankingTableMap, contest_id, type);
+        if (rankingRefreshRate < 0) {
+            rankingRefreshRate = 0;
         }
-        if (rankingTable == null) {
-            rankingTable = createSubrankingTable(contest_id, type, date, admin);
-            contestSubrankingTableMap.put(contest_id, rankingTable);
+        if (Math.abs(rankingDate.getTime() - new Date().getTime()) > (rankingRefreshRate + 5) * 1000) {
+            return createRankingTableForSeries(contest_id, series_id, type, rankingDate, admin);
+        }
+
+        RankingTable rankingTable;
+        synchronized (getCacheSyncObject(seriesWorking, series_id)) {
+            rankingTable = getCachedRanking(seriesRankingTableMap, series_id, type);
+
+            if (rankingTable == null) {
+                rankingTable = createRankingTableForSeries(contest_id, series_id, type, rankingDate, admin);
+                seriesRankingTableMap.put(series_id, rankingTable);
+            } else {
+                if (!seriesWorker.contains(series_id) && (new Date().getTime() - rankingTable.getGenerationDate().getTime() > (rankingRefreshRate + 1) * 1000)) {
+                    seriesWorker.add(series_id);
+                    executor.execute(new RankingWorker(null, series_id, null));
+                }
+            }
+        }
+
+        return rankingTable;
+    }
+
+    public RankingTable getSubranking(int contest_id, int type, int rankingRefreshRate, Date rankingDate, boolean admin) {
+        if (!(type == 1 || type == 2)) {
+            return null;
+        }
+
+        if (admin == true) {
+            return createSubrankingTable(contest_id, type, rankingDate, admin);
+        }
+
+        if (rankingRefreshRate < 0) {
+            rankingRefreshRate = 0;
+        }
+        if (Math.abs(rankingDate.getTime() - new Date().getTime()) > (rankingRefreshRate + 5) * 1000) {
+            return createSubrankingTable(contest_id, type, rankingDate, admin);
+        }
+
+        RankingTable rankingTable;
+        synchronized (getCacheSyncObject(subrankingWorking, contest_id)) {
+            rankingTable = getCachedRanking(contestSubrankingTableMap, contest_id, type);
+
+            if (rankingTable == null) {
+                rankingTable = createSubrankingTable(contest_id, type, rankingDate, admin);
+                contestSubrankingTableMap.put(contest_id, rankingTable);
+            } else {
+                if (!subrankingWorker.contains(contest_id) && (new Date().getTime() - rankingTable.getGenerationDate().getTime() > (rankingRefreshRate + 1) * 1000)) {
+                    subrankingWorker.add(contest_id);
+                    executor.execute(new RankingWorker(null, null, contest_id));
+                }
+            }
         }
 
         return rankingTable;

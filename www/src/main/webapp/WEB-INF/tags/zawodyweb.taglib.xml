@@ -84,6 +84,11 @@
         <function-signature>java.lang.Integer points(pl.umk.mat.zawodyweb.database.pojo.Submits)</function-signature>
     </function>
     <function>
+        <function-name>getDate</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
+        <function-signature>java.util.Date getDate()</function-signature>
+    </function>
+    <function>
         <function-name>submitDateOk</function-name>
         <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
         <function-signature>java.lang.Boolean submitDateOk(pl.umk.mat.zawodyweb.database.pojo.Problems)</function-signature>

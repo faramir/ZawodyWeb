@@ -26,6 +26,11 @@
                             </c:choose>
                         </div>
                     </c:if>
+                    <c:if test="#{zw:getDate().time - requestBean.currentContestRanking.generationDate.time gt 5*60*1000}">
+                        <div class="ranking_old" style="clear:both">
+                            <h:outputText value="#{messages.ranking_old}"/>
+                        </div>
+                    </c:if>
                     <c:if test="#{requestBean.currentContestRanking.frozenRanking}">
                         <div class="ranking_frozen" style="clear:both">
                             <h:outputText value="#{messages.ranking_frozen}"/>
