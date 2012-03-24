@@ -1307,7 +1307,8 @@ pre.code {
     padding: 10px 10px 0 0px;
     margin-top: 15px;
     text-align: center;
-    height: 60px;
+    height: 90px;
+    min-width: 710px;
 }
 
 #efs #text {
@@ -1316,8 +1317,7 @@ pre.code {
     font-weight: 700;
     display: inline-block;
     position: relative;
-    top: 50%;
-    margin-top:-60px;
+    margin-top:-90px; /* the same as -#efs.height */
 }
 
 #efs img {

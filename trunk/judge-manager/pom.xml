@@ -4,14 +4,14 @@
     <groupId>pl.umk.mat.zawodyweb</groupId>
     <artifactId>judge-manager</artifactId>
     <name>judge-manager</name>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.1.4-SNAPSHOT</version>
     <description>JudgeManger for ZawodyWEB</description>
     <packaging>jar</packaging>
     <!-- -->
     <parent>
         <groupId>pl.umk.mat.zawodyweb</groupId>
         <artifactId>zawodyweb</artifactId>
-        <version>3.0.1-SNAPSHOT</version>
+        <version>3.1.4-SNAPSHOT</version>
     </parent>
     <!-- -->
     <build>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>database</artifactId>
-            <version>3.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

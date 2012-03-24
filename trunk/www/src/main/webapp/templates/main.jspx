@@ -119,9 +119,8 @@
             <div id="efs">
                 <h:graphicImage alt="" url="/media/images/efs-kl.png" style="float:left"/>
                 <h:graphicImage alt="" url="/media/images/efs-ue.png" style="float:right"/>
-                <div id="text">
-                    Projekt współfinansowany ze środków Unii Europejskiej<br/>w ramach Europejskiego Funduszu Społecznego
-                </div>
+                <div id="text" style="top:50%">Projekt współfinansowany ze środków Unii Europejskiej<br/>w ramach Europejskiego Funduszu Społecznego</div>
+                <div id="text" style="margin:10px 0 0 0;">IKS - Inwestycja w Kierunki Strategiczne na Wydziale Matematyki i Informatyki UMK</div>
             </div>
         </div>
     </body>
