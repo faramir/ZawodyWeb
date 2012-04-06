@@ -2,17 +2,8 @@
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <!-- You need to complete the configuration here. This is just a sample, you should use a connection pool -->
-        <property name="connection.url">jdbc:postgresql://localhost:5432/zawodyweb</property>
-        <property name="connection.username"></property>
-        <property name="connection.password"></property>
-        <!-- Your database is PostgreSQL 8.3 -->
-        <property name="connection.driver_class">org.postgresql.Driver</property>
-        <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
-        <property name="show_sql">false</property>
-        <property name="format_sql">false</property>
         <!-- Remove this property if you use JTA -->
-        <property name="current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</property>
+        <property name="current_session_context_class">thread</property>
         <!-- mappings classes -->    
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.Series"/>
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.Users"/>
