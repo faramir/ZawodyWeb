@@ -227,7 +227,7 @@ public class RequestBean {
     public List<Contests> getContests() {
         if (contests == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Contests.class);
-//            c.addOrder(Order.desc("visibility")); // FIXME: niewidoczne na końcu, czy pomiędzy?
+            c.addOrder(Order.desc("visibility")); // FIXME: niewidoczne *na końcu*, czy pomiędzy?
             c.addOrder(Order.desc("startdate"));
             c.addOrder(Order.desc("id"));
 

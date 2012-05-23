@@ -1303,21 +1303,25 @@ pre.code {
 }
 
 #efs {
-    background: white;
-    padding: 10px 10px 0 0px;
-    margin-top: 15px;
-    text-align: center;
-    height: 90px;
-    min-width: 710px;
-}
-
-#efs #text {
     font-size: 13px;
     font-family: arial;
     font-weight: 700;
-    display: inline-block;
+    display: block;
     position: relative;
-    margin-top:-90px; /* the same as -#efs.height */
+    background: white;
+    padding: 10px 10px 0 0;
+    margin-top: 15px;
+    text-align: center;
+    min-width: 710px;
+}
+
+#efs #efs-iks {
+    margin:0 0 25px 0;
+}
+
+#efs #efs-kl {
+    margin:30px 0;
+    padding:0 0 10px 0;
 }
 
 #efs img {

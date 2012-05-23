@@ -1,12 +1,6 @@
 package pl.umk.mat.zawodyweb.compiler.classes;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -26,10 +20,10 @@ import pl.umk.mat.zawodyweb.judge.WriterFeeder;
 public class LanguagePAS implements CompilerInterface {
 
     public static final org.apache.log4j.Logger logger = Logger.getLogger(LanguagePAS.class);
-    Properties properties;
-    String ofile;
-    int compileResult = CheckerErrors.UNDEF;
-    String compileDesc = "";
+    private Properties properties;
+    private String ofile;
+    private int compileResult = CheckerErrors.UNDEF;
+    private String compileDesc = "";
 
     @Override
     public void setProperties(Properties properties) {

@@ -117,10 +117,11 @@
                 <h:outputText value="&amp;copy; 2009-2012 - Wydział Matematyki i Informatyki UMK" escape="false" />
             </div>
             <div id="efs">
-                <h:graphicImage alt="" url="/media/images/efs-kl.png" style="float:left"/>
-                <h:graphicImage alt="" url="/media/images/efs-ue.png" style="float:right"/>
-                <div id="text" style="top:50%">Projekt współfinansowany ze środków Unii Europejskiej<br/>w ramach Europejskiego Funduszu Społecznego</div>
-                <div id="text" style="margin:10px 0 0 0;">IKS - Inwestycja w Kierunki Strategiczne na Wydziale Matematyki i Informatyki UMK</div>
+                <div id="efs-iks">IKS - Inwestycja w Kierunki Strategiczne na Wydziale Matematyki i Informatyki UMK</div>
+                <h:graphicImage alt="" url="/media/images/efs-kl.png" style="float:left;height:75px"/>
+                <h:graphicImage alt="" url="/media/images/efs-ue.png" style="float:right;margin-top:10px"/>
+                <br style="clear:both;"/>
+                <div id="efs-kl">Projekt współfinansowany ze środków Unii Europejskiej w ramach Europejskiego Funduszu Społecznego</div>
             </div>
         </div>
     </body>

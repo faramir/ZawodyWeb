@@ -199,23 +199,23 @@ public class SessionBean {
             List<Users> users = dao.findByLogin(currentUser.getLogin());
             if (users.isEmpty() == false) {
                 Users user = users.get(0);
-                if (OLAT_PASS.equals(user.getPass())) {
-                    /*
-                     * OLAT
-                     */
-                    if (Connector.getInstance().checkPassword(currentUser.getLogin(), currentUser.getPass())) {
-                        Users olatUser = Connector.getInstance().getUser(currentUser.getLogin());
-                        currentUser = olatSaveUser(dao, user, olatUser);
-                        loggedIn = true;
-                        logUser();
-                    }
-                } else if (LDAP_PASS.equals(user.getPass())) {
+                if (LDAP_PASS.equals(user.getPass())) {
                     /*
                      * LDAP
                      */
                     Users ldapUser = LdapConnector.retieveUser(currentUser.getLogin(), currentUser.getPass());
                     if (ldapUser != null) {
                         currentUser = ldapSaveUser(dao, user, ldapUser);
+                        loggedIn = true;
+                        logUser();
+                    }
+                } else if (OLAT_PASS.equals(user.getPass())) {
+                    /*
+                     * OLAT
+                     */
+                    if (Connector.getInstance().checkPassword(currentUser.getLogin(), currentUser.getPass())) {
+                        Users olatUser = Connector.getInstance().getUser(currentUser.getLogin());
+                        currentUser = olatSaveUser(dao, user, olatUser);
                         loggedIn = true;
                         logUser();
                     }
@@ -252,6 +252,15 @@ public class SessionBean {
                 Users newUser = new Users();
                 newUser.setRdate(new Timestamp(System.currentTimeMillis()));
                 if (currentUser.getPass() != null
+                        && (ldapUser = LdapConnector.retieveUser(currentUser.getLogin(), currentUser.getPass())) != null) {
+                    /*
+                     * LDAP
+                     */
+
+                    currentUser = ldapSaveUser(dao, newUser, ldapUser);
+                    loggedIn = true;
+                    logUser();
+                } else if (currentUser.getPass() != null
                         && Connector.getInstance().checkPassword(currentUser.getLogin(), currentUser.getPass())) {
                     /*
                      * OLAT
@@ -259,15 +268,6 @@ public class SessionBean {
 
                     Users olatUser = Connector.getInstance().getUser(currentUser.getLogin());
                     currentUser = olatSaveUser(dao, newUser, olatUser);
-                    loggedIn = true;
-                    logUser();
-                } else if (currentUser.getPass() != null
-                        && (ldapUser = LdapConnector.retieveUser(currentUser.getLogin(), currentUser.getPass())) != null) {
-                    /*
-                     * LDAP
-                     */
-
-                    currentUser = ldapSaveUser(dao, newUser, ldapUser);
                     loggedIn = true;
                     logUser();
                 } else {

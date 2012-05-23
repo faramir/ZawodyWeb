@@ -57,7 +57,7 @@ public class MainJudgeManager {
         properties.setProperty("COMPILER_ERROR_COUNT", "6");
 
         try {
-            String configFile = MainJudgeManager.class.getResource(".").getPath() + "configuration.xml";
+            String configFile = MainJudgeManager.class.getResource("").getPath() + "configuration.xml";
             if (args.length == 1 && !args[0].isEmpty()) {
                 configFile = args[0];
             }

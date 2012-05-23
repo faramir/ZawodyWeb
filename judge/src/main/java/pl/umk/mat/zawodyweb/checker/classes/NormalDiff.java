@@ -1,5 +1,6 @@
 package pl.umk.mat.zawodyweb.checker.classes;
 
+import java.util.Properties;
 import pl.umk.mat.zawodyweb.checker.CheckerInterface;
 import pl.umk.mat.zawodyweb.checker.CheckerResult;
 import pl.umk.mat.zawodyweb.checker.TestInput;
@@ -26,19 +27,19 @@ public class NormalDiff implements CheckerInterface {
         int rightTextLength = rightText.length();
         int codeTextLength = codeText.length();
         while (i < rightTextLength && j < codeTextLength) {
-            if ((Character.isWhitespace(rightText.charAt(i)) &&
-                    Character.isWhitespace(codeText.charAt(j))) ||
-                    (i == 0 &&
-                    Character.isWhitespace(codeText.charAt(j))) ||
-                    (j == 0 &&
-                    Character.isWhitespace(rightText.charAt(i)))) {
-                while (i < rightTextLength &&
-                        Character.isWhitespace(rightText.charAt(i))) {
+            if ((Character.isWhitespace(rightText.charAt(i))
+                    && Character.isWhitespace(codeText.charAt(j)))
+                    || (i == 0
+                    && Character.isWhitespace(codeText.charAt(j)))
+                    || (j == 0
+                    && Character.isWhitespace(rightText.charAt(i)))) {
+                while (i < rightTextLength
+                        && Character.isWhitespace(rightText.charAt(i))) {
                     i++;
                 }
 
-                while (j < codeTextLength &&
-                        Character.isWhitespace(codeText.charAt(j))) {
+                while (j < codeTextLength
+                        && Character.isWhitespace(codeText.charAt(j))) {
                     j++;
                 }
 
@@ -51,16 +52,16 @@ public class NormalDiff implements CheckerInterface {
         }
         if (i == rightTextLength && j == codeTextLength) {
             return 0;
-        } else if (i == rightTextLength &&
-                Character.isWhitespace(codeText.charAt(j))) {
-            while (j < codeTextLength &&
-                    Character.isWhitespace(codeText.charAt(j))) {
+        } else if (i == rightTextLength
+                && Character.isWhitespace(codeText.charAt(j))) {
+            while (j < codeTextLength
+                    && Character.isWhitespace(codeText.charAt(j))) {
                 j++;
             }
-        } else if (j == codeTextLength &&
-                Character.isWhitespace(rightText.charAt(i))) {
-            while (i < rightTextLength &&
-                    Character.isWhitespace(rightText.charAt(i))) {
+        } else if (j == codeTextLength
+                && Character.isWhitespace(rightText.charAt(i))) {
+            while (i < rightTextLength
+                    && Character.isWhitespace(rightText.charAt(i))) {
                 i++;
             }
         }
@@ -94,5 +95,9 @@ public class NormalDiff implements CheckerInterface {
         result.setRuntime(codeOutput.getRuntime());
         result.setMemUsed(codeOutput.getMemUsed());
         return result;
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
     }
 }

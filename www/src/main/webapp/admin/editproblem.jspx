@@ -34,8 +34,7 @@
                         </div>
                         <div>
                             <h:outputLabel styleClass="required" for="text">${messages.problem_text}:</h:outputLabel>
-                            <h:inputTextarea id="text" styleClass="bigHeight" required="true" value="#{requestBean.editedProblem.text}">
-                            </h:inputTextarea>
+                            <h:inputTextarea id="text" styleClass="bigHeight" required="true" value="#{requestBean.editedProblem.text}"/>
                             <h:message for="text" errorClass="error" />
                             <br class="clear" />
                         </div>
@@ -127,6 +126,12 @@
                                 </c:forEach>
                             </h:selectOneMenu>
                             <h:message for="class" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="config" >${messages.problem_config}:</h:outputLabel>
+                            <h:inputTextarea id="config" styleClass="bigHeight" required="false" value="#{requestBean.editedProblem.config}"/>
+                            <h:message for="config" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <div>

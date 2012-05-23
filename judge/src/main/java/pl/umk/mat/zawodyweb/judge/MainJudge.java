@@ -12,6 +12,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -45,9 +46,16 @@ public class MainJudge {
     private static Properties properties = new Properties();
     private static long delayConnect;
 
+    private static boolean isUpperCased(String str) {
+        // return str.matches("^[^a-z]*$");
+        return str.toUpperCase().equals(str);
+    }
+
     private static void connectToJudgeManager() throws IOException, InstantiationException, IllegalAccessException {
         Socket sock = null;
-        /* connecting to JudgeManager */
+        /*
+         * connecting to JudgeManager
+         */
         try {
             sock = new Socket(InetAddress.getByName(properties.getProperty("JUDGEMANAGER_HOST")), Integer.parseInt(properties.getProperty("JUDGEMANAGER_PORT")));
             DataInputStream input = new DataInputStream(sock.getInputStream());
@@ -55,7 +63,9 @@ public class MainJudge {
             logger.info("Connection with JudgeManager on " + properties.getProperty("JUDGEMANAGER_HOST") + ":" + properties.getProperty("JUDGEMANAGER_PORT") + "...");
 
             while (15 == 15) {
-                /* receiving submit_id */
+                /*
+                 * receiving submit_id
+                 */
                 int id;
                 try {
                     id = input.readInt();
@@ -70,7 +80,9 @@ public class MainJudge {
 
                 Transaction transaction = null;
                 try {
-                    /* change submit status to PROCESS */
+                    /*
+                     * change submit status to PROCESS
+                     */
                     logger.info("Setting submit status to PROCESS...");
 
                     transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
@@ -79,7 +91,9 @@ public class MainJudge {
                     DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
                     transaction.commit();
 
-                    /* getting submit */
+                    /*
+                     * getting submit
+                     */
                     transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
                     //if (!sock.isConnected()) { // FIXME: po co to było?!
                     //    logger.error("Connection to JudgeManager closed, shutting down Judge...");
@@ -95,7 +109,9 @@ public class MainJudge {
                     }
                     Classes compilerClasses = submit.getLanguages().getClasses();
 
-                    /* downloading compiler class */
+                    /*
+                     * downloading compiler class
+                     */
                     logger.info("Downloading compiler class...");
 
                     int iVectorClassInfo;
@@ -121,10 +137,22 @@ public class MainJudge {
                         compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(compilerClasses.getFilename(), compilerClasses.getCode()).newInstance();
                     }
                     properties.setProperty("CODEFILE_EXTENSION", submit.getLanguages().getExtension());
-                    properties.setProperty("PROPERTY", submit.getLanguages().getProperty());
+
+                    for (Entry<Object, Object> property : submit.getProblems().loadProperties().entrySet()) {
+                        if (property.getKey() instanceof String && property.getValue() instanceof String) {
+                            String key = (String) property.getKey();
+                            String value = (String) property.getValue();
+
+                            if (properties.containsKey(key) == false || isUpperCased(key) == false) {
+                                properties.setProperty(key, value);
+                            }
+                        }
+                    }
                     compiler.setProperties(properties);
 
-                    /* downloading diff class */
+                    /*
+                     * downloading diff class
+                     */
                     logger.info("Downloading diff class...");
                     Classes diffClasses = submit.getProblems().getClasses();
                     found = false;
@@ -148,13 +176,18 @@ public class MainJudge {
                         classes.add(new ClassInfo(diffClasses.getId(), diffClasses.getFilename(), diffClasses.getCode(), diffClasses.getVersion()));
                         checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(diffClasses.getFilename(), diffClasses.getCode()).newInstance();
                     }
+                    checker.setProperties(properties);
 
-                    /* compilation */
+                    /*
+                     * compilation
+                     */
                     Code code = new Code(codeText, compiler);
                     logger.info("Trying to compile the code...");
                     Program program = code.compile();
 
-                    /* downloading tests */
+                    /*
+                     * downloading tests
+                     */
                     logger.info("Downloading tests...");
                     Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Tests.class);
                     c.add(Restrictions.eq("problems.id", submit.getProblems().getId()));
@@ -166,16 +199,19 @@ public class MainJudge {
                     boolean undefinedResult = false;
                     boolean manualResult = false;
 
-                    /* TESTING */
+                    /*
+                     * TESTING
+                     */
                     logger.info("Starting tests...");
                     for (Tests test : tests) {
                         logger.info("Test " + test.getTestorder() + " started.");
                         testInput = new TestInput(test.getInput(), test.getMaxpoints(), test.getTimelimit(), submit.getProblems().getMemlimit());
                         testOutput = new TestOutput(test.getOutput());
                         /*
-                         * tutaj przydaloby sie wykonywanie w petli,
-                         * poki checker.check() nie skonczy liczyc,
-                         * ustawianie statusu na progress (np. co 10 sekund - to ustawienia)..
+                         * tutaj przydaloby sie wykonywanie w petli, poki
+                         * checker.check() nie skonczy liczyc, ustawianie
+                         * statusu na progress (np. co 10 sekund - to
+                         * ustawienia)..
                          *
                          * ale czy mozna otworzyc druga transakcje?
                          */
@@ -189,7 +225,9 @@ public class MainJudge {
                             manualResult = true;
                         }
 
-                        /* saving result to database */
+                        /*
+                         * saving result to database
+                         */
                         Results dbResult = new Results();
                         dbResult.setMemory(result.getMemUsed());
                         dbResult.setRuntime(result.getRuntime());
@@ -204,11 +242,15 @@ public class MainJudge {
                         logger.info("Test " + test.getTestorder() + " finished with result " + result.getResult() + "(" + result.getDescription() + ").");
                     }
 
-                    /* finish testing */
+                    /*
+                     * finish testing
+                     */
                     logger.info("All tests finished. Closing program.");
                     program.closeProgram();
 
-                    /* successfully completed? */
+                    /*
+                     * successfully completed?
+                     */
                     if (undefinedResult == true) {
                         logger.error("Some of the tests got UNDEFINED result -- this should not happend.");
                         transaction.rollback();
@@ -230,7 +272,9 @@ public class MainJudge {
                     }
                 }
 
-                /* send ACK to JudgeManager */
+                /*
+                 * send ACK to JudgeManager
+                 */
                 logger.info("Processing SubmitID: " + id + " finished.");
                 output.writeInt(id);
             }
@@ -246,12 +290,14 @@ public class MainJudge {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String configFile = MainJudge.class.getResource(".").getPath() + "configuration.xml";
+        String configFile = MainJudge.class.getResource("").getPath() + "configuration.xml";
         if (args.length == 1 && !args[0].isEmpty()) {
             configFile = args[0];
         }
 
-        /* Default settings for properties */
+        /*
+         * Default settings for properties
+         */
         properties.setProperty("JUDGEMANAGER_HOST", "127.0.0.1");
         properties.setProperty("JUDGEMANAGER_PORT", "8088");
         properties.setProperty("JUDGEMANAGER_DELAY_CONNECT", "10000");

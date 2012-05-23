@@ -3,24 +3,15 @@ package pl.umk.mat.zawodyweb.compiler.classes;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.commons.httpclient.methods.multipart.*;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.log4j.Logger;
 import pl.umk.mat.zawodyweb.checker.TestInput;
@@ -170,7 +161,7 @@ public class LanguageMAIN implements CompilerInterface {
 
         /* wchodzenie na stronę z wysyłaniem zadań i pobieranie pól z hidden */
         logger.debug("Getting submit page");
-        Vector<Part> values = new Vector<Part>();
+        ArrayList<Part> values = new ArrayList<Part>();
         try {
             GetMethod getMethod = new GetMethod("http://main.edu.pl/user.phtml?op=submit&m=insert&c=" + contest_id);
             client.executeMethod(getMethod);

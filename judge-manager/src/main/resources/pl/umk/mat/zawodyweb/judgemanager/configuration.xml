@@ -9,7 +9,7 @@
     <entry key="WWW_ADDRESSES">127.0.0.1</entry>
     <entry key="WWW_TIMEOUT">10000</entry>
 
-    <entry key="JUDGE_ADDRESSES">127.0.0.1 158.75.12.138</entry>
+    <entry key="JUDGE_ADDRESSES">127.0.0.1</entry>
     <entry key="JUDGE_PORT">8088</entry>
     <entry key="JUDGE_POOL">16</entry>
     <entry key="JUDGE_LISTEN_ADDRESS"/>
