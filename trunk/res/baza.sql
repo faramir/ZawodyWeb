@@ -85,7 +85,7 @@ CREATE TABLE PROBLEMS (
         codesize            int,
         config              text,
 	visibleInRanking    boolean default true,
-	viewpdf             boolean default false
+	viewpdf             boolean default false	
 );
 
 CREATE TABLE QUESTIONS ( 
@@ -120,8 +120,7 @@ CREATE TABLE TESTS (
 CREATE TABLE LANGUAGES ( 
         id                  serial primary key,
         name                varchar(40) unique,
-        extension           varchar(8),
-	property            varchar(255) default ''
+        extension           varchar(8)
 );
 
 CREATE TABLE CLASSES ( 

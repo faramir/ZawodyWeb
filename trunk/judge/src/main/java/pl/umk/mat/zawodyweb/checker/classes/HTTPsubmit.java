@@ -4,6 +4,7 @@
  */
 package pl.umk.mat.zawodyweb.checker.classes;
 
+import java.util.Properties;
 import pl.umk.mat.zawodyweb.checker.CheckerInterface;
 import pl.umk.mat.zawodyweb.checker.CheckerResult;
 import pl.umk.mat.zawodyweb.checker.TestInput;
@@ -26,5 +27,9 @@ public class HTTPsubmit implements CheckerInterface {
         result.setDescription(to.getResultDesc());
         result.setPoints(to.getPoints());
         return result;
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
     }
 }

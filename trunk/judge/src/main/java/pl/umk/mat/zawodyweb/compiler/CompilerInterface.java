@@ -14,6 +14,17 @@ import pl.umk.mat.zawodyweb.checker.TestOutput;
  */
 public interface CompilerInterface {
 
+    /**
+     * Sets properties for using compiler like:
+     * <code>CODE_DIR</code>,
+     * <code>CODE_FILENAME</code>,
+     * <code>CODEFILE_EXTENSION</code>,
+     * <code>COMPILED_DIR</code>,
+     * <code>COMPILED_FILENAME</code>,
+     * <code>COMPILE_TIMEOUT</code>, and other user properties
+     *
+     * @param properties
+     */
     public void setProperties(Properties properties);
 
     /**

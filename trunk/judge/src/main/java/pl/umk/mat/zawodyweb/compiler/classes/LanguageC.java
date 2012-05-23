@@ -1,12 +1,6 @@
 package pl.umk.mat.zawodyweb.compiler.classes;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -248,9 +242,9 @@ public class LanguageC implements CompilerInterface {
                 List<String> command = new ArrayList<String>(
                         Arrays.asList("gcc", "-O2", "-static", "-o", compilefile, codefile, "-lm"));
 
-                if (properties.getProperty("PROPERTY") != null
-                        && properties.getProperty("PROPERTY").isEmpty() == false) {
-                    command.addAll(Arrays.asList(properties.getProperty("PROPERTY").split(" ")));
+                String args = properties.getProperty("gcc.args");
+                if (args != null && args.isEmpty() == false) {
+                    command.addAll(Arrays.asList(args.split(" ")));
                 }
 
                 p = new ProcessBuilder(command).start();

@@ -107,9 +107,9 @@ public class PdfToImage {
             throw new RuntimeException("Exception in converting pdf", ex);
         }
     }
-//
+
 //    public static void main(String[] args) throws IOException {
-//        for (String fn : new String[]{"c_comm", "lu", "pcj-ispa_12", "pcj-para_12", "pcj-apmm_12"}) {
+//        for (String fn : new String[]{"jb"}) {
 //            System.out.println("Processing file: " + fn);
 //            try {
 //                long time = System.currentTimeMillis();

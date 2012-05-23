@@ -42,13 +42,22 @@
     </developers>
     <!-- -->
     <repositories>
-        <repository>
+        <!--repository>
             <id>alfred</id>
             <url>http://alfred.mat.umk.pl/maven2_repository</url>
-        </repository>
+        </repository-->
         <repository>
             <id>central</id>
             <url>http://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>java.net</id>
+            <url>http://download.java.net/maven/2</url>
+        </repository>
+        <repository>
+            <id>repository.jboss.org-public</id>
+            <name>JBoss repository</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public</url>
         </repository>
     </repositories>
     <!-- -->
@@ -77,6 +86,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>

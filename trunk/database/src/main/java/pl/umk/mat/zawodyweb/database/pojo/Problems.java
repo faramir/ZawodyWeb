@@ -1,34 +1,22 @@
 package pl.umk.mat.zawodyweb.database.pojo;
 
 import java.io.IOException;
-import java.util.List;
 import java.io.Serializable;
-
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.GenerationType;
-import javax.persistence.OrderBy;
+import javax.persistence.*;
 
 /**
  * <p>Pojo mapping TABLE public.problems</p>
  *
  * <p>Generated at Sun Mar 08 19:45:31 CET 2009</p>
+ *
  * @author Salto-db Generator v1.1 / EJB3
- * 
+ *
  */
 @Entity
 @Table(name = "problems", schema = "public")

@@ -2,6 +2,7 @@ package pl.umk.mat.zawodyweb.checker.classes;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
@@ -85,7 +86,8 @@ public class QuizDiff implements CheckerInterface {
         }
         return 0.0;
     }
-//    public static void main(String[] args) {
-//        System.out.println(new QuizDiff().diff("1 Marek\n2.Nowicki", "1. Marek\n2)Nowicki"));
-//    }
+
+    @Override
+    public void setProperties(Properties properties) {
+    }
 }

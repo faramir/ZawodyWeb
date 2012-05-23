@@ -44,10 +44,6 @@ public class Languages implements Serializable {
      */
     private Classes classes;
     /**
-     * Attribute name.
-     */
-    private String property;
-    /**
      * List of LanguagesProblems
      */
     private List<LanguagesProblems> languagesProblemss = null;
@@ -104,22 +100,6 @@ public class Languages implements Serializable {
      */
     public void setExtension(String extension) {
         this.extension = extension;
-    }
-
-    /**
-     * @return extension
-     */
-    @Basic
-    @Column(name = "property", length = 255)
-    public String getProperty() {
-        return property;
-    }
-
-    /**
-     * @param extension new value for extension
-     */
-    public void setProperty(String property) {
-        this.property = property;
     }
 
     /**

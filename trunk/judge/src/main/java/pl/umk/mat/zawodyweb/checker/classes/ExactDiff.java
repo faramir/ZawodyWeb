@@ -1,5 +1,6 @@
 package pl.umk.mat.zawodyweb.checker.classes;
 
+import java.util.Properties;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
 import pl.umk.mat.zawodyweb.checker.CheckerInterface;
 import pl.umk.mat.zawodyweb.checker.CheckerResult;
@@ -54,5 +55,9 @@ public class ExactDiff implements CheckerInterface {
             }
         }
         return 0;
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
     }
 }

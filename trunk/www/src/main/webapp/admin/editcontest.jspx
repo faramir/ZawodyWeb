@@ -94,7 +94,7 @@
                         </div> 
                         <div>
                             <h:outputLabel for="email">${messages.contest_email}:</h:outputLabel>
-                            <h:inputText id="email" required="false" value="#{requestBean.editedContest.email}" />
+                            <h:inputText id="email" required="true" value="#{requestBean.editedContest.email}" />
                             <h:message for="email" errorClass="error" />
                             <br class="clear" />
                         </div>

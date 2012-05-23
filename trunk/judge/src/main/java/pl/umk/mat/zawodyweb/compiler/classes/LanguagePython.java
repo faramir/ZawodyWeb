@@ -1,13 +1,11 @@
 package pl.umk.mat.zawodyweb.compiler.classes;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
 import org.apache.log4j.Logger;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
@@ -18,25 +16,42 @@ import pl.umk.mat.zawodyweb.judge.ReaderEater;
 import pl.umk.mat.zawodyweb.judge.WriterFeeder;
 
 /**
- *
- * @author lukash2k (modified by faramir)
+ * @author Marek Nowicki /faramir/
  */
-public class LanguageJAVA implements CompilerInterface {
+public class LanguagePython implements CompilerInterface {
 
-    public static final org.apache.log4j.Logger logger = Logger.getLogger(LanguageJAVA.class);
+    public static final org.apache.log4j.Logger logger = Logger.getLogger(LanguagePython.class);
     private Properties properties;
     private int compileResult = CheckerErrors.UNDEF;
     private String compileDesc = "";
 
+    /**
+     * Sets properties for using compiler like:
+     * <code>_CODE_DIR</code>,
+     * <code>_CODE_FILENAME</code>,
+     * <code>_CODEFILE_EXTENSION</code>,
+     * <code>_COMPILED_DIR</code>,
+     * <code>_COMPILED_FILENAME</code>,
+     * <code>_COMPILE_TIMEOUT</code>,
+     * and other user properties
+     *
+     * @param properties
+     */
     @Override
     public void setProperties(Properties properties) {
         this.properties = properties;
     }
 
+    /**
+     * Run user program (using path) on input generating output
+     *
+     * @param path path to file to execute
+     * @param input input values
+     * @return output values
+     */
     @Override
     public TestOutput runTest(String path, TestInput input) {
         TestOutput output = new TestOutput(null);
-        String security = properties.getProperty("JAVA_POLICY");
         if (compileResult != CheckerErrors.UNDEF) {
             output.setResult(compileResult);
             if (!compileDesc.isEmpty()) {
@@ -46,33 +61,12 @@ public class LanguageJAVA implements CompilerInterface {
         }
 
         System.gc();
-        List<String> command = new ArrayList<String>(Arrays.asList(System.getProperty("java.home") + "/bin/java", "-Xmx" + input.getMemoryLimit() + "m",
-                "-Xms" + input.getMemoryLimit() + "m", "-Xss" + input.getMemoryLimit() + "m"));
-        if (!security.isEmpty()) {
-            command.add("-Djava.security.manager");
-            command.add("-Djava.security.policy=" + security);
-        }
-        command.add("-cp");
-        command.add(path.substring(0, path.lastIndexOf(File.separator)));
-        command.add(path.substring(path.lastIndexOf(File.separator) + 1, path.lastIndexOf(".")));
+        List<String> command = Arrays.asList("python", path);
         if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
-            StringBuilder sb = new StringBuilder();
-            for (String s : command) {
-                sb.append("'");
-                sb.append(s);
-                sb.append("' ");
-            }
-            command = Arrays.asList("bash", "-c", "ulimit -t " + (5 + input.getTimeLimit() / 1000) + " && " + sb.toString() + "");
-            //command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && " + sb.toString() + "");
+            command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && python '" + path + "'");
         } else {
             logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
         }
-        /*
-         * {
-         * StringBuilder sb = new StringBuilder(); for (String s : command) {
-         * sb.append(s); sb.append(" "); } logger.error("command: " +
-         * sb.toString()); }
-         */
 
         boolean exception = false;
         try {
@@ -115,9 +109,8 @@ public class LanguageJAVA implements CompilerInterface {
                 logger.debug("TLE after " + (System.currentTimeMillis() - time) + "ms.", ex);
                 return output;
 //            } catch (IOException ex) {
-//                p.destroy();
 //                logger.fatal("IOException", ex);
-//                exception = true;
+//                p.destroy();
             } catch (Exception ex) {
                 logger.fatal("Fatal Exception", ex);
                 exception = true;
@@ -151,7 +144,7 @@ public class LanguageJAVA implements CompilerInterface {
             }
 
             try {
-                if (p.exitValue() != 0 && output.getResult() != CheckerErrors.TLE) {
+                if (p.exitValue() != 0) {
                     output.setResult(CheckerErrors.RE);
                     output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
                     return output;
@@ -167,54 +160,120 @@ public class LanguageJAVA implements CompilerInterface {
         } catch (Exception ex) {
             logger.fatal("Fatal Exception (timer may not be canceled)", ex);
         }
-
         return output;
     }
 
+    /**
+     * Modifing code before compilation.
+     * <p>After first line comments inserts FakeImporter to
+     * disable importing modules that are not standard and disabling open
+     * builtin function</p>
+     * @param bytes user solution source code
+     * @return modified source code
+     */
     @Override
-    public byte[] precompile(byte[] code) {
-        return code;
+    public byte[] precompile(byte[] bytes) {
+        Pattern pattern = Pattern.compile("(^(?:#[^\n]*\n)*)([^#].*$)", Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(new String(bytes));
+        if (matcher.matches() == false) {//|| matcher.groupCount() != 2
+            return bytes;
+        }
+
+        String header = matcher.group(1);
+        String code = matcher.group(2);
+
+        return (header + "\n"
+                + "# ---------------------------------------------------------------------------\n"
+                + "class FakeImporter(object):\n"
+                + "    def __init__(self):\n"
+                + "        from imp import new_module\n"
+                + "        self.new_module = new_module\n"
+                + "        import sys\n"
+                + "        self.sys = sys\n"
+                + "        sys.meta_path = [self]\n"
+                + "#        modules = [mod for mod in sys.modules.keys()\n"
+                + "#                       if not mod.startswith('_')\n"
+                + "#                      and not mod.startswith('encodings')\n"
+                + "#                      and not mod.startswith('exceptions')\n"
+                + "#                      and not mod.startswith('sre')]\n"
+                + "        modules = [mod for mod in sys.modules.keys()\n"
+                + "                       if mod.startswith('zipimport')\n"
+                + "                      and mod.startswith('os')\n"
+                + "                      and mod.startswith('atexit')\n"
+                + "                      and mod.startswith('dis')\n"
+                + "                      and mod.startswith('site')\n"
+                + "                      and mod.startswith('opcode')]\n"
+                + "        for mod in modules: del sys.modules[mod]\n"
+                + "    def find_module(self, fullname, path=None): return self\n"
+                + "    def load_module(self, fullname):\n"
+                + "        mod = self.new_module(fullname)\n"
+                + "        mod.__loader__ = self\n"
+                + "        self.sys.modules[fullname] = mod\n"
+                + "        mod.__file__ = '[fake module %r]' % fullname\n"
+                + "        mod.__path__ = []\n"
+                + "        return mod\n" // lub `throw ImportError`
+                + "\n"
+                + "FakeImporter()\n"
+                + "\n"
+                + "# __builtins__.open = None\n"
+                + "del __builtins__.open\n"
+                + "del __builtins__.execfile\n"
+                + "del __builtins__.file\n"
+                + "del __builtins__.compile\n"
+                + "del __builtins__.reload\n"
+                + "# ---------------------------------------------------------------------------\n"
+                + "\n" + code).getBytes();
     }
 
+    /**
+     * Compiling code.
+     * <p>Creating .py file</p>
+     * @param bytes user solution code
+     * @return generated executable file
+     */
     @Override
-    public String compile(byte[] code) {
-        String codefile = null;
+    public String compile(byte[] bytes) {
+        String compilefile = null;
         if (compileResult != CheckerErrors.UNDEF) {
             return "";
         }
         try {
-            String codedir;
+            String codefile, compileddir;
+
             codefile = properties.getProperty("CODE_FILENAME");
-            codedir = properties.getProperty("CODE_DIR");
-            codefile = codefile.replaceAll("\\.java$", "");
-            codedir = codedir.replaceAll(File.separator + "$", "");
-            codefile = codedir + File.separator + codefile + ".java";
+            compileddir = properties.getProperty("COMPILED_DIR");
+
+            codefile = codefile.replaceAll("\\.py$", "");
+            compileddir = compileddir.replaceAll(File.separator + "$", "");
+
+            codefile = compileddir + File.separator + codefile + ".py";
+
             OutputStream is = new FileOutputStream(codefile);
-            is.write(code);
+            is.write(bytes);
             is.close();
             System.gc();
-            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-            ByteArrayOutputStream err = new ByteArrayOutputStream();
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            if (compiler.run(new ByteArrayInputStream("".getBytes()), out, err, codefile) != 0) {
-                compileResult = CheckerErrors.CE;
-                for (String line : err.toString().split("\n")) {
-                    line = line.replaceAll("^.*" + Pattern.quote(codefile), properties.getProperty("CODE_FILENAME"));
-                    compileDesc = compileDesc + line + "\n";
-                }
-            }
+
+            compilefile = codefile;
         } catch (Exception err) {
             logger.error("Exception when compiling", err);
         }
-        new File(codefile).delete();
-        return codefile.replaceAll("\\.java$", ".class");
+        return compilefile;
     }
 
+    /**
+     * Modifing path to execute after compiling
+     * @param path compiled file path
+     * @return modified compled file path
+     */
     @Override
     public String postcompile(String path) {
         return path;
     }
 
+    /**
+     * Clearing after executing all tests.
+     * @param path compiled file path
+     */
     @Override
     public void closeProgram(String path) {
         if (!path.isEmpty()) {
