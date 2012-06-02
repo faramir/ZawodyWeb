@@ -46,7 +46,7 @@ import pl.umk.mat.zawodyweb.www.zip.ZipSolutions;
  */
 @Instance("#{requestBean}")
 public class RequestBean {
-
+    
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
     private SubmitsDAO submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
     private ClassesDAO classesDAO = DAOFactory.DEFAULT.buildClassesDAO();
@@ -156,7 +156,7 @@ public class RequestBean {
     public Problems getCopiedProblem() {
         if (copiedProblem == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-
+            
             if (!WWWHelper.isPost(context)) {
                 try {
                     temporaryProblemId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
@@ -164,17 +164,17 @@ public class RequestBean {
                     return null;
                 }
             }
-
+            
             if (ELFunctions.isNullOrZero(temporaryProblemId)) {
                 return null;
             } else {
                 Problems problem = problemsDAO.getById(temporaryProblemId);
-
+                
                 copiedProblem = new Problems();
-
+                
                 copiedProblem.setAbbrev(problem.getAbbrev());
                 copiedProblem.setName(problem.getName());
-
+                
                 if (!WWWHelper.isPost(context)) {
                     if (problem.getSeries() != null) {
                         temporarySeriesId = problem.getSeries().getId().intValue();
@@ -183,7 +183,7 @@ public class RequestBean {
                 }
             }
         }
-
+        
         return copiedProblem;
     }
 
@@ -207,32 +207,32 @@ public class RequestBean {
     public Users getNewUser() {
         return newUser;
     }
-
+    
     public String getRepPasswd() {
         return repPasswd;
     }
-
+    
     public void setRepPasswd(String repPasswd) {
         this.repPasswd = repPasswd;
     }
-
+    
     public String getActualPasswd() {
         return actualPasswd;
     }
-
+    
     public void setActualPasswd(String actualPasswd) {
         this.actualPasswd = actualPasswd;
     }
-
+    
     public List<Contests> getContests() {
         if (contests == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Contests.class);
             c.addOrder(Order.desc("visibility")); // FIXME: niewidoczne *na końcu*, czy pomiędzy?
             c.addOrder(Order.desc("startdate"));
             c.addOrder(Order.desc("id"));
-
+            
             contests = new ArrayList<Contests>();
-
+            
             for (Contests contest : (List<Contests>) c.list()) {
                 if (rolesBean.canAddProblem(contest.getId(), null)) {
                     contests.add(contest);
@@ -243,18 +243,18 @@ public class RequestBean {
                 }
             }
         }
-
+        
         return contests;
     }
-
+    
     public List<Contests> getContestsWhenAddingProblem() {
         if (contests == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Contests.class);
             c.addOrder(Order.desc("startdate"));
             c.addOrder(Order.desc("id"));
-
+            
             contests = new ArrayList<Contests>();
-
+            
             for (Contests contest : (List<Contests>) c.list()) {
                 if (ELFunctions.isNullOrZero(temporaryProblemId) && rolesBean.canAddProblem(contest.getId(), null)) {
                     contests.add(contest);
@@ -263,10 +263,10 @@ public class RequestBean {
                 }
             }
         }
-
+        
         return contests;
     }
-
+    
     public List<Roles> getRoles() {
         if (roles == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Roles.class);
@@ -275,7 +275,7 @@ public class RequestBean {
         }
         return roles;
     }
-
+    
     public List<Classes> getAllClasses() {
         if (allClasses == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Classes.class);
@@ -284,7 +284,7 @@ public class RequestBean {
         }
         return allClasses;
     }
-
+    
     public List<Classes> getDiffClasses() {
         if (diffClasses == null) {
             diffClasses = getAllClasses();
@@ -293,41 +293,41 @@ public class RequestBean {
                 diffClasses.remove(l.getClasses());
             }
         }
-
+        
         return diffClasses;
     }
-
+    
     public List<Languages> getLanguages() {
         if (languages == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Languages.class);
             c.addOrder(Order.asc("id"));
             languages = c.list();
         }
-
+        
         return languages;
     }
-
+    
     public List<Series> getContestsSeries() {
         if (contestsSeries == null) {
             if (temporaryContestId == null) {
                 temporaryContestId = getTemporaryContestId();
             }
-
+            
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Series.class);
             c.createCriteria("contests").add(Restrictions.eq("id", temporaryContestId));
             c.addOrder(Order.asc("startdate"));
             contestsSeries = c.list();
         }
-
+        
         return contestsSeries;
     }
-
+    
     public List<Series> getContestsSeriesWhenAddingProblem() {
         if (contestsSeries == null) {
             if (temporaryContestId == null) {
                 temporaryContestId = getTemporaryContestId();
             }
-
+            
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Series.class);
             c.createCriteria("contests").add(Restrictions.eq("id", temporaryContestId));
             c.addOrder(Order.desc("startdate"));
@@ -340,12 +340,12 @@ public class RequestBean {
                     contestsSeries.add(serie);
                 }
             }
-
+            
         }
-
+        
         return contestsSeries;
     }
-
+    
     public List<Problems> getSeriesProblems() {
         if (seriesProblems == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Problems.class);
@@ -353,10 +353,10 @@ public class RequestBean {
             c.addOrder(Order.asc("abbrev"));
             seriesProblems = c.list();
         }
-
+        
         return seriesProblems;
     }
-
+    
     public List<Problems> getContestsProblems() {
         if (contestsProblems == null && getCurrentContest() != null) {
             List<Series> series = seriesDAO.findByContestsid(getCurrentContest().getId());
@@ -367,15 +367,15 @@ public class RequestBean {
                 }
             }
         }
-
+        
         return contestsProblems;
     }
-
+    
     public List<Problems> getSubmittableProblems() {
         if (submittableProblems == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Problems.class);
             Criteria s = c.createCriteria("series");
-
+            
             if (getCurrentContest() != null) {
                 s.createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
             }
@@ -386,7 +386,7 @@ public class RequestBean {
             s.addOrder(Order.desc("startdate"));
             s.addOrder(Order.desc("id"));
             c.addOrder(Order.asc("abbrev"));
-
+            
             if (getCurrentContest() == null || rolesBean.canEditProblem(getCurrentContest().getId(), null) == false) {
                 String clientIp = getClientIp();
                 List<Problems> problems = c.list();
@@ -400,10 +400,10 @@ public class RequestBean {
                 submittableProblems = c.list();
             }
         }
-
+        
         return submittableProblems;
     }
-
+    
     public List<Series> getCurrentContestSeries() {
         if (currentContestSeries == null) {
 //            currentContestSeries = seriesDAO.findByContestsid(getCurrentContest().getId());
@@ -416,12 +416,12 @@ public class RequestBean {
             if (!rolesBean.canAddProblem(getCurrentContest().getId(), null)) {
                 c.add(Restrictions.le("startdate", new Date()));
             }
-
+            
             List<Series> series = c.list();
-
+            
             if (!rolesBean.canAddProblem(getCurrentContest().getId(), null)) {
                 currentContestSeries = new ArrayList<Series>();
-
+                
                 String clientIp = getClientIp();
                 for (Series serie : series) {
                     if (serie.getHiddenblocked() == false || ELFunctions.isValidIP(serie.getOpenips(false), clientIp)) {
@@ -432,10 +432,10 @@ public class RequestBean {
                 currentContestSeries = series;
             }
         }
-
+        
         return currentContestSeries;
     }
-
+    
     public Boolean getHaveUnansweredQuestions() {
         if (getCurrentContest() == null) {
             return false;
@@ -445,46 +445,46 @@ public class RequestBean {
             c.setProjection(Projections.rowCount());
             c.add(Restrictions.eq("contests.id", getCurrentContest().getId()));
             c.add(Restrictions.eq("adate", new Timestamp(0)));
-
+            
             if (rolesBean.canAddProblem(getCurrentContest().getId(), null) == false) {
                 c.add(Restrictions.or(Restrictions.eq("qtype", 1), Restrictions.eq("users.id", sessionBean.getCurrentUser().getId())));
             }
-
+            
             Number number = (Number) c.uniqueResult();
             return number.intValue() > 0;
         } catch (Exception e) {
             return false;
         }
     }
-
+    
     public List<Questions> getCurrentContestQuestions() {
         if (currentContestQuestions == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Questions.class);
-
+            
             c.add(Restrictions.eq("contests.id", getCurrentContest().getId()));
-
+            
             if (rolesBean.canAddProblem(getCurrentContest().getId(), null) == true) {
                 c.addOrder(Order.asc("adate"));
                 c.addOrder(Order.asc("qdate"));
             } else {
                 c.addOrder(Order.desc("adate"));
                 c.addOrder(Order.desc("qdate"));
-
+                
                 c.add(Restrictions.or(Restrictions.eq("qtype", 1), Restrictions.eq("users.id", sessionBean.getCurrentUser().getId())));
             }
-
+            
             currentContestQuestions = c.list();
         }
-
+        
         return currentContestQuestions;
     }
-
+    
     public String getCurrentContestRankingHtml() {
         RankingTable table = getCurrentContestRanking();
-
+        
         return table.getHtml(sessionBean.isLoggedIn());
     }
-
+    
     public RankingTable getCurrentContestRanking() {
         if (currentContestRanking == null && getCurrentContest() != null) {
             Integer contests_id = getCurrentContest().getId();
@@ -503,16 +503,16 @@ public class RequestBean {
                 currentContestRanking = Ranking.getInstance().getRankingForSeries(contests_id, temporarySeriesId, type, rankingRefreshRate, date, temporaryAdminBoolean);
             }
         }
-
+        
         return currentContestRanking;
     }
-
+    
     public String getCurrentContestSubrankingHtml() {
         RankingTable table = getCurrentContestSubranking();
-
+        
         return table.getHtml(sessionBean.isLoggedIn());
     }
-
+    
     public RankingTable getCurrentContestSubranking() {
         if (currentContestSubranking == null && getCurrentContest() != null) {
             Integer contests_id = getCurrentContest().getId();
@@ -525,21 +525,21 @@ public class RequestBean {
             if (date == null) {
                 date = new Date();
             }
-
+            
             if (subtype == 0) {
                 currentContestSubranking = getCurrentContestRanking();
             } else {
                 currentContestSubranking = Ranking.getInstance().getSubranking(contests_id, subtype, rankingRefreshRate, date, temporaryAdminBoolean);
             }
         }
-
+        
         return currentContestSubranking;
     }
-
+    
     public PagedDataModel getSubmissions() {
         if (submissions == null) {
             List<Integer> ratableSeries = null;
-
+            
             if (!sessionBean.isShowOnlyMySubmissions()) {
                 ratableSeries = new ArrayList<Integer>();
                 for (Series s : getCurrentContest().getSeriess()) {
@@ -551,13 +551,13 @@ public class RequestBean {
                     ratableSeries.add(0);
                 }
             }
-
+            
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
             c.setProjection(Projections.rowCount());
             Criteria criteriaProblems = c.createCriteria("problems");
             Criteria criteriaSeries = criteriaProblems.createCriteria("series");
             criteriaSeries.createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
-
+            
             if (sessionBean.isShowOnlyMySubmissions()) {
                 c.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
             } else {
@@ -573,12 +573,12 @@ public class RequestBean {
                 criteriaSeries.add(Restrictions.in("id", ratableSeries));
             }
             Number number = (Number) c.uniqueResult();
-
+            
             Criteria c2 = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
             Criteria criteria2Problems = c2.createCriteria("problems");
             Criteria criteria2Series = criteria2Problems.createCriteria("series");
             criteria2Series.createCriteria("contests").add(Restrictions.eq("id", getCurrentContest().getId()));
-
+            
             if (sessionBean.isShowOnlyMySubmissions()) {
                 c2.createCriteria("users").add(Restrictions.eq("id", sessionBean.getCurrentUser().getId()));
             } else {
@@ -605,7 +605,7 @@ public class RequestBean {
         }
         return submissions;
     }
-
+    
     public Integer getSubmissionsPerPage() {
         if (sessionBean.isShowOnlyMySubmissions()) {
             return 15;
@@ -613,7 +613,7 @@ public class RequestBean {
             return 30;
         }
     }
-
+    
     public String noop() {
         return null;
     }
@@ -624,41 +624,41 @@ public class RequestBean {
     public Contests getEditedContest() {
         if (editedContest == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-
+            
             if (!WWWHelper.isPost(context)) {
                 try {
                     temporaryContestId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
                 } catch (Exception e) {
                     temporaryContestId = 0;
                 }
-
+                
             }
-
+            
             if (ELFunctions.isNullOrZero(temporaryContestId)) {
                 editedContest = new Contests();
             } else {
                 editedContest = contestsDAO.getById(temporaryContestId);
             }
-
+            
         }
-
+        
         return editedContest;
     }
-
+    
     public Results getEditedResult() {
         if (editedResult == null && !ELFunctions.isNullOrZero(temporaryResultId)) {
             editedResult = resultsDAO.getById(temporaryResultId);
             temporarySubmitResultId =
                     editedResult.getSubmitResult();
         }
-
+        
         return editedResult;
     }
-
+    
     public Languages getEditedLanguage() {
         if (editedLanguage == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-
+            
             if (!WWWHelper.isPost(context)) {
                 try {
                     temporaryLanguageId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
@@ -666,7 +666,7 @@ public class RequestBean {
                     temporaryLanguageId = 0;
                 }
             }
-
+            
             if (ELFunctions.isNullOrZero(temporaryLanguageId)) {
                 editedLanguage = new Languages();
                 temporaryClassId = null;
@@ -677,11 +677,11 @@ public class RequestBean {
         }
         return editedLanguage;
     }
-
+    
     public Classes getEditedClass() {
         if (editedClass == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-
+            
             if (!WWWHelper.isPost(context) && temporaryClassId == null) {
                 try {
                     temporaryClassId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
@@ -689,21 +689,21 @@ public class RequestBean {
                     temporaryClassId = 0;
                 }
             }
-
+            
             if (ELFunctions.isNullOrZero(temporaryClassId)) {
                 editedClass = new Classes();
             } else {
                 editedClass = classesDAO.getById(temporaryClassId);
             }
         }
-
+        
         return editedClass;
     }
-
+    
     public Users getEditedUser() {
         if (editedUser == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-
+            
             if (!WWWHelper.isPost(context) && temporaryUserId == null) {
                 try {
                     temporaryUserId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
@@ -711,7 +711,7 @@ public class RequestBean {
                     temporaryUserId = 0;
                 }
             }
-
+            
             if (ELFunctions.isNullOrZero(temporaryUserId)) {
                 if (sessionBean.getCurrentUser() == null) {
                     return null;
@@ -720,21 +720,21 @@ public class RequestBean {
             } else {
                 editedUser = usersDAO.getById(temporaryUserId);
             }
-
+            
             temporaryUserRolesIds = new Integer[editedUser.getUsersRoless().size()];
             for (int i = 0; i < editedUser.getUsersRoless().size(); ++i) {
                 temporaryUserRolesIds[i] = editedUser.getUsersRoless().get(i).getRoles().getId();
             }
         }
-
+        
         return editedUser;
     }
-
+    
     public Contests getCurrentContest() {
         if (currentContest == null) {
             if (sessionBean.getCurrentContestId() != null) {
                 currentContest = contestsDAO.getById(sessionBean.getCurrentContestId());
-
+                
                 if (currentContest.getVisibility() == false
                         && rolesBean.canAddProblem(currentContest.getId(), null) == false
                         && rolesBean.canEditProblem(currentContest.getId(), null) == false) {
@@ -742,29 +742,29 @@ public class RequestBean {
                 }
             }
         }
-
+        
         return currentContest;
     }
-
+    
     public Submits getEditedSubmit() {
         if (editedSubmit == null) {
             editedSubmit = new Submits();
         }
-
+        
         return editedSubmit;
     }
-
+    
     public Submits getCurrentSubmit() {
         if (currentSubmit == null && !ELFunctions.isNullOrZero(temporarySubmitId)) {
             currentSubmit = submitsDAO.getById(temporarySubmitId);
         }
         return currentSubmit;
     }
-
+    
     public Questions getEditedQuestion() {
         if (editedQuestion == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-
+            
             if (!WWWHelper.isPost(context)) {
                 try {
                     temporaryQuestionId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
@@ -772,7 +772,7 @@ public class RequestBean {
                     temporaryQuestionId = 0;
                 }
             }
-
+            
             if (ELFunctions.isNullOrZero(temporaryQuestionId)) {
                 editedQuestion = new Questions();
             } else {
@@ -782,178 +782,178 @@ public class RequestBean {
                 }
             }
         }
-
+        
         return editedQuestion;
     }
-
+    
     public List<LanguagesProblems> getTemporaryLanguagesProblems() {
         if (temporaryLanguagesProblems == null) {
             temporaryLanguagesProblems = languagesProblemsDAO.findByProblemsid(temporaryProblemId);
         }
-
+        
         return temporaryLanguagesProblems;
     }
-
+    
     public Problems getCurrentProblem() {
         return currentProblem;
     }
-
+    
     public Boolean getTemporaryAdminBoolean() {
         return temporaryAdminBoolean;
     }
-
+    
     public Integer getTemporaryContestId() {
         return temporaryContestId;
     }
-
+    
     public void setTemporaryContestId(Integer id) {
         temporaryContestId = id;
     }
-
+    
     public Integer getTemporarySeriesId() {
         return temporarySeriesId;
     }
-
+    
     public void setTemporarySeriesId(Integer id) {
         temporarySeriesId = id;
     }
-
+    
     public Integer getTemporaryProblemId() {
         return temporaryProblemId;
     }
-
+    
     public void setTemporaryProblemId(Integer temporaryProblemId) {
         this.temporaryProblemId = temporaryProblemId;
     }
-
+    
     public Integer getTemporaryClassId() {
         return temporaryClassId;
     }
-
+    
     public void setTemporaryClassId(Integer temporaryClassId) {
         this.temporaryClassId = temporaryClassId;
     }
-
+    
     public Integer getTemporaryTestId() {
         return temporaryTestId;
     }
-
+    
     public void setTemporaryTestId(Integer temporaryTestId) {
         this.temporaryTestId = temporaryTestId;
     }
-
+    
     public Integer getTemporaryQuestionId() {
         return temporaryQuestionId;
     }
-
+    
     public void setTemporaryQuestionId(Integer temporaryQuestionId) {
         this.temporaryQuestionId = temporaryQuestionId;
     }
-
+    
     public Integer[] getTemporaryUserRolesIds() {
         return temporaryUserRolesIds;
     }
-
+    
     public void setTemporaryUserRolesIds(Integer[] temporaryUserRolesIds) {
         this.temporaryUserRolesIds = temporaryUserRolesIds;
     }
-
+    
     public Integer[] getTemporaryLanguagesIds() {
         return temporaryLanguagesIds;
     }
-
+    
     public void setTemporaryLanguagesIds(Integer[] temporaryLanguagesIds) {
         this.temporaryLanguagesIds = temporaryLanguagesIds;
     }
-
+    
     public Integer getTemporaryLanguageId() {
         return temporaryLanguageId;
     }
-
+    
     public void setTemporaryLanguageId(Integer temporaryLanguageId) {
         this.temporaryLanguageId = temporaryLanguageId;
     }
-
+    
     public Integer getTemporaryResultId() {
         return temporaryResultId;
     }
-
+    
     public void setTemporaryResultId(Integer temporaryResultId) {
         this.temporaryResultId = temporaryResultId;
     }
-
+    
     public Integer getTemporarySubmitId() {
         return temporarySubmitId;
     }
-
+    
     public void setTemporarySubmitId(Integer temporarySubmitId) {
         this.temporarySubmitId = temporarySubmitId;
     }
-
+    
     public Integer getTemporaryUserId() {
         return temporaryUserId;
     }
-
+    
     public void setTemporaryUserId(Integer temporaryUserId) {
         this.temporaryUserId = temporaryUserId;
     }
-
+    
     public UploadedFile getTemporaryFile() {
         return temporaryFile;
     }
-
+    
     public void setTemporaryFile(UploadedFile temporaryFile) {
         this.temporaryFile = temporaryFile;
     }
-
+    
     public Boolean getDeletePdf() {
         return deletePdf;
     }
-
+    
     public void setDeletePdf(Boolean deletePdf) {
         this.deletePdf = deletePdf;
     }
-
+    
     public boolean isPublicAnswer() {
         return publicAnswer;
     }
-
+    
     public void setPublicAnswer(boolean publicAnswer) {
         this.publicAnswer = publicAnswer;
     }
-
+    
     public boolean isShowOnlyMySubmissions() {
         return sessionBean.isShowOnlyMySubmissions();
     }
-
+    
     public void setShowOnlyMySubmissions(boolean showOnlyMySubmissions) {
         sessionBean.setShowOnlyMySubmissions(showOnlyMySubmissions);
     }
-
+    
     public boolean isRatingMode() {
         return ratingMode;
     }
-
+    
     public void setRatingMode(boolean ratingMode) {
         this.ratingMode = ratingMode;
     }
-
+    
     public String getTemporarySource() {
         return temporarySource;
     }
-
+    
     public void setTemporarySource(String temporarySource) {
         this.temporarySource = temporarySource;
     }
-
+    
     public String getAnswer() {
         return answer;
     }
-
+    
     public void setAnswer(String answer) {
         this.answer = answer;
     }
-
+    
     public Series getEditedSeries() {
         if (editedSeries == null) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -964,25 +964,25 @@ public class RequestBean {
                     temporarySeriesId = 0;
                 }
             }
-
+            
             if (ELFunctions.isNullOrZero(temporarySeriesId)) {
                 editedSeries = new Series();
             } else {
                 editedSeries = seriesDAO.getById(temporarySeriesId);
-
+                
                 if (!WWWHelper.isPost(context) && editedSeries.getContests() != null) {
                     temporaryContestId = editedSeries.getContests().getId();
                 }
             }
         }
-
+        
         return editedSeries;
     }
-
+    
     public Problems getEditedProblem() {
         if (editedProblem == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-
+            
             if (!WWWHelper.isPost(context)) {
                 try {
                     temporaryProblemId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
@@ -990,12 +990,12 @@ public class RequestBean {
                     temporaryProblemId = 0;
                 }
             }
-
+            
             if (ELFunctions.isNullOrZero(temporaryProblemId)) {
                 editedProblem = new Problems();
             } else {
                 editedProblem = problemsDAO.getById(temporaryProblemId);
-
+                
                 if (!WWWHelper.isPost(context)) {
                     if (editedProblem.getSeries() != null) {
                         temporarySeriesId = editedProblem.getSeries().getId();
@@ -1013,14 +1013,14 @@ public class RequestBean {
                 }
             }
         }
-
+        
         return editedProblem;
     }
-
+    
     public Tests getEditedTest() {
         if (editedTest == null) {
             FacesContext context = FacesContext.getCurrentInstance();
-
+            
             if (!WWWHelper.isPost(context)) {
                 try {
                     temporaryTestId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
@@ -1028,12 +1028,12 @@ public class RequestBean {
                     temporaryTestId = 0;
                 }
             }
-
+            
             if (ELFunctions.isNullOrZero(temporaryTestId)) {
                 editedTest = new Tests();
             } else {
                 editedTest = testsDAO.getById(temporaryTestId);
-
+                
                 if (!WWWHelper.isPost(context)) {
                     if (editedTest.getProblems() != null) {
                         temporaryContestId = editedTest.getProblems().getSeries().getContests().getId();
@@ -1043,15 +1043,16 @@ public class RequestBean {
                 }
             }
         }
-
+        
         return editedTest;
     }
-
+    
     public String registerUser() {
         FacesContext context = FacesContext.getCurrentInstance();
-
+        
         try {
             try {
+                newUser.setLogin(newUser.getLogin().toLowerCase());
                 newUser.savePass(newUser.getPass());
                 newUser.setRdate(new Timestamp(System.currentTimeMillis()));
                 usersDAO.save(newUser);
@@ -1066,15 +1067,15 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formRegister:save", summary, null);
             return null;
         }
-
+        
         return "login";
     }
-
+    
     public String saveLanguage() {
         if (!rolesBean.canEditAnyProblem()) {
             return null;
         }
-
+        
         try {
             getEditedLanguage().setClasses(classesDAO.getById(temporaryClassId));
             languagesDAO.saveOrUpdate(getEditedLanguage());
@@ -1084,16 +1085,16 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditLanguage:save", summary, null);
             return null;
         }
-
+        
         return "listlanguages";
     }
-
+    
     public String saveContest() {
         Integer id = getEditedContest().getId();
         if ((ELFunctions.isNullOrZero(id) && !rolesBean.canAddContest(null, null)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditContest(id, null))) {
             return null;
         }
-
+        
         try {
             contestsDAO.saveOrUpdate(getEditedContest());
         } catch (Exception e) {
@@ -1102,16 +1103,16 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditContest:save", summary, null);
             return null;
         }
-
+        
         return "start";
     }
-
+    
     public String saveSeries() {
         Integer id = editedSeries.getId();
         if ((ELFunctions.isNullOrZero(id) && !rolesBean.canAddSeries(temporaryContestId, null)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditSeries(temporaryContestId, id))) {
             return null;
         }
-
+        
         try {
             editedSeries.setContests(contestsDAO.getById(temporaryContestId));
             seriesDAO.saveOrUpdate(editedSeries);
@@ -1121,35 +1122,35 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditSeries:save", summary, null);
             return null;
         }
-
+        
         return "problems";
     }
-
+    
     public String updateUserByAdmin() {
         if (!rolesBean.canEditUsers()) {
             return null;
         }
-
+        
         try {
             if (repPasswd != null && repPasswd.length() > 0) {
                 editedUser.savePass(repPasswd);
             }
-
+            
             List<UsersRoles> tmpList = usersRolesDAO.findByUsersid(editedUser.getId());
-
+            
             if (tmpList != null) {
                 for (UsersRoles role : tmpList) {
                     usersRolesDAO.delete(role);
                 }
             }
-
+            
             for (Integer rid : temporaryUserRolesIds) {
                 UsersRoles usersRoles = new UsersRoles();
                 usersRoles.setRoles(rolesDAO.getById(rid));
                 usersRoles.setUsers(editedUser);
                 usersRolesDAO.saveOrUpdate(usersRoles);
             }
-
+            
             usersDAO.saveOrUpdate(editedUser);
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -1157,10 +1158,10 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formProfile:save", summary, null);
             return null;
         }
-
+        
         return "listusers";
     }
-
+    
     public String updateUser() {
         try {
             usersDAO.saveOrUpdate(editedUser);
@@ -1170,10 +1171,10 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formProfile:save", summary, null);
             return null;
         }
-
+        
         return "start";
     }
-
+    
     public String updateUsersPasswd() {
         try {
             editedUser.savePass(editedUser.getPass());
@@ -1185,21 +1186,21 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formPasswd:save", summary, null);
             return null;
         }
-
+        
         return "profil";
     }
-
+    
     public String sendClassFile() throws IOException {
         FacesContext context = FacesContext.getCurrentInstance();
         if (!rolesBean.canEditAnyProblem()) {
             return null;
         }
-
+        
         if (temporaryFile == null) {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit::classfile", messages.getString("javax.faces.component.UIInput.REQUIRED"), null);
             return null;
         }
-
+        
         try {
             editedClass.setCode(temporaryFile.getBytes());
             if (editedClass.getVersion() == null) {
@@ -1207,40 +1208,40 @@ public class RequestBean {
             } else {
                 editedClass.setVersion(editedClass.getVersion() + 1);
             }
-
+            
             classesDAO.saveOrUpdate(editedClass);
-
+            
             return "listclasses";
         } catch (Exception e) {
             String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit::classfile", summary, null);
             return null;
         }
-
+        
     }
-
+    
     public String sendFile() throws IOException {
         FacesContext context = FacesContext.getCurrentInstance();
-
+        
         if (temporaryFile == null) {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit:sourcefile", messages.getString("javax.faces.component.UIInput.REQUIRED"), null);
             return null;
         }
-
+        
         return sendSolution(temporaryFile.getBytes(), temporaryFile.getName(), "formSubmit:sendfile");
     }
-
+    
     public String sendCode() {
         FacesContext context = FacesContext.getCurrentInstance();
-
+        
         if (temporarySource == null || StringUtils.isEmpty(temporarySource)) {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit:sourcecode", messages.getString("javax.faces.component.UIInput.REQUIRED"), null);
             return null;
         }
-
+        
         return sendSolution(temporarySource.getBytes(), null, "formSubmit:sendcode");
     }
-
+    
     public String uploadProblem() {
         if (!rolesBean.canAddProblem(temporaryContestId, temporarySeriesId)) {
             return null;
@@ -1250,13 +1251,13 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditProblem::problemfile", messages.getString("javax.faces.component.UIInput.REQUIRED"), null);
             return null;
         }
-
+        
         try {
             Problems unzippedProblem = new UnzipProblem(getLanguages(), getDiffClasses()).getProblem(temporaryFile.getBytes());
             Series newSeries = seriesDAO.getById(temporarySeriesId);
-
+            
             Problems newProblem = ProblemsUtils.getInstance().copyProblem(unzippedProblem, newSeries, unzippedProblem.getAbbrev(), unzippedProblem.getName());
-
+            
             selectContest(newProblem.getSeries().getContests().getId());
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -1266,18 +1267,18 @@ public class RequestBean {
         }
         return "problems";
     }
-
+    
     public String uploadTest() {
         if (!rolesBean.canEditProblem(temporaryContestId, temporarySeriesId)) {
             return null;
         }
-
+        
         if (temporaryFile == null) {
             FacesContext context = FacesContext.getCurrentInstance();
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditProblem::testfile", messages.getString("javax.faces.component.UIInput.REQUIRED"), null);
             return null;
         }
-
+        
         try {
             List<Tests> tests = new UnzipProblem().getTests(temporaryFile.getBytes());
             for (Tests test : tests) {
@@ -1292,7 +1293,7 @@ public class RequestBean {
         }
         return "problems";
     }
-
+    
     public String copyProblem() {
         Integer id = temporaryProblemId;
         if ((ELFunctions.isNullOrZero(id) && !rolesBean.canEditProblem(temporaryContestId, temporarySeriesId)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditProblem(temporaryContestId, temporarySeriesId))) {
@@ -1301,9 +1302,9 @@ public class RequestBean {
         try {
             Problems oldProblem = problemsDAO.getById(temporaryProblemId);
             Series newSeries = seriesDAO.getById(temporarySeriesId);
-
+            
             Problems newProblem = ProblemsUtils.getInstance().copyProblem(oldProblem, newSeries, copiedProblem.getAbbrev(), copiedProblem.getName());
-
+            
             selectContest(newProblem.getSeries().getContests().getId());
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -1311,56 +1312,56 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditProblem:save", summary, null);
             return null;
         }
-
+        
         return "problems";
     }
-
+    
     public String saveProblem() {
         Integer id = getEditedProblem().getId();
         if ((ELFunctions.isNullOrZero(id) && !rolesBean.canAddProblem(temporaryContestId, temporarySeriesId)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditProblem(temporaryContestId, temporarySeriesId))) {
             return null;
         }
-
+        
         try {
             Problems tmpProblem = getEditedProblem();
-
+            
             tmpProblem.setSeries(seriesDAO.getById(temporarySeriesId));
             tmpProblem.setClasses(classesDAO.getById(temporaryClassId));
-
+            
             List<LanguagesProblems> tmpList = languagesProblemsDAO.findByProblemsid(tmpProblem.getId());
-
+            
             if (tmpList != null) {
                 for (LanguagesProblems lp : tmpList) {
                     languagesProblemsDAO.delete(lp);
                 }
             }
-
+            
             for (Integer lid : temporaryLanguagesIds) {
                 LanguagesProblems lp = new LanguagesProblems();
                 lp.setLanguages(languagesDAO.getById(lid));
                 lp.setProblems(tmpProblem);
                 languagesProblemsDAO.saveOrUpdate(lp);
             }
-
+            
             if (temporaryFile != null) {
                 PDF current = tmpProblem.getPDF();
                 if (current == null) {
                     current = new PDF();
                 }
-
+                
                 current.setPdf(temporaryFile.getBytes());
                 pdfDAO.saveOrUpdate(current);
                 tmpProblem.setPDF(current);
             }
-
+            
             if (deletePdf) {
                 //PDF tmp = tmpProblem.getPDF();
                 //pdfDAO.delete(tmp);
                 tmpProblem.setPDF(null);
             }
-
+            
             problemsDAO.saveOrUpdate(tmpProblem);
-
+            
             selectContest(editedProblem.getSeries().getContests().getId());
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -1368,10 +1369,10 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditProblem:save", summary, null);
             return null;
         }
-
+        
         return "problems";
     }
-
+    
     public String addQuestion() {
         try {
             Problems problem = problemsDAO.getById(temporaryProblemId);
@@ -1382,13 +1383,13 @@ public class RequestBean {
             question.setUsers(sessionBean.getCurrentUser());
             question.setQdate(new Timestamp(System.currentTimeMillis()));
             question.setAdate(new Timestamp(0));
-
+            
             questionsDAO.save(question);
-
+            
             String emails = getCurrentContest().getEmail();
             if (emails != null && emails.isEmpty() == false) {
                 HibernateUtil.getSessionFactory().getCurrentSession().flush();
-
+                
                 HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
                 String url = request.getRequestURL().
                         delete(request.getRequestURL().length() - request.getRequestURI().length(), request.getRequestURL().length()).
@@ -1399,7 +1400,7 @@ public class RequestBean {
                         append(ELFunctions.filterUri(question.getSubject())).
                         append(".html").
                         toString();
-
+                
                 String subject = messages.getString("email_question_subject").
                         replace("%SUBJECT%", question.getSubject()).
                         replace("%TEXT%", question.getQuestion()).
@@ -1409,7 +1410,7 @@ public class RequestBean {
                         ? messages.getString("questions_general")
                         : problem.getName()).
                         trim();
-
+                
                 String text = messages.getString("email_question_text").
                         replace("%SUBJECT%", question.getSubject()).
                         replace("%TEXT%", question.getQuestion()).
@@ -1419,7 +1420,7 @@ public class RequestBean {
                         ? messages.getString("questions_general")
                         : problem.getName()).
                         trim();
-
+                
                 EmailSender.send(emails, subject, text);
             }
             return "questions";
@@ -1430,7 +1431,7 @@ public class RequestBean {
             return null;
         }
     }
-
+    
     public String saveAnswer() {
         try {
             String tmp = getEditedQuestion().getQuestion().replaceAll("\n", "\n> ");
@@ -1447,7 +1448,7 @@ public class RequestBean {
             return null;
         }
     }
-
+    
     public String saveResult() {
         Results result = getEditedResult();
         result.setSubmitResult(temporarySubmitResultId);
@@ -1455,16 +1456,16 @@ public class RequestBean {
         temporaryResultId = null;
         return null;
     }
-
+    
     public String saveNotes() {
         submitsDAO.update(getCurrentSubmit());
         return null;
     }
-
+    
     @HttpAction(name = "rejudge_submit", pattern = "rejudge/{id}/submit")
     public String reJudgeSubmit(@Param(name = "id", encode = true) int id) {
         Submits s = submitsDAO.getById(id);
-
+        
         if (s != null && rolesBean.canRate(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
             SubmitsUtils.getInstance().reJudge(s);
             return "/submissions";
@@ -1472,11 +1473,11 @@ public class RequestBean {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "rejudge_problem", pattern = "rejudge/{id}/problem")
     public String reJudgeProblem(@Param(name = "id", encode = true) int id) {
         Problems p = problemsDAO.getById(id);
-
+        
         if (p != null && rolesBean.canRate(p.getSeries().getContests().getId(), p.getSeries().getId())) {
             ProblemsUtils.getInstance().reJudge(p);
             return "/problems";
@@ -1484,11 +1485,11 @@ public class RequestBean {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "rejudge_seria", pattern = "rejudge/{id}/seria")
     public String reJudgeSeria(@Param(name = "id", encode = true) int id) {
         Series s = seriesDAO.getById(id);
-
+        
         if (s != null && rolesBean.canRate(s.getContests().getId(), s.getId())) {
             SeriesUtils.getInstance().reJudge(s);
             return "/problems";
@@ -1496,11 +1497,11 @@ public class RequestBean {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "rejudge_contest", pattern = "rejudge/{id}/contest")
     public String reJudgeContest(@Param(name = "id", encode = true) int id) {
         Contests c = contestsDAO.getById(id);
-
+        
         if (c != null && rolesBean.canRateContest(c)) {
             ContestsUtils.getInstance().reJudge(c);
             return "/start";
@@ -1508,18 +1509,18 @@ public class RequestBean {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "problems", pattern = "problems/{id}/{title}")
     public String goToProblems(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
-
+        
         if (getCurrentContest() == null) {
             return "/error/404";
         } else {
             return "problems";
         }
     }
-
+    
     @HttpAction(name = "questions", pattern = "questions/{id}/{title}")
     public String goToQuestions(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
@@ -1529,7 +1530,7 @@ public class RequestBean {
             return "questions";
         }
     }
-
+    
     @HttpAction(name = "ranking", pattern = "ranking/{id}/{title}")
     public String goToRanking(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
@@ -1545,7 +1546,7 @@ public class RequestBean {
             return "ranking";
         }
     }
-
+    
     @HttpAction(name = "ranking_date", pattern = "ranking/{id}/{title}/{date}")
     public String goToRankingDate(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy, @Param(name = "date", encode = true) String date) {
         selectContest(id);
@@ -1565,7 +1566,7 @@ public class RequestBean {
             return "ranking";
         }
     }
-
+    
     @HttpAction(name = "ranking_seria", pattern = "ranking_seria/{id}/{title}")
     public String goToRankingSeria(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         Series serie = seriesDAO.getById(id);
@@ -1575,9 +1576,9 @@ public class RequestBean {
                 && !rolesBean.canAddProblem(serie.getContests().getId(), id))) {
             return "/error/404";
         }
-
+        
         selectContest(serie.getContests().getId());
-
+        
         if (getCurrentContest() == null) {
             return "/error/404";
         } else {
@@ -1591,7 +1592,7 @@ public class RequestBean {
             return "ranking";
         }
     }
-
+    
     @HttpAction(name = "ranking_seria_date", pattern = "ranking_seria/{id}/{title}/{date}")
     public String goToRankingSeriaDate(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy, @Param(name = "date", encode = true) String date) {
         Series serie = seriesDAO.getById(id);
@@ -1601,9 +1602,9 @@ public class RequestBean {
                 && !rolesBean.canAddProblem(serie.getContests().getId(), id))) {
             return "/error/404";
         }
-
+        
         selectContest(serie.getContests().getId());
-
+        
         if (getCurrentContest() == null) {
             return "/error/404";
         } else {
@@ -1620,9 +1621,9 @@ public class RequestBean {
             }
             return "ranking";
         }
-
+        
     }
-
+    
     @HttpAction(name = "subranking", pattern = "subranking/{id}/{title}")
     public String goToSubranking(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
@@ -1638,7 +1639,7 @@ public class RequestBean {
             return "subranking";
         }
     }
-
+    
     @HttpAction(name = "rules", pattern = "rules/{id}/{title}")
     public String goToRules(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
@@ -1648,11 +1649,11 @@ public class RequestBean {
             return "rules";
         }
     }
-
+    
     @HttpAction(name = "submissions", pattern = "submissions/{id}/{title}")
     public String goToSubmissions(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
-
+        
         if (sessionBean.getCurrentContestId() != sessionBean.getSubmissionsContestId() || (new Date().getTime() - sessionBean.getSubmissionsLastVisit()) > 60 * 60 * 1000) {
             sessionBean.setShowOnlyMySubmissions(true);
             sessionBean.setSubmissionsContestId(id);
@@ -1662,14 +1663,14 @@ public class RequestBean {
         sessionBean.setSubmissionsProblemId(0);
         sessionBean.setSubmissionsPageIndex(0);
         sessionBean.setSubmissionsLastVisit(new Date().getTime());
-
+        
         if (getCurrentContest() == null) {
             return "/error/404";
         } else {
             return "submissions";
         }
     }
-
+    
     @HttpAction(name = "submissions_username", pattern = "submissions_username/{username}")
     public String goToSubmissionsUsername(@Param(name = "username", encode = true) String username) {
         try {
@@ -1683,9 +1684,9 @@ public class RequestBean {
             sessionBean.setSubmissionsPageIndex(0);
             return "submissions";
         }
-
+        
     }
-
+    
     @HttpAction(name = "submissions_problem", pattern = "submissions_problem/{id}")
     public String goToSubmissionsProblem(@Param(name = "id", encode = true) Integer id) {
         try {
@@ -1701,9 +1702,9 @@ public class RequestBean {
             sessionBean.setSubmissionsPageIndex(0);
             return "submissions";
         }
-
+        
     }
-
+    
     @HttpAction(name = "submissions_seria", pattern = "submissions_seria/{id}")
     public String goToSubmissionsSeries(@Param(name = "id", encode = true) Integer id) {
         if (getCurrentContest() == null || sessionBean.isShowOnlyMySubmissions() == true) {
@@ -1719,13 +1720,13 @@ public class RequestBean {
             sessionBean.setSubmissionsPageIndex(0);
             return "submissions";
         }
-
+        
     }
-
+    
     @HttpAction(name = "submission", pattern = "submission/{id}/{title}")
     public String goToSubmission(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         currentSubmit = submitsDAO.getById(id);
-
+        
         if (currentSubmit == null) {
             return "/error/404";
         } else {
@@ -1734,7 +1735,7 @@ public class RequestBean {
             return "submission";
         }
     }
-
+    
     @HttpAction(name = "code", pattern = "code/{id}/{title}")
     public String goToViewCode(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         String res = goToSubmission(id, dummy);
@@ -1743,24 +1744,24 @@ public class RequestBean {
         }
         return res;
     }
-
+    
     @HttpAction(name = "rate", pattern = "rate/{id}/{title}")
     public String goToRate(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         String res = goToSubmission(id, dummy);
         if (res.equals("submission")) {
             ratingMode = true;
         }
-
+        
         return res;
     }
-
+    
     @HttpAction(name = "problem", pattern = "problem/{id}/{title}")
     public String goToProblem(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         currentProblem = problemsDAO.getById(id);
-
+        
         if (currentProblem != null) {
             Series serie = currentProblem.getSeries();
-
+            
             if (((ELFunctions.isValidIP(serie.getOpenips(false), getClientIp()) == false
                     && serie.getHiddenblocked() == true)
                     || serie.getStartdate().after(new Date())
@@ -1769,7 +1770,7 @@ public class RequestBean {
                 currentProblem = null;
             }
         }
-
+        
         if (currentProblem == null) {
             return "/error/404";
         } else {
@@ -1777,12 +1778,12 @@ public class RequestBean {
             return "problem";
         }
     }
-
+    
     @HttpAction(name = "question", pattern = "question/{id}/{title}")
     public String goToQuestion(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         temporaryQuestionId = id;
         editedQuestion = questionsDAO.getById(id);
-
+        
         if (editedQuestion == null) {
             return "/error/404";
         } else {
@@ -1791,11 +1792,11 @@ public class RequestBean {
             return "question";
         }
     }
-
+    
     @HttpAction(name = "submit", pattern = "submit/{id}/{title}")
     public String goToSubmit(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         currentProblem = problemsDAO.getById(id);
-
+        
         if (currentProblem == null) {
             return "/error/404";
         } else {
@@ -1804,7 +1805,7 @@ public class RequestBean {
             return "submit";
         }
     }
-
+    
     @HttpAction(name = "delcontest", pattern = "del/{id}/contest")
     public String deleteContest(@Param(name = "id", encode = true) int id) {
         if (rolesBean.canDeleteContest(id, null)) {
@@ -1818,7 +1819,7 @@ public class RequestBean {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "dellanguage", pattern = "del/{id}/language")
     public String deleteLanguage(@Param(name = "id", encode = true) int id) {
         if (rolesBean.canEditAnyProblem()) {
@@ -1828,7 +1829,7 @@ public class RequestBean {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "delclass", pattern = "del/{id}/class")
     public String deleteClasses(@Param(name = "id", encode = true) int id) {
         if (rolesBean.canEditAnyProblem()) {
@@ -1838,11 +1839,11 @@ public class RequestBean {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "delsubmit", pattern = "del/{id}/submit")
     public String deleteSubmit(@Param(name = "id", encode = true) int id) {
         Submits s = submitsDAO.getById(id);
-
+        
         if (s != null && rolesBean.canAddProblem(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
             submitsDAO.deleteById(id);
             return "submissions";
@@ -1850,27 +1851,27 @@ public class RequestBean {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "ghostsubmit", pattern = "ghost/{id}/submit")
     public String ghostSubmit(@Param(name = "id", encode = true) int id) {
         Submits s = submitsDAO.getById(id);
-
+        
         if (s != null && rolesBean.canRate(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
             s.setVisibleinranking(!s.getVisibleinranking());
             submitsDAO.saveOrUpdate(s);
-
+            
             return "submissions";
         } else {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "addseries", pattern = "add/{id}/series")
     public String goToAddseries(@Param(name = "id", encode = true) int id) {
         temporaryContestId = id;
         return "/admin/editseries";
     }
-
+    
     @HttpAction(name = "delseries", pattern = "del/{id}/series")
     public String deleteSeries(@Param(name = "id", encode = true) int id) {
         Series s = seriesDAO.getById(id);
@@ -1881,7 +1882,7 @@ public class RequestBean {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "deltest", pattern = "del/{id}/test")
     public String deleteTest(@Param(name = "id", encode = true) int id) {
         Tests s = testsDAO.getById(id);
@@ -1893,7 +1894,7 @@ public class RequestBean {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "addproblem", pattern = "add/{id}/problem")
     public String goToAddProblem(@Param(name = "id", encode = true) int id) {
         Series s = seriesDAO.getById(id);
@@ -1901,10 +1902,10 @@ public class RequestBean {
             temporarySeriesId = id;
             temporaryContestId = s.getContests().getId();
         }
-
+        
         return "/admin/editproblem";
     }
-
+    
     @HttpAction(name = "putproblem", pattern = "put/{id}/problem")
     public String goToPutProblem(@Param(name = "id", encode = true) int id) {
         Series s = seriesDAO.getById(id);
@@ -1912,10 +1913,10 @@ public class RequestBean {
             temporarySeriesId = id;
             temporaryContestId = s.getContests().getId();
         }
-
+        
         return "/admin/uploadproblem";
     }
-
+    
     @HttpAction(name = "puttest", pattern = "put/{id}/test")
     public String goToPutTest(@Param(name = "id", encode = true) int id) {
         Problems p = problemsDAO.getById(id);
@@ -1924,14 +1925,14 @@ public class RequestBean {
             temporarySeriesId = p.getSeries().getId();
             temporaryContestId = p.getSeries().getContests().getId();
         }
-
+        
         return "/admin/uploadtest";
     }
-
+    
     @HttpAction(name = "delproblem", pattern = "del/{id}/problem")
     public String deleteProblem(@Param(name = "id", encode = true) int id) {
         Problems p = problemsDAO.getById(id);
-
+        
         if (p != null && rolesBean.canDeleteProblem(p.getSeries().getContests().getId(), p.getSeries().getId())) {
             problemsDAO.delete(p);
             return "problems";
@@ -1939,7 +1940,7 @@ public class RequestBean {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "addtest", pattern = "add/{id}/test")
     public String goToAddtest(@Param(name = "id", encode = true) int id) {
         Problems p = problemsDAO.getById(id);
@@ -1948,16 +1949,16 @@ public class RequestBean {
             temporarySeriesId = p.getSeries().getId();
             temporaryContestId = p.getSeries().getContests().getId();
         }
-
+        
         return "/admin/edittest";
     }
-
+    
     @HttpAction(name = "edituser", pattern = "edit/{id}/user")
     public String goToEdituser(@Param(name = "id", encode = true) String username) {
         if (!rolesBean.canEditUsers()) {
             return "/error/404";
         }
-
+        
         try {
             temporaryUserId = usersDAO.findByLogin(username).get(0).getId();
             return "/admin/edituser";
@@ -1965,7 +1966,7 @@ public class RequestBean {
             return "listusers";
         }
     }
-
+    
     @HttpAction(name = "clock", pattern = "clock/{date}")
     public String goToClock(@Param(name = "date", encode = true) String date) {
         try {
@@ -1977,19 +1978,19 @@ public class RequestBean {
                 Calendar c = Calendar.getInstance();
                 Calendar d = Calendar.getInstance();
                 d.setTime(new SimpleDateFormat("HH:mm").parse(date));
-
+                
                 c.set(Calendar.HOUR_OF_DAY, d.get(Calendar.HOUR_OF_DAY));
                 c.set(Calendar.MINUTE, d.get(Calendar.MINUTE));
                 c.set(Calendar.SECOND, d.get(Calendar.SECOND));
                 c.set(Calendar.MILLISECOND, d.get(Calendar.MILLISECOND));
-
+                
                 temporaryDate = c.getTime();
             } catch (Exception e) {
             }
         }
         if (temporaryDate == null) {
             try {
-
+                
                 temporaryDate = new Date(System.currentTimeMillis() + Integer.parseInt(date) * 1000L);
             } catch (Exception e) {
                 temporaryDate = new Date(System.currentTimeMillis() + 10 * 60 * 1000);
@@ -1997,32 +1998,32 @@ public class RequestBean {
         }
         return "clock";
     }
-
+    
     @HttpAction(name = "viewpdfasimage", pattern = "view/{id}/pdf")
     public String viewPdfAsImage(@Param(name = "id", encode = true) int id) throws IOException {
         try {
             String name = StringUtils.EMPTY;
             String mimetype = StringUtils.EMPTY;
             byte[] content = null;
-
+            
             Problems problem = problemsDAO.getById(id);
-
+            
             if (problem != null
                     && (problem.getSeries().getStartdate().after(new Date())
                     || problem.getSeries().getContests().getVisibility() == false)
                     && !rolesBean.canEditProblem(problem.getSeries().getContests().getId(), null)) {
                 problem = null;
             }
-
+            
             if (problem != null && problem.getPDF() != null) {
                 name = problem.getName() + ".jpg";
                 content = PdfToImage.convertPdf(problem.getPDF().getPdf());
                 mimetype = "image/jpeg";
             }
-
+            
             if (content != null) {
                 FacesContext context = FacesContext.getCurrentInstance();
-
+                
                 HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
                 response.setContentLength(content.length);
                 response.setContentType(mimetype);
@@ -2040,7 +2041,7 @@ public class RequestBean {
             return "/error/404";
         }
     }
-
+    
     @HttpAction(name = "getfile", pattern = "get/{id}/{type}")
     public String getFile(@Param(name = "id", encode = true) int id, @Param(name = "type", encode = true) String type) throws IOException {
         try {
@@ -2050,14 +2051,14 @@ public class RequestBean {
             System.err.println("type:" + type + ", id:" + id);
             if ("pdf".equals(type)) {
                 Problems problem = problemsDAO.getById(id);
-
+                
                 if (problem != null
                         && (problem.getSeries().getStartdate().after(new Date())
                         || problem.getSeries().getContests().getVisibility() == false)
                         && !rolesBean.canEditProblem(problem.getSeries().getContests().getId(), null)) {
                     problem = null;
                 }
-
+                
                 if (problem != null && problem.getPDF() != null) {
                     name = problem.getName() + ".pdf";
                     content = problem.getPDF().getPdf();
@@ -2083,14 +2084,14 @@ public class RequestBean {
                 }
             } else if ("problem".equals(type)) {
                 Problems problem = problemsDAO.getById(id);
-
+                
                 if (problem != null
                         && (problem.getSeries().getStartdate().after(new Date())
                         || problem.getSeries().getContests().getVisibility() == false)
                         && !rolesBean.canEditProblem(problem.getSeries().getContests().getId(), null)) {
                     problem = null;
                 }
-
+                
                 if (problem != null) {
                     ZipProblem zip = new ZipProblem();
                     zip.setProblem(problem);
@@ -2123,10 +2124,10 @@ public class RequestBean {
                 name = ELFunctions.filterUri(contest.getName()) + "_solutions.zip";
                 mimetype = "application/force-download";
             }
-
+            
             if (content != null) {
                 FacesContext context = FacesContext.getCurrentInstance();
-
+                
                 HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
                 response.setContentLength(content.length);
                 response.setContentType(mimetype);
@@ -2144,15 +2145,15 @@ public class RequestBean {
         } catch (Exception ex) {
             return "/error/404";
         }
-
+        
     }
-
+    
     public String saveTest() {
         Integer id = getEditedTest().getId();
         if ((ELFunctions.isNullOrZero(id) && !rolesBean.canEditProblem(temporaryContestId, temporarySeriesId)) || (!ELFunctions.isNullOrZero(id) && !rolesBean.canEditProblem(temporaryContestId, temporarySeriesId))) {
             return null;
         }
-
+        
         try {
             editedTest.setVisibility(1); // FIXME: należy wartość pobrać ze strony!
             editedTest.setProblems(problemsDAO.getById(temporaryProblemId));
@@ -2163,17 +2164,17 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formEditTest:save", summary, null);
             return null;
         }
-
+        
         return "problems";
     }
-
+    
     public String switchShowOnlyMy() {
         sessionBean.setShowOnlyMySubmissions(!sessionBean.isShowOnlyMySubmissions());
         submissions = null;
         sessionBean.setSubmissionsUserId(0);
         sessionBean.setSubmissionsSeriesId(0);
         sessionBean.setSubmissionsProblemId(0);
-
+        
         return null;
     }
 
@@ -2188,14 +2189,14 @@ public class RequestBean {
         String captcha = (String) obj;
         ExternalContext extContext = context.getExternalContext();
         String tmp = (String) extContext.getSessionMap().get("captchaKey");
-
+        
         if (!captcha.toLowerCase().equals(tmp.toLowerCase())) {
             ((HtmlInputText) component).setValid(false);
             String summary = messages.getString("bad_captcha");
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, component, summary, null);
         }
     }
-
+    
     public void validatePasswd(FacesContext context, UIComponent component, Object obj) {
         if (!sessionBean.getCurrentUser().checkPass((String) obj)) {
             ((HtmlInputSecret) component).setValid(false);
@@ -2203,7 +2204,7 @@ public class RequestBean {
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, component, summary, null);
         }
     }
-
+    
     public void submissionsScrollerAction(ActionEvent event) {
         ScrollerActionEvent scrollerEvent = (ScrollerActionEvent) event;
         if (scrollerEvent.getPageIndex() == -1 && scrollerEvent.getScrollerfacet() != null) {
@@ -2217,15 +2218,15 @@ public class RequestBean {
         }
         submissions = null;
     }
-
+    
     private Problems findProblemFromFilename(String filename) {
         int index;
         int count = 0;
         int longest = -1;
         int min_index = Integer.MAX_VALUE;
-
+        
         Problems problem = null;
-
+        
         for (Problems p : getSubmittableProblems()) {
             index = filename.indexOf(p.getAbbrev().toLowerCase());
             if (index >= 0) {
@@ -2239,26 +2240,26 @@ public class RequestBean {
                 }
             }
         }
-
+        
         if (count > 0) {
             return null;
         } else {
             return problem;
         }
     }
-
+    
     public String getClientIp() {
         return ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRemoteAddr();
     }
-
+    
     private String sendSolution(byte[] bytes, String fileName, String controlId) {
         FacesContext context = FacesContext.getCurrentInstance();
         long submitTime = System.currentTimeMillis();
-
+        
         try {
             Problems problem = null;
             Languages language = null;
-
+            
             if (fileName == null) {
                 if (temporaryProblemId == 0) {
                     List<Problems> p = getSubmittableProblems();
@@ -2268,7 +2269,7 @@ public class RequestBean {
                 } else {
                     problem = problemsDAO.getById(temporaryProblemId);
                 }
-
+                
                 if (temporaryLanguageId == 0) {
                     if (problem != null) {
                         List<LanguagesProblems> lp = problem.getLanguagesProblemss();
@@ -2290,12 +2291,12 @@ public class RequestBean {
                  */
                 if (temporaryProblemId == 0) {
                     String filename_tmp = fileName;
-
+                    
                     int index = filename_tmp.indexOf(".");
                     if (index >= 0) {
                         filename_tmp = filename_tmp.substring(0, index);
                     }
-
+                    
                     problem = findProblemFromFilename(filename_tmp);
                     if (problem == null) {
                         problem = findProblemFromFilename(filename_tmp.toLowerCase());
@@ -2335,34 +2336,34 @@ public class RequestBean {
                     language = null;
                 }
             }
-
+            
             if (problem == null) {
                 String summary = String.format("%s", messages.getString("problem_autorecognize_error"));
                 WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit:problem", summary, null);
             }
-
+            
             if (language == null) {
                 String summary = String.format("%s", messages.getString("language_autorecognize_error"));
                 WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit:language", summary, null);
             }
-
+            
             if (problem == null || language == null) {
                 return null;
             }
-
+            
             if (problem.getCodesize() != null && problem.getCodesize() > 0 && bytes.length > problem.getCodesize() * 1024) {
                 String summary = String.format("%s", messages.getString("problem_codesize_error"));
                 WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, controlId, summary, null);
                 return null;
             }
-
+            
             String clientIp = getClientIp();
             if (rolesBean.canEditProblem(problem.getSeries().getContests().getId(), problem.getSeries().getId()) == true
                     || (ELFunctions.isValidIP(problem.getSeries().getOpenips(false), clientIp)
                     && problem.getSeries().getStartdate().getTime() < submitTime
                     && (problem.getSeries().getEnddate() == null || submitTime < problem.getSeries().getEnddate().getTime()))) {
                 Submits submit = new Submits();
-
+                
                 submit.setId(null);
                 submit.setFilename(fileName);
                 submit.setCode(bytes);
@@ -2381,12 +2382,12 @@ public class RequestBean {
                 }
                 selectContest(problem.getSeries().getContests().getId());
                 submitsDAO.saveOrUpdate(submit);
-
+                
                 HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
                 HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-
+                
                 JudgeManagerConnector.getInstance().sentToJudgeManager(submit.getId());
-
+                
                 return "submissions";
             } else {
                 String summary = String.format("%s", messages.getString("submission_not_in_time"));
@@ -2399,7 +2400,7 @@ public class RequestBean {
             return null;
         }
     }
-
+    
     private void selectContest(int id) {
         if (getCurrentContest() == null || getCurrentContest().getId() != id) {
             sessionBean.setCurrentContestId(id);
@@ -2436,22 +2437,22 @@ public class RequestBean {
             users = c.list();
         }
         return users;
-
+        
     }
-
+    
     public Integer getRatingEditNote() {
         return ratingEditNote;
     }
-
+    
     public void setRatingEditNote(Integer ratingEditNote) {
         this.ratingEditNote = ratingEditNote;
     }
-
+    
     public Integer getTemporarySubmitResultId() {
         getEditedResult();
         return temporarySubmitResultId;
     }
-
+    
     public void setTemporarySubmitResultId(Integer id) {
         temporarySubmitResultId = id;
     }

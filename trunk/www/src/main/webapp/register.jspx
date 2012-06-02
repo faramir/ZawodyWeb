@@ -17,7 +17,7 @@
             <fieldset>
                 <div>
                     <h:outputLabel for="login" styleClass="required">${messages.login}:</h:outputLabel>
-                    <h:inputText id="login" required="true" maxlength="64" value="#{requestBean.newUser.login}" />
+                    <h:inputText id="login" required="true" maxlength="64" style="text-transform: lowercase" value="#{requestBean.newUser.login}" />
                     <h:message for="login" errorClass="error" />
                     <br class="clear" />
                 </div>
