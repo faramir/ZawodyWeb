@@ -80,7 +80,7 @@ public class SessionBean {
         UserLog ul = new UserLog();
         UserLogDAO dao = DAOFactory.DEFAULT.buildUserLogDAO();
 
-        ul.setUsername(currentUser.getLogin());
+        ul.setUsername(currentUser.getLogin().toLowerCase());
         ul.setLogdate(new Timestamp(System.currentTimeMillis()));
         ul.setIp(((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRemoteAddr());
 
@@ -118,7 +118,7 @@ public class SessionBean {
                 }
             }
 
-            user.setLogin(openIdConsumer.getLogin());
+            user.setLogin(openIdConsumer.getLogin().toLowerCase());
             user.setFirstname(openIdConsumer.getFirstname());
             user.setLastname(openIdConsumer.getLastname());
             user.setEmail(openIdConsumer.getEmail());
@@ -144,7 +144,7 @@ public class SessionBean {
      * @return
      */
     public Users olatSaveUser(UsersDAO dao, Users user, Users olatUser) {
-        user.setLogin(olatUser.getLogin());
+        user.setLogin(olatUser.getLogin().toLowerCase());
         user.setFirstname(olatUser.getFirstname());
         user.setLastname(olatUser.getLastname());
         user.setEmail(olatUser.getEmail());
@@ -166,7 +166,7 @@ public class SessionBean {
      * @return
      */
     public Users ldapSaveUser(UsersDAO dao, Users user, Users ldapUser) {
-        user.setLogin(ldapUser.getLogin());
+        user.setLogin(ldapUser.getLogin().toLowerCase());
         user.setFirstname(ldapUser.getFirstname());
         user.setLastname(ldapUser.getLastname());
         user.setEmail(ldapUser.getEmail());
@@ -195,6 +195,7 @@ public class SessionBean {
         response.addCookie(cookie);
 
         try {
+            currentUser.setLogin(currentUser.getLogin().toLowerCase());
             UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
             List<Users> users = dao.findByLogin(currentUser.getLogin());
             if (users.isEmpty() == false) {

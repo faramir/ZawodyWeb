@@ -30,7 +30,7 @@ public class ZipProblem {
     public ZipProblem() {
         out = new ZipOutputStream(baos);
         out.setMethod(ZipOutputStream.DEFLATED);
-        out.setLevel(7);
+        out.setLevel(java.util.zip.Deflater.BEST_COMPRESSION);
     }
 
     public void setTest(Tests test) throws IOException {

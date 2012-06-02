@@ -3,7 +3,6 @@ package pl.umk.mat.zawodyweb.database.pojo;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
 
@@ -17,15 +16,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-import javax.persistence.Embeddable;
 import javax.persistence.GenerationType;
 import org.apache.commons.codec.binary.Hex;
-import org.hibernate.annotations.Fetch;
 
 /**
  * <p>Pojo mapping TABLE public.users</p>
@@ -99,7 +92,7 @@ public class Users implements Serializable {
      * Attribute login date.
      */
     private Timestamp fdate;
-    private Boolean onlylogin;
+    private Boolean onlylogin = false;
     /**
      * List of Questions
      */
@@ -224,7 +217,7 @@ public class Users implements Serializable {
     @Column(name = "login", length = 64)
     public String getLogin() {
         if (login != null) {
-            return login.trim();
+            return login.trim().toLowerCase();
         } else {
             return login;
         }
@@ -235,7 +228,7 @@ public class Users implements Serializable {
      */
     public void setLogin(String login) {
         if (login != null) {
-            this.login = login.trim();
+            this.login = login.trim().toLowerCase();
         } else {
             this.login = login;
         }

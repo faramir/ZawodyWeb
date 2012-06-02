@@ -9,7 +9,7 @@
                 <div>
                     <h:outputLabel styleClass="required" for="login">${messages.login}:</h:outputLabel>
                     <div>
-                    <t:inputText forceId="true" id="login" required="true" value="#{sessionBean.login}" />
+                    <t:inputText forceId="true" id="login" required="true" style="text-transform: lowercase" value="#{sessionBean.login}" />
                     <t:graphicImage url="/media/images/openid.png" alt="#{messages.openid_enabled}" title="#{messages.openid_enabled}" styleClass="openid"/>
                     </div>
                     <h:message for="login" errorClass="error" />
