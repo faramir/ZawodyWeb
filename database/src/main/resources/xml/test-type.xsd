@@ -4,7 +4,7 @@
     xmlns:zw="http://zawodyweb.mat.umk.pl/"
     elementFormDefault="qualified">
 
-    <xsd:complexType name="type-test">
+    <xsd:complexType name="test-type">
         <xsd:sequence>
             <xsd:element name="input" type="xsd:string" minOccurs="0"/>
             <xsd:element name="output" type="xsd:string" minOccurs="0"/>

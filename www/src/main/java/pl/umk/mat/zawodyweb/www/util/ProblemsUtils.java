@@ -45,6 +45,7 @@ public class ProblemsUtils {
         destinationProblem.setMemlimit(sourceProblem.getMemlimit());
         destinationProblem.setCodesize(sourceProblem.getCodesize());
         destinationProblem.setVisibleinranking(sourceProblem.getVisibleinranking());
+        destinationProblem.setViewpdf(sourceProblem.getViewpdf());
 
         PDF pdf = sourceProblem.getPDF();
         if (pdf != null) {
@@ -56,14 +57,14 @@ public class ProblemsUtils {
 
         destinationProblem.setSeries(destinationSerie);
         destinationProblem.setText(sourceProblem.getText());
-        DAOFactory.DEFAULT.buildProblemsDAO().saveOrUpdate(destinationProblem);
+        DAOFactory.DEFAULT.buildProblemsDAO().save(destinationProblem);
 
         LanguagesProblemsDAO languagesProblemsDAO = DAOFactory.DEFAULT.buildLanguagesProblemsDAO();
         for (LanguagesProblems oldLanguage : sourceProblem.getLanguagesProblemss()) {
             LanguagesProblems newLanguage = new LanguagesProblems();
             newLanguage.setLanguages(oldLanguage.getLanguages());
             newLanguage.setProblems(destinationProblem);
-            languagesProblemsDAO.saveOrUpdate(newLanguage);
+            languagesProblemsDAO.save(newLanguage);
         }
 
         TestsDAO testsDAO = DAOFactory.DEFAULT.buildTestsDAO();
@@ -76,7 +77,7 @@ public class ProblemsUtils {
             newTest.setTestorder(oldTest.getTestorder());
             newTest.setTimelimit(oldTest.getTimelimit());
             newTest.setVisibility(oldTest.getVisibility());
-            testsDAO.saveOrUpdate(newTest);
+            testsDAO.save(newTest);
         }
 
         /*

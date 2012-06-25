@@ -5,12 +5,12 @@
     xmlns:type-test="http://zawodyweb.mat.umk.pl/type-test"
     elementFormDefault="qualified">
 
-    <xsd:include schemaLocation="type-test.xsd"/>
+    <xsd:include schemaLocation="test-type.xsd"/>
     
     <xsd:element name="tests">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="test" type="zw:type-test" maxOccurs="unbounded" minOccurs="0"/>
+                <xsd:element name="test" type="zw:test-type" maxOccurs="unbounded" minOccurs="0"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
