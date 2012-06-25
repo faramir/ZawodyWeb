@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://zawodyweb.mat.umk.pl/"
+            xmlns:zw="http://zawodyweb.mat.umk.pl/"
+            elementFormDefault="qualified">
+
+    <xsd:include schemaLocation="problem-type.xsd"/>
+
+    <xsd:complexType name="serie-type">
+        <xsd:sequence>
+            <xsd:element name="name" minOccurs="0">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:minLength value="1"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="startdate" minOccurs="0" type="xsd:dateTime"/>
+            <xsd:element name="enddate" minOccurs="0" type="xsd:dateTime"/>
+            <xsd:element name="freezedate" minOccurs="0" type="xsd:dateTime"/>
+            <xsd:element name="unfreezedate" minOccurs="0" type="xsd:dateTime"/>
+            <xsd:element name="penaltytime" minOccurs="0">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:int">
+                        <xsd:minInclusive value="0"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="visible" minOccurs="0">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:boolean"/>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="openips" minOccurs="0" >
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:minLength value="0"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="hiddenblocked" minOccurs="0">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:boolean"/>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="problems" minOccurs="0">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="problem" type="zw:problem-type" maxOccurs="unbounded" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

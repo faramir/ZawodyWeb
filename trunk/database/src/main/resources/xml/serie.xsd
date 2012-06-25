@@ -8,7 +8,7 @@
     jaxb:version="2.1"
     jaxb:extensionBindingPrefixes="xjc">
 
-    <xsd:include schemaLocation="problem-type.xsd"/>
+    <xsd:include schemaLocation="serie-type.xsd"/>
     
-    <xsd:element name="problem" type="zw:problem-type"/>
+    <xsd:element name="serie" type="zw:serie-type"/>
 </xsd:schema>
