@@ -1,9 +1,8 @@
 package pl.umk.mat.zawodyweb.compiler.classes;
 
 import java.io.*;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.TimeoutException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
@@ -16,67 +15,58 @@ import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
 
 /**
+ * Copied from LanguageLA, acmSite = http://uva.onlinejudge.org/
  *
- * @author Jakub Prabucki (modified by faramir)
+ * @author faramir
  */
 public class LanguageUVA implements CompilerInterface {
 
-    public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageUVA.class);
+    public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageLA.class);
     private Properties properties;
+    private HttpClient client;
+    private String acmSite = "http://uva.onlinejudge.org/";
 
     @Override
     public void setProperties(Properties properties) {
         this.properties = properties;
     }
 
-    @Override
-    public TestOutput runTest(String code, TestInput input) {
-        TestOutput result = new TestOutput(null);
-        String acmSite = "http://uva.onlinejudge.org/";
+    //http://livearchive.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=19 - last 50 submissions
+    private boolean checkSubmissionsStatus() throws HttpException, IOException {
+        List<Map<String, String>> results = getResults(50);
 
-        String login = properties.getProperty("uva.login");
-        String password = properties.getProperty("uva.password");
-        long maxTime;
-        try {
-            maxTime = Long.parseLong(properties.getProperty("uva.max_time"));
-        } catch (NumberFormatException e) {
-            maxTime = 10L * 60;
+        int inQueue = 0;
+        for (Map<String, String> result : results) {
+            String status = result.get("status");
+            if ("".equals(status)
+                    || "Sent to judge".equals(status)
+                    || "In judge queue".equals(status)) {
+                ++inQueue;
+            }
         }
 
-        HttpClient client = new HttpClient();
-        GetMethod logging = new GetMethod(acmSite);
-        InputStream firstGet;
+        return inQueue <= 32;
+    }
 
-        HttpClientParams params = client.getParams();
-        params.setParameter("http.useragent", "Opera/9.80 (Windows NT 6.1; U; pl) Presto/2.7.62 Version/11.00");
-        client.setParams(params);
+    private void logIn(String login, String password) throws HttpException, IOException {
+        ArrayList<NameValuePair> vectorLoginData;
+        GetMethod get = new GetMethod(acmSite);
 
         try {
-            client.executeMethod(logging);
-            firstGet = logging.getResponseBodyAsStream();
-        } catch (HttpException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("HttpException");
-            logging.releaseConnection();
-            return result;
-        } catch (IOException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("IOException");
-            logging.releaseConnection();
-            return result;
-        }
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(firstGet, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-        }
-        String line, name, value;
-        ArrayList<NameValuePair> vectorLoginData = new ArrayList<NameValuePair>();
-        vectorLoginData.add(new NameValuePair("username", login));
-        vectorLoginData.add(new NameValuePair("passwd", password));
-        try {
+            client.executeMethod(get);
+            InputStream firstGet = get.getResponseBodyAsStream();
+            BufferedReader br = null;
+
+            try {
+                br = new BufferedReader(new InputStreamReader(firstGet, "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+            }
+
+            String line, name, value;
+            vectorLoginData = new ArrayList<NameValuePair>();
+            vectorLoginData.add(new NameValuePair("username", login));
+            vectorLoginData.add(new NameValuePair("passwd", password));
+
             line = br.readLine();
             while (line != null && !line.matches(".*class=\"mod_login\".*")) {
                 line = br.readLine();
@@ -89,226 +79,287 @@ public class LanguageUVA implements CompilerInterface {
                 }
                 line = br.readLine();
             }
-            vectorLoginData.add(new NameValuePair("remember", "yes"));
-            vectorLoginData.add(new NameValuePair("Submit", "Login"));
-        } catch (IOException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("IOException");
-            logging.releaseConnection();
-            return result;
-        }
-        logging.releaseConnection();
+        } finally {
 
-        PostMethod sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=com_comprofiler&task=login");
-        sendAnswer.setRequestHeader("Referer", acmSite);
+            get.releaseConnection();
+        }
+        vectorLoginData.add(new NameValuePair("remember", "yes"));
+        vectorLoginData.add(new NameValuePair("Submit", "Login"));
+
+        PostMethod post = new PostMethod(acmSite + "index.php?option=com_comprofiler&task=login");
+        post.setRequestHeader("Referer", acmSite);
         NameValuePair[] loginData = new NameValuePair[0];
         loginData = vectorLoginData.toArray(loginData);
-        sendAnswer.setRequestBody(loginData);
+        post.setRequestBody(loginData);
+
+        client.executeMethod(post);
+
+        post.releaseConnection();
+    }
+
+    private int sendSolution(String code, TestInput input) throws NumberFormatException, HttpException, IOException {
+        PostMethod post = new PostMethod(acmSite + "index.php?option=com_onlinejudge&Itemid=25&page=save_submission");
         try {
-            client.executeMethod(sendAnswer);
-        } catch (HttpException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("HttpException");
-            sendAnswer.releaseConnection();
-            return result;
-        } catch (IOException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("IOException");
-            sendAnswer.releaseConnection();
-            return result;
-        }
-        sendAnswer.releaseConnection();
 
-        logger.info("Logged to ACM");
-
-        sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=save_submission");
-        String lang = properties.getProperty("CODEFILE_EXTENSION");
-        if (lang.equals("c")) {
-            lang = "1";
-        } else if (lang.equals("java")) {
-            lang = "2";
-        } else if (lang.equals("cpp")) {
-            lang = "3";
-        } else if (lang.equals("pas")) {
-            lang = "4";
-        }
-        NameValuePair[] dataSendAnswer = {
-            new NameValuePair("problemid", ""),
-            new NameValuePair("category", ""),
-            new NameValuePair("localid", input.getText()),
-            new NameValuePair("language", lang),
-            new NameValuePair("code", code),
-            new NameValuePair("submit", "Submit")
-        };
-        sendAnswer.setRequestBody(dataSendAnswer);
-
-        int id;
-        try {
-            client.executeMethod(sendAnswer);
-            String location = sendAnswer.getResponseHeader("Location").getValue();
-            try {
-                id = Integer.parseInt(location.substring(location.lastIndexOf("+") + 1));
-                logger.info("ACM Submit id = " + id);
-            } catch (NumberFormatException ex) {
-                result.setResult(CheckerErrors.UNKNOWN);
-                result.setResultDesc(URLDecoder.decode(location.substring(location.lastIndexOf("=") + 1), "UTF-8"));
-                result.setText("NumberFormatException");
-                sendAnswer.releaseConnection();
-                return result;
+            String lang = properties.getProperty("CODEFILE_EXTENSION");
+            if (lang.equals("c")) {
+                lang = "1";
+            } else if (lang.equals("java")) {
+                lang = "2";
+            } else if (lang.equals("cpp")) {
+                lang = "3";
+            } else if (lang.equals("pas")) {
+                lang = "4";
             }
-        } catch (HttpException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("HttpException");
-            sendAnswer.releaseConnection();
-            return result;
-        } catch (IOException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("IOException");
-            sendAnswer.releaseConnection();
-            return result;
+            NameValuePair[] dataSendAnswer = {
+                new NameValuePair("problemid", ""),
+                new NameValuePair("category", ""),
+                new NameValuePair("localid", input.getText()),
+                new NameValuePair("language", lang),
+                new NameValuePair("code", code),
+                new NameValuePair("submit", "Submit")
+            };
+            post.setRequestBody(dataSendAnswer);
+
+            client.executeMethod(post);
+            String location = post.getResponseHeader("Location").getValue();
+            return Integer.parseInt(location.substring(location.lastIndexOf("+") + 1));
+        } finally {
+            post.releaseConnection();
         }
-        sendAnswer.releaseConnection();
+    }
+
+    private String getCompilationError(int id) throws HttpException, IOException {
+        GetMethod get = new GetMethod(acmSite + "index.php?option=com_onlinejudge&Itemid=9&page=show_compilationerror&submission=" + id);
+
+        try {
+            client.executeMethod(get);
+            InputStream firstGet = get.getResponseBodyAsStream();
+            BufferedReader br = null;
+
+            try {
+                br = new BufferedReader(new InputStreamReader(firstGet, "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+            }
+
+            String line;
+            StringBuilder sb = new StringBuilder();
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+                sb.append("\n");
+            }
+            String[] split = sb.toString().split("(<pre>)|(</pre>)");
+            if (split.length == 3) {
+                return split[1].trim();
+            }
+        } finally {
+            get.releaseConnection();
+        }
+        return "";
+    }
+
+    /**
+     *
+     * @param br BufferedReader
+     * @return List of Map (id, status, time)
+     * @throws IOException
+     */
+    private List<Map<String, String>> processResults(BufferedReader br) throws IOException {
+        String line;
+        StringBuilder sb;
+        List<Map<String, String>> results = new ArrayList<Map<String, String>>();
+
+        while ((line = br.readLine()) != null) {
+            if (line.matches(".*<td>[0-9]+</td>.*")) {
+                sb = new StringBuilder(line);
+                line = br.readLine();
+                while (!line.matches(".*</tr>.*")) {
+                    sb.append(line.trim());
+                    line = br.readLine();
+                }
+                String[] split = sb.toString().split("(<td[^>]*>)|(</td>)");
+
+                Map<String, String> result = new HashMap<String, String>();
+                result.put("id", split[1].trim());
+                result.put("status", (split[7].replaceAll("<[^>]*>", "")).trim());
+                result.put("time", split[11].replace(".", "").trim());
+
+                results.add(result);
+            }
+        }
+        return results;
+    }
+
+    private List<Map<String, String>> getResults(int limitOnPage) throws HttpException, IOException {
+        BufferedReader br = null;
+        GetMethod get = new GetMethod(acmSite + "index.php?option=com_onlinejudge&Itemid=9&limit=" + limitOnPage + "&limitstart=0");
+        try {
+            client.executeMethod(get);
+            InputStream firstGet = get.getResponseBodyAsStream();
+
+            try {
+                br = new BufferedReader(new InputStreamReader(firstGet, "UTF-8"));
+            } catch (UnsupportedEncodingException ex) {
+            }
+
+            return processResults(br);
+        } finally {
+            get.releaseConnection();
+        }
+    }
+
+    private void checkResults(int id, long maxTime, TestInput input, TestOutput result) throws InterruptedException,
+            TimeoutException, HttpException, IOException {
 
         int limitRise = 50;
         int limitOnPage = 50;
-        String statusSite = "";
-        String stat;
-        String time;
-        try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            result.setResult(CheckerErrors.UNDEF);
-            result.setResultDesc(e.getMessage());
-            result.setText("InterruptedException");
-            return result;
-        }
+
+        Random random = new Random();
+
+        Thread.sleep(7000 + (Math.abs(random.nextInt()) % 3000));
 
         long start_time = System.currentTimeMillis();
         do {
             if (System.currentTimeMillis() - start_time > maxTime * 1000L) {
                 logger.info(String.format("%.1f minutes without answer. Destroy!", maxTime / 60));
-                result.setResult(CheckerErrors.UNDEF);
-                result.setResultDesc("Too slow to answer.. destroy");
-                result.setText("In judge queue?");
-                logging.releaseConnection();
-                return result;
+                throw new TimeoutException("Too slow to answer.. destroy");
             }
-            stat = null;
-            time = "";
 
-            logger.info("Checking answer on ACM");
-            logging = new GetMethod("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=9&limit=" + limitOnPage + "&limitstart=0");
-            firstGet = null;
-            try {
-                client.executeMethod(logging);
-                firstGet = logging.getResponseBodyAsStream();
-            } catch (HttpException e) {
-                result.setResult(CheckerErrors.UNDEF);
-                result.setResultDesc(e.getMessage());
-                result.setText("HttpException");
-                logging.releaseConnection();
-                return result;
-            } catch (IOException e) {
-                result.setResult(CheckerErrors.UNDEF);
-                result.setResultDesc(e.getMessage());
-                result.setText("IOException");
-                logging.releaseConnection();
-                return result;
-            }
-            try {
-                br = new BufferedReader(new InputStreamReader(firstGet, "UTF-8"));
-            } catch (UnsupportedEncodingException ex) {
-            }
-            try {
-                while ((line = br.readLine()) != null) {
-                    if (line.matches(".*<td>" + id + "</td>.*")) {
-                        statusSite = line;
-                        line = br.readLine();
-                        while (!line.matches(".*</tr>.*")) {
-                            statusSite += line;
-                            line = br.readLine();
-                        }
-                        String[] split = statusSite.split("(<td[^>]*>)|(</td>)");
-                        stat = split[7];
-                        time = split[11];
-                    }
+            logger.info("Checking answer on LA-ACM");
+            List<Map<String, String>> results = getResults(limitOnPage);
+
+            String sid = String.valueOf(id);
+            Map<String, String> map = null;
+            for (Map<String, String> m : results) {
+                if (sid.equals(m.get("id"))) {
+                    map = m;
+                    break;
                 }
-            } catch (IOException e) {
-                result.setResult(CheckerErrors.UNDEF);
-                result.setResultDesc(e.getMessage());
-                result.setText("IOException");
-                logging.releaseConnection();
-                return result;
             }
-            if (stat != null) {
+
+            if (map != null) {
+                String status = map.get("status");
+                String time = map.get("time");
                 result.setPoints(0);
-                if (stat.compareTo("Received") != 0 && stat.compareTo("Running") != 0 && stat.compareTo("Sent to judge") != 0 && stat.compareTo("In judge queue") != 0 && stat.compareTo("Compiling") != 0 && stat.compareTo("Linking") != 0 && stat.compareTo("") != 0) {
-                    if (stat.matches(".*Accepted.*")) {
-                        result.setResult(CheckerErrors.ACC);
-                        result.setPoints(input.getMaxPoints());
-                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
-                    } else if (stat.matches(".*Compilation error.*")) {
-                        result.setResult(CheckerErrors.CE);
-                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
-                    } else if (stat.matches(".*Presentation error.*")) {
-                        result.setResult(CheckerErrors.ACC);
-                        result.setPoints(input.getMaxPoints());
-                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
-                    } else if (stat.matches(".*Wrong answer.*")) {
-                        result.setResult(CheckerErrors.WA);
-                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
-                    } else if (stat.matches(".*Time limit exceeded.*")) {
-                        result.setResult(CheckerErrors.TLE);
-                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
-                    } else if (stat.matches(".*Memory limit exceeded.*")) {
-                        result.setResult(CheckerErrors.MLE);
-                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
-                    } else if (stat.matches(".*Runtime error.*")) {
-                        result.setResult(CheckerErrors.RE);
-                        result.setRuntime(Integer.parseInt(time.replaceAll("\\.", "")));
-                    } else {
-                        result.setResult(CheckerErrors.UNKNOWN);
-                        result.setResultDesc("Unknown status: \"" + stat + "\"");
-                    }
+                if ("".equals(status)
+                        || "Received".equals(status)
+                        || "Running".equals(status)
+                        || "Sent to judge".equals(status)
+                        || "In judge queue".equals(status)
+                        || "Compiling".equals(status)
+                        || "Linking".equals(status)) {
+                    Thread.sleep(7000);
+                } else if ("Accepted".equals(status)) {
+                    result.setResult(CheckerErrors.ACC);
+                    result.setPoints(input.getMaxPoints());
+                    result.setRuntime(Integer.parseInt(time));
+                    break;
+                } else if ("Compilation error".equals(status)) {
+                    result.setResult(CheckerErrors.CE);
+                    result.setResultDesc(getCompilationError(id));
+                    result.setRuntime(Integer.parseInt(time));
+                    break;
+                } else if ("Presentation error".equals(status)) {
+                    result.setResult(CheckerErrors.ACC);
+                    result.setPoints(input.getMaxPoints());
+                    result.setRuntime(Integer.parseInt(time));
+                    break;
+                } else if ("Wrong answer".equals(status)) {
+                    result.setResult(CheckerErrors.WA);
+                    result.setRuntime(Integer.parseInt(time));
+                    break;
+                } else if ("Time limit exceeded".equals(status)) {
+                    result.setResult(CheckerErrors.TLE);
+                    result.setRuntime(Integer.parseInt(time));
+                    break;
+                } else if ("Memory limit exceeded".equals(status)) {
+                    result.setResult(CheckerErrors.MLE);
+                    result.setRuntime(Integer.parseInt(time));
+                    break;
+                } else if ("Runtime error".equals(status)) {
+                    result.setResult(CheckerErrors.RE);
+                    result.setRuntime(Integer.parseInt(time));
                     break;
                 } else {
-                    try {
-                        Thread.sleep(7000);
-                    } catch (InterruptedException e) {
-                        result.setResult(CheckerErrors.UNDEF);
-                        result.setResultDesc(e.getMessage());
-                        result.setText("InterruptedException");
-                        return result;
-                    }
+                    result.setResult(CheckerErrors.UNKNOWN);
+                    result.setResultDesc("Unknown status: \"" + status + "\"");
+                    logger.info("Unknown status: \"" + status + "\"");
+                    break;
                 }
             } else {
                 limitOnPage += limitRise;
             }
+            Thread.sleep(3000 + (Math.abs(random.nextInt()) % 3000));
         } while (true);
-        logging.releaseConnection();
-        sendAnswer = new PostMethod("http://uva.onlinejudge.org/index.php?option=logout");
-        NameValuePair[] logout = {
-            new NameValuePair("op2", "logout"),
-            new NameValuePair("return", "http://uva.onlinejudge.org"),
-            new NameValuePair("lang", "english"),
-            new NameValuePair("message", "0"),
-            new NameValuePair("Submit", "Logout")
-        };
-        sendAnswer.setRequestBody(logout);
+    }
+
+    private void logOut() throws HttpException, IOException {
+        PostMethod post = new PostMethod(acmSite + "index.php?option=logout");
         try {
-            client.executeMethod(sendAnswer);
-        } catch (HttpException e) {
-            sendAnswer.releaseConnection();
-        } catch (IOException e) {
-            sendAnswer.releaseConnection();
+            NameValuePair[] logout = {
+                new NameValuePair("op2", "logout"),
+                new NameValuePair("return", acmSite),
+                new NameValuePair("lang", "english"),
+                new NameValuePair("message", "0"),
+                new NameValuePair("Submit", "Logout")
+            };
+            post.setRequestBody(logout);
+
+            client.executeMethod(post);
+        } finally {
+            post.releaseConnection();
         }
-        sendAnswer.releaseConnection();
+    }
+
+    @Override
+    public TestOutput runTest(String path, TestInput input) {
+        TestOutput result = new TestOutput(null);
+
+        String login = properties.getProperty("livearchive.login");
+        String password = properties.getProperty("livearchive.password");
+        long maxTime;
+        try {
+            maxTime = Long.parseLong(properties.getProperty("livearchive.max_time"));
+        } catch (NumberFormatException e) {
+            maxTime = 10L * 60;
+        }
+
+        prepareHttpClient();
+
+        try {
+            logIn(login, password);
+            logger.info("Logged to LA-ACM");
+
+            if (checkSubmissionsStatus() == false) {
+                result.setResult(CheckerErrors.UNDEF);
+                result.setResultDesc("More than 32 submissions in queue.");
+                result.setText("LA-ACM judge broken?");
+                return result;
+            }
+
+            int id = sendSolution(path, input);
+            logger.info("LA-ACM Submit id = " + id);
+
+            checkResults(id, maxTime, input, result);
+
+            logOut();
+            logger.info("Logged out from LA-ACM");
+        } catch (Exception e) {
+            logger.info("Exception: ", e);
+            result.setResult(CheckerErrors.UNDEF);
+            result.setResultDesc(e.getMessage());
+            result.setText(e.getClass().getName());
+            return result;
+        }
+
         return result;
+    }
+
+    private void prepareHttpClient() {
+        client = new HttpClient();
+        HttpClientParams params = client.getParams();
+        params.setParameter("http.useragent", "Opera/9.80 (X11; Linux x86_64; U; pl) Presto/2.10.289 Version/12.00");
+        client.setParams(params);
     }
 
     @Override
