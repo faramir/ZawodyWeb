@@ -37,7 +37,7 @@ import pl.umk.mat.zawodyweb.www.util.ProblemsUtils;
 import pl.umk.mat.zawodyweb.www.util.SeriesUtils;
 import pl.umk.mat.zawodyweb.www.util.SubmitsUtils;
 import pl.umk.mat.zawodyweb.www.zip.UnzipProblem;
-import pl.umk.mat.zawodyweb.www.zip.ZipProblem;
+import pl.umk.mat.zawodyweb.www.zip.ZipFile;
 import pl.umk.mat.zawodyweb.www.zip.ZipSolutions;
 
 /**
@@ -2093,9 +2093,7 @@ public class RequestBean {
                 }
                 
                 if (problem != null) {
-                    ZipProblem zip = new ZipProblem();
-                    zip.setProblem(problem);
-                    content = zip.finish();
+                    content = ZipFile.zipProblem(problem);
                     name = ELFunctions.filterUri(problem.getAbbrev()) + "_" + ELFunctions.filterUri(problem.getName()) + ".zip";
                     mimetype = "application/force-download";
                 }
@@ -2106,9 +2104,7 @@ public class RequestBean {
                     test = null;
                 }
                 if (test != null) {
-                    ZipProblem zip = new ZipProblem();
-                    zip.setTest(test);
-                    content = zip.finish();
+                    content = ZipFile.zipTest(test);
                     name = ELFunctions.filterUri(problem.getAbbrev()) + "_" + test.getTestorder() + ".zip";
                     mimetype = "application/force-download";
                 }
