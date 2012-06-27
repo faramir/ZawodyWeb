@@ -6,11 +6,6 @@ package pl.umk.mat.zawodyweb.www.zip;
 
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
@@ -21,7 +16,7 @@ public class ZipOutputStream extends java.util.zip.ZipOutputStream {
     private int seriesCount;
     private int problemsCount;
     private int testsCount;
-
+    
     public ZipOutputStream(OutputStream out) {
         super(out);
     }
