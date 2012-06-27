@@ -1,12 +1,12 @@
 package pl.umk.mat.zawodyweb.www.zip;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
-import pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems;
-import pl.umk.mat.zawodyweb.database.pojo.PDF;
-import pl.umk.mat.zawodyweb.database.pojo.Problems;
-import pl.umk.mat.zawodyweb.database.pojo.Tests;
+import pl.umk.mat.zawodyweb.database.pojo.*;
 import pl.umk.mat.zawodyweb.database.xml.Problem;
 import pl.umk.mat.zawodyweb.database.xml.Test;
 
@@ -73,5 +73,79 @@ public class ZipProblem {
         out.closeEntry();
 
         return pdfFile;
+    }
+
+    static Problems getProblem(ZipInputStream in, Problem xmlProblem,
+            List<Languages> languages, List<Classes> diffClasses)
+            throws UnsupportedEncodingException, FileNotFoundException {
+        Problems problem = new Problems();
+        problem.setName(xmlProblem.getName());
+        problem.setAbbrev(xmlProblem.getAbbrev());
+        problem.setMemlimit(xmlProblem.getMemlimit());
+        problem.setCodesize(xmlProblem.getCodesize());
+        problem.setVisibleinranking(xmlProblem.getVisible());
+        problem.setViewpdf(xmlProblem.getViewpdf());
+
+        String textFile = xmlProblem.getText();
+        if (textFile == null || textFile.isEmpty()) {
+            throw new FileNotFoundException("Text file not found in zip archive!");
+        }
+        if (in.containsFile(textFile) == false) {
+            throw new FileNotFoundException("Text file not found in zip archive: " + textFile);
+        }
+        problem.setText(new String(in.getFile(textFile), "UTF-8"));
+
+        String pdfFile = xmlProblem.getPdf();
+
+        if (pdfFile != null && pdfFile.isEmpty() == false) {
+            if (in.containsFile(pdfFile) == false) {
+                throw new FileNotFoundException("PDF file not found in zip archive: " + pdfFile);
+            } else {
+                PDF pdf = new PDF();
+                pdf.setPdf(in.getFile(pdfFile));
+                problem.setPDF(pdf);
+            }
+        }
+
+        String diff = xmlProblem.getDiff();
+        if (diffClasses != null && diff != null) {
+            for (Classes c : diffClasses) {
+                if (diff.equals(c.getDescription())) {
+                    problem.setClasses(c);
+                    break;
+                }
+            }
+        }
+
+        List<String> langs = xmlProblem.getLanguages().getLanguages();
+        if (languages != null && langs != null) {
+            List<LanguagesProblems> lps = new ArrayList<LanguagesProblems>();
+
+            nextLang:
+            for (String lang : langs) {
+                for (Languages language : languages) {
+                    if (lang.equals(language.getName())) {
+                        LanguagesProblems lp = new LanguagesProblems();
+                        lp.setLanguages(language);
+                        lps.add(lp);
+                        continue nextLang;
+                    }
+                }
+            }
+
+            problem.setLanguagesProblemss(lps);
+        }
+
+        if (xmlProblem.getTests().getTests() != null) {
+            List<Tests> tests = new ArrayList<Tests>();
+
+            for (Test test : xmlProblem.getTests().getTests()) {
+                tests.add(ZipTest.getTest(in, test));
+            }
+
+            problem.setTestss(tests);
+        }
+
+        return problem;
     }
 }

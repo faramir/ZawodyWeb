@@ -212,7 +212,7 @@ public class UnzipProblem {
         }
         
         if (entries.containsKey(filename) == false) {
-            throw new FileNotFoundException("PDF file not found in zip archive: " + filename);
+            throw new FileNotFoundException("Text file not found in zip archive: " + filename);
         }
         
         return new String(entries.get(filename), "UTF-8");

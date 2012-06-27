@@ -4,7 +4,9 @@
  */
 package pl.umk.mat.zawodyweb.www.zip;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.zip.ZipEntry;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
 import pl.umk.mat.zawodyweb.database.xml.Test;
@@ -19,7 +21,7 @@ public class ZipTest {
         out.nextTest();
 
         ZipEntry entry;
-        
+
         String inputFile = String.format("in%03d.txt", out.getTest());
         entry = new ZipEntry(inputFile);
         out.putNextEntry(entry);
@@ -39,5 +41,36 @@ public class ZipTest {
         xmlTest.setTimelimit(test.getTimelimit());
 
         return xmlTest;
+    }
+
+    static Tests getTest(ZipInputStream in, Test xmlTest) throws FileNotFoundException, UnsupportedEncodingException {
+        String infile = xmlTest.getInput();
+        String outfile = xmlTest.getOutput();
+
+        if (infile == null || infile.isEmpty()) {
+            throw new FileNotFoundException("Input file not found in zip archive!");
+        }
+
+        if (outfile == null || outfile.isEmpty()) {
+            throw new FileNotFoundException("Output file not found in zip archive!");
+        }
+
+        if (in.containsFile(infile) == false) {
+            throw new FileNotFoundException("Input file not found in zip archive: " + infile);
+        }
+
+        if (in.containsFile(outfile) == false) {
+            throw new FileNotFoundException("Output file not found in zip archive: " + outfile);
+        }
+
+        Tests tests = new Tests();
+        tests.setInput(new String(in.getFile(infile), "UTF-8"));
+        tests.setOutput(new String(in.getFile(outfile), "UTF-8"));
+        tests.setMaxpoints(xmlTest.getMaxpoints());
+        tests.setTestorder(xmlTest.getOrder());
+        tests.setTimelimit(xmlTest.getTimelimit());
+        tests.setVisibility(1); // FIXME: należy wartość pobrać z pliku XML (brak)
+
+        return tests;
     }
 }
