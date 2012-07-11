@@ -1,0 +1,31 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
+    <ui:define name="pageTitle">
+        ${messages.upload_seriefile}
+    </ui:define>
+    <ui:define name="pageContent">
+        <c:choose>
+            <c:when test="#{!(zw:canAddSeries(rolesBean, requestBean.temporaryContestId, null))}">
+                ${messages.nonsufficient_privileges}
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formEditProblem" styleClass="profilform" enctype="multipart/form-data">
+                    <fieldset>
+                        <t:saveState id="saveid" value="#{requestBean.temporaryContestId}" />
+                        <div>
+                            <h:outputLabel for="seriefile" styleClass="required">${messages.upload_seriefile}:</h:outputLabel>
+                            <t:inputFileUpload id="seriefile" styleClass="inputFileUpload" rendered="true" value="#{requestBean.temporaryFile}" />
+                            <h:message for="seriefile" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:commandButton id="save" value="#{messages.save}" styleClass="submit" type="submit" action="#{requestBean.uploadSerie}" />
+                            <h:message for="save" errorClass="error" />
+                        </div>
+                    </fieldset>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
+</ui:composition>

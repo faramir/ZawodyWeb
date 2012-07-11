@@ -15,6 +15,7 @@
                     <h:graphicImage rendered="#{contest.visibility==false}" style="float:left" styleClass="nomargin" alt="#{messages.contest_notvisible}" title="#{messages.contest_notvisible}" url="/media/images/ghost.png" />
                     <zw:contest-link id="link" contest="${contest}" type="problems" message="#{contest.name}" />
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editcontest.html?id=#{contest.id}" rendered="#{zw:canEditContest(rolesBean, contest.id, null)}" styleClass="ikonka"><h:graphicImage alt="${messages.contest_editing}" title="${messages.contest_editing}" url="/media/images/edytuj.png" /></h:outputLink>
+                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{contest.id}/contest.html" title="#{messages.contest_download}" rendered="#{zw:canEditContest(rolesBean, contest.id, null)}" styleClass="ikonka"><h:graphicImage alt="#{messages.contest_download}" title="#{messages.contest_download}" url="/media/images/get.png" /></h:outputLink>
                     <h:graphicImage alt="${messages.contest_deleting}" title="${messages.contest_deleting}" url="/media/images/usun.png" rendered="#{zw:canDeleteContest(rolesBean, contest.id, null)}" styleClass="click" onclick="confirm(this,{nazwa:'konkurs #{contest.name}',link:'#{facesContext.externalContext.requestContextPath}/del/#{contest.id}/contest.html'})"/>
                     <h:graphicImage alt="#{messages.rejudge_contest}" title="#{messages.rejudge_contest}" url="/media/images/reJudge.png" rendered="#{zw:canRateContest(rolesBean, contest)}" styleClass="click" onclick="confirm_rejudge(this,{nazwa:'wszystkie rozwiązania zadań z zawodów #{contest.name}',link:'#{facesContext.externalContext.requestContextPath}/rejudge/#{contest.id}/contest.html'})"/>
                 </h:column>
@@ -37,6 +38,7 @@
             </h:panelGrid>
             <div class="ikona">
                 <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editcontest.html" rendered="#{zw:canAddContest(rolesBean, null, null)}"><h:graphicImage alt="${messages.addcontest}" title="${messages.addcontest}" url="/media/images/dodaj.png" /></h:outputLink>
+                <h:outputLink value="#{facesContext.externalContext.requestContextPath}/put/contest.html" title="#{messages.upload_contestfile}" rendered="#{zw:canAddContest(rolesBean, null, null)}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.upload_contestfile}" title="#{messages.upload_contestfile}" url="/media/images/put.png" /></h:outputLink>
             </div>
         </a4j:form>
     </ui:define>
