@@ -32,6 +32,7 @@ public class ZipSerie {
         xmlSerie.setHiddenblocked(serie.getHiddenblocked());
         xmlSerie.setOpenips(serie.getOpenips());
         xmlSerie.setVisible(serie.getVisibleinranking());
+        xmlSerie.setProblems(new Serie.Problems());
         
         for (Problems problem : serie.getProblemss()) {
             Problem xmlProblem = new Problem();

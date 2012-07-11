@@ -39,13 +39,17 @@ public class ZipFile {
             gregDate.setTime(date);
 
             return DatatypeFactory.newInstance().newXMLGregorianCalendar(gregDate);
-        } catch (DatatypeConfigurationException e) {
+        } catch (Exception e) {
             return null;
         }
     }
 
     static Date convert(XMLGregorianCalendar xmlDate) {
-        return xmlDate.toGregorianCalendar().getTime();
+        try {
+            return xmlDate.toGregorianCalendar().getTime();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private static void putXml(ZipOutputStream out, String filename, Object xml) throws IOException, JAXBException {
@@ -186,8 +190,7 @@ public class ZipFile {
         return ZipTest.getTest(in, xmlTest);
     }
 
-    public static List<Tests> unzipTests(byte[] tests,
-            List<Languages> languages, List<Classes> diffClasses)
+    public static List<Tests> unzipTests(byte[] tests)
             throws IOException, JAXBException {
         ZipInputStream in = new ZipInputStream(tests);
 

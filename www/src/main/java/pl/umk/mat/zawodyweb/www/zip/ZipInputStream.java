@@ -42,17 +42,15 @@ public class ZipInputStream extends java.util.zip.ZipInputStream {
     private void fillEntries() throws IOException {
         entries = new HashMap<String, byte[]>();
 
+        int count;
         ZipEntry entry;
+        byte[] data = new byte[BUFFER];
 
         while ((entry = this.getNextEntry()) != null) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] data = new byte[BUFFER];
-            int count;
-            while ((count = in.read(data, 0, BUFFER)) != -1) {
+            while ((count = this.read(data, 0, BUFFER)) != -1) {
                 baos.write(data, 0, count);
             }
-            baos.flush();
-            baos.close();
 
             entries.put(entry.getName(), baos.toByteArray());
         }
@@ -65,7 +63,7 @@ public class ZipInputStream extends java.util.zip.ZipInputStream {
     public boolean containsFile(String filename) {
         return entries.containsKey(filename);
     }
-    
+
     public byte[] getFile(String filename) {
         return entries.get(filename);
     }

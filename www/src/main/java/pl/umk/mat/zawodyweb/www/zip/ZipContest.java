@@ -21,7 +21,7 @@ import pl.umk.mat.zawodyweb.database.xml.Serie;
  * @author faramir
  */
 public class ZipContest {
-
+    
     static Contest addContest(ZipOutputStream out, Contest xmlContest, Contests contest) throws IOException {
         xmlContest.setName(contest.getName());
         xmlContest.setType(contest.getType());
@@ -34,13 +34,14 @@ public class ZipContest {
         xmlContest.setSubtype(contest.getSubtype());
         xmlContest.setSubtypename(contest.getSubtypename());
         xmlContest.setVisible(contest.getVisibility());
-
+        xmlContest.setSeries(new Contest.Series());
+        
         for (Series serie : contest.getSeriess()) {
             Serie xmlSerie = new Serie();
             ZipSerie.addSerie(out, xmlSerie, serie);
             xmlContest.getSeries().getSeries().add(xmlSerie);
         }
-
+        
         return xmlContest;
     }
     
@@ -61,9 +62,9 @@ public class ZipContest {
         contest.setSubtypename(xmlContest.getSubtypename());
         contest.setVisibility(xmlContest.getVisible());
         
-        if (xmlContest.getSeries().getSeries()!=null){
+        if (xmlContest.getSeries().getSeries() != null) {
             List<Series> series = new ArrayList<Series>();
-
+            
             for (Serie serie : xmlContest.getSeries().getSeries()) {
                 series.add(ZipSerie.getSerie(in, serie, languages, diffClasses));
             }
