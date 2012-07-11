@@ -80,6 +80,8 @@ public class MainJudge {
 
                 Transaction transaction = null;
                 try {
+                    Properties submissionProperties = new Properties(properties);
+
                     /*
                      * change submit status to PROCESS
                      */
@@ -104,8 +106,8 @@ public class MainJudge {
                     byte[] codeText = submit.getCode();
                     String filename = submit.getFilename();
                     if (filename != null && !filename.isEmpty()) {
-                        properties.setProperty("COMPILED_FILENAME", filename);
-                        properties.setProperty("CODE_FILENAME", filename);
+                        submissionProperties.setProperty("COMPILED_FILENAME", filename);
+                        submissionProperties.setProperty("CODE_FILENAME", filename);
                     }
                     Classes compilerClasses = submit.getLanguages().getClasses();
 
@@ -136,19 +138,19 @@ public class MainJudge {
                         classes.add(new ClassInfo(compilerClasses.getId(), compilerClasses.getFilename(), compilerClasses.getCode(), compilerClasses.getVersion()));
                         compiler = (CompilerInterface) new CompiledClassLoader().loadCompiledClass(compilerClasses.getFilename(), compilerClasses.getCode()).newInstance();
                     }
-                    properties.setProperty("CODEFILE_EXTENSION", submit.getLanguages().getExtension());
+                    submissionProperties.setProperty("CODEFILE_EXTENSION", submit.getLanguages().getExtension());
 
                     for (Entry<Object, Object> property : submit.getProblems().loadProperties().entrySet()) {
                         if (property.getKey() instanceof String && property.getValue() instanceof String) {
                             String key = (String) property.getKey();
                             String value = (String) property.getValue();
 
-                            if (properties.containsKey(key) == false || isUpperCased(key) == false) {
-                                properties.setProperty(key, value);
+                            if (submissionProperties.containsKey(key) == false || isUpperCased(key) == false) {
+                                submissionProperties.setProperty(key, value);
                             }
                         }
                     }
-                    compiler.setProperties(properties);
+                    compiler.setProperties(submissionProperties);
 
                     /*
                      * downloading diff class
@@ -176,7 +178,7 @@ public class MainJudge {
                         classes.add(new ClassInfo(diffClasses.getId(), diffClasses.getFilename(), diffClasses.getCode(), diffClasses.getVersion()));
                         checker = (CheckerInterface) new CompiledClassLoader().loadCompiledClass(diffClasses.getFilename(), diffClasses.getCode()).newInstance();
                     }
-                    checker.setProperties(properties);
+                    checker.setProperties(submissionProperties);
 
                     /*
                      * compilation
