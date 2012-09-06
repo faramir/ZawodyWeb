@@ -21,7 +21,7 @@ import pl.umk.mat.zawodyweb.database.CheckerErrors;
  */
 public class LanguageUVA implements CompilerInterface {
 
-    public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageLA.class);
+    public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageUVA.class);
     private Properties properties;
     private HttpClient client;
     private String acmSite = "http://uva.onlinejudge.org/";
@@ -225,7 +225,7 @@ public class LanguageUVA implements CompilerInterface {
                 throw new TimeoutException("Too slow to answer.. destroy");
             }
 
-            logger.info("Checking answer on LA-ACM");
+            logger.info("Checking answer on UVa-ACM");
             List<Map<String, String>> results = getResults(limitOnPage);
 
             String sid = String.valueOf(id);
@@ -328,22 +328,22 @@ public class LanguageUVA implements CompilerInterface {
 
         try {
             logIn(login, password);
-            logger.info("Logged to LA-ACM");
+            logger.info("Logged to UVa-ACM");
 
             if (checkSubmissionsStatus() == false) {
                 result.setResult(CheckerErrors.UNDEF);
                 result.setResultDesc("More than 32 submissions in queue.");
-                result.setText("LA-ACM judge broken?");
+                result.setText("UVa-ACM judge broken?");
                 return result;
             }
 
             int id = sendSolution(path, input);
-            logger.info("LA-ACM Submit id = " + id);
+            logger.info("UVa-ACM Submit id = " + id);
 
             checkResults(id, maxTime, input, result);
 
             logOut();
-            logger.info("Logged out from LA-ACM");
+            logger.info("Logged out from UVa-ACM");
         } catch (Exception e) {
             logger.info("Exception: ", e);
             result.setResult(CheckerErrors.UNDEF);
