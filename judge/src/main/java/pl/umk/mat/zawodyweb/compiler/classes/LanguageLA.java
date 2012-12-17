@@ -224,7 +224,7 @@ public class LanguageLA implements CompilerInterface {
         long start_time = System.currentTimeMillis();
         do {
             if (System.currentTimeMillis() - start_time > maxTime * 1000L) {
-                logger.info(String.format("%.1f minutes without answer. Destroy!", maxTime / 60));
+                logger.info(String.format("%.1f minutes without answer. Destroy!", maxTime / 60.));
                 throw new TimeoutException("Too slow to answer.. destroy");
             }
 
