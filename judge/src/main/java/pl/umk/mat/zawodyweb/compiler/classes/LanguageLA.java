@@ -15,12 +15,13 @@ import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
 
 /**
+ * Copied from LanguageLA, acmSite = http://uva.onlinejudge.org/
  *
  * @author faramir
  */
 public class LanguageLA implements CompilerInterface {
 
-    public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageLA.class);
+    public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageUVA.class);
     private Properties properties;
     private HttpClient client;
     private String acmSite = "http://livearchive.onlinejudge.org/";
@@ -31,20 +32,22 @@ public class LanguageLA implements CompilerInterface {
     }
 
     //http://livearchive.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=19 - last 50 submissions
-    private boolean checkSubmissionsStatus() throws HttpException, IOException {
+    private int checkInQueueStatus(String problemId) throws HttpException, IOException {
         List<Map<String, String>> results = getResults(50);
 
         int inQueue = 0;
         for (Map<String, String> result : results) {
-            String status = result.get("status");
-            if ("".equals(status)
-                    || "Sent to judge".equals(status)
-                    || "In judge queue".equals(status)) {
-                ++inQueue;
+            if (problemId.equals(result.get("problemsid"))) {
+                String status = result.get("status");
+                if ("".equals(status)
+                        || "Sent to judge".equals(status)
+                        || "In judge queue".equals(status)) {
+                    ++inQueue;
+                }
             }
         }
 
-        return inQueue <= 32;
+        return inQueue;
     }
 
     private void logIn(String login, String password) throws HttpException, IOException {
@@ -180,6 +183,7 @@ public class LanguageLA implements CompilerInterface {
 
                 Map<String, String> result = new HashMap<String, String>();
                 result.put("id", split[1].trim());
+                result.put("problemid", (split[3].replaceAll("<[^>]*>", "")).trim());
                 result.put("status", (split[7].replaceAll("<[^>]*>", "")).trim());
                 result.put("time", split[11].replace(".", "").trim());
 
@@ -314,8 +318,18 @@ public class LanguageLA implements CompilerInterface {
     public TestOutput runTest(String path, TestInput input) {
         TestOutput result = new TestOutput(null);
 
+        Random random = new Random();
+
         String login = properties.getProperty("livearchive.login");
         String password = properties.getProperty("livearchive.password");
+
+        int inQueue;
+        try {
+            inQueue = Integer.parseInt(properties.getProperty("livearchive.inqueue"));
+        } catch (NumberFormatException e) {
+            inQueue = 4;
+        }
+
         long maxTime;
         try {
             maxTime = Long.parseLong(properties.getProperty("livearchive.max_time"));
@@ -329,11 +343,20 @@ public class LanguageLA implements CompilerInterface {
             logIn(login, password);
             logger.info("Logged to LA-ACM");
 
-            if (checkSubmissionsStatus() == false) {
-                result.setResult(CheckerErrors.UNDEF);
-                result.setResultDesc("More than 32 submissions in queue.");
-                result.setText("LA-ACM judge broken?");
-                return result;
+            for (int i = 3; i >= 0; --i) {
+                if (checkInQueueStatus(input.getText()) > inQueue) {
+                    if (i == 0) {
+                        result.setResult(CheckerErrors.UNDEF);
+                        result.setResultDesc("More than " + inQueue + " submissions of " + input.getText() + " in queue.");
+                        result.setText("LA-ACM judge broken?");
+                        logger.info(result.getResultDesc());
+                        return result;
+                    } else {
+                        Thread.sleep(10000 + (Math.abs(random.nextInt()) % 5000));
+                        continue;
+                    }
+                }
+                break;
             }
 
             int id = sendSolution(path, input);
@@ -357,7 +380,7 @@ public class LanguageLA implements CompilerInterface {
     private void prepareHttpClient() {
         client = new HttpClient();
         HttpClientParams params = client.getParams();
-        params.setParameter("http.useragent", "Opera/9.80 (X11; Linux x86_64; U; pl) Presto/2.10.289 Version/12.00");
+        params.setParameter("http.useragent", "Opera/9.80 (X11; Linux x86_64; U) Presto/2.12.388 Version/12.11");
         client.setParams(params);
     }
 
