@@ -42,12 +42,14 @@ import pl.umk.mat.zawodyweb.www.zip.ZipSolutions;
 /**
  *
  * @author slawek
+ * @author faramir
  */
 @Instance("#{requestBean}")
 public class RequestBean {
 
     private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
     private SubmitsDAO submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
+    private AliasesDAO aliasesDAO = DAOFactory.DEFAULT.buildAliasesDAO();
     private ClassesDAO classesDAO = DAOFactory.DEFAULT.buildClassesDAO();
     private LanguagesDAO languagesDAO = DAOFactory.DEFAULT.buildLanguagesDAO();
     private LanguagesProblemsDAO languagesProblemsDAO = DAOFactory.DEFAULT.buildLanguagesProblemsDAO();
@@ -76,6 +78,7 @@ public class RequestBean {
     private Submits editedSubmit;
     private Questions editedQuestion;
     private Results editedResult;
+    private Aliases editedAlias;
     private Classes editedClass;
     private Languages editedLanguage;
     private List<LanguagesProblems> temporaryLanguagesProblems = null;
@@ -89,6 +92,7 @@ public class RequestBean {
     private List<Questions> currentContestQuestions = null;
     private List<Users> users = null;
     private List<Roles> roles = null;
+    private List<Aliases> allAliases = null;
     private List<Classes> allClasses = null;
     private RankingTable currentContestRanking = null;
     private RankingTable currentContestSubranking = null;
@@ -100,6 +104,7 @@ public class RequestBean {
     private Integer temporarySeriesId;
     private Integer temporaryProblemId;
     private Integer temporarySubmitId;
+    private Integer temporaryAliasId;
     private Integer temporaryClassId;
     private Integer temporaryTestId;
     private Integer temporaryQuestionId;
@@ -275,6 +280,15 @@ public class RequestBean {
         return roles;
     }
 
+    public List<Aliases> getAllAliases() {
+        if (allAliases == null) {
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Aliases.class);
+            c.addOrder(Order.asc("name"));
+            allAliases = c.list();
+        }
+        return allAliases;
+    }
+
     public List<Classes> getAllClasses() {
         if (allClasses == null) {
             Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Classes.class);
@@ -391,7 +405,7 @@ public class RequestBean {
                 List<Problems> problems = c.list();
                 submittableProblems = new ArrayList<Problems>();
                 for (Problems problem : problems) {
-                    if (ELFunctions.isValidIP(problem.getSeries().getOpenips(false), clientIp)) {
+                    if (ELFunctions.isValidIP(problem.getSeries().getOpenips(), clientIp)) {
                         submittableProblems.add(problem);
                     }
                 }
@@ -423,7 +437,7 @@ public class RequestBean {
 
                 String clientIp = getClientIp();
                 for (Series serie : series) {
-                    if (serie.getHiddenblocked() == false || ELFunctions.isValidIP(serie.getOpenips(false), clientIp)) {
+                    if (serie.getHiddenblocked() == false || ELFunctions.isValidIP(serie.getOpenips(), clientIp)) {
                         currentContestSeries.add(serie);
                     }
                 }
@@ -677,6 +691,28 @@ public class RequestBean {
         return editedLanguage;
     }
 
+    public Aliases getEditedAlias() {
+        if (editedAlias == null) {
+            FacesContext context = FacesContext.getCurrentInstance();
+
+            if (!WWWHelper.isPost(context) && temporaryAliasId == null) {
+                try {
+                    temporaryAliasId = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
+                } catch (Exception e) {
+                    temporaryAliasId = 0;
+                }
+            }
+
+            if (ELFunctions.isNullOrZero(temporaryAliasId)) {
+                editedAlias = new Aliases();
+            } else {
+                editedAlias = aliasesDAO.getById(temporaryAliasId);
+            }
+        }
+
+        return editedAlias;
+    }
+
     public Classes getEditedClass() {
         if (editedClass == null) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -825,8 +861,16 @@ public class RequestBean {
         this.temporaryProblemId = temporaryProblemId;
     }
 
+    public Integer getTemporaryAliasId() {
+        return temporaryAliasId;
+    }
+
     public Integer getTemporaryClassId() {
         return temporaryClassId;
+    }
+
+    public void setTemporaryAliasId(Integer temporaryAliasId) {
+        this.temporaryAliasId = temporaryAliasId;
     }
 
     public void setTemporaryClassId(Integer temporaryClassId) {
@@ -1070,6 +1114,23 @@ public class RequestBean {
         return "login";
     }
 
+    public String saveAlias() {
+        if (!rolesBean.canEditAnyProblem()) {
+            return null;
+        }
+
+        try {
+            aliasesDAO.saveOrUpdate(getEditedAlias());
+        } catch (Exception e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formSubmit:save", summary, null);
+            return null;
+        }
+
+        return "listaliases";
+    }
+
     public String saveLanguage() {
         if (!rolesBean.canEditAnyProblem()) {
             return null;
@@ -1299,7 +1360,7 @@ public class RequestBean {
         try {
             Series unzippedSerie = ZipFile.unzipSerie(temporaryFile.getBytes(), getLanguages(), getDiffClasses());
             Contests contests = contestsDAO.getById(temporaryContestId);
-            
+
             insertSerie(contests, unzippedSerie);
 
             selectContest(temporaryContestId);
@@ -1642,7 +1703,7 @@ public class RequestBean {
     public String goToRankingSeria(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         Series serie = seriesDAO.getById(id);
         if (serie == null
-                || (ELFunctions.isValidIP(serie.getOpenips(false), getClientIp()) == false
+                || (ELFunctions.isValidIP(serie.getOpenips(), getClientIp()) == false
                 && serie.getHiddenblocked() == true
                 && !rolesBean.canAddProblem(serie.getContests().getId(), id))) {
             return "/error/404";
@@ -1668,7 +1729,7 @@ public class RequestBean {
     public String goToRankingSeriaDate(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy, @Param(name = "date", encode = true) String date) {
         Series serie = seriesDAO.getById(id);
         if (serie == null
-                || (ELFunctions.isValidIP(serie.getOpenips(false), getClientIp()) == false
+                || (ELFunctions.isValidIP(serie.getOpenips(), getClientIp()) == false
                 && serie.getHiddenblocked() == true
                 && !rolesBean.canAddProblem(serie.getContests().getId(), id))) {
             return "/error/404";
@@ -1833,7 +1894,7 @@ public class RequestBean {
         if (currentProblem != null) {
             Series serie = currentProblem.getSeries();
 
-            if (((ELFunctions.isValidIP(serie.getOpenips(false), getClientIp()) == false
+            if (((ELFunctions.isValidIP(serie.getOpenips(), getClientIp()) == false
                     && serie.getHiddenblocked() == true)
                     || serie.getStartdate().after(new Date())
                     || serie.getContests().getVisibility() == false)
@@ -1896,6 +1957,16 @@ public class RequestBean {
         if (rolesBean.canEditAnyProblem()) {
             languagesDAO.deleteById(id);
             return "/admin/listlanguages";
+        } else {
+            return "/error/404";
+        }
+    }
+
+    @HttpAction(name = "delalias", pattern = "del/{id}/alias")
+    public String deleteAliases(@Param(name = "id", encode = true) int id) {
+        if (rolesBean.canEditAnyProblem()) {
+            aliasesDAO.deleteById(id);
+            return "/admin/listaliases";
         } else {
             return "/error/404";
         }
@@ -2462,7 +2533,7 @@ public class RequestBean {
 
             String clientIp = getClientIp();
             if (rolesBean.canEditProblem(problem.getSeries().getContests().getId(), problem.getSeries().getId()) == true
-                    || (ELFunctions.isValidIP(problem.getSeries().getOpenips(false), clientIp)
+                    || (ELFunctions.isValidIP(problem.getSeries().getOpenips(), clientIp)
                     && problem.getSeries().getStartdate().getTime() < submitTime
                     && (problem.getSeries().getEnddate() == null || submitTime < problem.getSeries().getEnddate().getTime()))) {
                 Submits submit = new Submits();

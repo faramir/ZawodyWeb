@@ -1,0 +1,48 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
+    <ui:define name="pageTitle">
+        <c:choose>
+            <c:when test="#{param.id == '0' or param.id == null}">
+                ${messages.alias_adding}
+            </c:when>
+            <c:otherwise>
+                ${messages.alias_editing}
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
+    <ui:define name="pageContent">
+        <c:choose>
+            <c:when test="#{requestBean.editedAlias == null}">
+                ${messages.no_alias}
+            </c:when>
+            <c:when test="#{!(zw:canEditAnyProblem(rolesBean))}">
+                ${messages.nonsufficient_privileges}
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formSubmit" styleClass="profilform" enctype="multipart/form-data">
+                    <fieldset>
+                        <t:saveState id="saveid" value="#{requestBean.temporaryAliasId}" />
+                        <div>
+                            <h:outputLabel for="name_alias" styleClass="required">${messages.aliasname}:</h:outputLabel>
+                            <h:inputText id="name_alias" required="true" maxlength="64" value="#{requestBean.editedAlias.name}" />
+                            <h:message for="name_alias" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="ips_alias" styleClass="required">${messages.ips}:</h:outputLabel>
+                            <h:inputTextarea id="ips_alias" styleClass="bigHeight" required="true" value="#{requestBean.editedAlias.ips}"/>
+                            <h:message for="ips_alias" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:commandButton id="save" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveAlias}" />
+                            <h:message for="save" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                    </fieldset>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
+</ui:composition>

@@ -75,6 +75,9 @@
                     <li>
                         <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/listlanguages.html">${messages.languages}</h:outputLink>
                     </li>
+                    <li>
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/listaliases.html">${messages.aliases}</h:outputLink>
+                    </li>
                 </c:if>
             </ul>
         </div>

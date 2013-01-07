@@ -76,7 +76,7 @@
                         </taskdef>
                         <instrument verbose="false">
                             <fileset dir="${project.build.outputDirectory}">
-                                <include name="**/pojo/**/*.class" />
+                                <include name="pl/umk/mat/zawodyweb/database/pojo/**/*.class" />
                             </fileset>
                         </instrument>
                     </tasks>
