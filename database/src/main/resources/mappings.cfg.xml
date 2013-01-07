@@ -4,12 +4,13 @@
     <session-factory>
         <!-- Remove this property if you use JTA -->
         <property name="current_session_context_class">thread</property>
-        <!-- mappings classes -->    
+        <!-- mappings classes -->
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.Series"/>
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.Users"/>
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.Languages"/>
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.Tests"/>
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.Results"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.Aliases"/>
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.Classes"/>
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.Submits"/>
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.Contests"/>
@@ -19,6 +20,6 @@
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.UserLog"/>
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.Roles"/>
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems"/>
-        <mapping class="pl.umk.mat.zawodyweb.database.pojo.PDF"/> 
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.PDF"/>
     </session-factory>
 </hibernate-configuration>

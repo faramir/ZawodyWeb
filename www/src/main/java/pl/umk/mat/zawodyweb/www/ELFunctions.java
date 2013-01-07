@@ -4,9 +4,13 @@
  */
 package pl.umk.mat.zawodyweb.www;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -16,19 +20,18 @@ import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
-import pl.umk.mat.zawodyweb.www.ranking.RankingTable;
 
 /**
  *
  * @author slawek
+ * @author faramir
  */
 public class ELFunctions {
 
     /**
      * Filter input URI against unwanted characters
      *
-     * @param in
-     *            input URI
+     * @param in input URI
      * @return filtered URI
      */
     public static String filterUri(String in) {
@@ -204,26 +207,80 @@ public class ELFunctions {
     public static Date getDate() {
         return new Date();
     }
-    
+
     public static Boolean submitDateOk(Problems p) {
         Date now = new Date();
         return p.getSeries().getStartdate().before(now) && (p.getSeries().getEnddate() == null || p.getSeries().getEnddate().after(now));
     }
 
-    public static boolean isValidIP(String[] ips, String clientIp) {
+    /* http://stackoverflow.com/questions/4209760/validate-an-ip-address-with-mask */
+    private static int getInetInteger(Inet4Address inet) {
+        byte[] addr = inet.getAddress();
+        return ((addr[0] & 0xFF) << 24)
+                | ((addr[1] & 0xFF) << 16)
+                | ((addr[2] & 0xFF) << 8)
+                | ((addr[3] & 0xFF));
+    }
+
+    private static boolean checkValidIP(String ipMask, String clientIp) {
+        if (ipMask.matches("^[^0-9].*$")) {
+        } else if (ipMask.contains("/")) {
+            try {
+                int index = ipMask.indexOf("/");
+                int bits = Integer.parseInt(ipMask.substring(index + 1));
+                if (bits > 0) {
+
+                    InetAddress cinet = InetAddress.getByName(clientIp);
+                    InetAddress sinet = InetAddress.getByName(ipMask.substring(0, index));
+                    if ((cinet instanceof Inet4Address)
+                            && (sinet instanceof Inet4Address)) {
+                        int sint = getInetInteger((Inet4Address) sinet);
+                        int cint = getInetInteger((Inet4Address) cinet);
+                        int mask = ~((1 << (32 - bits)) - 1);
+
+                        return (sint & mask) == (cint & mask);
+                    }
+                }
+            } catch (UnknownHostException ex) {
+            } catch (NumberFormatException ex) {
+            } catch (IndexOutOfBoundsException ex) {
+            }
+        }
+
+        return clientIp.startsWith(ipMask);
+    }
+
+    public static boolean isValidIP(String openips, String clientIp) {
+        String[] ips = getOpenIps(openips);
         if (ips == null || ips.length == 0) {
             return true;
         }
         for (String ip : ips) {
-            if (clientIp.startsWith(ip)) {
+            if (checkValidIP(ip, clientIp)) {
                 return true;
             }
         }
         return false;
     }
 
+    public static String[] getOpenIps(String ips) {
+        if (ips == null) {
+            return null;
+        }
+
+        List<String> openIPs = new ArrayList<String>();
+        for (String e : ips.split("[;,\\s]")) {
+            e = e.trim();
+            if (e.isEmpty() == false) {
+                openIPs.add(e);
+            }
+        }
+
+        return openIPs.toArray(new String[0]);
+    }
+
     public static Boolean submitIpOk(Problems p, String clientIp) {
-        return isValidIP(p.getSeries().getOpenips(false), clientIp);
+        return checkValidIP(p.getSeries().getOpenips(), clientIp);
     }
 
     public static String dateAndHour(Timestamp t) {
@@ -244,9 +301,11 @@ public class ELFunctions {
      * http://stackoverflow.com/questions/277521/how-to-identify-the-file-content-is-in-ascii-or-binary/277568#277568
      *
      * If the first two bytes are hex FE FF, the file is tentatively UTF-16 BE.
-     * If the first two bytes are hex FF FE, and the following two bytes are not hex 00 00 , the file is tentatively UTF-16 LE.
-     * If the first four bytes are hex 00 00 FE FF, the file is tentatively UTF-32 BE.
-     * If the first four bytes are hex FF FE 00 00, the file is tentatively UTF-32 LE.
+     * If the first two bytes are hex FF FE, and the following two bytes are not
+     * hex 00 00 , the file is tentatively UTF-16 LE. If the first four bytes
+     * are hex 00 00 FE FF, the file is tentatively UTF-32 BE. If the first four
+     * bytes are hex FF FE 00 00, the file is tentatively UTF-32 LE.
+     *
      * @param text
      * @return true if file is binary
      */

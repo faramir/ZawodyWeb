@@ -18,6 +18,8 @@ import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.GenerationType;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.apache.commons.codec.binary.Hex;
 
 /**
@@ -25,7 +27,7 @@ import org.apache.commons.codec.binary.Hex;
  *
  * <p>Generated at Fri May 08 19:00:59 CEST 2009</p>
  * @author Salto-db Generator v1.1 / EJB3
- * 
+ *
  */
 @Entity
 @Table(name = "users", schema = "public")
@@ -198,6 +200,7 @@ public class Users implements Serializable {
      */
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "birthdate")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getBirthdate() {
         return birthdate;
     }
@@ -408,7 +411,7 @@ public class Users implements Serializable {
         this.ldate = ldate;
     }
 
-    
+
         /**
      * @return viewPDF
      */
@@ -424,7 +427,7 @@ public class Users implements Serializable {
     public void setOnlylogin(Boolean onlylogin) {
         this.onlylogin = onlylogin;
     }
-    
+
     /**
      * Get the list of Questions
      */

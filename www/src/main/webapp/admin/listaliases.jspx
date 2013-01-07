@@ -1,0 +1,42 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
+    <ui:define name="pageTitle">
+        ${messages.aliases}
+    </ui:define>
+    <ui:define name="pageContent">
+        <c:choose>
+            <c:when test="#{!(zw:canEditAnyProblem(rolesBean))}">
+                ${messages.nonsufficient_privileges}
+            </c:when>
+            <c:otherwise>
+                <div id="formEditContest" class="profilform">
+                    <div class="ikona" style="margin-left:-40px">
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editalias.html" title="#{messages.addalias}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addalias}" title="#{messages.addalias}" url="/media/images/dodaj.png" /></h:outputLink>
+                    </div>
+                    <t:dataTable id="aliases" var="alias" styleClass="seria" value="#{requestBean.allAliases}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols">
+                        <h:column>
+                            <f:facet name="header">
+                                ${messages.aliasname}
+                            </f:facet>
+                            <h:outputText value="#{alias.name}" styleClass="nowrap"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                ${messages.ips}
+                            </f:facet>
+                            <h:outputText value="#{alias.ips}" />
+                        </h:column>
+                        <h:column>
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editalias.html?id=#{alias.id}" title="#{messages.editalias}" styleClass="ikonka"><h:graphicImage alt="#{messages.editalias}" title="#{messages.editalias}" url="/media/images/edytuj.png" /></h:outputLink>
+                            <h:graphicImage alt="#{messages.delalias}" title="#{messages.delalias}" url="/media/images/usun.png" styleClass="click" onclick="confirm(this,{nazwa:'alias #{alias.name}',link:'#{facesContext.externalContext.requestContextPath}/del/#{alias.id}/alias.html'})"/>
+                        </h:column>
+                    </t:dataTable>
+                    <div class="ikona" style="margin-left:-40px">
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editalias.html" title="#{messages.addalias}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addalias}" title="#{messages.addalias}" url="/media/images/dodaj.png" /></h:outputLink>
+                    </div>
+                </div>
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
+</ui:composition>

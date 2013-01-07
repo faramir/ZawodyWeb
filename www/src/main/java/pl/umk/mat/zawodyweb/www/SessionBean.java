@@ -106,7 +106,7 @@ public class SessionBean {
              */
             UsersDAO dao = DAOFactory.DEFAULT.buildUsersDAO();
             List<Users> users = dao.findByLogin(openIdConsumer.getLogin());
-            Users user = null;
+            Users user;
             if (users.isEmpty()) {
                 user = new Users();
                 user.setRdate(new Timestamp(System.currentTimeMillis()));

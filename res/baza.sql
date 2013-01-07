@@ -15,17 +15,17 @@ CREATE TABLE USERS (
         school              varchar(80),
         tutor               text,
         eMailNotification   int,
-	schooltype          varchar(16) DEFAULT '-',
-	rdate               timestamp,
-	ldate               timestamp,
-	fdate               timestamp,
-	onlylogin           boolean default false
+        schooltype          varchar(16) DEFAULT '-',
+        rdate               timestamp,
+        ldate               timestamp,
+        fdate               timestamp,
+        onlylogin           boolean default false
 );
 
 CREATE TABLE ROLES (  
         id                  serial primary key,
         name                varchar(40) unique,
-	editUser            boolean,
+        editUser            boolean,
         addContest          boolean,
         editContest         boolean,
         delContest          boolean,
@@ -47,7 +47,9 @@ CREATE TABLE SERIES (
         freezeDate          timestamp,
         unfreezeDate        timestamp,
         penaltyTime         int,
-	visibleInRanking    boolean default true
+        visibleInRanking    boolean default true,
+        openips             text default '',
+        hiddenblocked       boolean default false
 );
 
 CREATE TABLE CONTESTS (
@@ -55,7 +57,7 @@ CREATE TABLE CONTESTS (
         name                varchar(120) unique,
         type                int,
         subtype             int DEFAULT 0,
-        subtypename         varchar(120) DEFAULT '',	
+        subtypename         varchar(120) DEFAULT '',    
         pass                varchar(32),
         startDate           timestamp,
         about               text,
@@ -72,8 +74,8 @@ CREATE TABLE SUBMITS (
         code                bytea,
         filename            varchar(255),
         notes               text,
-	clientIp            varchar(16) default '',
-	visibleInRanking    boolean default true
+        clientIp            varchar(16) default '',
+        visibleInRanking    boolean default true
 );
 
 CREATE TABLE PROBLEMS ( 
@@ -84,8 +86,8 @@ CREATE TABLE PROBLEMS (
         memlimit            int,
         codesize            int,
         config              text,
-	visibleInRanking    boolean default true,
-	viewpdf             boolean default false	
+        visibleInRanking    boolean default true,
+        viewpdf             boolean default false       
 );
 
 CREATE TABLE QUESTIONS ( 
@@ -94,8 +96,8 @@ CREATE TABLE QUESTIONS (
         question            text,
         visibility          int,
         qtype               int,
-    qdate timestamp without time zone,
-    adate timestamp without time zone
+        qdate timestamp without time zone,
+        adate timestamp without time zone
 );
 
 CREATE TABLE RESULTS (
@@ -104,7 +106,7 @@ CREATE TABLE RESULTS (
         runTime             int,
         memory              int,
         notes               text,
-	submitresult        int
+        submitresult        int
 );
 
 CREATE TABLE TESTS (   
@@ -114,7 +116,7 @@ CREATE TABLE TESTS (
         timeLimit           int,
         maxPoints           int,
         visibility          int,
-	testorder	    int
+        testorder           int
 );
 
 CREATE TABLE LANGUAGES ( 
@@ -138,9 +140,15 @@ CREATE TABLE PDF (
 
 CREATE TABLE USERLOG ( 
         id                  serial primary key,
-        username             varchar(64),
-	ip                  varchar(40),
+        username            varchar(64),
+        ip                  varchar(40),
         logdate             timestamp
+);
+
+CREATE TABLE ALIASES ( 
+        id                  serial primary key,
+        name                varchar(64),
+        ips                 text default ''
 );
 
 /* Powiazadania jeden do wielu */

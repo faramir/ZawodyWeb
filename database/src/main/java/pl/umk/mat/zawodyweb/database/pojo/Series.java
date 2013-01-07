@@ -16,14 +16,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.GenerationType;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.hibernate.annotations.OrderBy;
 
 /**
  * <p>Pojo mapping TABLE public.series</p>
  *
  * <p>Generated at Fri May 08 19:00:58 CEST 2009</p>
+ *
  * @author Salto-db Generator v1.1 / EJB3
- * 
+ *
  */
 @Entity
 @Table(name = "series", schema = "public")
@@ -122,6 +125,7 @@ public class Series implements Serializable {
      */
     @Basic
     @Column(name = "startdate")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getStartdate() {
         return startdate;
     }
@@ -138,6 +142,7 @@ public class Series implements Serializable {
      */
     @Basic
     @Column(name = "enddate")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getEnddate() {
         return enddate;
     }
@@ -154,6 +159,7 @@ public class Series implements Serializable {
      */
     @Basic
     @Column(name = "freezedate")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getFreezedate() {
         return freezedate;
     }
@@ -170,6 +176,7 @@ public class Series implements Serializable {
      */
     @Basic
     @Column(name = "unfreezedate")
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getUnfreezedate() {
         return unfreezedate;
     }
@@ -227,22 +234,6 @@ public class Series implements Serializable {
      */
     public void setOpenips(String openips) {
         this.openips = openips;
-    }
-
-    public String[] getOpenips(boolean dummy) {
-        if (openips == null) {
-            return null;
-        }
-
-        List<String> openIPs = new ArrayList<String>();
-        for (String e : openips.split("[ ;,]")) {
-            e = e.trim();
-            if (e.isEmpty() == false) {
-                openIPs.add(e);
-            }
-        }
-
-        return openIPs.toArray(new String[0]);
     }
 
     /**

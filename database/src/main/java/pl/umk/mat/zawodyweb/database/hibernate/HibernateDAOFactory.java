@@ -62,6 +62,14 @@ public class HibernateDAOFactory extends DAOFactory {
      * @see pl.umk.mat.zawodyweb.database.DAOFactory#buildClassesDAO()
      */
     @Override
+    public AliasesDAO buildAliasesDAO() {
+        return new AliasesHibernateDAO();
+    }
+
+    /* (non-Javadoc)
+     * @see pl.umk.mat.zawodyweb.database.DAOFactory#buildClassesDAO()
+     */
+    @Override
     public ClassesDAO buildClassesDAO() {
         return new ClassesHibernateDAO();
     }
