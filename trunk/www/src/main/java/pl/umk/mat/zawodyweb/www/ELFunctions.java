@@ -14,8 +14,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import pl.umk.mat.zawodyweb.database.AliasesDAO;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
+import pl.umk.mat.zawodyweb.database.pojo.Aliases;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
@@ -222,8 +225,18 @@ public class ELFunctions {
                 | ((addr[3] & 0xFF));
     }
 
-    private static boolean checkValidIP(String ipMask, String clientIp) {
+    private static Boolean checkValidIP(String ipMask, String clientIp) {
         if (ipMask.matches("^[^0-9].*$")) {
+            AliasesDAO aliasesDAO = DAOFactory.DEFAULT.buildAliasesDAO();
+            List<Aliases> aliases = aliasesDAO.findByName(ipMask);
+            if (aliases.size() > 0) {
+                for (Aliases alias : aliases) {
+                    if (isValidIP(alias.getIps(), clientIp)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
         } else if (ipMask.contains("/")) {
             try {
                 int index = ipMask.indexOf("/");
@@ -245,9 +258,10 @@ public class ELFunctions {
             } catch (NumberFormatException ex) {
             } catch (IndexOutOfBoundsException ex) {
             }
+        } else {
+            return clientIp.startsWith(ipMask);
         }
-
-        return clientIp.startsWith(ipMask);
+        return null;
     }
 
     public static boolean isValidIP(String openips, String clientIp) {
@@ -255,15 +269,20 @@ public class ELFunctions {
         if (ips == null || ips.length == 0) {
             return true;
         }
+        Boolean valid;
+        boolean r = true;
         for (String ip : ips) {
-            if (checkValidIP(ip, clientIp)) {
+            valid = checkValidIP(ip, clientIp);
+            if (valid != null && valid == true) {
                 return true;
+            } else if (valid != null && valid == false) {
+                r = false;
             }
         }
-        return false;
+        return r;
     }
 
-    public static String[] getOpenIps(String ips) {
+    private static String[] getOpenIps(String ips) {
         if (ips == null) {
             return null;
         }
@@ -280,7 +299,7 @@ public class ELFunctions {
     }
 
     public static Boolean submitIpOk(Problems p, String clientIp) {
-        return checkValidIP(p.getSeries().getOpenips(), clientIp);
+        return isValidIP(p.getSeries().getOpenips(), clientIp);
     }
 
     public static String dateAndHour(Timestamp t) {
