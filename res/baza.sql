@@ -64,7 +64,7 @@ CREATE TABLE CONTESTS (
         rules               text,
         tech                text,
         rankingRefreshRate  int,
-    visibility          boolean DEFAULT TRUE
+        visibility          boolean DEFAULT TRUE
 );
 
 CREATE TABLE SUBMITS ( 
@@ -96,8 +96,8 @@ CREATE TABLE QUESTIONS (
         question            text,
         visibility          int,
         qtype               int,
-        qdate timestamp without time zone,
-        adate timestamp without time zone
+        qdate               timestamp without time zone,
+        adate               timestamp without time zone
 );
 
 CREATE TABLE RESULTS (
