@@ -99,7 +99,7 @@ public class LanguageLA implements CompilerInterface {
         post.releaseConnection();
     }
 
-    private int sendSolution(String code, TestInput input) throws NumberFormatException, HttpException, IOException {
+    private String sendSolution(String code, TestInput input) throws NumberFormatException, HttpException, IOException {
         PostMethod post = new PostMethod(acmSite + "index.php?option=com_onlinejudge&Itemid=25&page=save_submission");
         try {
 
@@ -125,7 +125,13 @@ public class LanguageLA implements CompilerInterface {
 
             client.executeMethod(post);
             String location = post.getResponseHeader("Location").getValue();
-            return Integer.parseInt(location.substring(location.lastIndexOf("+") + 1));
+
+            String msg = location.substring(location.lastIndexOf("msg=") + 4);
+            if (msg.contains("Submission+received")) {
+                return msg.substring(msg.lastIndexOf("+") + 1);
+            } else {
+                return java.net.URLDecoder.decode(msg, "UTF-8");
+            }
         } finally {
             post.releaseConnection();
         }
@@ -359,11 +365,22 @@ public class LanguageLA implements CompilerInterface {
                 break;
             }
 
-            int id = sendSolution(path, input);
-            logger.info("LA-ACM Submit id = " + id);
+            String msg = sendSolution(path, input);
+            int id = 0;
+            try {
+                id = Integer.parseInt(msg);
+            } catch (NumberFormatException ex) {
+            }
 
-            checkResults(id, maxTime, input, result);
+            if (id == 0) {
+                result.setResult(CheckerErrors.RV);
+                result.setResultDesc(msg);
+                return result;
+            } else {
+                logger.info("LA-ACM Submit id = " + id);
 
+                checkResults(id, maxTime, input, result);
+            }
             logOut();
             logger.info("Logged out from LA-ACM");
         } catch (Exception e) {
