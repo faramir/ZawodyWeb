@@ -47,8 +47,7 @@ public class ELFunctions {
     }
 
     public static String nlToBr(String in) {
-        //return in.replaceAll("\n\r*\n\r*", "<br/>\n"); // wymaga kilku(dziesięciu) modyfikacji na bazie...
-        return in.replaceAll("(\\r\\n?|\\n){2}", "<br/>");
+        return in.replaceAll("(\\r\\n?+|\\n){2}", "<br/>");
     }
 
     public static String esc(String in) {
