@@ -22,16 +22,16 @@ import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.CheckerErrors;
 
 /**
- * Copied from LanguageLA, acmSite = http://uva.onlinejudge.org/
+ * Copied from LanguageLA, acmSite = https://icpcarchive.ecs.baylor.edu/
  *
  * @author faramir
  */
 public class LanguageLA implements CompilerInterface {
 
-    public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageUVA.class);
+    public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageLA.class);
     private Properties properties;
     private HttpClient client;
-    private String acmSite = "http://livearchive.onlinejudge.org/";
+    private final String acmSite = "https://icpcarchive.ecs.baylor.edu/";
 
     @Override
     public void setProperties(Properties properties) {
@@ -64,11 +64,13 @@ public class LanguageLA implements CompilerInterface {
         try {
             client.executeMethod(get);
             InputStream firstGet = get.getResponseBodyAsStream();
-            BufferedReader br = null;
+            BufferedReader br;
 
             try {
                 br = new BufferedReader(new InputStreamReader(firstGet, "UTF-8"));
             } catch (UnsupportedEncodingException e) {
+                logger.error("UnsupportedEncodingException ", e);
+                return;
             }
 
             String line, name, value;
@@ -106,25 +108,46 @@ public class LanguageLA implements CompilerInterface {
         post.releaseConnection();
     }
 
-    private String sendSolution(String code, TestInput input) throws NumberFormatException, HttpException, IOException {
+    private String sendSolution(String code, TestInput input) throws HttpException, IOException {
         PostMethod post = new PostMethod(acmSite + "index.php?option=com_onlinejudge&Itemid=25&page=save_submission");
         try {
 
-            String lang = properties.getProperty("CODEFILE_EXTENSION");
-            if (lang.equals("c")) {
-                lang = "1";
-            } else if (lang.equals("java")) {
-                lang = "2";
-            } else if (lang.equals("cpp")) {
-                lang = "3";
-            } else if (lang.equals("pas")) {
-                lang = "4";
+            String langId = properties.getProperty("uva.languageId");
+            if (langId != null) {
+                if (langId.equals("1") || langId.equalsIgnoreCase("C")) {
+                    langId = "1";
+                } else if (langId.equals("2") || langId.equalsIgnoreCase("JAVA")) {
+                    langId = "2";
+                } else if (langId.equals("3") || langId.equalsIgnoreCase("C++")) {
+                    langId = "3";
+                } else if (langId.equals("4") || langId.equalsIgnoreCase("PASCAL")) {
+                    langId = "4";
+                } else if (langId.equals("5") || langId.equalsIgnoreCase("C++11")) {
+                    langId = "5";
+                } else {
+                    langId = null;
+                }
+            }
+
+            if (langId == null) {
+                String fileExt = properties.getProperty("CODEFILE_EXTENSION");
+                if (fileExt.equals("c")) {
+                    langId = "1";
+                } else if (fileExt.equals("java")) {
+                    langId = "2";
+                } else if (fileExt.equals("cpp")) {
+                    langId = "3";
+                } else if (fileExt.equals("pas")) {
+                    langId = "4";
+                } else if (fileExt.equals("cpp11")) {
+                    langId = "5";
+                }
             }
             NameValuePair[] dataSendAnswer = {
                 new NameValuePair("problemid", ""),
                 new NameValuePair("category", ""),
                 new NameValuePair("localid", input.getText()),
-                new NameValuePair("language", lang),
+                new NameValuePair("language", langId),
                 new NameValuePair("code", code),
                 new NameValuePair("submit", "Submit")
             };
@@ -150,11 +173,13 @@ public class LanguageLA implements CompilerInterface {
         try {
             client.executeMethod(get);
             InputStream firstGet = get.getResponseBodyAsStream();
-            BufferedReader br = null;
+            BufferedReader br;
 
             try {
                 br = new BufferedReader(new InputStreamReader(firstGet, "UTF-8"));
             } catch (UnsupportedEncodingException e) {
+                logger.error("UnsupportedEncodingException ", e);
+                return "";
             }
 
             String line;
