@@ -29,7 +29,7 @@
         <p id="jclock" class="jclock" ondblclick="prompt_clock(this,{def:'#{zw:formatDateAndHour(requestBean.temporaryDate, 'yyyy-MM-dd HH:mm')}',link:'#{facesContext.externalContext.requestContextPath}/clock/'})">
         </p>
         <rich:jQuery selector="#jclock" name="jclock" query="jclock({format:'%D %B %Y r.&lt;br/&gt;%H:%M:%S',path:'#{facesContext.externalContext.requestContextPath}'})" timing="onload"/>
-        <h1>${messages.wmii}</h1>
+        <h1>${messages.departament}</h1>
         <h2>${messages.uni}</h2>
         <div id="page">
             <h1>

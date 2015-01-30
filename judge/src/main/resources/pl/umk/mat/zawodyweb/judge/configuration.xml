@@ -28,4 +28,8 @@
 
     <entry key="main_edu_pl.login">spamz</entry>
     <entry key="main_edu_pl.password">spamz2</entry>
+    
+    <entry key="pcj.library">C:/Users/UMK/Documents/codes/java/ZawodyWeb/branches/pcj_zw/res/pcj/PCJ.jar</entry>
+    <entry key="pcj.main_class">C:/Users/UMK/Documents/codes/java/ZawodyWeb/branches/pcj_zw/res/pcj/MainClass.java</entry>
+    
 </properties>

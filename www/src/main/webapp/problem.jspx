@@ -45,7 +45,7 @@
                     </h:panelGroup>
                 </div>
                 <div class="testy">
-                    <t:dataTable rendered="#{zw:canEditProblem(rolesBean, requestBean.currentProblem.series.contests.id, requestBean.currentProblem.series.id)}" id="test" var="test" styleClass="seria" value="#{requestBean.currentProblem.testss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col1,col2">
+                    <t:dataTable rendered="#{zw:canEditProblem(rolesBean, requestBean.currentProblem.series.contests.id, requestBean.currentProblem.series.id)}" id="test" var="test" styleClass="seria" value="#{requestBean.currentProblem.testss}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="col2">
                         <h:column>
                             <f:facet name="header">
                                 ${messages.test_number}
@@ -54,6 +54,24 @@
                             <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/edittest.html?id=#{test.id}" title="#{messages.edittest}" rendered="#{zw:canEditProblem(rolesBean, requestBean.currentProblem.series.contests.id, requestBean.currentProblem.series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.edittest}" title="#{messages.edittest}" url="/media/images/edytuj.png" /></h:outputLink>
                             <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{test.id}/test.html" title="#{messages.test_download}" rendered="#{zw:canEditProblem(rolesBean, requestBean.currentProblem.series.contests.id, requestBean.currentProblem.series.id)}" styleClass="ikonka"><h:graphicImage alt="#{messages.test_download}" title="#{messages.test_download}" url="/media/images/get.png" /></h:outputLink>
                             <h:graphicImage alt="#{messages.deltest}" title="#{messages.deltest}" url="/media/images/usun.png" rendered="#{zw:canEditProblem(rolesBean, requestBean.currentProblem.series.contests.id, requestBean.currentProblem.series.id)}" styleClass="click" onclick="confirm(this,{nazwa:'test #{test.testorder}',link:'#{facesContext.externalContext.requestContextPath}/del/#{test.id}/test.html'})"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                ${messages.test_maxpoints}
+                            </f:facet>
+                            ${test.maxpoints}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                ${messages.test_timelimit}
+                            </f:facet>
+                            ${test.timelimit}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                ${messages.test_input}
+                            </f:facet>
+                            ${zw:getPrefix(test.input,10)}...
                         </h:column>
                     </t:dataTable>
                     <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{requestBean.currentProblem.id}/test.html" title="#{messages.addtest}" rendered="#{zw:canEditProblem(rolesBean, requestBean.currentProblem.series.contests.id, requestBean.currentProblem.series.id)}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addtest}" title="#{messages.addtest}" url="/media/images/dodaj.png" /></h:outputLink>

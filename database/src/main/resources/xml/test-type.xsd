@@ -22,7 +22,8 @@
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:element>
-            <xsd:element name="order" type="xsd:int" minOccurs="0"/>
+            <xsd:element name="order" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="config" type="xsd:string" minOccurs="0"/>
         </xsd:sequence>
     </xsd:complexType>
 </xsd:schema>

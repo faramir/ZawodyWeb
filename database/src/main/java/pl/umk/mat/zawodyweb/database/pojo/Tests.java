@@ -7,38 +7,91 @@
  */
 package pl.umk.mat.zawodyweb.database.pojo;
 
-import java.util.List;
+import java.io.IOException;
 import java.io.Serializable;
-import java.sql.Timestamp;
-
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-import javax.persistence.Embeddable;
-import javax.persistence.GenerationType;
+import javax.persistence.Table;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 /**
- * <p>Pojo mapping TABLE public.tests</p>
+ * <p>
+ * Pojo mapping TABLE public.tests</p>
  *
- * <p>Generated at Sun Mar 08 19:45:32 CET 2009</p>
+ * <p>
+ * Generated at Sun Mar 08 19:45:32 CET 2009</p>
+ *
  * @author Salto-db Generator v1.1 / EJB3
- * 
+ *
  */
 @Entity
 @Table(name = "tests", schema = "public")
 @SuppressWarnings("serial")
-public class Tests implements Serializable {
+public class Tests implements Serializable, Comparable<Tests> {
+
+    private static final Pattern pattern = Pattern.compile("(\\D*)(\\d*)");
+
+    @Override
+    public int compareTo(Tests o) {
+        String t1 = this.getTestorder();
+        String t2 = o.getTestorder();
+
+        if (t1 == null || t2 == null || t1.compareTo(t2) == 0) {
+            return this.getId().intValue() == o.getId().intValue() ? 0
+                    : this.getId() < o.getId() ? -1 : 1;
+        }
+        Matcher m1 = pattern.matcher(t1);
+        Matcher m2 = pattern.matcher(t2);
+
+        // The only way find() could fail is at the end of a string
+        while (m1.find() && m2.find()) {
+            // matcher.group(1) fetches any non-digits captured by the
+            // first parentheses in PATTERN.
+            int nonDigitCompare = m1.group(1).compareTo(m2.group(1));
+            if (0 != nonDigitCompare) {
+                return nonDigitCompare;
+            }
+
+            // matcher.group(2) fetches any digits captured by the
+            // second parentheses in PATTERN.
+            if (m1.group(2).isEmpty()) {
+                return m2.group(2).isEmpty() ? 0 : -1;
+            } else if (m2.group(2).isEmpty()) {
+                return 1;
+            }
+
+            int n1 = Integer.parseInt(m1.group(2)); // Integer a nie BigInt, ze wzgledu na limit 5 znakow
+            int n2 = Integer.parseInt(m2.group(2));
+
+            if (n1 != n2) {
+                return n1 < n2 ? -1 : 1;
+            }
+        }
+
+        // Handle if one string is a prefix of the other.
+        // Nothing comes before something.
+        return m1.hitEnd() && m2.hitEnd() ? 0
+                : m1.hitEnd() ? -1 : 1;
+    }
 
     /**
      * Attribute id.
@@ -65,6 +118,10 @@ public class Tests implements Serializable {
      */
     private Integer visibility;
     /**
+     * Attribute visibility.
+     */
+    private String config;
+    /**
      * Attribute problems
      */
     private Problems problems;
@@ -72,7 +129,7 @@ public class Tests implements Serializable {
      * List of Results
      */
     private List<Results> resultss = null;
-    private Integer testorder;
+    private String testorder;
 
     /* liste transiente */
     /**
@@ -161,7 +218,6 @@ public class Tests implements Serializable {
         this.maxpoints = maxpoints;
     }
 
-    /* liste transiente */
     /**
      * @return visibility
      */
@@ -178,6 +234,56 @@ public class Tests implements Serializable {
         this.visibility = visibility;
     }
 
+    /**
+     * @deprecated only for Hibernate. Instead, use
+     * loadProperties()
+     * @return config
+     */
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "config", length = 2147483647)
+    public String getConfig() {
+        return config;
+    }
+
+    public Properties loadProperties() {
+        Properties result = new Properties();
+        if (config == null) {
+            return new Properties();
+        }
+        try {
+            result.load(new StringReader(config));
+        } catch (IOException ex) {
+            //This shouldn't happend. Not ever!
+            Logger.getLogger(Tests.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    /**
+     * @deprecated only for Hibernate. Instead, use
+     * saveProperities()
+     * @param config new value for visibility
+     */
+    public void setConfig(String config) {
+        this.config = config;
+    }
+
+    public void saveProperties(Properties properties) {
+        if (properties == null) {
+            return;
+        }
+        try {
+            StringWriter sw = new StringWriter();
+            properties.store(sw, new String());
+            this.config = sw.toString();
+
+        } catch (IOException ex) {
+            //This also shouldn't ever happend.
+            Logger.getLogger(Tests.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /* liste transiente */
     /**
      * Get the list of Results
      */
@@ -212,12 +318,12 @@ public class Tests implements Serializable {
     }
 
     @Basic
-    @Column(name = "testorder")
-    public Integer getTestorder() {
+    @Column(name = "testorder", length = 5)
+    public String getTestorder() {
         return testorder;
     }
 
-    public void setTestorder(Integer testorder) {
+    public void setTestorder(String testorder) {
         this.testorder = testorder;
     }
 }

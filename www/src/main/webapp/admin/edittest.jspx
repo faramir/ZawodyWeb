@@ -27,6 +27,24 @@
                     <fieldset>
                         <t:saveState id="saveid" value="#{requestBean.temporaryTestId}" />
                         <div>
+                            <h:outputLabel for="ordering">${messages.test_number}:</h:outputLabel>
+                            <h:inputText id="ordering" value="#{requestBean.editedTest.testorder}" />
+                            <h:message for="ordering" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel styleClass="required" for="maxpoints">${messages.test_maxpoints}:</h:outputLabel>
+                            <h:inputText id="maxpoints" required="true" value="#{requestBean.editedTest.maxpoints}" />
+                            <h:message for="maxpoints" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel styleClass="required" for="timelimit">${messages.test_timelimit}:</h:outputLabel>
+                            <h:inputText id="timelimit" required="true" value="#{requestBean.editedTest.timelimit}" />
+                            <h:message for="timelimit" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
                             <h:outputLabel styleClass="required" for="input">${messages.test_input}:</h:outputLabel>
                             <c:choose>
                                 <c:when test="#{zw:length(requestBean.editedTest.input) le 61440}">
@@ -51,21 +69,8 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel styleClass="required" for="timelimit">${messages.test_timelimit}:</h:outputLabel>
-                            <h:inputText id="timelimit" required="true" value="#{requestBean.editedTest.timelimit}" />
-                            <h:message for="timelimit" errorClass="error" />
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel styleClass="required" for="maxpoints">${messages.test_maxpoints}:</h:outputLabel>
-                            <h:inputText id="maxpoints" required="true" value="#{requestBean.editedTest.maxpoints}" />
-                            <h:message for="maxpoints" errorClass="error" />
-                            <br class="clear" />
-                        </div>
-                        <div>
-                            <h:outputLabel for="ordering">${messages.test_number}:</h:outputLabel>
-                            <h:inputText id="ordering" value="#{requestBean.editedTest.testorder}" />
-                            <h:message for="ordering" errorClass="error" />
+                            <h:outputLabel for="output">${messages.test_config}:</h:outputLabel>
+                            <h:inputTextarea id="config" styleClass="bigHeight" value="#{requestBean.editedTest.config}"/>
                             <br class="clear" />
                         </div>
                         <div>

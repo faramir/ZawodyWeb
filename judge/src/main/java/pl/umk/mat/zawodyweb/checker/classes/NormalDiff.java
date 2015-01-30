@@ -99,6 +99,7 @@ public class NormalDiff implements CheckerInterface {
             result.setPoints(0);
 
         }
+        result.setDescription(codeOutput.getResultDesc());
         result.setRuntime(codeOutput.getRuntime());
         result.setMemUsed(codeOutput.getMemUsed());
         return result;

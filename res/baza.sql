@@ -64,7 +64,8 @@ CREATE TABLE CONTESTS (
         rules               text,
         tech                text,
         rankingRefreshRate  int,
-        visibility          boolean DEFAULT TRUE
+        visibility          boolean DEFAULT TRUE,
+        email               text DEFAULT ''
 );
 
 CREATE TABLE SUBMITS ( 
@@ -87,7 +88,7 @@ CREATE TABLE PROBLEMS (
         codesize            int,
         config              text,
         visibleInRanking    boolean default true,
-        viewpdf             boolean default false       
+        viewpdf             boolean default false
 );
 
 CREATE TABLE QUESTIONS ( 
@@ -116,7 +117,8 @@ CREATE TABLE TESTS (
         timeLimit           int,
         maxPoints           int,
         visibility          int,
-        testorder           int
+        testorder           varchar(5),
+        config              text
 );
 
 CREATE TABLE LANGUAGES ( 

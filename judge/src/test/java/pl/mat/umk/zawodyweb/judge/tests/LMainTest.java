@@ -41,7 +41,7 @@ public class LMainTest {
                 + "  }\n"
                 + "}\n").getBytes());
 
-        TestOutput o = l.runTest(script, new TestInput("11031", 1, 0, 0));
+        TestOutput o = l.runTest(script, new TestInput("11031", 1, 0, 0, null));
 
         System.out.println("text:" + o.getText());
         System.out.println("desc:" + o.getResultDesc());

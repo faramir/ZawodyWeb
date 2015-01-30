@@ -133,7 +133,7 @@
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>8.3-603.jdbc4</version>
+            <version>9.2-1002.jdbc4</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>

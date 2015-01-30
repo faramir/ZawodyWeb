@@ -13,14 +13,19 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Properties;
+import java.util.SortedSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.*;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 
 /**
- * <p>Pojo mapping TABLE public.problems</p>
+ * <p>
+ * Pojo mapping TABLE public.problems</p>
  *
- * <p>Generated at Sun Mar 08 19:45:31 CET 2009</p>
+ * <p>
+ * Generated at Sun Mar 08 19:45:31 CET 2009</p>
  *
  * @author Salto-db Generator v1.1 / EJB3
  *
@@ -77,7 +82,7 @@ public class Problems implements Serializable {
     /**
      * List of Submits
      */
-    private List<Tests> testss = null;
+    private SortedSet<Tests> testss = null;
     private PDF pdfData = null;
     private String config;
     private Boolean visibleinranking = true;
@@ -134,7 +139,8 @@ public class Problems implements Serializable {
     }
 
     /**
-     * @deprecated only for Hibernate. Instead, use loadProperties()
+     * @deprecated only for Hibernate. Instead, use
+     * loadProperties()
      * @return text
      */
     @Basic(fetch = FetchType.LAZY)
@@ -144,7 +150,8 @@ public class Problems implements Serializable {
     }
 
     /**
-     * @deprecated only for Hibernate. Instead, use saveProperities()
+     * @deprecated only for Hibernate. Instead, use
+     * saveProperities()
      * @param config
      */
     public void setConfig(String config) {
@@ -368,15 +375,16 @@ public class Problems implements Serializable {
      */
     // submitsPK
     @OneToMany(mappedBy = "problems", cascade = CascadeType.REMOVE)
-    @OrderBy(value = "testorder")
-    public List<Tests> getTestss() {
+//    @OrderBy(value = "testorder")
+    @Sort(type = SortType.NATURAL)
+    public SortedSet<Tests> getTestss() {
         return this.testss;
     }
 
     /**
      * Set the list of Submits
      */
-    public void setTestss(List<Tests> testss) {
+    public void setTestss(SortedSet<Tests> testss) {
         this.testss = testss;
     }
 }

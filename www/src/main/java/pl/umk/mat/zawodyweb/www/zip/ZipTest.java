@@ -41,6 +41,7 @@ public class ZipTest {
         xmlTest.setOutput(outputFile);
         xmlTest.setMaxpoints(test.getMaxpoints());
         xmlTest.setOrder(test.getTestorder());
+        xmlTest.setConfig(test.getConfig());
         xmlTest.setTimelimit(test.getTimelimit());
 
         return xmlTest;

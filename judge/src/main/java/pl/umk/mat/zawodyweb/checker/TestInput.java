@@ -7,30 +7,26 @@
  */
 package pl.umk.mat.zawodyweb.checker;
 
+import java.util.Properties;
+
 /**
  *
  * @author lukash2k
  */
 public class TestInput {
 
-    private String text;
-    private int maxPoints;
-    private int timeLimit;
-    private int memoryLimit;
+    private final String text;
+    private final int maxPoints;
+    private final int timeLimit;
+    private final int memoryLimit;
+    private final Properties property;
 
-    public void setMaxPoints(int maxPoints) {
-        this.maxPoints = maxPoints;
-    }
-
-    public int getMaxPoints() {
-        return maxPoints;
-    }
-
-    public TestInput(String text, int maxPoints, int timeLimit, int memoryLimit) {
+    public TestInput(String text, int maxPoints, int timeLimit, int memoryLimit, Properties property) {
         this.text = text;
         this.timeLimit = timeLimit;
         this.memoryLimit = memoryLimit;
         this.maxPoints = maxPoints;
+        this.property = property;
     }
 
     public int getTimeLimit() {
@@ -41,11 +37,15 @@ public class TestInput {
         return memoryLimit;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public int getMaxPoints() {
+        return maxPoints;
     }
 
     public String getText() {
         return text;
+    }
+
+    public Properties getProperty() {
+        return property;
     }
 }

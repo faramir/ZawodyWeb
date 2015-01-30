@@ -41,12 +41,13 @@ import pl.umk.mat.zawodyweb.database.pojo.Tests;
 /**
  *
  * @author lukash2k
+ * @author faramir
  */
 public class MainJudge {
 
     private static final org.apache.log4j.Logger logger = Logger.getLogger(MainJudge.class);
-    private static ArrayList<ClassInfo> classes = new ArrayList<ClassInfo>();
-    private static Properties properties = new Properties();
+    private static final List<ClassInfo> classes = new ArrayList<ClassInfo>();
+    private static final Properties properties = new Properties();
     private static long delayConnect;
 
     private static boolean isUpperCased(String str) {
@@ -55,10 +56,10 @@ public class MainJudge {
     }
 
     private static void connectToJudgeManager() throws IOException, InstantiationException, IllegalAccessException {
-        Socket sock = null;
         /*
          * connecting to JudgeManager
          */
+        Socket sock = null;
         try {
             sock = new Socket(InetAddress.getByName(properties.getProperty("JUDGEMANAGER_HOST")), Integer.parseInt(properties.getProperty("JUDGEMANAGER_PORT")));
             DataInputStream input = new DataInputStream(sock.getInputStream());
@@ -210,7 +211,7 @@ public class MainJudge {
                     logger.info("Starting tests...");
                     for (Tests test : tests) {
                         logger.info("Test " + test.getTestorder() + " started.");
-                        testInput = new TestInput(test.getInput(), test.getMaxpoints(), test.getTimelimit(), submit.getProblems().getMemlimit());
+                        testInput = new TestInput(test.getInput(), test.getMaxpoints(), test.getTimelimit(), submit.getProblems().getMemlimit(), test.loadProperties());
                         testOutput = new TestOutput(test.getOutput());
                         /*
                          * tutaj przydaloby sie wykonywanie w petli, poki
