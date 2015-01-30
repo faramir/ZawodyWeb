@@ -8,10 +8,10 @@
     <entry key="JUDGEMANAGER_DELAY_CONNECT">10000</entry>
 
     <entry key="COMPILED_FILENAME">a.out</entry>
-    <entry key="COMPILED_DIR">compiled</entry>
+    <entry key="COMPILED_DIR">/path/to/judge/compiled</entry>
 
     <entry key="CODE_FILENAME">a</entry>
-    <entry key="CODE_DIR">sources</entry>
+    <entry key="CODE_DIR">/path/to/judge/sources</entry>
 
     <entry key="COMPILE_TIMEOUT">30000</entry>
 
@@ -29,7 +29,7 @@
     <entry key="main_edu_pl.login">spamz</entry>
     <entry key="main_edu_pl.password">spamz2</entry>
     
-    <entry key="pcj.library">C:/Users/UMK/Documents/codes/java/ZawodyWeb/branches/pcj_zw/res/pcj/PCJ.jar</entry>
-    <entry key="pcj.main_class">C:/Users/UMK/Documents/codes/java/ZawodyWeb/branches/pcj_zw/res/pcj/MainClass.java</entry>
+    <entry key="pcj.library">/path/to/path/PCJ-4.0.1.SNAPSHOT-bin</entry>
+    <entry key="pcj.main_class">/path/to/pcj/MainClass.java</entry>
     
 </properties>
