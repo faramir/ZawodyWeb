@@ -204,6 +204,7 @@ public class MainJudge {
                     TestOutput testOutput;
                     boolean undefinedResult = false;
                     boolean manualResult = false;
+                    boolean externalResult = false;
 
                     /*
                      * TESTING
@@ -226,9 +227,10 @@ public class MainJudge {
                             undefinedResult = true;
                             logger.info("Test " + test.getTestorder() + " has result UNDEFINDED. Stopping.");
                             break;
-                        }
-                        if (result.getResult() == CheckerErrors.MANUAL) {
+                        } else if (result.getResult() == CheckerErrors.MANUAL) {
                             manualResult = true;
+                        } else if (result.getResult() == CheckerErrors.EXTERNAL) {
+                            externalResult = true;
                         }
 
                         /*
@@ -260,6 +262,11 @@ public class MainJudge {
                     if (undefinedResult == true) {
                         logger.error("Some of the tests got UNDEFINED result -- this should not happend.");
                         transaction.rollback();
+                    } else if (externalResult == true) {
+                        logger.info("Saving results to database (with external).");
+                        submit.setResult(SubmitsResultEnum.EXTERNAL.getCode());
+                        DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
+                        transaction.commit();
                     } else if (manualResult == true) {
                         logger.info("Saving results to database (with manual).");
                         submit.setResult(SubmitsResultEnum.MANUAL.getCode());

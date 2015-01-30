@@ -12,6 +12,7 @@ package pl.umk.mat.zawodyweb.database;
  * @author lukash2k
  */
 public class CheckerErrors {
+
     /**
      * Undefined result. This usually should not happend.
      */
@@ -53,7 +54,11 @@ public class CheckerErrors {
      */
     public static final int UNKNOWN = 8;
     /**
-     * What exactly happened is stated in result description.
+     * Language is not checking solution, set only manual mode.
      */
     public static final int MANUAL = 9;
+    /**
+     * Test will be checked externally.
+     */
+    public static final int EXTERNAL = 10;
 }

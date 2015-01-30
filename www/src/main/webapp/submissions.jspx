@@ -56,6 +56,7 @@
                                 <h:outputText value="#{messages.waiting}" rendered="#{submit.result == 0}" />
                                 <h:outputText value="#{messages.processing}" rendered="#{submit.result == 1}" />
                                 <h:outputText value="#{messages.manual}" rendered="#{submit.result == 3}" />
+                                <h:outputText value="#{messages.external}" rendered="#{submit.result == 4}" />
                                 <h:panelGroup rendered="#{submit.result == 2}">
                                 <zw:submission-link submission="#{submit}" type="submission" />
                             </h:panelGroup>
