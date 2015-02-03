@@ -8,8 +8,7 @@
 package pl.umk.mat.zawodyweb.externalchecker;
 
 import java.util.Random;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
-import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
@@ -23,36 +22,36 @@ public class ExternalRandomGrader implements ExternalInterface {
 
     @Override
     public String getPrefix() {
-        return "random:";
+        return "random";
     }
 
     @Override
     public Submits check(Submits submit) {
+        System.out.println("ExternalRandomGrader: " + submit.getId());
         for (Results r : submit.getResultss()) {
+            System.out.println("\tr: " + r.getId());
             switch (random.nextInt(8)) {
                 case 0:
-                    r.setSubmitResult(CheckerErrors.RE);
+                    r.setStatus(ResultsStatusEnum.RE.getCode());
                     r.setPoints(0);
                     break;
                 case 1:
-                    r.setSubmitResult(CheckerErrors.TLE);
+                    r.setStatus(ResultsStatusEnum.TLE.getCode());
                     r.setPoints(0);
                     break;
                 case 2:
                 case 3:
                 case 4:
-                    r.setSubmitResult(CheckerErrors.ACC);
+                    r.setStatus(ResultsStatusEnum.ACC.getCode());
                     r.setPoints(r.getTests().getMaxpoints());
                     break;
                 case 5:
                 case 6:
                 case 7:
-                    r.setSubmitResult(CheckerErrors.WA);
+                    r.setStatus(ResultsStatusEnum.WA.getCode());
                     r.setPoints(random.nextInt(r.getTests().getMaxpoints()));
                     break;
             }
-
-            r.setSubmitResult(CheckerErrors.ACC);
         }
         return submit;
     }

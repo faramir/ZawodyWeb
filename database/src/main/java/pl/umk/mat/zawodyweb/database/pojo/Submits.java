@@ -11,8 +11,6 @@ import java.util.List;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import java.util.Collections;
-import java.util.Comparator;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -22,11 +20,8 @@ import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-import javax.persistence.Embeddable;
 import javax.persistence.GenerationType;
 import org.hibernate.annotations.OrderBy;
 
@@ -51,9 +46,9 @@ public class Submits implements Serializable {
      */
     private Timestamp sdate;
     /**
-     * Attribute result.
+     * Attribute state.
      */
-    private Integer result;
+    private Integer state;
     /**
      * Attribute code.
      */
@@ -120,19 +115,19 @@ public class Submits implements Serializable {
     }
 
     /**
-     * @return result
+     * @return state
      */
     @Basic
-    @Column(name = "result")
-    public Integer getResult() {
-        return result;
+    @Column(name = "state")
+    public Integer getState() {
+        return state;
     }
 
     /**
-     * @param result new value for result
+     * @param state new value for state
      */
-    public void setResult(Integer result) {
-        this.result = result;
+    public void setState(Integer state) {
+        this.state = state;
     }
 
     /**

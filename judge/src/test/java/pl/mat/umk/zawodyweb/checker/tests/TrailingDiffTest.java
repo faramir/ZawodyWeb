@@ -9,7 +9,7 @@ package pl.mat.umk.zawodyweb.checker.tests;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.checker.CheckerResult;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
@@ -35,53 +35,53 @@ public class TrailingDiffTest {
         Program program = code.compile();
         CheckerResult result =
                 nd.check(program, new TestInput("", 0, 0, 0, null), test);
-        return result.getResult();
+        return result.getStatus();
     }
 
     @Test
     public void exactTest() {
-        int expected = CheckerErrors.ACC;
+        int expected = ResultsStatusEnum.ACC.getCode();
         assertEquals(expected, Test("15\n", "15\n"));
     }
 
     @Test
     public void trailingTest1() {
-        int expected = CheckerErrors.ACC;
+        int expected = ResultsStatusEnum.ACC.getCode();
         assertEquals(expected, Test("   15\n", "15\n"));
     }
 
     @Test
     public void trailingTest2() {
-        int expected = CheckerErrors.WA;
+        int expected = ResultsStatusEnum.WA.getCode();
         assertEquals(expected, Test("\n15\n", "15\n"));
     }
 
     @Test
     public void trailingTest3() {
-        int expected = CheckerErrors.ACC;
+        int expected = ResultsStatusEnum.ACC.getCode();
         assertEquals(expected, Test("15", "15\n"));
     }
 
     @Test
     public void trailingTest4() {
-        int expected = CheckerErrors.ACC;
+        int expected = ResultsStatusEnum.ACC.getCode();
         assertEquals(expected, Test("15\n", "15"));
     }
 
     @Test
     public void trailingTest5() {
-        int expected = CheckerErrors.ACC;
+        int expected = ResultsStatusEnum.ACC.getCode();
         assertEquals(expected, Test("     15 13\n\n", "15 13\n"));
     }
     @Test
     public void trailingTest6() {
-        int expected = CheckerErrors.WA;
+        int expected = ResultsStatusEnum.WA.getCode();
         assertEquals(expected, Test("     15  13\n\n", "15 13\n"));
     }
     
     @Test
     public void trailingTest7() {
-        int expected = CheckerErrors.WA;
+        int expected = ResultsStatusEnum.WA.getCode();
         assertEquals(expected, Test("     15\n13\n\n", "15 13\n"));
     }
     // TODO add test methods here.

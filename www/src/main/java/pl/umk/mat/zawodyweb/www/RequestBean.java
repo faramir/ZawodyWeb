@@ -669,7 +669,7 @@ public class RequestBean {
         if (editedResult == null && !ELFunctions.isNullOrZero(temporaryResultId)) {
             editedResult = resultsDAO.getById(temporaryResultId);
             temporarySubmitResultId =
-                    editedResult.getSubmitResult();
+                    editedResult.getStatus();
         }
 
         return editedResult;
@@ -1590,7 +1590,7 @@ public class RequestBean {
 
     public String saveResult() {
         Results result = getEditedResult();
-        result.setSubmitResult(temporarySubmitResultId);
+        result.setStatus(temporarySubmitResultId);
         resultsDAO.update(result);
         temporaryResultId = null;
         return null;
@@ -2548,7 +2548,7 @@ public class RequestBean {
                 submit.setId(null);
                 submit.setFilename(fileName);
                 submit.setCode(bytes);
-                submit.setResult(SubmitsResultEnum.WAIT.getCode());
+                submit.setState(SubmitsStateEnum.WAIT.getCode());
                 submit.setLanguages(language);
                 submit.setProblems(problem);
                 submit.setSdate(new Timestamp(submitTime));

@@ -10,8 +10,6 @@ package pl.umk.mat.zawodyweb.database.hibernate;
 import java.util.List;
 import java.sql.Timestamp;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 
@@ -38,8 +36,8 @@ public class SubmitsHibernateDAO extends
 	/**
 	 * Find Submits by result
 	 */
-	public List<Submits> findByResult(Integer result) {
-		return findByCriteria(Restrictions.eq("result", result));
+	public List<Submits> findByState(Integer state) {
+		return findByCriteria(Restrictions.eq("state", state));
 	}
 
 	/**

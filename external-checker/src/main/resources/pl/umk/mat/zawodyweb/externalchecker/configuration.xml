@@ -3,5 +3,5 @@
 <properties>
     <comment>Example of configuration file for Unicore Checker</comment>
 
-    <entry key="REFRESH_RATE">60000</entry>
+    <entry key="REFRESH_RATE">6000</entry>
 </properties>

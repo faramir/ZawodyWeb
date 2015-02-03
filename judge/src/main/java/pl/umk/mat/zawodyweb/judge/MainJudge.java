@@ -29,9 +29,9 @@ import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.Code;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
 import pl.umk.mat.zawodyweb.compiler.Program;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
-import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
+import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Classes;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
@@ -93,7 +93,7 @@ public class MainJudge {
 
                     transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
                     Submits submit = DAOFactory.DEFAULT.buildSubmitsDAO().getById(id);
-                    submit.setResult(SubmitsResultEnum.PROCESS.getCode());
+                    submit.setState(SubmitsStateEnum.PROCESS.getCode());
                     DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
                     transaction.commit();
 
@@ -223,14 +223,14 @@ public class MainJudge {
                          * ale czy mozna otworzyc druga transakcje?
                          */
                         CheckerResult result = checker.check(program, testInput, testOutput);
-                        if (result.getResult() == CheckerErrors.UNDEF) {
+                        if (result.getStatus() == ResultsStatusEnum.UNDEF.getCode()) {
                             undefinedResult = true;
                             logger.info("Test " + test.getTestorder() + " has result UNDEFINDED. Stopping.");
                             break;
-                        } else if (result.getResult() == CheckerErrors.MANUAL) {
-                            manualResult = true;
-                        } else if (result.getResult() == CheckerErrors.EXTERNAL) {
+                        } else if (result.getStatus() == ResultsStatusEnum.EXTERNAL.getCode()) {
                             externalResult = true;
+                        } else if (result.getStatus() == ResultsStatusEnum.MANUAL.getCode()) {
+                            manualResult = true;
                         }
 
                         /*
@@ -243,11 +243,11 @@ public class MainJudge {
                             dbResult.setNotes(result.getDescription().replaceAll("[\000-\007]", " "));
                         }
                         dbResult.setPoints(result.getPoints());
-                        dbResult.setSubmitResult(result.getResult());
+                        dbResult.setStatus(result.getStatus());
                         dbResult.setSubmits(submit);
                         dbResult.setTests(test);
                         DAOFactory.DEFAULT.buildResultsDAO().save(dbResult);
-                        logger.info("Test " + test.getTestorder() + " finished with result " + result.getResult() + "(" + result.getDescription() + ").");
+                        logger.info("Test " + test.getTestorder() + " finished with result " + result.getStatus() + "(" + result.getDescription() + ").");
                     }
 
                     /*
@@ -264,17 +264,17 @@ public class MainJudge {
                         transaction.rollback();
                     } else if (externalResult == true) {
                         logger.info("Saving results to database (with external).");
-                        submit.setResult(SubmitsResultEnum.EXTERNAL.getCode());
+                        submit.setState(SubmitsStateEnum.EXTERNAL.getCode());
                         DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
                         transaction.commit();
                     } else if (manualResult == true) {
                         logger.info("Saving results to database (with manual).");
-                        submit.setResult(SubmitsResultEnum.MANUAL.getCode());
+                        submit.setState(SubmitsStateEnum.MANUAL.getCode());
                         DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
                         transaction.commit();
                     } else {
                         logger.info("Saving results to database.");
-                        submit.setResult(SubmitsResultEnum.DONE.getCode());
+                        submit.setState(SubmitsStateEnum.DONE.getCode());
                         DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
                         transaction.commit();
                     }

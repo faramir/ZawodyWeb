@@ -13,7 +13,7 @@ import pl.umk.mat.zawodyweb.checker.CheckerResult;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.Program;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
  *
@@ -26,7 +26,7 @@ public class ExternalChecker implements CheckerInterface {
         TestOutput to = program.runTest(input);
 
         CheckerResult result = new CheckerResult();
-        result.setResult(CheckerErrors.EXTERNAL);
+        result.setStatus(ResultsStatusEnum.EXTERNAL.getCode());
         result.setDescription(to.getResultDesc());
         result.setMemUsed(0);
         result.setRuntime(0);

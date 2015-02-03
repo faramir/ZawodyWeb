@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Logger;
 import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
-import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
+import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
@@ -124,7 +124,7 @@ public class MainJudgeManager {
 
         submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
 
-        for (Submits s : submitsDAO.findByResult(SubmitsResultEnum.WAIT.getCode())) {
+        for (Submits s : submitsDAO.findByState(SubmitsStateEnum.WAIT.getCode())) {
             logger.info("Add waiting submit(" + s.getId() + ") to queue");
             submitsQueue.add(s.getId());
         }
@@ -181,7 +181,7 @@ public class MainJudgeManager {
                 transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
                 submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
-                for (Submits submit : submitsDAO.findByResult(SubmitsResultEnum.WAIT.getCode())) {
+                for (Submits submit : submitsDAO.findByState(SubmitsStateEnum.WAIT.getCode())) {
                     if (!submitsQueue.contains(submit.getId())) {
                         submitsQueue.add(submit.getId());
                         logger.info("Adding submit(" + submit.getId() + ") in status WAIT, which was not in submitsQueue, to submitsQueue.");
@@ -197,12 +197,12 @@ public class MainJudgeManager {
                 ArrayList<Integer> now = new ArrayList<Integer>();
 
                 submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
-                for (Submits submit : submitsDAO.findByResult(SubmitsResultEnum.PROCESS.getCode())) {
+                for (Submits submit : submitsDAO.findByState(SubmitsStateEnum.PROCESS.getCode())) {
                     used = false;
 
                     for (Integer i : prev) {
                         if (submit.getId().equals(i)) {
-                            submit.setResult(SubmitsResultEnum.WAIT.getCode());
+                            submit.setState(SubmitsStateEnum.WAIT.getCode());
                             submitsDAO.saveOrUpdate(submit);
 
                             submitsQueue.add(submit.getId());

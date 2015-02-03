@@ -19,7 +19,7 @@ import org.apache.commons.httpclient.params.HttpClientParams;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
  * Copied from LanguageLA, acmSite =
@@ -288,38 +288,38 @@ public class LanguageUVA implements CompilerInterface {
                         || "Linking".equals(status)) {
                     Thread.sleep(7000);
                 } else if ("Accepted".equals(status)) {
-                    result.setResult(CheckerErrors.ACC);
+                    result.setResult(ResultsStatusEnum.ACC.getCode());
                     result.setPoints(input.getMaxPoints());
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else if ("Compilation error".equals(status)) {
-                    result.setResult(CheckerErrors.CE);
+                    result.setResult(ResultsStatusEnum.CE.getCode());
                     result.setResultDesc(getCompilationError(id));
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else if ("Presentation error".equals(status)) {
-                    result.setResult(CheckerErrors.ACC);
+                    result.setResult(ResultsStatusEnum.ACC.getCode());
                     result.setPoints(input.getMaxPoints());
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else if ("Wrong answer".equals(status)) {
-                    result.setResult(CheckerErrors.WA);
+                    result.setResult(ResultsStatusEnum.WA.getCode());
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else if ("Time limit exceeded".equals(status)) {
-                    result.setResult(CheckerErrors.TLE);
+                    result.setResult(ResultsStatusEnum.TLE.getCode());
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else if ("Memory limit exceeded".equals(status)) {
-                    result.setResult(CheckerErrors.MLE);
+                    result.setResult(ResultsStatusEnum.MLE.getCode());
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else if ("Runtime error".equals(status)) {
-                    result.setResult(CheckerErrors.RE);
+                    result.setResult(ResultsStatusEnum.RE.getCode());
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else {
-                    result.setResult(CheckerErrors.UNKNOWN);
+                    result.setResult(ResultsStatusEnum.UNKNOWN.getCode());
                     result.setResultDesc("Unknown status: \"" + status + "\"");
                     logger.info("Unknown status: \"" + status + "\"");
                     break;
@@ -381,7 +381,7 @@ public class LanguageUVA implements CompilerInterface {
             for (int i = 3; i >= 0; --i) {
                 if (checkInQueueStatus(input.getText()) > inQueue) {
                     if (i == 0) {
-                        result.setResult(CheckerErrors.UNDEF);
+                        result.setResult(ResultsStatusEnum.UNDEF.getCode());
                         result.setResultDesc("More than " + inQueue + " submissions of " + input.getText() + " in queue.");
                         result.setText("UVa-ACM judge broken?");
                         logger.info(result.getResultDesc());
@@ -402,7 +402,7 @@ public class LanguageUVA implements CompilerInterface {
             }
 
             if (id == 0) {
-                result.setResult(CheckerErrors.RV);
+                result.setResult(ResultsStatusEnum.RV.getCode());
                 result.setResultDesc(msg);
                 return result;
             } else {
@@ -414,7 +414,7 @@ public class LanguageUVA implements CompilerInterface {
             logger.info("Logged out from UVa-ACM");
         } catch (Exception e) {
             logger.info("Exception: ", e);
-            result.setResult(CheckerErrors.UNDEF);
+            result.setResult(ResultsStatusEnum.UNDEF.getCode());
             result.setResultDesc(e.getMessage());
             result.setText(e.getClass().getName());
             return result;

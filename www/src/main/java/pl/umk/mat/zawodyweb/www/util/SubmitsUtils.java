@@ -9,7 +9,7 @@ package pl.umk.mat.zawodyweb.www.util;
 
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.ResultsDAO;
-import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
+import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
@@ -31,7 +31,7 @@ public class SubmitsUtils {
     }
 
     public void reJudge(Submits submit) {
-        submit.setResult(SubmitsResultEnum.WAIT.getCode());
+        submit.setState(SubmitsStateEnum.WAIT.getCode());
         DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
         ResultsDAO resultsDAO = DAOFactory.DEFAULT.buildResultsDAO();
         for (Results r : submit.getResultss()) { //resultsDAO.findBySubmitsid(submit.getId())) {

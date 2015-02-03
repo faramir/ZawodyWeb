@@ -71,7 +71,7 @@ CREATE TABLE CONTESTS (
 CREATE TABLE SUBMITS ( 
         id                  serial primary key,
         sDate               timestamp,
-        result              int,
+        state               int,
         code                bytea,
         filename            varchar(255),
         notes               text,
@@ -107,7 +107,7 @@ CREATE TABLE RESULTS (
         runTime             int,
         memory              int,
         notes               text,
-        submitresult        int
+        status              int
 );
 
 CREATE TABLE TESTS (   

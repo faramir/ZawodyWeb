@@ -13,7 +13,7 @@ import pl.umk.mat.zawodyweb.checker.CheckerResult;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.Program;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
  *
@@ -84,18 +84,18 @@ public class NormalDiff implements CheckerInterface {
     @Override
     public CheckerResult check(Program program, TestInput input, TestOutput output) {
         TestOutput codeOutput = program.runTest(input);
-        if (codeOutput.getResult() != CheckerErrors.UNDEF) {
+        if (codeOutput.getResult() != ResultsStatusEnum.UNDEF.getCode()) {
             return new CheckerResult(codeOutput.getResult(), codeOutput.getResultDesc());
         }
         CheckerResult result = new CheckerResult();
         String codeText = codeOutput.getText();
         String rightText = output.getText();
         if (diff(codeText, rightText) == 0) {
-            result.setResult(CheckerErrors.ACC);
+            result.setStatus(ResultsStatusEnum.ACC.getCode());
             result.setPoints(input.getMaxPoints());
 
         } else {
-            result.setResult(CheckerErrors.WA);
+            result.setStatus(ResultsStatusEnum.WA.getCode());
             result.setPoints(0);
 
         }

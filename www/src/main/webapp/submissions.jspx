@@ -44,7 +44,7 @@
                             </tr>
                         </thead>
                         <t:dataList id="submissions" var="submit" footerClass="paginator" value="#{requestBean.submissions}" rows="#{requestBean.submissionsPerPage}" >
-                            <tr style="${(submit.result==2)?zw:coloring2(submit):'background: #e1d4f6'}">
+                            <tr style="${(submit.state==2)?zw:coloring2(submit):'background: #e1d4f6'}">
                                 <td class="cols"><h:outputText value="#{zw:formatDateAndHour(submit.sdate, 'yyyy-MM-dd HH:mm:ss')}" /></td>
                                 <c:if test="#{!(requestBean.showOnlyMySubmissions)}">
                                     <td class="cols">
@@ -53,11 +53,11 @@
                                 </c:if>
                                 <td class="cols"><zw:problem-link problem="${submit.problems}" message="${submit.problems.name}" type="problem" /></td>
                             <td class="cols">
-                                <h:outputText value="#{messages.waiting}" rendered="#{submit.result == 0}" />
-                                <h:outputText value="#{messages.processing}" rendered="#{submit.result == 1}" />
-                                <h:outputText value="#{messages.manual}" rendered="#{submit.result == 3}" />
-                                <h:outputText value="#{messages.external}" rendered="#{submit.result == 4}" />
-                                <h:panelGroup rendered="#{submit.result == 2}">
+                                <h:outputText value="#{messages.waiting}" rendered="#{submit.state == 0}" />
+                                <h:outputText value="#{messages.processing}" rendered="#{submit.state == 1}" />
+                                <h:outputText value="#{messages.manual}" rendered="#{submit.state == 3}" />
+                                <h:outputText value="#{messages.external}" rendered="#{submit.state == 4}" />
+                                <h:panelGroup rendered="#{submit.state == 2}">
                                 <zw:submission-link submission="#{submit}" type="submission" />
                             </h:panelGroup>
                             </td>

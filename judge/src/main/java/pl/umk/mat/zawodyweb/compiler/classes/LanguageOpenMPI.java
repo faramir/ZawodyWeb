@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.judge.InterruptTimer;
 import pl.umk.mat.zawodyweb.judge.ReaderEater;
 import pl.umk.mat.zawodyweb.judge.WriterFeeder;
@@ -31,7 +31,7 @@ public class LanguageOpenMPI implements CompilerInterface {
 
     public static final org.apache.log4j.Logger logger = Logger.getLogger(LanguageOpenMPI.class);
     private Properties properties;
-    private int compileResult = CheckerErrors.UNDEF;
+    private int compileResult = ResultsStatusEnum.UNDEF.getCode();
     private String compileDesc = "";
 
     @Override
@@ -42,7 +42,7 @@ public class LanguageOpenMPI implements CompilerInterface {
     @Override
     public TestOutput runTest(String path, TestInput input) {
         TestOutput output = new TestOutput(null);
-        if (compileResult != CheckerErrors.UNDEF) {
+        if (compileResult != ResultsStatusEnum.UNDEF.getCode()) {
             output.setResult(compileResult);
             if (!compileDesc.isEmpty()) {
                 output.setResultDesc(compileDesc);
@@ -104,7 +104,7 @@ public class LanguageOpenMPI implements CompilerInterface {
                 outputText = readerEater.getOutputText();
             } catch (InterruptedException ex) {
                 output.setRuntime(input.getTimeLimit());
-                output.setResult(CheckerErrors.TLE);
+                output.setResult(ResultsStatusEnum.TLE.getCode());
                 logger.debug("TLE after " + (System.currentTimeMillis() - time) + "ms.", ex);
                 return output;
 //            } catch (IOException ex) {
@@ -112,7 +112,7 @@ public class LanguageOpenMPI implements CompilerInterface {
 //                p.destroy();
 //            } catch (NullPointerException ex) {
 //                logger.fatal("NullPointer Exception",ex);
-//                output.setResult(CheckerErrors.UNDEF);
+//                output.setResult(ResultsStatusEnum.UNDEF.getCode());
 //                return output;
             } catch (Exception ex) {
                 logger.fatal("Fatal Exception", ex);
@@ -139,7 +139,7 @@ public class LanguageOpenMPI implements CompilerInterface {
             } else {
                 if (exception && (int) (currentTime - time) >= input.getTimeLimit()) {
                     output.setRuntime(input.getTimeLimit());
-                    output.setResult(CheckerErrors.TLE);
+                    output.setResult(ResultsStatusEnum.TLE.getCode());
                     logger.debug("TLE after " + (currentTime - time) + "ms with Exception");
                 } else if (input.getTimeLimit() > 0) {
                     output.setRuntime(input.getTimeLimit() - 1);
@@ -148,13 +148,13 @@ public class LanguageOpenMPI implements CompilerInterface {
 
             try {
                 if (p.exitValue() != 0) {
-                    output.setResult(CheckerErrors.RE);
+                    output.setResult(ResultsStatusEnum.RE.getCode());
                     output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
                     return output;
                 }
             } catch (java.lang.IllegalThreadStateException ex) {
                 logger.fatal("Fatal Exception", ex);
-                output.setResult(CheckerErrors.RE);
+                output.setResult(ResultsStatusEnum.RE.getCode());
                 output.setResultDesc("Abnormal Program termination.");
                 return output;
             }
@@ -222,7 +222,7 @@ public class LanguageOpenMPI implements CompilerInterface {
         str = strWithoutComments.toString();
         String regexp1_on = "(?s).*\\W(" + forbiddenCalls.replaceAll(" ", "|") + ")\\W.*";
         if (str.matches(regexp1_on)) {
-            compileResult = CheckerErrors.RV;
+            compileResult = ResultsStatusEnum.RV.getCode();
         }
         return code;
     }
@@ -230,7 +230,7 @@ public class LanguageOpenMPI implements CompilerInterface {
     @Override
     public String compile(byte[] code) {
         String compilefile = null;
-        if (compileResult != CheckerErrors.UNDEF) {
+        if (compileResult != ResultsStatusEnum.UNDEF.getCode()) {
             return "";
         }
         try {
@@ -278,11 +278,11 @@ public class LanguageOpenMPI implements CompilerInterface {
                 compileDesc = readerEater.getOutputText();
             } catch (InterruptedException ex) {
                 logger.error("Compile Time Limit Exceeded", ex);
-                compileResult = CheckerErrors.CTLE;
+                compileResult = ResultsStatusEnum.CTLE.getCode();
                 return compilefile;
             } catch (Exception ex) {
                 logger.error("No mpicc found.");
-                compileResult = CheckerErrors.UNKNOWN;
+                compileResult = ResultsStatusEnum.UNKNOWN.getCode();
                 compileDesc = "No mpicc found";
                 return compilefile;
             } finally {
@@ -298,7 +298,7 @@ public class LanguageOpenMPI implements CompilerInterface {
             }
 
             if (p.exitValue() != 0) {
-                compileResult = CheckerErrors.CE;
+                compileResult = ResultsStatusEnum.CE.getCode();
                 compileDesc = compileDesc.replaceAll("(?m)^.*" + Pattern.quote(codefile), Matcher.quoteReplacement(properties.getProperty("CODE_FILENAME")));
             }
             new File(codefile).delete();

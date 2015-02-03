@@ -20,7 +20,7 @@ import org.apache.commons.httpclient.params.HttpClientParams;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
  *
@@ -59,13 +59,13 @@ public class LanguageOPSS implements CompilerInterface {
         try {
             client.executeMethod(logging);
         } catch (HttpException e) {
-            result.setResult(CheckerErrors.UNDEF);
+            result.setResult(ResultsStatusEnum.UNDEF.getCode());
             result.setResultDesc(e.getMessage());
             result.setText("HttpException");
             logging.releaseConnection();
             return result;
         } catch (IOException e) {
-            result.setResult(CheckerErrors.UNDEF);
+            result.setResult(ResultsStatusEnum.UNDEF.getCode());
             result.setResultDesc(e.getMessage());
             result.setText("IOException");
             logging.releaseConnection();
@@ -87,13 +87,13 @@ public class LanguageOPSS implements CompilerInterface {
             client.executeMethod(sendAnswer);
             status = sendAnswer.getResponseBodyAsStream();
         } catch (HttpException e) {
-            result.setResult(CheckerErrors.UNDEF);
+            result.setResult(ResultsStatusEnum.UNDEF.getCode());
             result.setResultDesc(e.getMessage());
             result.setText("HttpException");
             sendAnswer.releaseConnection();
             return result;
         } catch (IOException e) {
-            result.setResult(CheckerErrors.UNDEF);
+            result.setResult(ResultsStatusEnum.UNDEF.getCode());
             result.setResultDesc(e.getMessage());
             result.setText("IOException");
             sendAnswer.releaseConnection();
@@ -119,7 +119,7 @@ public class LanguageOPSS implements CompilerInterface {
             m1.find();
             submitId = m1.group().split("=")[1];
         } catch (IOException e) {
-            result.setResult(CheckerErrors.UNDEF);
+            result.setResult(ResultsStatusEnum.UNDEF.getCode());
             result.setResultDesc(e.getMessage());
             result.setText("IOException");
             sendAnswer.releaseConnection();
@@ -130,7 +130,7 @@ public class LanguageOPSS implements CompilerInterface {
             try {
                 Thread.sleep(7000);
             } catch (InterruptedException e) {
-                result.setResult(CheckerErrors.UNDEF);
+                result.setResult(ResultsStatusEnum.UNDEF.getCode());
                 result.setResultDesc(e.getMessage());
                 result.setText("InterruptedException");
                 return result;
@@ -141,13 +141,13 @@ public class LanguageOPSS implements CompilerInterface {
                 client.executeMethod(answer);
                 answerStream = answer.getResponseBodyAsStream();
             } catch (HttpException e) {
-                result.setResult(CheckerErrors.UNDEF);
+                result.setResult(ResultsStatusEnum.UNDEF.getCode());
                 result.setResultDesc(e.getMessage());
                 result.setText("HttpException");
                 answer.releaseConnection();
                 return result;
             } catch (IOException e) {
-                result.setResult(CheckerErrors.UNDEF);
+                result.setResult(ResultsStatusEnum.UNDEF.getCode());
                 result.setResultDesc(e.getMessage());
                 result.setText("IOException");
                 answer.releaseConnection();
@@ -172,7 +172,7 @@ public class LanguageOPSS implements CompilerInterface {
                     line = br.readLine();
                 }
             } catch (IOException e) {
-                result.setResult(CheckerErrors.UNDEF);
+                result.setResult(ResultsStatusEnum.UNDEF.getCode());
                 result.setResultDesc(e.getMessage());
                 result.setText("IOException");
                 sendAnswer.releaseConnection();
@@ -181,32 +181,32 @@ public class LanguageOPSS implements CompilerInterface {
             String[] col = row.split("(<td>)|(</table>)");
             result.setPoints(0);
             if (col[6].matches(".*Program zaakceptowany.*")) {
-                result.setResult(CheckerErrors.ACC);
+                result.setResult(ResultsStatusEnum.ACC.getCode());
                 result.setPoints(input.getMaxPoints());
                 result.setRuntime(10 * Integer.parseInt(col[8].replaceAll("\\.", "")));
                 result.setMemUsed(Integer.parseInt(col[9].replaceAll("\\s", "")));
                 break;
             } else if (col[6].matches(".*Błąd kompilacji.*")) {
-                result.setResult(CheckerErrors.CE);
+                result.setResult(ResultsStatusEnum.CE.getCode());
                 break;
             } else if (col[6].matches(".*Błąd wykonania.*")) {
-                result.setResult(CheckerErrors.RE);
+                result.setResult(ResultsStatusEnum.RE.getCode());
                 break;
             } else if (col[6].matches(".*Limit czasu przekroczony.*")) {
-                result.setResult(CheckerErrors.TLE);
+                result.setResult(ResultsStatusEnum.TLE.getCode());
                 break;
             } else if (col[6].matches(".*Limit pamięci przekroczony.*")) {
-                result.setResult(CheckerErrors.MLE);
+                result.setResult(ResultsStatusEnum.MLE.getCode());
                 break;
             } else if (col[6].matches(".*Błędna odpowiedź.*")) {
-                result.setResult(CheckerErrors.WA);
+                result.setResult(ResultsStatusEnum.WA.getCode());
                 break;
             } else if (col[6].matches(".*Niedozwolona funkcja.*")) {
-                result.setResult(CheckerErrors.RV);
+                result.setResult(ResultsStatusEnum.RV.getCode());
             } else if (col[6].matches(".*Uruchamianie.*")) {
             } else if (col[6].matches(".*Kompilacja.*")) {
             } else {
-                result.setResult(CheckerErrors.UNKNOWN);
+                result.setResult(ResultsStatusEnum.UNKNOWN.getCode());
                 result.setResultDesc("Unknown status: \"" + col[6] + "\"");
                 break;
             }

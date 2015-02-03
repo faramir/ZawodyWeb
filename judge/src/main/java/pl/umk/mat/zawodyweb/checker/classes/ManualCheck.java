@@ -13,7 +13,7 @@ import pl.umk.mat.zawodyweb.checker.CheckerResult;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.Program;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
  *
@@ -24,7 +24,7 @@ public class ManualCheck implements CheckerInterface {
     @Override
     public CheckerResult check(Program program, TestInput input, TestOutput output) {
         CheckerResult result = new CheckerResult();
-        result.setResult(CheckerErrors.MANUAL);
+        result.setStatus(ResultsStatusEnum.MANUAL.getCode());
         result.setMemUsed(0);
         result.setRuntime(0);
         result.setDescription("");

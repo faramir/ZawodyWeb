@@ -7,7 +7,7 @@
  */
 package pl.umk.mat.zawodyweb.checker;
 
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
  *
@@ -15,60 +15,60 @@ import pl.umk.mat.zawodyweb.database.CheckerErrors;
  */
 public class CheckerResult {
 
-    private int result;
+    private int status;
     private String description;
     private int memUsed;
     private int runtime;
     private int points;
 
-    public void setPoints(int points) {
-        this.points = points;
-    }
-
-    public int getPoints() {
-        return points;
-    }
-
-    public void setMemUsed(int memUsed) {
-        this.memUsed = memUsed;
-    }
-
-    public void setRuntime(int runtime) {
-        this.runtime = runtime;
-    }
-
-    public int getMemUsed() {
-        return memUsed;
-    }
-
-    public int getRuntime() {
-        return runtime;
-    }
-
-
     public CheckerResult() {
-        result = CheckerErrors.UNDEF;
+        status = ResultsStatusEnum.UNDEF.getCode();
         description = null;
     }
 
     public CheckerResult(int result, String description) {
-        this.result = result;
+        this.status = result;
         this.description = description;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public int getResult() {
-        return result;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setDescription(String decription) {
-        this.description = decription;
+    public int getMemUsed() {
+        return memUsed;
     }
 
-    public void setResult(int result) {
-        this.result = result;
+    public void setMemUsed(int memUsed) {
+        this.memUsed = memUsed;
     }
+
+    public int getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime = runtime;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
 }

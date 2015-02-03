@@ -7,6 +7,14 @@
  */
 package pl.umk.mat.zawodyweb.externalchecker;
 
+import org.hibernate.Transaction;
+import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.ResultsDAO;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
+import pl.umk.mat.zawodyweb.database.SubmitsDAO;
+import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
+import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
+import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
 /**
@@ -16,13 +24,55 @@ import pl.umk.mat.zawodyweb.database.pojo.Submits;
 public class ExternalRunner implements Runnable {
 
     private final Submits submit;
+    private final ExternalInterface external;
 
-    public ExternalRunner(Submits submit) {
+    public ExternalRunner(Submits submit, ExternalInterface external) {
         this.submit = submit;
+        this.external = external;
     }
-    
+
     @Override
     public void run() {
+        Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        try {
+            SubmitsDAO submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
+            ResultsDAO resultsDAO = DAOFactory.DEFAULT.buildResultsDAO();
+            
+            Submits outputSubmit = external.check(submit);
+            if (outputSubmit != null) {
+                outputSubmit.setState(SubmitsStateEnum.DONE.getCode());
+
+                boolean manualResult = false;
+                boolean externalResult = false;
+
+                for (Results result : outputSubmit.getResultss()) {
+                    System.out.println("...r.p: " + result.getPoints());
+                    System.out.println("...r.s: " + result.getStatus());
+
+                    resultsDAO.saveOrUpdate(result);
+
+                    if (result.getStatus() == ResultsStatusEnum.EXTERNAL.getCode()) {
+                        externalResult = true;
+                    } else if (result.getStatus() == ResultsStatusEnum.MANUAL.getCode()) {
+                        manualResult = true;
+                    }
+                }
+
+                System.out.println("e:" + externalResult + ", m:" + manualResult);
+
+                if (externalResult == true) {
+                    outputSubmit.setState(SubmitsStateEnum.EXTERNAL.getCode());
+                } else if (manualResult == true) {
+                    outputSubmit.setState(SubmitsStateEnum.MANUAL.getCode());
+                }
+
+                submitsDAO.saveOrUpdate(outputSubmit);
+
+                transaction.commit();
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            transaction.rollback();
+        }
     }
-    
 }

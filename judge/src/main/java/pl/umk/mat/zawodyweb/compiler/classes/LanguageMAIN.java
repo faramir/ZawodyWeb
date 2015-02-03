@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
  *
@@ -112,7 +112,7 @@ public class LanguageMAIN implements CompilerInterface {
             }
         } catch (IllegalArgumentException e) {
             logger.error("Exception when parsing input", e);
-            result.setResult(CheckerErrors.UNDEF);
+            result.setResult(ResultsStatusEnum.UNDEF.getCode());
             result.setResultDesc(e.getMessage());
             result.setText("MAIN IllegalArgumentException");
             return result;
@@ -144,21 +144,21 @@ public class LanguageMAIN implements CompilerInterface {
             client.executeMethod(postMethod);
             if (Pattern.compile("Logowanie udane").matcher(postMethod.getResponseBodyAsString(1024 * 1024)).find() == false) {
                 logger.error("Unable to login (" + login + ":" + password + ")");
-                result.setResult(CheckerErrors.UNDEF);
+                result.setResult(ResultsStatusEnum.UNDEF.getCode());
                 result.setText("Logging in failed");
                 postMethod.releaseConnection();
                 return result;
             }
         } catch (HttpException e) {
             logger.error("Exception when logging in", e);
-            result.setResult(CheckerErrors.UNDEF);
+            result.setResult(ResultsStatusEnum.UNDEF.getCode());
             result.setResultDesc(e.getMessage());
             result.setText("HttpException");
             postMethod.releaseConnection();
             return result;
         } catch (IOException e) {
             logger.error("Exception when logging in", e);
-            result.setResult(CheckerErrors.UNDEF);
+            result.setResult(ResultsStatusEnum.UNDEF.getCode());
             result.setResultDesc(e.getMessage());
             result.setText("IOException");
             postMethod.releaseConnection();
@@ -202,13 +202,13 @@ public class LanguageMAIN implements CompilerInterface {
             }
         } catch (HttpException ex) {
             logger.error("Exception when getting submit page", ex);
-            result.setResult(CheckerErrors.UNDEF);
+            result.setResult(ResultsStatusEnum.UNDEF.getCode());
             result.setResultDesc(ex.getMessage());
             result.setText("IOException");
             return result;
         } catch (IOException ex) {
             logger.error("Exception when getting submit page", ex);
-            result.setResult(CheckerErrors.UNDEF);
+            result.setResult(ResultsStatusEnum.UNDEF.getCode());
             result.setResultDesc(ex.getMessage());
             result.setText("IOException");
             return result;
@@ -268,7 +268,7 @@ public class LanguageMAIN implements CompilerInterface {
 
         } catch (IllegalArgumentException e) {
             logger.error("Exception when submiting solution", e);
-            result.setResult(CheckerErrors.UNDEF);
+            result.setResult(ResultsStatusEnum.UNDEF.getCode());
             result.setResultDesc(e.getMessage());
             result.setText("IllegalArgumentException");
             postMethod.releaseConnection();
@@ -286,7 +286,7 @@ public class LanguageMAIN implements CompilerInterface {
             try {
                 Thread.sleep(7000);
             } catch (InterruptedException e) {
-                result.setResult(CheckerErrors.UNDEF);
+                result.setResult(ResultsStatusEnum.UNDEF.getCode());
                 result.setResultDesc(e.getMessage());
                 result.setText("InterruptedException");
                 return result;
@@ -308,34 +308,34 @@ public class LanguageMAIN implements CompilerInterface {
                         if (resultType.equals("?")) {
                             continue;
                         } else if (resultType.matches("B..d kompilacji")) { // CE
-                            result.setResult(CheckerErrors.CE);
+                            result.setResult(ResultsStatusEnum.CE.getCode());
                             result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else if (resultType.matches("Program wyw.aszczony")) { // TLE
-                            result.setResult(CheckerErrors.TLE);
+                            result.setResult(ResultsStatusEnum.TLE.getCode());
                             result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else if (resultType.matches("B..d wykonania")) { // RTE
-                            result.setResult(CheckerErrors.RE);
+                            result.setResult(ResultsStatusEnum.RE.getCode());
                             result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else if (resultType.matches("Z.a odpowied.")) { // WA
-                            result.setResult(CheckerErrors.WA);
+                            result.setResult(ResultsStatusEnum.WA.getCode());
                             result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else if (resultType.equals("OK")) { // AC
-                            result.setResult(CheckerErrors.ACC);
+                            result.setResult(ResultsStatusEnum.ACC.getCode());
                             result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else {
-                            result.setResult(CheckerErrors.UNDEF);
+                            result.setResult(ResultsStatusEnum.UNDEF.getCode());
                             result.setResultDesc("Unknown status: \"" + resultType + "\"");
                         }
                         break result_loop;
                     }
                 }
             } catch (HttpException ex) {
-                result.setResult(CheckerErrors.UNDEF);
+                result.setResult(ResultsStatusEnum.UNDEF.getCode());
                 result.setResultDesc(ex.getMessage());
                 result.setText("HttpException");
                 return result;
             } catch (IOException ex) {
-                result.setResult(CheckerErrors.UNDEF);
+                result.setResult(ResultsStatusEnum.UNDEF.getCode());
                 result.setResultDesc(ex.getMessage());
                 result.setText("IOException");
                 return result;

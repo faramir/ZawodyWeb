@@ -8,7 +8,7 @@
 package pl.umk.mat.zawodyweb.checker.classes;
 
 import java.util.Properties;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.checker.CheckerInterface;
 import pl.umk.mat.zawodyweb.checker.CheckerResult;
 import pl.umk.mat.zawodyweb.checker.TestInput;
@@ -24,17 +24,17 @@ public class ExactDiff implements CheckerInterface {
     @Override
     public CheckerResult check(Program program, TestInput input, TestOutput output) {
         TestOutput codeOutput = program.runTest(input);
-        if (codeOutput.getResult() != CheckerErrors.UNDEF) {
+        if (codeOutput.getResult() != ResultsStatusEnum.UNDEF.getCode()) {
             return new CheckerResult(codeOutput.getResult(), codeOutput.getResultDesc());
         }
         CheckerResult result = new CheckerResult();
         String codeText = codeOutput.getText();
         String rightText = output.getText();
         if (diff(codeText, rightText) == 0) {
-            result.setResult(CheckerErrors.ACC);
+            result.setStatus(ResultsStatusEnum.ACC.getCode());
             result.setPoints(input.getMaxPoints());
         } else {
-            result.setResult(CheckerErrors.WA);
+            result.setStatus(ResultsStatusEnum.WA.getCode());
             result.setPoints(0);
 
         }

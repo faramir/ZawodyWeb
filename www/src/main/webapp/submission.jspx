@@ -10,7 +10,7 @@
             <c:when test="#{requestBean.currentSubmit == null}">
                 ${messages.no_submission}
             </c:when>
-            <c:when test="#{!(requestBean.currentSubmit.users.id == sessionBean.currentUser.id and requestBean.currentSubmit.result == 2) and !zw:canRate(rolesBean, requestBean.currentSubmit.problems.series.contests.id, requestBean.currentSubmit.problems.series.id)}">
+            <c:when test="#{!(requestBean.currentSubmit.users.id == sessionBean.currentUser.id and requestBean.currentSubmit.state == 2) and !zw:canRate(rolesBean, requestBean.currentSubmit.problems.series.contests.id, requestBean.currentSubmit.problems.series.id)}">
                 ${messages.nonsufficient_privileges}
             </c:when>
             <c:otherwise>

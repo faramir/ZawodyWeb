@@ -11,7 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Properties;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.checker.CheckerInterface;
 import pl.umk.mat.zawodyweb.checker.CheckerResult;
 import pl.umk.mat.zawodyweb.checker.TestInput;
@@ -27,7 +27,7 @@ public class TrailingDiff implements CheckerInterface {
     @Override
     public CheckerResult check(Program program, TestInput input, TestOutput output) {
         TestOutput codeOutput = program.runTest(input);
-        if (codeOutput.getResult() != CheckerErrors.UNDEF) {
+        if (codeOutput.getResult() != ResultsStatusEnum.UNDEF.getCode()) {
             return new CheckerResult(codeOutput.getResult(), codeOutput.getResultDesc());
         }
         CheckerResult result = new CheckerResult();
@@ -35,10 +35,10 @@ public class TrailingDiff implements CheckerInterface {
         String rightText = output.getText();
         try {
             if (diff(codeText, rightText) == 0) {
-                result.setResult(CheckerErrors.ACC);
+                result.setStatus(ResultsStatusEnum.ACC.getCode());
                 result.setPoints(input.getMaxPoints());
             } else {
-                result.setResult(CheckerErrors.WA);
+                result.setStatus(ResultsStatusEnum.WA.getCode());
                 result.setPoints(0);
             }
         } catch (IOException ex) {
@@ -52,12 +52,7 @@ public class TrailingDiff implements CheckerInterface {
     private int diff(String codeText, String rightText) throws IOException {
         BufferedReader right = new BufferedReader(new StringReader(rightText));
         BufferedReader code = new BufferedReader(new StringReader(codeText));
-        if (code == null || right == null) {
-            if (code == null && right == null) {
-                return 0;
-            }
-            return 1;
-        }
+
         String codeLine = code.readLine();
         String rightLine = right.readLine();
         while (codeLine != null && rightLine != null) {

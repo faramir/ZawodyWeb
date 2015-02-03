@@ -18,9 +18,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import pl.umk.mat.zawodyweb.database.AliasesDAO;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
-import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
+import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
 import pl.umk.mat.zawodyweb.database.pojo.Aliases;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
@@ -62,7 +62,7 @@ public class ELFunctions {
     }
 
     public static String submitResults(Submits s) {
-        if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
+        if (s.getState() == null || !s.getState().equals(SubmitsStateEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
             return "";
         }
 
@@ -73,34 +73,34 @@ public class ELFunctions {
         for (Results r : s.getResultss()) {
             if (testVisible(r.getTests())) {
                 nowResult = 0;
-                if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.UNDEF) {
+                if (worseResult > ++nowResult && r.getStatus() == ResultsStatusEnum.UNDEF.getCode()) {
                     worseResult = nowResult;
                     result = " (!)";
-                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.UNKNOWN) {
+                } else if (worseResult > ++nowResult && r.getStatus() == ResultsStatusEnum.UNKNOWN.getCode()) {
                     worseResult = nowResult;
                     result = " (?)";
-                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.RV) {
+                } else if (worseResult > ++nowResult && r.getStatus() == ResultsStatusEnum.RV.getCode()) {
                     worseResult = nowResult;
                     result = " (RV)";
-                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.CTLE) {
+                } else if (worseResult > ++nowResult && r.getStatus() == ResultsStatusEnum.CTLE.getCode()) {
                     worseResult = nowResult;
                     result = " (CTLE)";
-                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.CE) {
+                } else if (worseResult > ++nowResult && r.getStatus() == ResultsStatusEnum.CE.getCode()) {
                     worseResult = nowResult;
                     result = " (CE)";
-                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.MLE) {
+                } else if (worseResult > ++nowResult && r.getStatus() == ResultsStatusEnum.MLE.getCode()) {
                     worseResult = nowResult;
                     result = " (MLE)";
-                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.RE) {
+                } else if (worseResult > ++nowResult && r.getStatus() == ResultsStatusEnum.RE.getCode()) {
                     worseResult = nowResult;
                     result = " (RTE)";
-                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.TLE) {
+                } else if (worseResult > ++nowResult && r.getStatus() == ResultsStatusEnum.TLE.getCode()) {
                     worseResult = nowResult;
                     result = " (TLE)";
-                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.WA) {
+                } else if (worseResult > ++nowResult && r.getStatus() == ResultsStatusEnum.WA.getCode()) {
                     worseResult = nowResult;
                     result = " (WA)";
-                } else if (worseResult > ++nowResult && r.getSubmitResult() == CheckerErrors.ACC) {
+                } else if (worseResult > ++nowResult && r.getStatus() == ResultsStatusEnum.ACC.getCode()) {
                     worseResult = nowResult;
                     result = "";
                 }
@@ -116,7 +116,7 @@ public class ELFunctions {
         int points = 0;
         int maxPoints = 0;
 
-        if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
+        if (s.getState() == null || !s.getState().equals(SubmitsStateEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
         } else {
             List<Results> results = s.getResultss();
 
@@ -124,7 +124,7 @@ public class ELFunctions {
                 if (testVisible(r.getTests())) {
                     points += r.getPoints();
                     maxPoints += r.getTests().getMaxpoints();
-                    if (r.getSubmitResult() == CheckerErrors.ACC) {
+                    if (r.getStatus() == ResultsStatusEnum.ACC.getCode()) {
                         ++good;
                     }
                     ++size;
@@ -132,14 +132,14 @@ public class ELFunctions {
             }
         }
 
-        return coloring(points * size + good, maxPoints * size + size, CheckerErrors.ACC);
+        return coloring(points * size + good, maxPoints * size + size, ResultsStatusEnum.ACC.getCode());
     }
 
     public static String coloring(Integer in1, Integer in2, Integer submitResult) {
         if (in2 == 0) {
             in1 = 1;
             in2 = 1;
-            if (submitResult != CheckerErrors.ACC) {
+            if (submitResult != ResultsStatusEnum.ACC.getCode()) {
                 in1 = 0;
             }
         }
@@ -179,7 +179,7 @@ public class ELFunctions {
     }
 
     public static Integer maxPoints(Submits s) {
-        if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
+        if (s.getState() == null || !s.getState().equals(SubmitsStateEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
             return -1;
         }
         int maxPoints = 0;
@@ -194,7 +194,7 @@ public class ELFunctions {
     }
 
     public static Integer points(Submits s) {
-        if (s.getResult() == null || !s.getResult().equals(SubmitsResultEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
+        if (s.getState() == null || !s.getState().equals(SubmitsStateEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
             return -1;
         }
 

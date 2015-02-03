@@ -24,7 +24,7 @@ public class HTTPsubmit implements CheckerInterface {
     public CheckerResult check(Program program, TestInput input, TestOutput output) {
         TestOutput to = program.runTest(input);
         CheckerResult result = new CheckerResult();
-        result.setResult(to.getResult());
+        result.setStatus(to.getResult());
         result.setMemUsed(to.getMemUsed());
         result.setRuntime(to.getRuntime());
         result.setDescription(to.getResultDesc());

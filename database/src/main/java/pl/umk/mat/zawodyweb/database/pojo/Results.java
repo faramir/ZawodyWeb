@@ -7,9 +7,7 @@
  */
 package pl.umk.mat.zawodyweb.database.pojo;
 
-import java.util.List;
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
@@ -17,13 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-import javax.persistence.Embeddable;
 import javax.persistence.GenerationType;
 
 /**
@@ -67,7 +60,7 @@ public class Results implements Serializable {
      */
     private Tests tests;
 
-    private Integer submitResult;
+    private Integer status;
 
     /**
      * @return id
@@ -104,16 +97,16 @@ public class Results implements Serializable {
     }
 
     @Basic
-    @Column(name = "submitresult")
-    public Integer getSubmitResult() {
-        return submitResult;
+    @Column(name = "status")
+    public Integer getStatus() {
+        return status;
     }
 
     /**
      * @param points new value for points
      */
-    public void setSubmitResult(Integer submitResult) {
-        this.submitResult = submitResult;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     /**

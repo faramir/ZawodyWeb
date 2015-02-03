@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Logger;
 import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
-import pl.umk.mat.zawodyweb.database.SubmitsResultEnum;
+import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
@@ -95,7 +95,7 @@ public class JudgesListener extends Thread {
 
                             Submits s = DAOFactory.DEFAULT.buildSubmitsDAO().getById(submitId);
                             if (s != null) {
-                                if (s.getResult().equals(SubmitsResultEnum.WAIT.getCode()) == true) {
+                                if (s.getState().equals(SubmitsStateEnum.WAIT.getCode()) == true) {
                                     int compilerId = s.getLanguages().getClasses().getId();
 
                                     transaction.commit();
@@ -128,17 +128,17 @@ public class JudgesListener extends Thread {
 
                                     transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
                                     s = DAOFactory.DEFAULT.buildSubmitsDAO().getById(submitId);
-                                    Integer result = s.getResult();
+                                    Integer result = s.getState();
 
-                                    if (result.equals(SubmitsResultEnum.DONE.getCode())
-                                            || result.equals(SubmitsResultEnum.MANUAL.getCode())) {
+                                    if (result.equals(SubmitsStateEnum.DONE.getCode())
+                                            || result.equals(SubmitsStateEnum.MANUAL.getCode())) {
                                         logger.info("Checked submit(" + submitId + ") by Judge: " + judgeHost);
                                     } else {
                                         logger.error("Checked submit(" + submitId + ") with ERROR(" + result + ") by Judge: " + judgeHost);
                                         compilerErrorHandler.addCompilerError(compilerId);
                                     }
                                 } else {
-                                    logger.info("Submit(" + submitId + ") don't have WAIT(" + SubmitsResultEnum.WAIT.getCode() + ") status - it have (" + s.getResult() + ")");
+                                    logger.info("Submit(" + submitId + ") don't have WAIT(" + SubmitsStateEnum.WAIT.getCode() + ") status - it have (" + s.getState() + ")");
                                 }
                             } else {
                                 logger.info("Error getting submit(" + submitId + ")");

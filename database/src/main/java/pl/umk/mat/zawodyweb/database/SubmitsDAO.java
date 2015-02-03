@@ -35,7 +35,7 @@ public interface SubmitsDAO extends GenericDAO<Submits,Integer> {
 	/**
 	 * Find Submits by result
 	 */
-	public List<Submits> findByResult(Integer result);
+	public List<Submits> findByState(Integer result);
 
 	/**
 	 * Find Submits by code

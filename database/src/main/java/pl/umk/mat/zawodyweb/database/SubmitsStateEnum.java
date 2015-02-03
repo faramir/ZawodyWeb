@@ -11,7 +11,7 @@ package pl.umk.mat.zawodyweb.database;
  *
  * @author faramir
  */
-public enum SubmitsResultEnum {
+public enum SubmitsStateEnum {
 
     WAIT(0),
     PROCESS(1),
@@ -20,7 +20,7 @@ public enum SubmitsResultEnum {
     EXTERNAL(4);
     private final int code;
 
-    private SubmitsResultEnum(int code) {
+    private SubmitsStateEnum(int code) {
         this.code = code;
     }
 
@@ -28,8 +28,8 @@ public enum SubmitsResultEnum {
         return code;
     }
 
-    public static SubmitsResultEnum getByCode(int code) {
-        for (SubmitsResultEnum type : SubmitsResultEnum.values()) {
+    public static SubmitsStateEnum getByCode(int code) {
+        for (SubmitsStateEnum type : SubmitsStateEnum.values()) {
             if (code == type.getCode()) {
                 return type;
             }

@@ -8,7 +8,7 @@
 package pl.mat.umk.zawodyweb.checker.tests;
 
 import org.junit.Test;
-import pl.umk.mat.zawodyweb.database.CheckerErrors;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.checker.CheckerResult;
 import pl.umk.mat.zawodyweb.checker.TestInput;
 import pl.umk.mat.zawodyweb.checker.TestOutput;
@@ -35,18 +35,18 @@ public class NormalDiffTest {
         Program program = code.compile();
         CheckerResult result =
                 nd.check(program, new TestInput("", 0, 0, 0, null), test);
-        return result.getResult();
+        return result.getStatus();
     }
 
     @Test
     public void exactTest() {
-        int expected = CheckerErrors.ACC;
+        int expected = ResultsStatusEnum.ACC.getCode();
         assertEquals(expected, Test("15\n", "15\n"));
     }
 
     @Test
     public void codeLongerTest() {
-        int expected = CheckerErrors.ACC;
+        int expected = ResultsStatusEnum.ACC.getCode();
         String codeText = "\n      15\n     \n";
         String rightText = "15\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -54,7 +54,7 @@ public class NormalDiffTest {
 
     @Test
     public void rightLongerTest() {
-        int expected = CheckerErrors.ACC;
+        int expected = ResultsStatusEnum.ACC.getCode();
         String codeText = "15\n";
         String rightText = "\n 15\n\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -62,7 +62,7 @@ public class NormalDiffTest {
 
     @Test
     public void whitespaceTest() {
-        int expected = CheckerErrors.ACC;
+        int expected = ResultsStatusEnum.ACC.getCode();
         String codeText = "15 13\n";
         String rightText = "\n 15\n13\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -70,7 +70,7 @@ public class NormalDiffTest {
 
     @Test
     public void differentTest1() {
-        int expected = CheckerErrors.WA;
+        int expected = ResultsStatusEnum.WA.getCode();
         String codeText = "15 12\n";
         String rightText = "\n 15\n13\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -78,7 +78,7 @@ public class NormalDiffTest {
 
     @Test
     public void differentTest2() {
-        int expected = CheckerErrors.WA;
+        int expected = ResultsStatusEnum.WA.getCode();
         String codeText = "1512\n";
         String rightText = "\n 15\n12\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -86,7 +86,7 @@ public class NormalDiffTest {
 
     @Test
     public void differentTest3() {
-        int expected = CheckerErrors.WA;
+        int expected = ResultsStatusEnum.WA.getCode();
         String codeText = "151 2\n";
         String rightText = "\n 15\n12\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -94,7 +94,7 @@ public class NormalDiffTest {
 
     @Test
     public void standardDifferentTest3() {
-        int expected = CheckerErrors.WA;
+        int expected = ResultsStatusEnum.WA.getCode();
         String codeText = "15 12\n";
         String rightText = "15 13\n";
         assertEquals(expected, Test(codeText, rightText));
@@ -102,13 +102,13 @@ public class NormalDiffTest {
 
     @Test
     public void trailingTest3() {
-        int expected = CheckerErrors.ACC;
+        int expected = ResultsStatusEnum.ACC.getCode();
         assertEquals(expected, Test("15", "15\n"));
     }
 
     @Test
     public void trailingTest4() {
-        int expected = CheckerErrors.ACC;
+        int expected = ResultsStatusEnum.ACC.getCode();
         assertEquals(expected, Test("15\n", "15"));
     }
     // TODO add test methods here.
