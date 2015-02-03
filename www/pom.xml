@@ -108,9 +108,9 @@
     <!-- -->
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${parent.groupId}</groupId>
             <artifactId>database</artifactId>
-            <version>${project.version}</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>

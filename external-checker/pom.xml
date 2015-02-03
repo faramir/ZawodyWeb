@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>pl.umk.mat.zawodyweb</groupId>
-    <artifactId>judge-manager</artifactId>
-    <name>judge-manager</name>
-    <version>3.3.0-SNAPSHOT</version>
-    <description>JudgeManger for ZawodyWEB</description>
+    <artifactId>external-checker</artifactId>
+    <name>external-checker</name>
+    <version>1.1.0-SNAPSHOT</version>
+    <description>ExternalChecker for ZawodyWEB</description>
     <packaging>jar</packaging>
     <!-- -->
     <parent>
@@ -22,15 +22,15 @@
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
-        <finalName>judge-manager</finalName>
+        <finalName>external-checker</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -58,7 +58,7 @@
                     <arguments>
                         <argument>-classpath</argument>
                         <classpath />
-                        <argument>pl.umk.mat.zawodyweb.judgemanager.MainJudgeManager</argument>
+                        <argument>pl.umk.mat.zawodyweb.externalchecker.Main</argument>
                     </arguments>
                 </configuration>
             </plugin>
@@ -67,7 +67,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>pl.umk.mat.zawodyweb.judgemanager.MainJudgeManager</mainClass>
+                            <mainClass>pl.umk.mat.zawodyweb.externalchecker.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

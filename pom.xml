@@ -52,7 +52,7 @@
         </repository>
         <repository>
             <id>java.net</id>
-            <url>http://download.java.net/maven/2</url>
+            <url>https://maven.java.net/content/groups/public/</url>
         </repository>
         <repository>
             <id>repository.jboss.org-public</id>
@@ -73,6 +73,7 @@
         <module>judge-manager</module>
         <module>judge</module>
         <module>www</module>
+        <module>external-checker</module>
     </modules>
     <build>
         <plugins>

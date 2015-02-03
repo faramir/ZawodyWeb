@@ -1,0 +1,1331 @@
+body {
+    margin: 0; padding: 0;
+    font: 1em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
+    background: #eff7ea url(../images/backgr1.png) repeat;
+    color: #309588;
+    text-align: left;
+}
+
+a:link:hover, a:visited:hover {
+    color: #609588;
+    text-decoration: none;
+}
+
+a:visited, a:link {
+    text-decoration: none;
+    color: #309588;
+}
+
+.jclock-big {
+    color: #309588;
+    float: right;
+    width: 95%;
+    height: 150px;
+    text-align: center;
+    font: 65px  Verdana, 'Trebuchet MS', Arial, Sans-serif;
+    font-weight: 900;
+    padding: 50px 0;
+    margin: auto;
+    white-space: nowrap;
+}
+
+.jclock {
+    color: #309588;
+    float: right;
+    width: 172px;
+    text-align: center;
+    font: 0.9em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
+    padding: 0 20px 80px 0;
+    white-space: nowrap;
+}
+
+#home h1 {
+    font-size: 1.3em;
+    color: #208578;
+    margin: 0 0 0 0;
+    padding: 20px 0 0 0;
+    text-align: center;
+}
+
+#home h2 {
+    font-size: 1em;
+    margin: 0;
+    padding: 0;
+    color: #208578;
+    text-align: center;
+}
+
+#page h1 {
+    font-size: 1.3em;
+    color: #000000;
+    padding: 40px 0 40px 0;
+    text-align: center;
+}
+
+.logo {
+    position: absolute;
+    left: 90px;
+    top: 8px;
+}
+
+.graph {
+    position: absolute;
+    left: -45px;
+    top: -29px;
+    z-index: -1;
+}
+
+#copy {
+    text-align:center;
+    font-size:10px;
+    padding: 2px 0 0 0;
+}
+
+#body {
+    position: relative;
+    color: #000000;
+    float: left;
+    width: 70%;
+    min-width: 635px;
+}
+
+#content {
+    position: relative;
+    color: #000000;
+    bottom: 4px;
+    margin: 20px 0 0 0;
+    padding: 15px 0 15px 0;
+    float: left;
+    width: 100%;
+    border: ridge #108568;
+    border-width: 0 0 1px 0;
+}
+
+#content h1 {
+    border: ridge #108568;
+    padding: 0 0 20px 0;
+    border-width: 0 0 1px 0;
+    text-align: center;
+}
+
+#content h2  {
+    text-align: left;
+    font-size: 1.3em;
+    padding: 10px 0 20px 0;
+}
+
+img {
+    float: left;
+    margin: 10px 0 0 10px;
+    padding: 20px 0 0 40px;
+}
+
+img.nomargin {
+    float: none;
+    margin: 0;
+    padding: 2px;
+}
+
+/* MENU */
+#top_menu {
+    float: left;
+    width: 70%;
+    min-width: 635px;
+}
+
+#top_menu ul {	
+    height: 1.4em;
+    bottom: 4px;
+    padding: 2px;
+    margin: 0px;
+    font: bold 1em 'Trebuchet MS', Tahoma, Arial, Sans-serif;
+    border: 1px ridge #108568;
+    border-width: 1px;
+    list-style: none;
+    background: url(../images/bg_top1.png) repeat-x;
+}
+
+#top_menu ul li{
+    position: relative;
+    display: inline;
+    float: left;
+    padding: 0 20px 0 20px;
+}
+
+#top_menu ul li:hover {
+    color: #609588;
+    text-decoration: none;
+    background: url(../images/bg_top2.png) repeat-x;
+}
+
+#top_menu ul li.spacer {
+    background: url(../images/divider.gif) repeat-y right top;
+    float: right;
+}
+
+#top_menu ul li.prawa {
+    float: right;
+}
+
+#top_menu ul li a {
+    display: block;
+    text-decoration:none;
+}
+
+#left_menu ul {	
+    margin: 35px 20px 0 10px;
+    padding: 0 10px 0 10px;
+    float: left;
+    font: bold 1em 'Trebuchet MS', Tahoma, Arial, Sans-serif;
+    width: 150px;
+    border: none;
+    list-style: none;
+}
+
+#left_menu ul li:hover{
+    border-width: 0px 0px 0px 11px;
+    border-color: #008568;
+    margin-left: -4px;
+}
+
+#left_menu ul li {
+    border-width: 0px 0px 0px 3px;
+    border-style: solid;
+    border-color: #108568;
+}
+
+#left_menu ul li a {
+    text-decoration:none;
+    display:block;
+    padding: 0.4em 1em;
+    margin: 0;
+    border: none;
+}
+
+#left_menu ul li a:link:hover,#left_menu ul li a:visited:hover {
+    color: #609588;
+    text-decoration: none;
+}
+
+.profilform img.openid  {
+    display: block;
+    float: right;
+    clear: right;
+    margin: -20px 0 0 0;
+    padding: 0px;
+}
+
+.clear {
+    clear:both;
+    font-size:0;
+    height:0;
+}
+
+/* PROFILFORM */
+.profilform {
+    width:90%;
+    margin:auto;
+}
+
+.profilform fieldset{
+    padding:10px;
+    border: none;
+}
+
+.profilform label{
+    margin-top: 10px;
+    display:block;
+    height:2em;
+    float:left;
+    background-color:transparent;
+    padding: 0px;
+}
+
+.profilform label.seria {
+    text-align: center;
+    float: right;
+    font-weight: bold;
+    display: inline-block;
+    color: #00c0b0;
+    height: auto;
+    margin: 2px 0 0px 0px;
+    padding: 5px;
+    width: 98%;
+    background: transparent;
+}
+
+.profilform div.daty {
+    text-align: center;
+    font-size: 10pt;
+    font-weight: normal;
+}
+
+.profilform div.seria {
+    border: solid;
+    border-color: #dff4d1;
+    border-width: 0px 1px 0px 0px;
+    margin: 20px 0 0px 0px;
+    padding: 5px 0 0 0;
+    background: #e9f7df url(../images/seriaGora.png) repeat-x;
+}
+
+.profilform div.seriaDol {
+    border: solid;
+    border-color: #dff4d1;
+    border-width: 0px 1px 0px 0px;
+    margin: 0px 0px 10px 0px;
+    height: 30px;
+    background: #e9f7df url(../images/seriaDol.png) repeat-x;
+}
+
+.profilform div.zadanko div.nazwa {
+    font-size: 32px;
+    background: #ddf3cf;
+    background: #ddf3cf url(../images/trescGora.png) repeat-x;
+    margin: auto;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
+
+.profilform div.zadanko {
+    border: none;
+}
+
+.profilform div.zadanko div {
+    padding-right: 5px;
+    background: #ddf3cf;
+    border: solid #c7f1aa;
+    border-width: 0 1px 0 0;
+}
+
+.profilform div.zadanko div.rozmiar {
+    font-size: 11px;
+    padding-bottom: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.pamiec {
+    font-size: 11px;
+    padding-bottom: 2px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.pdf {
+    font-size: 11px;
+    padding-bottom: 5px;
+    margin: 0px 0 0 0;
+    text-align: right;
+    display: block;
+}
+
+.profilform div.zadanko div.pdf a {
+    display: inline-table;
+}
+
+.profilform div.zadanko div.pdf a img {
+    margin: 0px 0 0 0;
+    padding: 0px 0 0px 5px;
+    float: right;
+    background: #ddf3cf;
+}
+
+.profilform div.zadanko div.termin {
+    font-size: 11px;
+    border: solid #c7f1aa;
+    border-width: 1px 1px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.autor {
+    font-size: 11px;
+    border: solid #c7f1aa;
+    border-width: 0px 1px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.filename {
+    font-size: 11px;
+    border: solid #c7f1aa;
+    border-width: 0px 1px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.language {
+    font-size: 11px;
+    border: solid #c7f1aa;
+    border-width: 0px 1px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.address {
+    font-size: 11px;
+    border: solid #c7f1aa;
+    border-width: 0px 1px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.visibility {
+    font-size: 11px;
+    border: solid #c7f1aa;
+    border-width: 0px 1px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.notes {
+    font-size: 11px;
+    border: solid #c7f1aa;
+    border-width: 1px 1px 0 0;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.jezyki {
+    font-size: 11px;
+    padding-bottom: 2px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.czas {
+    font-size: 11px;
+    padding-bottom: 2px;
+    text-align: right;
+}
+
+.profilform div.zadanko div.wyslij {
+    font-size: 18px;
+    margin: 0px auto 10px auto;
+    text-align: center;
+    background: #ddf3cf url(../images/trescDol.png) repeat-x;;
+    padding: 10px 0 10px 0;
+}
+
+.profilform div.zadanko div.testy {
+    background: transparent;
+    border:none;
+    padding-top:30px;
+}
+
+.profilform div.zadanko div.tresc {
+    padding: 10px 45px 10px 45px;
+    border: none;
+    background: #eff7ea;
+}
+
+.profilform div.zadanko div.tresc div {
+    margin: 0px;
+    padding: 0px;
+    font: 1em Monospace;
+    border: none;
+    background: transparent;
+}
+
+.profilform div.ikona img {
+    margin: 0px;
+    padding: 0 0 10px 0;
+    float: left;
+}
+
+.profilform img {
+    border: none;
+}
+
+.profilform img.click {
+    margin: 0px;
+    padding: 0 2px 0 2px;
+    float: right;
+    cursor: pointer;
+}
+
+.profilform a.ikonka img {
+    margin: 0px;
+    padding: 0 2px 0 2px;
+    float: right;
+}
+
+.profilform table tr a {
+    display: inline-table;
+    float: left;
+}
+
+.profilform table tr div.item {
+    display: inline-table;
+    float: left;
+    background: transparent;
+    border: none;
+    text-align: center;
+}
+
+.profilform table tr a.ikonka {
+    display: inline-table;
+    float: right;
+}
+
+#content #pageTitle {
+    text-align: center;
+}
+
+#content h1 {
+    text-align: left;
+    font-size: 20px;
+    border: 0px;
+    margin: 10px -15px 0px -15px;
+    padding: 0px;
+}
+
+#content h2 {
+    text-align: left;
+    font-size: 17px;
+    border: 0px;
+    margin: 10px -15px 0px -15px;
+    padding: 0px;
+}
+
+.profilform input {
+    margin-right:20px;
+    margin-top: 12px;
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    width: 375px;
+    padding: 0px 1px;
+    background: #def4cf url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+}
+.profilform textarea {
+    margin-right:20px;
+    margin-top: 12px;
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    width: 375px;
+    padding: 0px 1px;
+}
+
+.profilform select {
+    margin-right:20px;
+    margin-top: 12px;
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    width: 379px;
+    padding: 0px 1px;
+    background: #def4cf url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+}
+
+.profilform input.widecheck {
+    margin-right:371px;
+    margin-top: 12px;
+    border:1px solid #999999;
+    float:right;
+    clear: right;
+    width: 28px;
+    height: 14px;
+    padding: 0;
+    background: #def4cf url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+}
+
+.profilform input.check {
+    margin-right:20px;
+    margin-top: 12px;
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    padding: 0px 0px;
+    background: #def4cf url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+}
+
+.profilform .captcha {
+    margin-right:20px;
+    float:right;
+    clear: both;
+}
+
+.profilform .captcha img {
+    margin: 0;
+    padding: 0;
+    border:1px solid #333333;
+}
+
+.profilform textarea {
+    margin-right:20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    width: 375px;
+    overflow: auto;
+    padding: 0px 1px;
+    font: 0.8em  Verdana, 'Trebuchet MS', Arial, Sans-serif;
+}
+
+.bigHeight {
+    height: 15em;
+    background: #def4cf url(../images/ui-bg_1x150.png) repeat-x;
+}
+
+.smaHeight {
+    height: 4em;
+    background: #def4cf url(../images/ui-bg_highlight-hard_75_d7c5f2_1x50.png) repeat-x;
+}
+
+.profilform input.longerInput {
+    width: 379px;
+}
+
+.profilform input.submit {
+    margin: 10px 40%;
+    float: none;
+    width: 100px;
+}
+
+.profilform input.check {
+    width: auto;
+    float: right;
+}
+
+.profilform .error {
+    margin-top: 15px;
+    color:red;
+    font-size:0.7em;
+    float:right;
+    padding-right: 10px;
+}
+
+.profilform .required {
+    font-weight: bold;
+}
+
+.profilform .subject {
+    font-weight: bold;
+    padding: 10px 0 0 0;
+}
+
+.profilform input:focus, .profilform input:hover, .profilform textarea:focus, .profilform textarea:hover {
+    border:1px solid #333333;
+}
+
+/* TABLES */
+.profilform table {
+    width: 95%;
+    margin-right:auto;
+    margin-left:auto;
+    text-align: center;
+    padding-bottom: 0px;
+}
+
+.profilform table tr:hover {
+    background: #f6f6f6;
+}
+
+.profilform table.pagingrid tr:hover {
+    background: transparent;
+}
+
+.profilform table th {
+    color: #000;
+    background: #04ab99 url(../images/th_bg1.png) repeat-x;;
+    text-align: center;
+    font-weight: bold;
+    padding: 1px;
+}
+
+.linia1 {
+    background: #d7fec1;
+
+}
+
+.linia2 {
+    background: #e1f6d4;
+}
+
+.col1 {
+    text-align: left;
+    margin: 0px 1px 0px 1px;
+    padding-left: 5px;
+    width: 70%;
+}
+
+.col2 {
+    width: 50px;
+    margin: 0px 1px 0px 1px;
+}
+
+.cols {
+    text-align: left;
+    margin: 0px 1px 0px 1px;
+    padding-left: 5px;
+}
+
+.cols2 { /* ta klasa jest display: none; w print.css */
+    text-align: left;
+    margin: 0px 1px 0px 1px;
+    padding-left: 5px;
+}
+
+.paginator {
+    text-align: center;
+    background: url(../images/pagin.png) repeat-x;
+    width: 305px;
+    margin: 0px auto;
+    padding: 0px;
+}
+
+.pagingrid {
+    text-align: center;
+    background: none;
+    width: 90%;
+    padding: 0px;
+    margin: 0px auto;
+}
+
+.profilform.pagingrid table:hover {
+    background-color: transparent;
+}
+
+.pagingrid a img.lewy {
+    padding: 0px;
+    border: none;
+    float: right;
+    margin: 0px auto 0px 100%;
+    text-align: right;
+    clear:both;
+}
+
+.pagingrid a img.prawy {
+    padding: 0px;
+    border: none;
+    float: left;
+    margin: 0px 100% 0px auto;
+    text-align: left;
+    clear:both;
+}
+
+.profilform table.pagingrid tr a {
+    float: none;
+    width:100%;
+}
+
+.paginator a {
+    color: #000;
+    font-weight: bold;
+}
+
+.act a {
+    color: #309588;
+}
+
+.paginator a:hover {
+    color: #609588;
+    font-weight: bold;
+}
+
+.paginator tr:hover {
+    background: url(../images/pagin.png) repeat-x;
+}
+
+.pagingrid tr:hover {
+    background: none;
+}
+/* QFORM */
+.qform {
+    width:70%;
+    margin:auto;
+    text-align: left;
+}
+
+.qform fieldset{
+    padding:10px;
+    border: none;
+}
+
+.qform label{
+    display:block;
+    height:2em;
+    background-color:transparent;
+    padding:10px 10px 0;
+}
+
+.qform input {
+    margin-right:20px;
+    margin: 20px 40% 20px 0;
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    background: #def4cf;
+}
+
+.qform input.topic {
+    margin: 0 0 0 0;
+    border:1px solid #999999;
+    width: 50%;
+    float:right;
+    clear:right;
+    background: #def4cf;
+}
+
+.qform select {
+    border:1px solid #999999;
+    width: 51%;
+    float:right;
+    clear:right;
+    background: #def4cf;
+}
+
+
+.qform textarea {
+    margin-right:20px;
+    margin-top: 10px;
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    width: 90%;
+    height: 70px;
+    background: #def4cf;
+}
+
+.qform input:focus, .qform input:hover, .qform select:hover, .qform select:focus {
+    border:1px solid #333333;
+}
+
+.qform textarea:focus, .qform textarea:hover {
+    border:1px solid #333333;
+}
+
+/* SENDFORM */
+.sendform {
+    width:70%;
+    margin:auto;
+}
+
+.sendform fieldset{
+    padding:10px;
+    border: none;
+}
+
+.sendform label{
+    display:block;
+    height:2em;
+    background-color:transparent;
+    padding:10px 10px 0;
+}
+
+.sendform input {
+    border:1px solid #999999;
+    width: 100px;
+    margin: 0 40% 20px 0;
+    float:right;
+    clear:right;
+    background: #def4cf;
+}
+
+.sendform input.file {
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    margin: 0;
+    width: 90%;
+    background: #def4cf;
+}
+
+.sendform textarea {
+    border:1px solid #999999;
+    float:right;
+    clear:right;
+    width: 90%;
+    height: 150px;
+    margin: 20px 0 20px 0;
+    background: #def4cf;
+}
+
+.sendform select {
+    border:1px solid #999999;
+    width: 30%;
+    float:right;
+    clear:right;
+    background: #def4cf;
+}
+
+.sendform input:focus, .sendform input:hover, .sendform textarea:focus, .sendform textarea:hover, .sendform select:focus, .sendform select:hover, .sendform input#file:focus, .sendform input#file:hover {
+    border:1px solid #333333;
+}
+/* RICH SKIN CSS */
+.rich-calendar-button  {
+    display: block;
+    float: right;
+    clear: right;
+    margin: -20px 0 0 0;
+    padding: 0px;
+}
+
+.rich-calendar-header {
+    background-color: #bbf297;
+}
+
+.rich-calendar-tool-btn-hover {
+    background-color: #f1e9ee;
+    color: #000000;
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-top-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-top-color: #eff7ea;
+    border-left-color: #eff7ea;
+    border-right-color: #c4b9c0;
+    border-bottom-color: #c4b9c0;
+    padding-top: 1px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 2px;
+}
+
+.rich-calendar-cell {
+    border-bottom-color: #c4b9c0;
+    border-right-color: #c4b9c0;
+    background-color: #eff7ea;
+    font-family: "Trebuchet MS", Tahoma, Arial, sans-serif;
+}
+
+.rich-calendar-toolfooter {
+    height: 22px;
+    padding-top: 1px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 1px;
+}
+
+.rich-calendar-days {
+    border-bottom-color: #c4b9c0;
+    border-right-color: #c4b9c0;
+    background-attachment: scroll;
+    background-repeat: repeat;
+    background-position: 0% 0%;
+    background-color: #f1e9ee;
+    background-image: none;
+    font-family: "Trebuchet MS", Tahoma, Arial, sans-serif;
+}
+
+.rich-calendar-editor-btn {
+    width: 36px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.profilform table td.rich-calendar-editor-btn:hover {
+    background: transparent;
+}
+
+table.rich-calendar-date-layout tr:hover {
+    background: transparent;
+}
+
+table.rich-calendar-editor-container tr:hover{
+    background: transparent;
+}
+
+.rich-calendar-time-btn { 
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-top-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-top-color: #eff7ea;
+    border-left-color: #eff7ea;
+    border-right-color: #c4b9c0;
+    border-bottom-color: #c4b9c0;
+    background-attachment: scroll;
+    background-repeat: repeat;
+    background-position: 0% 0%;
+    background-color: #f1e9ee;
+    background-image: none;
+    white-space: nowrap;
+    text-align: center;
+    cursor: pointer;
+}
+
+.rich-calendar-tool {
+    vertical-align: middle;
+    text-align: center;
+    width: 20px;
+    height: 22px;
+    background-color: #bbf297;
+    font-weight: bold;
+    color: #000;
+}
+
+.rich-calendar-month {
+    vertical-align: middle;
+    text-align: center;
+    height: 22px;
+    background-color: #bbf297;
+    font-weight: bold;
+    color: #000;
+    white-space: nowrap;
+}
+
+.rich-calendar-boundary-dates {
+    color: #A0A0A0;
+}
+.profilform table td.rich-calendar-spinner-input-container {
+    background-color: #eff7ea;
+    margin: 0px;
+    padding: 0px;
+    width: 5px;
+    text-align: center;
+}
+
+.profilform table.rich-calendar-spinner-input-container {
+    margin: 0px;
+    padding: 0px;
+}
+
+.profilform input.rich-calendar-spinner-input {
+    width: auto;
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+}
+
+.profilform table td.rich-calendar-spinner-buttons {
+    width: 2px;
+    margin: 0px;
+    padding: 0;
+    text-align: center;
+}
+
+.profilform table td.rich-calendar-spinner-up {
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+}
+
+.profilform table td.rich-calendar-spinner-down {
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+}
+
+.profilform table.rich-calendar-time-layout-fields {
+    background-color: #eff7ea;
+    margin: 0px;
+    padding: 0px;
+}
+
+.profilform.rich-calendar-time-layout-fields:hover {
+    background-color: #eff7ea;
+}
+
+.profilform table td.rich-calendar-time-layout-fields:hover {
+    background-color: #eff7ea;
+}
+
+.profilform table td.rich-calendar-time-layout-ok {
+    background-color: #eff7ea;
+}
+
+.profilform table td.rich-calendar-time-layout-ok:hover {
+    background-color: #eff7ea;
+}
+
+.profilform table td.rich-calendar-time-layout-cancel {
+    background-color: #eff7ea;
+}
+
+.profilform table td.rich-calendar-time-layout-cancel:hover {
+    background-color: #eff7ea;
+}
+
+.profilform table td.rich-calendar-spinner-input-container {
+    background-color: #eff7ea;
+}
+
+.profilform table.rich-calendar-spinner-input-container {
+    margin: 0px;
+}
+
+tbody {
+    margin: 0px;
+    padding: 0px;
+}
+
+.profilform table td.rich-calendar-spinner-input-container:hover {
+    background-color: #eff7ea;
+}
+
+.rich-calendar-cell-size {
+    height: 22px;
+    width: 31px;
+}
+
+.rich-calendar-week {
+    background-color: #fae9f8;
+    color: #219981;
+}
+
+.rich-calendar-select {
+    background-color: #228649;
+    color: #FF99FF;
+    font-weight: bold;
+}
+
+.colNazwa {
+    width: 50%;
+}
+
+.welcomeClass{
+    float:right;
+    font-size:11px;
+    width: 16%;
+    margin-right:5%;
+    margin-bottom: 0px;
+    color:#000000;
+}
+
+.contest-link_img {
+    margin-bottom:10px;
+    margin-left:-50px;
+    padding:0
+}
+
+.title {
+    font-size:1.4em;
+    text-align:center;
+    color:#309588;
+}
+
+.text {
+    padding:30px;
+    background: #ddf3cf;
+    margin:10px;
+}
+
+.source {
+    margin-top:30px;
+    border: solid #108568;
+    border-width: 1px 0 0 0;
+    padding-top:30px;
+}
+
+.profilform div.source input {
+    width:70%;
+}
+
+.profilform div.source input.submit {
+    margin: 10px 40%;
+    float: none;
+    width: 100px;
+}
+
+.about img {
+    float: none;
+    margin: 10px 0;
+}
+
+.profilform div.about {
+    float: none;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.praca {
+    color: #309588;
+    font-weight: bold;
+    font-size: 18px;
+    background: #ddf3cf url(../images/trescGora.png) repeat-x;
+    height: 1.7em;
+    padding-top: 10px;
+    border: solid #c7f1aa;
+    border-width: 0 1px 1px 0;
+}
+
+.questions {
+    margin-top:30px;
+    margin-bottom:20px;
+}
+
+.not_choosen {
+    margin:30px;
+    color:#309588;
+    font-weight:bold
+}
+
+.profilform table td.small {
+    margin: 0px 1px 0px 1px;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 10%;
+}
+
+.profilform table th.small {
+    margin: 0px 1px 0px 1px;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 10%;
+}
+
+.profilform table td.big {
+    margin: 0px 1px 0px 1px;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 32%;
+}
+
+.profilform table th.big {
+    margin: 0px 1px 0px 1px;
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 32%;
+}
+
+
+.profilform div#scroll {
+    max-height: 500px;
+    width: 100%;
+    overflow: auto;
+}
+
+.profilform div#scroll table tbody {
+    max-height: 440px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.profilform table.ranking {
+    padding-bottom: 10px;
+    table-layout: fixed;
+    width: auto;
+}
+
+#view_ranking {
+    opacity:0.05; /* CSS3 */
+    filter:alpha(opacity=5); /* IE */
+}
+#view_ranking:hover {
+    opacity:1.0; /* CSS3 */
+    filter:alpha(opacity=100); /* IE */
+}
+
+.ranking_old {
+    font-size: 16px;
+    text-align: center;
+    color: #DD3333;
+    padding: 2px 0 0 0;
+}
+
+.ranking_frozen {
+    font-size: 11px;
+    text-align: center;
+    color: #FF0000;
+    padding: 2px 0 0 0;
+}
+
+.frozen {
+    color: #FF0000;
+}
+
+.ranking_generated {
+    font-size: 11px;
+    text-align: right;
+    color: #309588;
+    padding: 2px 0 0 0;
+}
+
+.link_img {
+    margin-bottom:10px;
+    margin-left:-80px;
+    padding:0
+}
+
+.profilform table.submissions {
+    width: 100%;
+}
+
+.profilform table.submissions td {
+    vertical-align: top;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.left {
+    text-align: left;
+}
+
+.profilform div.subm_switch input {
+    float: none;
+    margin: 0px auto 10px auto;
+}
+
+.profilform div.subm_switch{
+    float: none;
+    text-align: center;
+    margin: 10px auto;
+}
+
+#mailto {
+    font-size: 12px;
+    color: #309588;
+    text-align: center;
+    border: ridge #108568;
+    border-width: 1px 0 0 0;
+    width:70%;
+    margin: 0 auto 0 auto;
+}
+
+pre.code {
+    background-color:#F0F0F0;
+    border: 1px dashed;
+    padding: 4px;
+    overflow: auto;
+    font-size: 12px;
+}
+
+#efs {
+    font-size: 13px;
+    font-family: arial;
+    font-weight: 700;
+    display: block;
+    position: relative;
+    background: white;
+    padding: 10px 10px 0 0;
+    margin-top: 15px;
+    text-align: center;
+    min-width: 710px;
+}
+
+#efs #efs-iks {
+    margin:0 0 25px 0;
+}
+
+#efs #efs-kl {
+    margin:30px 0;
+    padding:0 0 10px 0;
+}
+
+#efs img {
+    margin: 0;
+    padding: 0;
+    height: 55px;
+}
