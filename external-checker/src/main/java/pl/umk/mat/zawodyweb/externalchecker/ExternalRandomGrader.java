@@ -30,27 +30,29 @@ public class ExternalRandomGrader implements ExternalInterface {
         System.out.println("ExternalRandomGrader: " + submit.getId());
         for (Results r : submit.getResultss()) {
             System.out.println("\tr: " + r.getId());
-            switch (random.nextInt(8)) {
+            switch (random.nextInt(10)) {
                 case 0:
+                    r.setNotes(null);
                     r.setStatus(ResultsStatusEnum.RE.getCode());
                     r.setPoints(0);
                     break;
                 case 1:
+                    r.setNotes(null);
                     r.setStatus(ResultsStatusEnum.TLE.getCode());
                     r.setPoints(0);
                     break;
                 case 2:
-                case 3:
-                case 4:
+                    r.setNotes(null);
                     r.setStatus(ResultsStatusEnum.ACC.getCode());
                     r.setPoints(r.getTests().getMaxpoints());
                     break;
-                case 5:
-                case 6:
-                case 7:
+                case 3:
+                    r.setNotes(null);
                     r.setStatus(ResultsStatusEnum.WA.getCode());
                     r.setPoints(random.nextInt(r.getTests().getMaxpoints()));
                     break;
+                default:
+                    return null;
             }
         }
         return submit;

@@ -46,19 +46,15 @@ public class ExternalRunner implements Runnable {
                 boolean externalResult = false;
 
                 for (Results result : outputSubmit.getResultss()) {
-                    System.out.println("...r.p: " + result.getPoints());
-                    System.out.println("...r.s: " + result.getStatus());
-
-                    resultsDAO.saveOrUpdate(result);
-
                     if (result.getStatus() == ResultsStatusEnum.EXTERNAL.getCode()) {
                         externalResult = true;
                     } else if (result.getStatus() == ResultsStatusEnum.MANUAL.getCode()) {
                         manualResult = true;
                     }
+                    
+                    resultsDAO.saveOrUpdate(result);
                 }
 
-                System.out.println("e:" + externalResult + ", m:" + manualResult);
 
                 if (externalResult == true) {
                     outputSubmit.setState(SubmitsStateEnum.EXTERNAL.getCode());
@@ -71,7 +67,7 @@ public class ExternalRunner implements Runnable {
                 transaction.commit();
             }
         } catch (Throwable t) {
-            t.printStackTrace();
+            t.printStackTrace(System.err);
             transaction.rollback();
         }
     }

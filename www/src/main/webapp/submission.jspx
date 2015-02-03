@@ -60,7 +60,7 @@
                             </thead>
                             <t:dataList id="submissions" var="result" footerClass="paginator" value="#{requestBean.currentSubmit.resultss}" preserveRowStates="true">
                                 <h:panelGroup rendered="#{zw:testVisible(result.tests)}">
-                                    <tr style="#{zw:coloring(result.points, result.tests.maxpoints, result.submitResult)}">
+                                    <tr style="#{zw:coloring(result.points, result.tests.maxpoints, result.status)}">
                                         <h:panelGroup rendered="#{result.id == requestBean.temporaryResultId}">
                                             <td>${result.tests.testorder}</td>
                                             <td style="text-align:center;">
@@ -91,7 +91,7 @@
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{!(result.id == requestBean.temporaryResultId)}">
                                             <td>${result.tests.testorder}</td>
-                                            <td><zw:checkererror code="#{result.submitResult}" /></td>
+                                            <td><zw:checkererror code="#{result.status}" /></td>
                                         <td>${result.runtime}/${result.tests.timelimit}</td>
                                         <td>${result.memory}/${result.tests.problems.memlimit}</td>
                                         <td>${result.points}/${result.tests.maxpoints}</td>

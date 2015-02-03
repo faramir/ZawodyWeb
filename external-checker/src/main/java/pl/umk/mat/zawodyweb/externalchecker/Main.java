@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
-import pl.umk.mat.zawodyweb.database.ResultsDAO;
 import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
