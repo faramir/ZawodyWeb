@@ -78,13 +78,13 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        int refreshRate;
         logger.info("ExternalChecker start at " + sdf.format(new Date()));
 
         /* getting properties */
         Properties properties = new Properties();
 
         properties.setProperty("REFRESH_RATE", "6000");
+        properties.setProperty("EXTERNAL_CHECKERS", "");
 
         try {
             String configFile = Main.class.getResource("").getPath() + "configuration.xml";
@@ -99,8 +99,10 @@ public class Main {
             logger.info("Failed to read configuration file:", ex);
         }
 
+        int refreshRate;
         /* displaying properties */
         logger.info("REFRESH_RATE = " + properties.getProperty("REFRESH_RATE"));
+        logger.info("EXTERNAL_CHECKERS = " + properties.getProperty("EXTERNAL_CHECKERS"));
 
         try {
             refreshRate = Integer.parseInt(properties.getProperty("REFRESH_RATE"));
@@ -108,9 +110,27 @@ public class Main {
             refreshRate = 60 * 1000;
         }
 
-        ExternalInterface external = new ExternalRandomGrader();
-        externalInterfaces.add(external);
+        for (String className : properties.getProperty("EXTERNAL_CHECKERS").split("[ ,:;\\s]+")) {
+            className = className.trim();
+            if (className.isEmpty()) {
+                continue;
+            }
+            try {
+                Class<ExternalInterface> externalClass = (Class<ExternalInterface>) Class.forName(className);
+                ExternalInterface external = externalClass.newInstance();
+                externalInterfaces.add(external);
+                logger.info("Added external checker: " + className + " (" + external.getPrefix() + ") ");
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                logger.fatal("Unable to initialize externalCheckers classes", ex);
+            }
+        }
 
+        if (externalInterfaces.isEmpty()) {
+            logger.fatal("No external checkers loaded.");
+            System.exit(1);
+        }
+
+        //ExternalInterface external = new ExternalRandomGrader();
         executor.scheduleWithFixedDelay(Main::checkDatabaseForChanges, 0, refreshRate, TimeUnit.MILLISECONDS);
 
         synchronized (Main.class) {
