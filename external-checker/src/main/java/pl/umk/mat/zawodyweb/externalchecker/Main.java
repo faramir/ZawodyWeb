@@ -11,14 +11,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -41,7 +43,7 @@ public class Main {
     private static final Logger logger = Logger.getLogger(Main.class);
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final ScheduledExecutorService executor = new SafeSingleThreadScheduledExecutor();
-    private static final List<ExternalInterface> externalInterfaces = new ArrayList<>();
+    private static final Map<String, ExternalLoadedClass> externalInterfaces = new HashMap<>();
 
     private static ExternalInterface chooseExternalInterface(Submits submit) {
         for (Results r : submit.getResultss()) {
@@ -49,7 +51,8 @@ public class Main {
                 if (r.getNotes() == null || r.getNotes().isEmpty()) {
                     continue;
                 }
-                for (ExternalInterface external : externalInterfaces) {
+                for (ExternalLoadedClass externalClasses : externalInterfaces.values()) {
+                    ExternalInterface external = externalClasses.getExternal();
                     if (r.getNotes().startsWith(external.getPrefix() + ":")) {
                         return external;
                     }
@@ -60,8 +63,51 @@ public class Main {
     }
 
     private static void checkDatabaseForChanges() {
-        logger.info("Checking database for solutions in EXTERNAL state...");
         Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
+        checkExternalClasses();
+        checkExternalJobs();
+
+        transaction.commit();
+    }
+
+    private static void checkExternalClasses() {
+        logger.info("Checking database for new EXTERNAL classes...");
+
+        Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Classes.class);
+        c.add(Restrictions.eq("type", ClassesTypeEnum.EXTERNAL.getCode()));
+        c.addOrder(Order.asc("id"));
+        List<Classes> externalClasses = c.list();
+
+        BinaryClassLoader classLoader = new BinaryClassLoader();
+
+        for (Classes clazz : externalClasses) {
+            try {
+                Class<ExternalInterface> externalClass = (Class<ExternalInterface>) classLoader.loadCompiledClass(clazz.getFilename(), clazz.getCode());
+                ExternalInterface external = externalClass.newInstance();
+                if (externalInterfaces.containsKey(clazz.getFilename()) == false
+                        || externalInterfaces.get(clazz.getFilename()).getClasses().getVersion() < clazz.getVersion()) {
+                    
+                    if (externalInterfaces.containsKey(clazz.getFilename()) == false) {
+                        logger.info("Adding external checker: " + external.getClass().getName() + " (" + external.getPrefix() + ") ");
+                    } else {
+                        logger.info("Modyfing external checker: " + external.getClass().getName() + " (" + external.getPrefix() + ") ");
+                    }
+                    
+                    externalInterfaces.put(clazz.getFilename(), new ExternalLoadedClass(external, clazz));
+                }
+            } catch (InstantiationException | IllegalAccessException ex) {
+                logger.fatal("Unable to initialize externalChecker class", ex);
+            }
+        }
+
+        if (externalInterfaces.isEmpty()) {
+            logger.fatal("No external checkers available.");
+        }
+    }
+
+    private static void checkExternalJobs() throws HibernateException {
+        logger.info("Checking database for solutions in EXTERNAL state...");
 
         SubmitsDAO submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
         List<Submits> submitsList = submitsDAO.findByState(SubmitsStateEnum.EXTERNAL.getCode());
@@ -79,7 +125,6 @@ public class Main {
             }
         }
 
-        transaction.commit();
     }
 
     public static void main(String[] args) {
@@ -111,31 +156,6 @@ public class Main {
             refreshRate = Integer.parseInt(properties.getProperty("REFRESH_RATE"));
         } catch (NumberFormatException ex) {
             refreshRate = 60 * 1000;
-        }
-
-        Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-        Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Classes.class);
-        c.add(Restrictions.eq("type", ClassesTypeEnum.EXTERNAL.getCode()));
-        c.addOrder(Order.asc("id"));
-        List<Classes> externalClasses = c.list();
-
-        BinaryClassLoader classLoader = new BinaryClassLoader();
-        for (Classes clazz : externalClasses) {
-
-            try {
-                Class<ExternalInterface> externalClass = (Class<ExternalInterface>) classLoader.loadCompiledClass(clazz.getFilename(), clazz.getCode());
-                ExternalInterface external = externalClass.newInstance();
-                externalInterfaces.add(external);
-                logger.info("Added external checker: " + externalClass.getName() + " (" + external.getPrefix() + ") ");
-            } catch (InstantiationException | IllegalAccessException ex) {
-                logger.fatal("Unable to initialize externalCheckers classes", ex);
-            }
-        }
-        transaction.commit();
-
-        if (externalInterfaces.isEmpty()) {
-            logger.fatal("No external checkers loaded.");
-            System.exit(1);
         }
 
         //ExternalInterface external = new ExternalRandomGrader();
