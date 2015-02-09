@@ -5,12 +5,13 @@
  * This file is distributable under the Simplified BSD license. See the terms
  * of the Simplified BSD license in the documentation provided with this file.
  */
-package pl.umk.mat.zawodyweb.externalchecker;
+package pl.umk.mat.zawodyweb.externalchecker.classes;
 
 import java.util.Random;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
+import pl.umk.mat.zawodyweb.externalchecker.ExternalInterface;
 
 /**
  *

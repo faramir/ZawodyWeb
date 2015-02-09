@@ -18,12 +18,17 @@ import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import pl.umk.mat.zawodyweb.database.ClassesTypeEnum;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
+import pl.umk.mat.zawodyweb.database.pojo.Classes;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
@@ -84,7 +89,6 @@ public class Main {
         Properties properties = new Properties();
 
         properties.setProperty("REFRESH_RATE", "6000");
-        properties.setProperty("EXTERNAL_CHECKERS", "");
 
         try {
             String configFile = Main.class.getResource("").getPath() + "configuration.xml";
@@ -102,7 +106,6 @@ public class Main {
         int refreshRate;
         /* displaying properties */
         logger.info("REFRESH_RATE = " + properties.getProperty("REFRESH_RATE"));
-        logger.info("EXTERNAL_CHECKERS = " + properties.getProperty("EXTERNAL_CHECKERS"));
 
         try {
             refreshRate = Integer.parseInt(properties.getProperty("REFRESH_RATE"));
@@ -110,20 +113,25 @@ public class Main {
             refreshRate = 60 * 1000;
         }
 
-        for (String className : properties.getProperty("EXTERNAL_CHECKERS").split("[ ,:;\\s]+")) {
-            className = className.trim();
-            if (className.isEmpty()) {
-                continue;
-            }
+        Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Classes.class);
+        c.add(Restrictions.eq("type", ClassesTypeEnum.EXTERNAL.getCode()));
+        c.addOrder(Order.asc("id"));
+        List<Classes> externalClasses = c.list();
+
+        BinaryClassLoader classLoader = new BinaryClassLoader();
+        for (Classes clazz : externalClasses) {
+
             try {
-                Class<ExternalInterface> externalClass = (Class<ExternalInterface>) Class.forName(className);
+                Class<ExternalInterface> externalClass = (Class<ExternalInterface>) classLoader.loadCompiledClass(clazz.getFilename(), clazz.getCode());
                 ExternalInterface external = externalClass.newInstance();
                 externalInterfaces.add(external);
-                logger.info("Added external checker: " + className + " (" + external.getPrefix() + ") ");
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                logger.info("Added external checker: " + externalClass.getName() + " (" + external.getPrefix() + ") ");
+            } catch (InstantiationException | IllegalAccessException ex) {
                 logger.fatal("Unable to initialize externalCheckers classes", ex);
             }
         }
+        transaction.commit();
 
         if (externalInterfaces.isEmpty()) {
             logger.fatal("No external checkers loaded.");
