@@ -38,9 +38,9 @@ import pl.umk.mat.zawodyweb.database.pojo.Submits;
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
  * @version $Rev$ Date: $Date$
  */
-public class Main {
+public class MainExternal {
 
-    private static final Logger logger = Logger.getLogger(Main.class);
+    private static final Logger logger = Logger.getLogger(MainExternal.class);
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final ScheduledExecutorService executor = new SafeSingleThreadScheduledExecutor();
     private static final Map<String, ExternalLoadedClass> externalInterfaces = new HashMap<>();
@@ -121,7 +121,7 @@ public class Main {
                     logger.error("Unable to find external for submitId: " + submit.getId());
                     continue;
                 }
-                executor.submit(new ExternalRunner(submit, external));
+                executor.submit(new ExternalTask(submit, external));
             }
         }
 
@@ -136,7 +136,7 @@ public class Main {
         properties.setProperty("REFRESH_RATE", "6000");
 
         try {
-            String configFile = Main.class.getResource("").getPath() + "configuration.xml";
+            String configFile = MainExternal.class.getResource("").getPath() + "configuration.xml";
             if (args.length == 1 && !args[0].isEmpty()) {
                 configFile = args[0];
             }
@@ -159,11 +159,11 @@ public class Main {
         }
 
         //ExternalInterface external = new ExternalRandomGrader();
-        executor.scheduleWithFixedDelay(Main::checkDatabaseForChanges, 0, refreshRate, TimeUnit.MILLISECONDS);
+        executor.scheduleWithFixedDelay(MainExternal::checkDatabaseForChanges, 0, refreshRate, TimeUnit.MILLISECONDS);
 
-        synchronized (Main.class) {
+        synchronized (MainExternal.class) {
             try {
-                Main.class.wait();
+                MainExternal.class.wait();
             } catch (InterruptedException ex) {
                 logger.fatal("Main interruption not expected.", ex);
             }

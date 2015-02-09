@@ -9,9 +9,9 @@ package pl.umk.mat.zawodyweb.externalchecker.classes;
 
 import java.util.Random;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
-import pl.umk.mat.zawodyweb.database.pojo.Results;
-import pl.umk.mat.zawodyweb.database.pojo.Submits;
+import pl.umk.mat.zawodyweb.externalchecker.ExternalInput;
 import pl.umk.mat.zawodyweb.externalchecker.ExternalInterface;
+import pl.umk.mat.zawodyweb.externalchecker.ExternalOutput;
 
 /**
  *
@@ -27,36 +27,28 @@ public class ExternalRandomGrader implements ExternalInterface {
     }
 
     @Override
-    public Submits check(Submits submit) {
-        System.out.println("ExternalRandomGrader: " + submit.getId());
-        for (Results r : submit.getResultss()) {
-            System.out.println("\tr: " + r.getId());
-            switch (random.nextInt(10)) {
-                case 0:
-                    r.setNotes(null);
-                    r.setStatus(ResultsStatusEnum.RE.getCode());
-                    r.setPoints(0);
-                    break;
-                case 1:
-                    r.setNotes(null);
-                    r.setStatus(ResultsStatusEnum.TLE.getCode());
-                    r.setPoints(0);
-                    break;
-                case 2:
-                    r.setNotes(null);
-                    r.setStatus(ResultsStatusEnum.ACC.getCode());
-                    r.setPoints(r.getTests().getMaxpoints());
-                    break;
-                case 3:
-                    r.setNotes(null);
-                    r.setStatus(ResultsStatusEnum.WA.getCode());
-                    r.setPoints(random.nextInt(r.getTests().getMaxpoints()));
-                    break;
-                default:
-                    return null;
-            }
+    public ExternalOutput check(String externalId, ExternalInput testInput, ExternalOutput testOutput) {
+        ExternalOutput output = new ExternalOutput();
+        switch (random.nextInt(10)) {
+            case 0:
+                output.setStatus(ResultsStatusEnum.RE.getCode());
+                output.setPoints(0);
+                break;
+            case 1:
+                output.setStatus(ResultsStatusEnum.TLE.getCode());
+                output.setPoints(0);
+                break;
+            case 2:
+                output.setStatus(ResultsStatusEnum.ACC.getCode());
+                output.setPoints(testInput.getMaxPoints());
+                break;
+            case 3:
+                output.setStatus(ResultsStatusEnum.WA.getCode());
+                output.setPoints(random.nextInt(testInput.getMaxPoints()));
+                break;
+            default:
+                return null;
         }
-        return submit;
+        return output;
     }
-
 }
