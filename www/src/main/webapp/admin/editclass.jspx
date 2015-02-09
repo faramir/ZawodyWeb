@@ -42,6 +42,15 @@
                             <br class="clear" />
                         </div>
                         <div>
+                            <h:outputLabel for="classtype" styleClass="required">${messages.classtype}:</h:outputLabel>
+                            <h:selectOneMenu id="classtype" required="true" value="#{requestBean.editedClass.type}">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItem itemValue="1" itemLabel="#{messages.classlanguage}" />
+                                <f:selectItem itemValue="2" itemLabel="#{messages.classdiff}" />
+                                <f:selectItem itemValue="3" itemLabel="#{messages.classexternal}" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div>
                             <h:commandButton id="sendfile" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.sendClassFile}" />
                             <h:message for="sendfile" errorClass="error" />
                             <br class="clear" />

@@ -132,6 +132,7 @@ CREATE TABLE CLASSES (
         filename            varchar(255) unique,
         version             int,
         description         varchar(255),
+        type                int,
         code                bytea
 );
 

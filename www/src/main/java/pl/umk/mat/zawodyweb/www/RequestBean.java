@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.custom.datascroller.ScrollerActionEvent;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -54,7 +55,7 @@ import pl.umk.mat.zawodyweb.www.zip.ZipSolutions;
 @Instance("#{requestBean}")
 public class RequestBean {
 
-    private final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
+    private static final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
     private SubmitsDAO submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
     private AliasesDAO aliasesDAO = DAOFactory.DEFAULT.buildAliasesDAO();
     private ClassesDAO classesDAO = DAOFactory.DEFAULT.buildClassesDAO();
@@ -307,11 +308,21 @@ public class RequestBean {
 
     public List<Classes> getDiffClasses() {
         if (diffClasses == null) {
-            diffClasses = getAllClasses();
-            List<Languages> tmp = languagesDAO.findAll();
-            for (Languages l : tmp) {
-                diffClasses.remove(l.getClasses());
-            }
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Classes.class);
+            c.add(Restrictions.eq("type", ClassesTypeEnum.DIFF.getCode()));
+            c.addOrder(Order.asc("id"));
+            diffClasses = c.list();
+        }
+
+        return diffClasses;
+    }
+
+    public List<Classes> getLanguageClasses() {
+        if (diffClasses == null) {
+            Criteria c = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Classes.class);
+            c.add(Restrictions.eq("type", ClassesTypeEnum.LANGUAGE.getCode()));
+            c.addOrder(Order.asc("id"));
+            diffClasses = c.list();
         }
 
         return diffClasses;
@@ -668,8 +679,8 @@ public class RequestBean {
     public Results getEditedResult() {
         if (editedResult == null && !ELFunctions.isNullOrZero(temporaryResultId)) {
             editedResult = resultsDAO.getById(temporaryResultId);
-            temporarySubmitResultId =
-                    editedResult.getStatus();
+            temporarySubmitResultId
+                    = editedResult.getStatus();
         }
 
         return editedResult;
@@ -1275,7 +1286,7 @@ public class RequestBean {
             } else {
                 editedClass.setVersion(editedClass.getVersion() + 1);
             }
-
+            
             classesDAO.saveOrUpdate(editedClass);
 
             return "listclasses";
@@ -1546,8 +1557,8 @@ public class RequestBean {
                         replace("%CONTEST%", question.getContests().getName()).
                         replace("%URL%", url).
                         replace("%PROBLEM%", (problem == null || problem.getId() == 0)
-                        ? messages.getString("questions_general")
-                        : problem.getName()).
+                                        ? messages.getString("questions_general")
+                                        : problem.getName()).
                         trim();
 
                 String text = messages.getString("email_question_text").
@@ -1556,8 +1567,8 @@ public class RequestBean {
                         replace("%CONTEST%", question.getContests().getName()).
                         replace("%URL%", url).
                         replace("%PROBLEM%", (problem == null || problem.getId() == 0)
-                        ? messages.getString("questions_general")
-                        : problem.getName()).
+                                        ? messages.getString("questions_general")
+                                        : problem.getName()).
                         trim();
 
                 EmailSender.send(emails, subject, text);

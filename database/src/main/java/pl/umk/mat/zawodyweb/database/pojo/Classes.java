@@ -21,11 +21,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.GenerationType;
 
 /**
- * <p>Pojo mapping TABLE public.classes</p>
+ * <p>
+ * Pojo mapping TABLE public.classes</p>
  *
- * <p>Generated at Fri May 08 19:00:59 CEST 2009</p>
+ * <p>
+ * Generated at Fri May 08 19:00:59 CEST 2009</p>
+ *
  * @author Salto-db Generator v1.1 / EJB3
- * 
+ *
  */
 @Entity
 @Table(name = "classes", schema = "public")
@@ -45,6 +48,10 @@ public class Classes implements Serializable {
      */
     private Integer version;
     /**
+     * Attribute version.
+     */
+    private Integer type;
+    /**
      * Attribute description.
      */
     private String description;
@@ -52,14 +59,14 @@ public class Classes implements Serializable {
      * Attribute code.
      */
     private byte[] code;
-    /**
-     * List of Languages
-     */
-    private List<Languages> languagess = null;
-    /**
-     * List of Problems
-     */
-    private List<Problems> problemss = null;
+//    /**
+//     * List of Languages
+//     */
+//    private List<Languages> languagess = null;
+//    /**
+//     * List of Problems
+//     */
+//    private List<Problems> problemss = null;
 
     /* liste transiente */
     /**
@@ -131,6 +138,16 @@ public class Classes implements Serializable {
         this.description = description;
     }
 
+    @Basic
+    @Column(name = "type")
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     /* liste transiente */
     /**
      * @return code
@@ -148,35 +165,35 @@ public class Classes implements Serializable {
         this.code = code;
     }
 
-    /**
-     * Get the list of Languages
-     */
-    // languagesPK
-    @OneToMany(mappedBy = "classes")
-    public List<Languages> getLanguagess() {
-        return this.languagess;
-    }
-
-    /**
-     * Set the list of Languages
-     */
-    public void setLanguagess(List<Languages> languagess) {
-        this.languagess = languagess;
-    }
-
-    /**
-     * Get the list of Problems
-     */
-    // problemsPK
-    @OneToMany(mappedBy = "classes")
-    public List<Problems> getProblemss() {
-        return this.problemss;
-    }
-
-    /**
-     * Set the list of Problems
-     */
-    public void setProblemss(List<Problems> problemss) {
-        this.problemss = problemss;
-    }
+//    /**
+//     * Get the list of Languages
+//     */
+//    // languagesPK
+//    @OneToMany(mappedBy = "classes")
+//    public List<Languages> getLanguagess() {
+//        return this.languagess;
+//    }
+//
+//    /**
+//     * Set the list of Languages
+//     */
+//    public void setLanguagess(List<Languages> languagess) {
+//        this.languagess = languagess;
+//    }
+//
+//    /**
+//     * Get the list of Problems
+//     */
+//    // problemsPK
+//    @OneToMany(mappedBy = "classes")
+//    public List<Problems> getProblemss() {
+//        return this.problemss;
+//    }
+//
+//    /**
+//     * Set the list of Problems
+//     */
+//    public void setProblemss(List<Problems> problemss) {
+//        this.problemss = problemss;
+//    }
 }

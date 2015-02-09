@@ -13,7 +13,7 @@
                 <div id="formEditContest" class="profilform">
                     <div class="ikona" style="margin-left:-40px">
                         <h:outputLink value="#{facesContext.externalContext.requestContextPath}/admin/editclass.html" title="#{messages.addclass}" styleClass="ikonka" style="float:left"><h:graphicImage alt="#{messages.addclass}" title="#{messages.addclass}" url="/media/images/dodaj.png" /></h:outputLink>
-                    </div>
+                        </div>
                     <t:dataTable id="classes" var="clazz" styleClass="seria" value="#{requestBean.allClasses}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols">
                         <h:column>
                             <f:facet name="header">
@@ -32,6 +32,16 @@
                                 ${messages.version}
                             </f:facet>
                             <h:outputText value="#{clazz.version}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                ${messages.classtype}
+                            </f:facet>
+                            <h:panelGroup xmlns:h="http://java.sun.com/jsf/html">
+                                <h:outputText value="#{messages.classlanguage}" rendered="#{clazz.type == 1}" />
+                                <h:outputText value="#{messages.classdiff}" rendered="#{clazz.type == 2}" />
+                                <h:outputText value="#{messages.classexternal}" rendered="#{clazz.type == 3}" />
+                            </h:panelGroup>
                         </h:column>
                         <h:column>
                             <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{clazz.id}/class.html" title="#{messages.class_download}" styleClass="ikonka"><h:graphicImage alt="#{messages.class_download}" title="#{messages.class_download}" url="/media/images/get.png"/></h:outputLink>
