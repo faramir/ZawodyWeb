@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2014, ZawodyWeb Team
+ * Copyright (c) 2009-2015, ZawodyWeb Team
  * All rights reserved.
  *
  * This file is distributable under the Simplified BSD license. See the terms
@@ -24,9 +24,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * <p>Pojo mapping TABLE public.contests</p>
+ * <p>
+ * Pojo mapping TABLE public.contests</p>
  *
- * <p>Generated at Fri May 08 19:00:59 CEST 2009</p>
+ * <p>
+ * Generated at Fri May 08 19:00:59 CEST 2009</p>
+ *
  * @author Salto-db Generator v1.1 / EJB3
  *
  */
@@ -87,10 +90,6 @@ public class Contests implements Serializable {
      * List of Questions
      */
     private List<Questions> questionss = null;
-    /**
-     * List of Roles
-     */
-    private List<Roles> roless = null;
     /**
      * List of Series
      */
@@ -332,22 +331,6 @@ public class Contests implements Serializable {
      */
     public void setQuestionss(List<Questions> questionss) {
         this.questionss = questionss;
-    }
-
-    /**
-     * Get the list of Roles
-     */
-    // rolesPK
-    @OneToMany(mappedBy = "contests", cascade = CascadeType.REMOVE)
-    public List<Roles> getRoless() {
-        return this.roless;
-    }
-
-    /**
-     * Set the list of Roles
-     */
-    public void setRoless(List<Roles> roless) {
-        this.roless = roless;
     }
 
     /**

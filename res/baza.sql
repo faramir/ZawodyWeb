@@ -169,15 +169,15 @@ ALTER TABLE PROBLEMS ADD classesId int REFERENCES CLASSES(id);
 ALTER TABLE SUBMITS ADD languagesId int REFERENCES LANGUAGES(id);
 ALTER TABLE SUBMITS ADD usersId int REFERENCES USERS(id);
 ALTER TABLE TESTS ADD problemsId int REFERENCES PROBLEMS(id);
-ALTER TABLE ROLES ADD contestsId int REFERENCES CONTESTS(id);
-ALTER TABLE ROLES ADD seriesId int REFERENCES SERIES(id);
 
 
 /* Powiazania wiele do wielu */
 CREATE TABLE USERS_ROLES (  
         id                  serial primary key,
         usersId             int REFERENCES USERS(id),
-        rolesId             int REFERENCES ROLES(id)
+        rolesId             int REFERENCES ROLES(id),
+        contestsId          int REFERENCES CONTESTS(id),
+        seriesId            int REFERENCES SERIES(id)
 );
 
 CREATE TABLE LANGUAGES_PROBLEMS (

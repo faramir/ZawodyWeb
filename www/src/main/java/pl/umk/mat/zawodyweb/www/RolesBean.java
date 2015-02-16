@@ -47,7 +47,7 @@ public class RolesBean {
         return userRoles;
     }
 
-    private Boolean isOk(Roles role, Integer contestId, Integer seriesId) {
+    private Boolean isOk(UsersRoles role, Integer contestId, Integer seriesId) {
         return (role.getContests() == null || role.getContests().getId().equals(contestId)) &&
                 (role.getSeries() == null || role.getSeries().getId().equals(seriesId));
     }
@@ -102,7 +102,7 @@ public class RolesBean {
 
         for (UsersRoles ur : getUserRoles()) {
             Roles role = ur.getRoles();
-            if (isOk(role, contestId, seriesId) && role.getAddcontest()) {
+            if (isOk(ur, contestId, seriesId) && role.getAddcontest()) {
                 return true;
             }
         }
@@ -117,7 +117,7 @@ public class RolesBean {
 
         for (UsersRoles ur : getUserRoles()) {
             Roles role = ur.getRoles();
-            if (isOk(role, contestId, seriesId) && role.getEditcontest()) {
+            if (isOk(ur, contestId, seriesId) && role.getEditcontest()) {
                 return true;
             }
         }
@@ -132,7 +132,7 @@ public class RolesBean {
 
         for (UsersRoles ur : getUserRoles()) {
             Roles role = ur.getRoles();
-            if (isOk(role, contestId, seriesId) && role.getDelcontest()) {
+            if (isOk(ur, contestId, seriesId) && role.getDelcontest()) {
                 return true;
             }
         }
@@ -147,7 +147,7 @@ public class RolesBean {
 
         for (UsersRoles ur : getUserRoles()) {
             Roles role = ur.getRoles();
-            if (isOk(role, contestId, seriesId) && role.getAddseries()) {
+            if (isOk(ur, contestId, seriesId) && role.getAddseries()) {
                 return true;
             }
         }
@@ -162,7 +162,7 @@ public class RolesBean {
 
         for (UsersRoles ur : getUserRoles()) {
             Roles role = ur.getRoles();
-            if (isOk(role, contestId, seriesId) && role.getEditseries()) {
+            if (isOk(ur, contestId, seriesId) && role.getEditseries()) {
                 return true;
             }
         }
@@ -177,7 +177,7 @@ public class RolesBean {
 
         for (UsersRoles ur : getUserRoles()) {
             Roles role = ur.getRoles();
-            if (isOk(role, contestId, seriesId) && role.getDelseries()) {
+            if (isOk(ur, contestId, seriesId) && role.getDelseries()) {
                 return true;
             }
         }
@@ -192,7 +192,7 @@ public class RolesBean {
 
         for (UsersRoles ur : getUserRoles()) {
             Roles role = ur.getRoles();
-            if (isOk(role, contestId, seriesId) && role.getAddproblem()) {
+            if (isOk(ur, contestId, seriesId) && role.getAddproblem()) {
                 return true;
             }
         }
@@ -207,7 +207,7 @@ public class RolesBean {
 
         for (UsersRoles ur : getUserRoles()) {
             Roles role = ur.getRoles();
-            if (isOk(role, contestId, seriesId) && role.getEditproblem()) {
+            if (isOk(ur, contestId, seriesId) && role.getEditproblem()) {
                 return true;
             }
         }
@@ -222,7 +222,7 @@ public class RolesBean {
 
         for (UsersRoles ur : getUserRoles()) {
             Roles role = ur.getRoles();
-            if (isOk(role, contestId, seriesId) && role.getDelproblem()) {
+            if (isOk(ur, contestId, seriesId) && role.getDelproblem()) {
                 return true;
             }
         }
@@ -237,7 +237,7 @@ public class RolesBean {
 
         for (UsersRoles ur : getUserRoles()) {
             Roles role = ur.getRoles();
-            if (isOk(role, contestId, seriesId) && role.getCanrate()) {
+            if (isOk(ur, contestId, seriesId) && role.getCanrate()) {
                 return true;
             }
         }
@@ -252,7 +252,7 @@ public class RolesBean {
 
         for (UsersRoles ur : getUserRoles()) {
             Roles role = ur.getRoles();
-            if (isOk(role, contestId, seriesId) && role.getContestant()) {
+            if (isOk(ur, contestId, seriesId) && role.getContestant()) {
                 return true;
             }
         }

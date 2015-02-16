@@ -1,0 +1,62 @@
+<ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:zw="http://zawodyweb.mat.umk.pl/">
+    <ui:define name="pageTitle">
+        ${messages.user_editingroles}
+    </ui:define>
+    <ui:define name="pageContent">
+        <c:choose>
+            <c:when test="#{!(zw:canEditUsers(rolesBean))}">
+                ${messages.nonsufficient_privileges}
+            </c:when>
+            <c:otherwise>
+                <a4j:form id="formProfile" styleClass="profilform">
+                    <fieldset>
+                        <t:saveState id="saveid" value="#{requestBean.temporaryUsersRolesId}" />
+                        <t:saveState id="saveuserid" value="#{requestBean.temporaryUserId}" />
+                        <div>
+                            <h:outputLabel styleClass="required" for="roletype">${messages.rolename}:</h:outputLabel>
+                            <h:selectOneMenu id="roletype" required="true" value="#{requestBean.temporaryRoleTypeId}">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <c:forEach var="role" items="#{requestBean.roles}">
+                                    <f:selectItem itemValue="#{role.id}" itemLabel="#{role.name}" />
+                                </c:forEach>
+                            </h:selectOneMenu>
+                            <t:saveState id="saveRoleTypeId" value="#{requestBean.temporaryRoleTypeId}" />
+                            <h:message for="roletype" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="contest">${messages.problem_contest}:</h:outputLabel>
+                            <h:selectOneMenu id="contest" value="#{requestBean.temporaryContestId}">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <c:forEach var="contest" items="#{requestBean.contestsWhenAddingProblem}">
+                                    <f:selectItem itemValue="#{contest.id}" itemLabel="#{contest.name}" />
+                                </c:forEach>
+                                <a4j:support event="onchange" reRender="series" ajaxSingle="true" />
+                            </h:selectOneMenu>
+                            <t:saveState id="saveContestId" value="#{requestBean.temporaryContestId}" />
+                            <h:message for="contest" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:outputLabel for="series">${messages.problem_series}:</h:outputLabel>
+                            <h:selectOneMenu id="series" value="#{requestBean.temporarySeriesId}">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <c:forEach var="series" items="#{requestBean.contestsSeriesWhenAddingProblem}">
+                                    <f:selectItem itemValue="#{series.id}" itemLabel="#{series.name}" />
+                                </c:forEach>
+                            </h:selectOneMenu>
+                            <h:message for="series" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
+                            <h:commandButton id="save" value="#{messages.save}" styleClass="submit" type="submit" action="#{requestBean.saveUsersRoles}" />
+                            <h:message for="save" errorClass="error" />
+                        </div>
+                    </fieldset>
+                </a4j:form>
+            </c:otherwise>
+        </c:choose>
+    </ui:define>
+</ui:composition>

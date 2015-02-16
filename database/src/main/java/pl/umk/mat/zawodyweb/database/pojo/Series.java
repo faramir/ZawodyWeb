@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2014, ZawodyWeb Team
+ * Copyright (c) 2009-2015, ZawodyWeb Team
  * All rights reserved.
  *
  * This file is distributable under the Simplified BSD license. See the terms
@@ -88,10 +88,6 @@ public class Series implements Serializable {
      * List of Problems
      */
     private List<Problems> problemss = null;
-    /**
-     * List of Roles
-     */
-    private List<Roles> roless = null;
 
     /**
      * @return id
@@ -290,21 +286,5 @@ public class Series implements Serializable {
      */
     public void setProblemss(List<Problems> problemss) {
         this.problemss = problemss;
-    }
-
-    /**
-     * Get the list of Roles
-     */
-    // rolesPK
-    @OneToMany(mappedBy = "series", cascade = CascadeType.REMOVE)
-    public List<Roles> getRoless() {
-        return this.roless;
-    }
-
-    /**
-     * Set the list of Roles
-     */
-    public void setRoless(List<Roles> roless) {
-        this.roless = roless;
     }
 }

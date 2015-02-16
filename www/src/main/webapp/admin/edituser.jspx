@@ -68,12 +68,32 @@
                         </div>
                         <div>
                             <h:outputLabel for="roles">${messages.roles}:</h:outputLabel>
-                            <h:selectManyListbox id="roles" styleClass="bigHeight" required="false" value="#{requestBean.temporaryUserRolesIds}">
-                                <c:forEach var="role" items="#{requestBean.roles}">
-                                    <f:selectItem itemValue="#{role.id}" itemLabel="#{role.name}" />
-                                </c:forEach>
-                            </h:selectManyListbox>
-                            <h:message for="roles" errorClass="error" />
+                            <h:outputLink value="#{facesContext.externalContext.requestContextPath}/add/#{requestBean.editedUser.id}/userrole.html" title="#{messages.adduserrole}" styleClass="ikonka"><h:graphicImage alt="#{messages.adduserrole}" title="#{messages.adduserrole}" url="/media/images/dodaj.png"  style="margin-right:20px;margin-top:12px"/></h:outputLink>
+                            <br class="clear" />
+                            <t:dataTable id="roles" var="role" styleClass="seria" value="#{requestBean.editedUser.usersRoless}" preserveDataModel="false" rowClasses="linia2,linia1" columnClasses="cols">
+                                <h:column>
+                                    <f:facet name="header">
+                                        ${messages.rolename}
+                                    </f:facet>
+                                    <h:outputText value="#{role.roles.name}" styleClass="nowrap"/>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        ${messages.contest}
+                                    </f:facet>
+                                    <h:outputText value="#{role.contests.name == null?'-':role.contests.name}" />
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        ${messages.series}
+                                    </f:facet>
+                                    <h:outputText value="#{role.series.name == null?'-':role.series.name}" />
+                                </h:column>
+                                <h:column>
+                                    <h:outputLink value="#{facesContext.externalContext.requestContextPath}/edit/#{role.id}/userrole.html" title="#{messages.edituserrole}" styleClass="ikonka"><h:graphicImage alt="#{messages.edituserrole}" title="#{messages.edituserrole}" url="/media/images/edytuj.png" /></h:outputLink>
+                                    <h:graphicImage alt="#{messages.deluserrole}" title="#{messages.deluserrole}" url="/media/images/usun.png" styleClass="click" onclick="confirm(this,{nazwa:'rola #{role.roles.name}',link:'#{facesContext.externalContext.requestContextPath}/del/#{role.id}/userrole.html'})"/>
+                                </h:column>
+                            </t:dataTable>
                             <br class="clear" />
                         </div>
                         <div>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2014, ZawodyWeb Team
+ * Copyright (c) 2009-2015, ZawodyWeb Team
  * All rights reserved.
  *
  * This file is distributable under the Simplified BSD license. See the terms
@@ -24,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.custom.datascroller.ScrollerActionEvent;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -89,6 +88,7 @@ public class RequestBean {
     private Aliases editedAlias;
     private Classes editedClass;
     private Languages editedLanguage;
+    private UsersRoles editedUsersRoles;
     private List<LanguagesProblems> temporaryLanguagesProblems = null;
     private List<Contests> contests = null;
     private List<Series> contestsSeries = null;
@@ -117,7 +117,8 @@ public class RequestBean {
     private Integer temporaryTestId;
     private Integer temporaryQuestionId;
     private Integer temporaryUserId;
-    private Integer[] temporaryUserRolesIds;
+    private Integer temporaryUsersRolesId;
+    private Integer temporaryRoleTypeId;
     private Integer[] temporaryLanguagesIds;
     private Integer temporaryLanguageId;
     private Integer temporaryResultId;
@@ -667,6 +668,7 @@ public class RequestBean {
 
             if (ELFunctions.isNullOrZero(temporaryContestId)) {
                 editedContest = new Contests();
+                editedContest.setEmail(sessionBean.getCurrentUser().getEmail());
             } else {
                 editedContest = contestsDAO.getById(temporaryContestId);
             }
@@ -679,8 +681,7 @@ public class RequestBean {
     public Results getEditedResult() {
         if (editedResult == null && !ELFunctions.isNullOrZero(temporaryResultId)) {
             editedResult = resultsDAO.getById(temporaryResultId);
-            temporarySubmitResultId
-                    = editedResult.getStatus();
+            temporarySubmitResultId = editedResult.getStatus();
         }
 
         return editedResult;
@@ -708,6 +709,38 @@ public class RequestBean {
         }
         return editedLanguage;
     }
+
+//    public UsersRoles getEditedUsersRoles() {
+//        if (editedUsersRoles == null) {
+//            FacesContext context = FacesContext.getCurrentInstance();
+//
+//            if (!WWWHelper.isPost(context)) {
+//                try {
+//                    setTemporaryUsersRolesId((Integer) Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id")));
+//                } catch (Exception e) {
+//                    setTemporaryUsersRolesId((Integer) 0);
+//                }
+//            }
+//
+//            if (ELFunctions.isNullOrZero(getTemporaryUsersRolesId())) {
+//                editedUsersRoles = new UsersRoles();
+//                editedUsersRoles.setUsers(usersDAO.getById(temporaryUserId));
+//            } else {
+//                editedUsersRoles = usersRolesDAO.getById(getTemporaryUsersRolesId());
+//
+//                setTemporaryRoleTypeId(editedUsersRoles.getRoles().getId());
+//                if (editedUsersRoles.getContests() != null) {
+//                    temporaryContestId = editedUsersRoles.getContests().getId();
+//                }
+//
+//                if (editedUsersRoles.getSeries() != null) {
+//                    temporarySeriesId = editedUsersRoles.getSeries().getId();
+//                }
+//
+//            }
+//        }
+//        return editedUsersRoles;
+//    }
 
     public Aliases getEditedAlias() {
         if (editedAlias == null) {
@@ -774,10 +807,10 @@ public class RequestBean {
                 editedUser = usersDAO.getById(temporaryUserId);
             }
 
-            temporaryUserRolesIds = new Integer[editedUser.getUsersRoless().size()];
-            for (int i = 0; i < editedUser.getUsersRoless().size(); ++i) {
-                temporaryUserRolesIds[i] = editedUser.getUsersRoless().get(i).getRoles().getId();
-            }
+//            temporaryUserRolesIds = new Integer[editedUser.getUsersRoless().size()];
+//            for (int i = 0; i < editedUser.getUsersRoless().size(); ++i) {
+//                temporaryUserRolesIds[i] = editedUser.getUsersRoless().get(i).getRoles().getId();
+//            }
         }
 
         return editedUser;
@@ -911,14 +944,13 @@ public class RequestBean {
         this.temporaryQuestionId = temporaryQuestionId;
     }
 
-    public Integer[] getTemporaryUserRolesIds() {
-        return temporaryUserRolesIds;
-    }
-
-    public void setTemporaryUserRolesIds(Integer[] temporaryUserRolesIds) {
-        this.temporaryUserRolesIds = temporaryUserRolesIds;
-    }
-
+//    public Integer[] getTemporaryUserRolesIds() {
+//        return temporaryUserRolesIds;
+//    }
+//
+//    public void setTemporaryUserRolesIds(Integer[] temporaryUserRolesIds) {
+//        this.temporaryUserRolesIds = temporaryUserRolesIds;
+//    }
     public Integer[] getTemporaryLanguagesIds() {
         return temporaryLanguagesIds;
     }
@@ -1213,21 +1245,21 @@ public class RequestBean {
             if (repPasswd != null && repPasswd.length() > 0) {
                 editedUser.savePass(repPasswd);
             }
-
-            List<UsersRoles> tmpList = usersRolesDAO.findByUsersid(editedUser.getId());
-
-            if (tmpList != null) {
-                for (UsersRoles role : tmpList) {
-                    usersRolesDAO.delete(role);
-                }
-            }
-
-            for (Integer rid : temporaryUserRolesIds) {
-                UsersRoles usersRoles = new UsersRoles();
-                usersRoles.setRoles(rolesDAO.getById(rid));
-                usersRoles.setUsers(editedUser);
-                usersRolesDAO.saveOrUpdate(usersRoles);
-            }
+//
+//            List<UsersRoles> tmpList = usersRolesDAO.findByUsersid(editedUser.getId());
+//
+//            if (tmpList != null) {
+//                for (UsersRoles role : tmpList) {
+//                    usersRolesDAO.delete(role);
+//                }
+//            }
+//
+//            for (Integer rid : temporaryUserRolesIds) {
+//                UsersRoles usersRoles = new UsersRoles();
+//                usersRoles.setRoles(rolesDAO.getById(rid));
+//                usersRoles.setUsers(editedUser);
+//                usersRolesDAO.saveOrUpdate(usersRoles);
+//            }
 
             usersDAO.saveOrUpdate(editedUser);
         } catch (Exception e) {
@@ -1286,7 +1318,7 @@ public class RequestBean {
             } else {
                 editedClass.setVersion(editedClass.getVersion() + 1);
             }
-            
+
             classesDAO.saveOrUpdate(editedClass);
 
             return "listclasses";
@@ -2142,6 +2174,113 @@ public class RequestBean {
         }
     }
 
+    public String saveUsersRoles() {
+        Integer id = getEditedProblem().getId();
+        if (!rolesBean.canEditUsers()) {
+            return null;
+        }
+
+        try {
+            UsersRoles tmpUsersRoles;
+            
+            if (ELFunctions.isNullOrZero(temporaryUsersRolesId)) {
+                tmpUsersRoles = new UsersRoles();
+                tmpUsersRoles.setUsers(usersDAO.getById(temporaryUserId));
+            } else {
+                tmpUsersRoles = usersRolesDAO.getById(temporaryUsersRolesId);
+            }
+            
+            tmpUsersRoles.setRoles(rolesDAO.getById(temporaryRoleTypeId));
+            if (temporaryContestId != null) {
+                tmpUsersRoles.setContests(contestsDAO.getById(temporaryContestId));
+            }
+            if (temporarySeriesId != null) {
+                tmpUsersRoles.setSeries(seriesDAO.getById(temporarySeriesId));
+            }
+
+            usersRolesDAO.saveOrUpdate(tmpUsersRoles);
+            
+            
+            String login = tmpUsersRoles.getUsers().getLogin();
+            
+            return goToEdituser(login);
+        } catch (Exception e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            String summary = String.format("%s: %s", messages.getString("unexpected_error"), e.getLocalizedMessage());
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, "formProfile:save", summary, null);
+            return null;
+        }
+    }
+
+    @HttpAction(name = "adduserrole", pattern = "add/{id}/userrole")
+    public String goToAdduserrole(@Param(name = "id", encode = true) int id) {
+        if (!rolesBean.canEditUsers()) {
+            return "/error/404";
+        }
+
+        try {
+            Users user = usersDAO.getById(id);
+            if (user == null) {
+                return "/error/404";
+            }
+
+            temporaryUserId = user.getId();
+
+            return "/admin/edituserrole";
+        } catch (Exception ex) {
+            return "listusers";
+        }
+    }
+    
+    @HttpAction(name = "edituserrole", pattern = "edit/{id}/userrole")
+    public String goToEdituserrole(@Param(name = "id", encode = true) int id) {
+        if (!rolesBean.canEditUsers()) {
+            return "/error/404";
+        }
+
+        try {
+            UsersRoles userRole = usersRolesDAO.getById(id);
+            if (userRole == null) {
+                return "/error/404";
+            }
+
+            temporaryUsersRolesId = id;
+            temporaryUserId = userRole.getUsers().getId();
+            temporaryRoleTypeId = userRole.getRoles().getId();
+            
+            
+            if (userRole.getContests() != null) {
+                temporaryContestId = userRole.getContests().getId();
+            }
+            if (userRole.getSeries() != null) {
+                temporarySeriesId = userRole.getSeries().getId();
+            }
+
+            return "/admin/edituserrole";
+        } catch (Exception ex) {
+            return "listusers";
+        }
+    }
+
+    @HttpAction(name = "deluserrole", pattern = "del/{id}/userrole")
+    public String deleteUserrole(@Param(name = "id", encode = true) int id) {
+        if (!rolesBean.canEditUsers()) {
+            return "/error/404";
+        }
+
+        UsersRoles userRole = usersRolesDAO.getById(id);
+        if (userRole != null) {
+//            String login = userRole.getUsers().getLogin();
+
+            usersRolesDAO.delete(userRole);
+
+//            return "/admin/edituser";
+            return "del_userrole";
+        } else {
+            return "/error/404";
+        }
+    }
+
     @HttpAction(name = "clock", pattern = "clock/{date}")
     public String goToClock(@Param(name = "date", encode = true) String date) {
         try {
@@ -2629,7 +2768,6 @@ public class RequestBean {
             users = c.list();
         }
         return users;
-
     }
 
     public Integer getRatingEditNote() {
@@ -2664,5 +2802,21 @@ public class RequestBean {
      */
     public void setTemporaryDate(Date temporaryDate) {
         this.temporaryDate = temporaryDate;
+    }
+
+    public Integer getTemporaryUsersRolesId() {
+        return temporaryUsersRolesId;
+    }
+
+    public void setTemporaryUsersRolesId(Integer temporaryUsersRolesId) {
+        this.temporaryUsersRolesId = temporaryUsersRolesId;
+    }
+
+    public Integer getTemporaryRoleTypeId() {
+        return temporaryRoleTypeId;
+    }
+
+    public void setTemporaryRoleTypeId(Integer temporaryRoleTypeId) {
+        this.temporaryRoleTypeId = temporaryRoleTypeId;
     }
 }
