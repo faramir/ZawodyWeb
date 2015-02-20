@@ -7,6 +7,8 @@
  */
 package pl.umk.mat.zawodyweb.judge;
 
+import pl.umk.mat.zawodyweb.commons.BinaryClassLoader;
+import pl.umk.mat.zawodyweb.commons.ClassInfo;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -22,13 +24,12 @@ import org.hibernate.Criteria;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import pl.umk.mat.zawodyweb.checker.CheckerInterface;
-import pl.umk.mat.zawodyweb.checker.CheckerResult;
-import pl.umk.mat.zawodyweb.checker.TestInput;
-import pl.umk.mat.zawodyweb.checker.TestOutput;
+import pl.umk.mat.zawodyweb.commons.CheckerInterface;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
 import pl.umk.mat.zawodyweb.compiler.Code;
-import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
-import pl.umk.mat.zawodyweb.compiler.Program;
+import pl.umk.mat.zawodyweb.commons.CompilerInterface;
+import pl.umk.mat.zawodyweb.commons.Program;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
@@ -222,7 +223,7 @@ public class MainJudge {
                          *
                          * ale czy mozna otworzyc druga transakcje?
                          */
-                        CheckerResult result = checker.check(program, testInput, testOutput);
+                        TestOutput result = checker.check(program, testInput, testOutput);
                         if (result.getStatus() == ResultsStatusEnum.UNDEF.getCode()) {
                             undefinedResult = true;
                             logger.info("Test " + test.getTestorder() + " has result UNDEFINDED. Stopping.");
@@ -239,15 +240,15 @@ public class MainJudge {
                         Results dbResult = new Results();
                         dbResult.setMemory(result.getMemUsed());
                         dbResult.setRuntime(result.getRuntime());
-                        if (result.getDescription() != null) {
-                            dbResult.setNotes(result.getDescription().replaceAll("[\000-\007]", " "));
+                        if (result.getNotes() != null) {
+                            dbResult.setNotes(result.getNotes().replaceAll("[\000-\007]", " "));
                         }
                         dbResult.setPoints(result.getPoints());
                         dbResult.setStatus(result.getStatus());
                         dbResult.setSubmits(submit);
                         dbResult.setTests(test);
                         DAOFactory.DEFAULT.buildResultsDAO().save(dbResult);
-                        logger.info("Test " + test.getTestorder() + " finished with result " + result.getStatus() + "(" + result.getDescription() + ").");
+                        logger.info("Test " + test.getTestorder() + " finished with result " + result.getStatus() + "(" + result.getNotes() + ").");
                     }
 
                     /*

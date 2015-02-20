@@ -8,11 +8,10 @@
 package pl.umk.mat.zawodyweb.checker.classes;
 
 import java.util.Properties;
-import pl.umk.mat.zawodyweb.checker.CheckerInterface;
-import pl.umk.mat.zawodyweb.checker.CheckerResult;
-import pl.umk.mat.zawodyweb.checker.TestInput;
-import pl.umk.mat.zawodyweb.checker.TestOutput;
-import pl.umk.mat.zawodyweb.compiler.Program;
+import pl.umk.mat.zawodyweb.commons.CheckerInterface;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.commons.Program;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
@@ -22,12 +21,12 @@ import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 public class ManualCheck implements CheckerInterface {
 
     @Override
-    public CheckerResult check(Program program, TestInput input, TestOutput output) {
-        CheckerResult result = new CheckerResult();
+    public TestOutput check(Program program, TestInput input, TestOutput output) {
+        TestOutput result = new TestOutput();
         result.setStatus(ResultsStatusEnum.MANUAL.getCode());
         result.setMemUsed(0);
         result.setRuntime(0);
-        result.setDescription("");
+        result.setNotes("");
         result.setPoints(0);
         return result;
     }

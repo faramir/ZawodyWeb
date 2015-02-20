@@ -12,11 +12,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Properties;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
-import pl.umk.mat.zawodyweb.checker.CheckerInterface;
-import pl.umk.mat.zawodyweb.checker.CheckerResult;
-import pl.umk.mat.zawodyweb.checker.TestInput;
-import pl.umk.mat.zawodyweb.checker.TestOutput;
-import pl.umk.mat.zawodyweb.compiler.Program;
+import pl.umk.mat.zawodyweb.commons.CheckerInterface;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.commons.Program;
 
 /**
  *
@@ -25,28 +24,28 @@ import pl.umk.mat.zawodyweb.compiler.Program;
 public class TrailingDiff implements CheckerInterface {
 
     @Override
-    public CheckerResult check(Program program, TestInput input, TestOutput output) {
+    public TestOutput check(Program program, TestInput input, TestOutput output) {
         TestOutput codeOutput = program.runTest(input);
-        if (codeOutput.getResult() != ResultsStatusEnum.UNDEF.getCode()) {
-            return new CheckerResult(codeOutput.getResult(), codeOutput.getResultDesc());
+        if (codeOutput.getStatus() != ResultsStatusEnum.UNDEF.getCode()) {
+            return codeOutput;
         }
-        CheckerResult result = new CheckerResult();
-        String codeText = codeOutput.getText();
-        String rightText = output.getText();
+
+        String codeText = codeOutput.getOutputText();
+        String rightText = output.getOutputText();
         try {
             if (diff(codeText, rightText) == 0) {
-                result.setStatus(ResultsStatusEnum.ACC.getCode());
-                result.setPoints(input.getMaxPoints());
+                codeOutput.setStatus(ResultsStatusEnum.ACC.getCode());
+                codeOutput.setPoints(input.getMaxPoints());
             } else {
-                result.setStatus(ResultsStatusEnum.WA.getCode());
-                result.setPoints(0);
+                codeOutput.setStatus(ResultsStatusEnum.WA.getCode());
+                codeOutput.setPoints(0);
             }
         } catch (IOException ex) {
             //System.err.println("IOException at TrailingDiff." + ex.getMessage());
         }
-        result.setRuntime(codeOutput.getRuntime());
-        result.setMemUsed(codeOutput.getMemUsed());
-        return result;
+        codeOutput.setOutputText(null);
+
+        return codeOutput;
     }
 
     private int diff(String codeText, String rightText) throws IOException {

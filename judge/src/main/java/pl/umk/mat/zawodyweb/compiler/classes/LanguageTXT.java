@@ -8,9 +8,9 @@
 package pl.umk.mat.zawodyweb.compiler.classes;
 
 import java.util.Properties;
-import pl.umk.mat.zawodyweb.checker.TestInput;
-import pl.umk.mat.zawodyweb.checker.TestOutput;
-import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.commons.CompilerInterface;
 
 /**
  *

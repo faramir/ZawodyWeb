@@ -16,9 +16,9 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
-import pl.umk.mat.zawodyweb.checker.TestInput;
-import pl.umk.mat.zawodyweb.checker.TestOutput;
-import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.commons.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
@@ -146,7 +146,7 @@ public class LanguageLA implements CompilerInterface {
             NameValuePair[] dataSendAnswer = {
                 new NameValuePair("problemid", ""),
                 new NameValuePair("category", ""),
-                new NameValuePair("localid", input.getText()),
+                new NameValuePair("localid", input.getInputText()),
                 new NameValuePair("language", langId),
                 new NameValuePair("code", code),
                 new NameValuePair("submit", "Submit")
@@ -291,39 +291,39 @@ public class LanguageLA implements CompilerInterface {
                         || "Linking".equals(status)) {
                     Thread.sleep(7000);
                 } else if ("Accepted".equals(status)) {
-                    result.setResult(ResultsStatusEnum.ACC.getCode());
+                    result.setStatus(ResultsStatusEnum.ACC.getCode());
                     result.setPoints(input.getMaxPoints());
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else if ("Compilation error".equals(status)) {
-                    result.setResult(ResultsStatusEnum.CE.getCode());
-                    result.setResultDesc(getCompilationError(id));
+                    result.setStatus(ResultsStatusEnum.CE.getCode());
+                    result.setNotes(getCompilationError(id));
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else if ("Presentation error".equals(status)) {
-                    result.setResult(ResultsStatusEnum.ACC.getCode());
+                    result.setStatus(ResultsStatusEnum.ACC.getCode());
                     result.setPoints(input.getMaxPoints());
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else if ("Wrong answer".equals(status)) {
-                    result.setResult(ResultsStatusEnum.WA.getCode());
+                    result.setStatus(ResultsStatusEnum.WA.getCode());
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else if ("Time limit exceeded".equals(status)) {
-                    result.setResult(ResultsStatusEnum.TLE.getCode());
+                    result.setStatus(ResultsStatusEnum.TLE.getCode());
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else if ("Memory limit exceeded".equals(status)) {
-                    result.setResult(ResultsStatusEnum.MLE.getCode());
+                    result.setStatus(ResultsStatusEnum.MLE.getCode());
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else if ("Runtime error".equals(status)) {
-                    result.setResult(ResultsStatusEnum.RE.getCode());
+                    result.setStatus(ResultsStatusEnum.RE.getCode());
                     result.setRuntime(Integer.parseInt(time));
                     break;
                 } else {
-                    result.setResult(ResultsStatusEnum.UNKNOWN.getCode());
-                    result.setResultDesc("Unknown status: \"" + status + "\"");
+                    result.setStatus(ResultsStatusEnum.UNKNOWN.getCode());
+                    result.setNotes("Unknown status: \"" + status + "\"");
                     logger.info("Unknown status: \"" + status + "\"");
                     break;
                 }
@@ -382,12 +382,12 @@ public class LanguageLA implements CompilerInterface {
             logger.info("Logged to LA-ACM");
 
             for (int i = 3; i >= 0; --i) {
-                if (checkInQueueStatus(input.getText()) > inQueue) {
+                if (checkInQueueStatus(input.getInputText()) > inQueue) {
                     if (i == 0) {
-                        result.setResult(ResultsStatusEnum.UNDEF.getCode());
-                        result.setResultDesc("More than " + inQueue + " submissions of " + input.getText() + " in queue.");
-                        result.setText("LA-ACM judge broken?");
-                        logger.info(result.getResultDesc());
+                        result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+                        result.setNotes("More than " + inQueue + " submissions of " + input.getInputText() + " in queue.");
+                        result.setOutputText("LA-ACM judge broken?");
+                        logger.info(result.getNotes());
                         return result;
                     } else {
                         Thread.sleep(10000 + (Math.abs(random.nextInt()) % 5000));
@@ -405,8 +405,8 @@ public class LanguageLA implements CompilerInterface {
             }
 
             if (id == 0) {
-                result.setResult(ResultsStatusEnum.RV.getCode());
-                result.setResultDesc(msg);
+                result.setStatus(ResultsStatusEnum.RV.getCode());
+                result.setNotes(msg);
                 return result;
             } else {
                 logger.info("LA-ACM Submit id = " + id);
@@ -417,9 +417,9 @@ public class LanguageLA implements CompilerInterface {
             logger.info("Logged out from LA-ACM");
         } catch (Exception e) {
             logger.info("Exception: ", e);
-            result.setResult(ResultsStatusEnum.UNDEF.getCode());
-            result.setResultDesc(e.getMessage());
-            result.setText(e.getClass().getName());
+            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+            result.setNotes(e.getMessage());
+            result.setOutputText(e.getClass().getName());
             return result;
         }
 

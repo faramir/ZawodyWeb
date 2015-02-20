@@ -7,6 +7,9 @@
  */
 package pl.umk.mat.zawodyweb.externalchecker;
 
+import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+
 /**
  *
  * @author faramir
@@ -26,5 +29,5 @@ public interface ExternalInterface {
      * @return as a result returns null if checker has not finished yet, or
      * Submit with filled Results list to save into database
      */
-    public ExternalOutput check(String externalId, ExternalInput testInput, ExternalOutput testOutput);
+    public TestOutput check(String externalId, TestInput testInput, TestOutput testOutput);
 }

@@ -15,13 +15,13 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
-import pl.umk.mat.zawodyweb.checker.TestInput;
-import pl.umk.mat.zawodyweb.checker.TestOutput;
-import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.commons.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
-import pl.umk.mat.zawodyweb.judge.InterruptTimer;
-import pl.umk.mat.zawodyweb.judge.ReaderEater;
-import pl.umk.mat.zawodyweb.judge.WriterFeeder;
+import pl.umk.mat.zawodyweb.commons.InterruptTimer;
+import pl.umk.mat.zawodyweb.commons.ReaderEater;
+import pl.umk.mat.zawodyweb.commons.WriterFeeder;
 
 /**
  *
@@ -43,33 +43,33 @@ public class LanguageANSIC implements CompilerInterface {
     public TestOutput runTest(String path, TestInput input) {
         TestOutput output = new TestOutput(null);
         if (compileResult != ResultsStatusEnum.UNDEF.getCode()) {
-            output.setResult(compileResult);
+            output.setStatus(compileResult);
             if (!compileDesc.isEmpty()) {
-                output.setResultDesc(compileDesc);
+                output.setNotes(compileDesc);
             }
             return output;
         }
 
-		String testInput = properties.getProperty("test.input.asargs");
+        String testInput = properties.getProperty("test.input.asargs");
 
         System.gc();
 //        List<String> command = Arrays.asList(path);
         List<String> command;
 
-        if (testInput != null && !testInput.isEmpty() 
-		    && !testInput.equals("0") && !testInput.equalsIgnoreCase("false")) {
-			   command = Arrays.asList(path + " " + input.getText());
-		} else command = Arrays.asList(path);
+        if (testInput != null && !testInput.isEmpty()
+                && !testInput.equals("0") && !testInput.equalsIgnoreCase("false")) {
+            command = Arrays.asList(path + " " + input.getInputText());
+        } else {
+            command = Arrays.asList(path);
+        }
 
         if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
-            command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && '" + path + "'");
-
-            if (testInput != null && !testInput.isEmpty() 
-		        && !testInput.equals("0") && !testInput.equalsIgnoreCase("false")) {
-			  command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && '" + path + "' " + input.getText().trim());
-		    } else {
-			  command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && '" + path + "'");
- 		    }
+            if (testInput != null && !testInput.isEmpty()
+                    && !testInput.equals("0") && !testInput.equalsIgnoreCase("false")) {
+                command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && '" + path + "' " + input.getInputText().trim());
+            } else {
+                command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && '" + path + "'");
+            }
 
         } else {
             logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
@@ -77,41 +77,41 @@ public class LanguageANSIC implements CompilerInterface {
 
         boolean exception = false;
         try {
-/* wstawka dla plikow - poczatek (jb) */
+            /* wstawka dla plikow - poczatek (jb) */
             String testFilePath = properties.getProperty("test.file.path");
             String testFileContent = properties.getProperty("test.file.content");
 
- 		    try {
-              if (testFilePath != null && !testFilePath.isEmpty()
-                && testFileContent != null && !testFileContent.isEmpty()) {
-                  testFileContent = testFileContent.replaceAll("%n", "\n");
-                  testFileContent = testFileContent.replaceAll("%r", "\r");
-                  testFileContent = testFileContent.replaceAll("%f", "\f");
+            try {
+                if (testFilePath != null && !testFilePath.isEmpty()
+                        && testFileContent != null && !testFileContent.isEmpty()) {
+                    testFileContent = testFileContent.replaceAll("%n", "\n");
+                    testFileContent = testFileContent.replaceAll("%r", "\r");
+                    testFileContent = testFileContent.replaceAll("%f", "\f");
 
-                  OutputStream tf = new FileOutputStream(testFilePath);
-                  tf.write(testFileContent.getBytes());
-                  tf.close();
-		      }
+                    OutputStream tf = new FileOutputStream(testFilePath);
+                    tf.write(testFileContent.getBytes());
+                    tf.close();
+                }
+            } catch (Exception e) {
             }
-		    catch (Exception e) { }
-		
+
             String testFilePath2 = properties.getProperty("test.file.path2");
             String testFileContent2 = properties.getProperty("test.file.content2");
 
-		    try {
-              if (testFilePath2 != null && !testFilePath2.isEmpty()
-                && testFileContent2 != null && !testFileContent2.isEmpty()) {
-                  testFileContent2 = testFileContent2.replaceAll("%n", "\n");
-                  testFileContent2 = testFileContent2.replaceAll("%r", "\r");
-                  testFileContent2 = testFileContent2.replaceAll("%f", "\f");
+            try {
+                if (testFilePath2 != null && !testFilePath2.isEmpty()
+                        && testFileContent2 != null && !testFileContent2.isEmpty()) {
+                    testFileContent2 = testFileContent2.replaceAll("%n", "\n");
+                    testFileContent2 = testFileContent2.replaceAll("%r", "\r");
+                    testFileContent2 = testFileContent2.replaceAll("%f", "\f");
 
-                  OutputStream tf = new FileOutputStream(testFilePath2);
-                  tf.write(testFileContent2.getBytes());
-                  tf.close();
-		      }
+                    OutputStream tf = new FileOutputStream(testFilePath2);
+                    tf.write(testFileContent2.getBytes());
+                    tf.close();
+                }
+            } catch (Exception e) {
             }
-		    catch (Exception e) { }
-/* wstawka dla plikow - koniec (jb) */
+            /* wstawka dla plikow - koniec (jb) */
 
             InterruptTimer timer = new InterruptTimer();
             Thread threadReaderEater = null;
@@ -131,7 +131,7 @@ public class LanguageANSIC implements CompilerInterface {
                 threadReaderEater = new Thread(readerEater);
                 threadReaderEater.start();
 
-                WriterFeeder writerFeeder = new WriterFeeder(outputStream, input.getText());
+                WriterFeeder writerFeeder = new WriterFeeder(outputStream, input.getInputText());
                 threadWriterFeeder = new Thread(writerFeeder);
                 threadWriterFeeder.start();
 
@@ -144,21 +144,20 @@ public class LanguageANSIC implements CompilerInterface {
 //                if (readerEater.getException() != null) {
 //                    throw readerEater.getException();
 //                }
-
                 outputText = readerEater.getOutputText();
             } catch (InterruptedException ex) {
-/* wstawka dla plikow - poczatek (jb) */
-				if (testFilePath != null && !testFilePath.isEmpty()
-				  && testFileContent != null && !testFileContent.isEmpty()) {
-					new File(testFilePath).delete();
-				}
-				if (testFilePath2 != null && !testFilePath2.isEmpty()
-				  && testFileContent2 != null && !testFileContent2.isEmpty()) {
-					new File(testFilePath2).delete();
-				}
-/* wstawka dla plikow - koniec (jb) */
+                /* wstawka dla plikow - poczatek (jb) */
+                if (testFilePath != null && !testFilePath.isEmpty()
+                        && testFileContent != null && !testFileContent.isEmpty()) {
+                    new File(testFilePath).delete();
+                }
+                if (testFilePath2 != null && !testFilePath2.isEmpty()
+                        && testFileContent2 != null && !testFileContent2.isEmpty()) {
+                    new File(testFilePath2).delete();
+                }
+                /* wstawka dla plikow - koniec (jb) */
                 output.setRuntime(input.getTimeLimit());
-                output.setResult(ResultsStatusEnum.TLE.getCode());
+                output.setStatus(ResultsStatusEnum.TLE.getCode());
                 logger.debug("TLE after " + (System.currentTimeMillis() - time) + "ms.", ex);
                 return output;
 //            } catch (IOException ex) {
@@ -172,16 +171,16 @@ public class LanguageANSIC implements CompilerInterface {
                 logger.fatal("Fatal Exception", ex);
                 exception = true;
             } finally {
-/* wstawka dla plikow - poczatek (jb) */
-				if (testFilePath != null && !testFilePath.isEmpty()
-				  && testFileContent != null && !testFileContent.isEmpty()) {
-					new File(testFilePath).delete();
-				}
-				if (testFilePath2 != null && !testFilePath2.isEmpty()
-				  && testFileContent2 != null && !testFileContent2.isEmpty()) {
-					new File(testFilePath2).delete();
-				}
-/* wstawka dla plikow - koniec (jb) */
+                /* wstawka dla plikow - poczatek (jb) */
+                if (testFilePath != null && !testFilePath.isEmpty()
+                        && testFileContent != null && !testFileContent.isEmpty()) {
+                    new File(testFilePath).delete();
+                }
+                if (testFilePath2 != null && !testFilePath2.isEmpty()
+                        && testFileContent2 != null && !testFileContent2.isEmpty()) {
+                    new File(testFilePath2).delete();
+                }
+                /* wstawka dla plikow - koniec (jb) */
                 if (timer != null) {
                     timer.cancel();
                 }
@@ -203,7 +202,7 @@ public class LanguageANSIC implements CompilerInterface {
             } else {
                 if (exception && (int) (currentTime - time) >= input.getTimeLimit()) {
                     output.setRuntime(input.getTimeLimit());
-                    output.setResult(ResultsStatusEnum.TLE.getCode());
+                    output.setStatus(ResultsStatusEnum.TLE.getCode());
                     logger.debug("TLE after " + (currentTime - time) + "ms with Exception");
                 } else if (input.getTimeLimit() > 0) {
                     output.setRuntime(input.getTimeLimit() - 1);
@@ -211,25 +210,25 @@ public class LanguageANSIC implements CompilerInterface {
             }
 
             try {
-				String testExitCode = properties.getProperty("test.output.exitcode");
-                if (testExitCode != null && !testExitCode.isEmpty() 
-		            && !testExitCode.equals("0") && !testExitCode.equalsIgnoreCase("false")) {
-		           output.setText("" + p.exitValue());
-                   return output;
-			    }
+                String testExitCode = properties.getProperty("test.output.exitcode");
+                if (testExitCode != null && !testExitCode.isEmpty()
+                        && !testExitCode.equals("0") && !testExitCode.equalsIgnoreCase("false")) {
+                    output.setOutputText("" + p.exitValue());
+                    return output;
+                }
                 if (p.exitValue() != 0) {
-                    output.setResult(ResultsStatusEnum.RE.getCode());
-                    output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
+                    output.setStatus(ResultsStatusEnum.RE.getCode());
+                    output.setNotes("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
                     return output;
                 }
             } catch (java.lang.IllegalThreadStateException ex) {
                 logger.fatal("Fatal Exception", ex);
-                output.setResult(ResultsStatusEnum.RE.getCode());
-                output.setResultDesc("Abnormal Program termination.");
+                output.setStatus(ResultsStatusEnum.RE.getCode());
+                output.setNotes("Abnormal Program termination.");
                 return output;
             }
 
-            output.setText(outputText);
+            output.setOutputText(outputText);
         } catch (Exception ex) {
             logger.fatal("Fatal Exception (timer may not be canceled)", ex);
         }
@@ -259,31 +258,31 @@ public class LanguageANSIC implements CompilerInterface {
                 + "tmpfile64 tmpfile tmpnam tmpnam_r truncate64 truncate ttyname ttyname_r ttyslot ualarm ungetc "
                 + "unlink usleep vfork vfprintf vfscanf vhangup write system "
                 + "mkfifo";
-/*
-		File zlyPlik = new File("/home/konkinf/judges/submits/2/compiled/\"main_file.c\"");
-		if (zlyPlik.exists())
-		   zlyPlik.delete();
-*/				
+        /*
+         File zlyPlik = new File("/home/konkinf/judges/submits/2/compiled/\"main_file.c\"");
+         if (zlyPlik.exists())
+         zlyPlik.delete();
+         */
         String allowBinaryDescRead = properties.getProperty("gcc.allowBinaryDescRead");
         if (allowBinaryDescRead != null && !allowBinaryDescRead.isEmpty()) {
-           forbiddenCalls = forbiddenCalls.replaceAll(" read ", " ");
-           forbiddenCalls = forbiddenCalls.replaceAll(" open ", " ");
-           forbiddenCalls = forbiddenCalls.replaceAll(" close ", " ");
+            forbiddenCalls = forbiddenCalls.replaceAll(" read ", " ");
+            forbiddenCalls = forbiddenCalls.replaceAll(" open ", " ");
+            forbiddenCalls = forbiddenCalls.replaceAll(" close ", " ");
         }
 
         String allowBinaryStreamRead = properties.getProperty("gcc.allowBinaryStreamRead");
         if (allowBinaryStreamRead != null && !allowBinaryStreamRead.isEmpty()) {
-           forbiddenCalls = forbiddenCalls.replaceAll(" fread ", " ");
-           forbiddenCalls = forbiddenCalls.replaceAll(" fopen ", " ");
-           forbiddenCalls = forbiddenCalls.replaceAll(" fclose ", " ");
+            forbiddenCalls = forbiddenCalls.replaceAll(" fread ", " ");
+            forbiddenCalls = forbiddenCalls.replaceAll(" fopen ", " ");
+            forbiddenCalls = forbiddenCalls.replaceAll(" fclose ", " ");
         }
 
         String allowTextStreamRead = properties.getProperty("gcc.allowTextStreamRead");
         if (allowTextStreamRead != null && !allowTextStreamRead.isEmpty()) {
-           forbiddenCalls = forbiddenCalls.replaceAll(" fgetc ", " ");
-           forbiddenCalls = forbiddenCalls.replaceAll(" fscanf ", " ");
-           forbiddenCalls = forbiddenCalls.replaceAll(" fopen ", " ");
-           forbiddenCalls = forbiddenCalls.replaceAll(" fclose ", " ");
+            forbiddenCalls = forbiddenCalls.replaceAll(" fgetc ", " ");
+            forbiddenCalls = forbiddenCalls.replaceAll(" fscanf ", " ");
+            forbiddenCalls = forbiddenCalls.replaceAll(" fopen ", " ");
+            forbiddenCalls = forbiddenCalls.replaceAll(" fclose ", " ");
         }
 
         StringBuilder strWithoutComments = new StringBuilder();
@@ -346,40 +345,40 @@ public class LanguageANSIC implements CompilerInterface {
             String includeFileName = properties.getProperty("gcc.asinclude");
             String mainFile = properties.getProperty("gcc.mainfile");
             String includeFile = null;
-            
+
             if (includeFileName != null && !includeFileName.isEmpty()
-                && mainFile != null && !mainFile.isEmpty()) {
-              includeFile = compileddir + File.separator + includeFileName;
+                    && mainFile != null && !mainFile.isEmpty()) {
+                includeFile = compileddir + File.separator + includeFileName;
 
-              mainFile = mainFile.replaceAll("%n", "\n");
-               
-              OutputStream is = new FileOutputStream(includeFile);
-              is.write(code);
-              is.close();
+                mainFile = mainFile.replaceAll("%n", "\n");
 
-              OutputStream cf = new FileOutputStream(codefile);
-              cf.write(mainFile.getBytes());
-              cf.close();
+                OutputStream is = new FileOutputStream(includeFile);
+                is.write(code);
+                is.close();
+
+                OutputStream cf = new FileOutputStream(codefile);
+                cf.write(mainFile.getBytes());
+                cf.close();
 
             } else {
-              OutputStream is = new FileOutputStream(codefile);
-              is.write(code);
-              is.close();
+                OutputStream is = new FileOutputStream(codefile);
+                is.write(code);
+                is.close();
             }
 
             String addedIncludeFileName = properties.getProperty("gcc.addinclude");
             String includeFileContent = properties.getProperty("gcc.includefilecontent");
             //String includeFile = null;
-            
+
             if (addedIncludeFileName != null && !addedIncludeFileName.isEmpty()
-                && includeFileContent != null && !includeFileContent.isEmpty()) {
-              includeFile = compileddir + File.separator + addedIncludeFileName;
+                    && includeFileContent != null && !includeFileContent.isEmpty()) {
+                includeFile = compileddir + File.separator + addedIncludeFileName;
 
-              includeFileContent = includeFileContent.replaceAll("%n", "\n");
+                includeFileContent = includeFileContent.replaceAll("%n", "\n");
 
-              OutputStream ifile = new FileOutputStream(includeFile);
-              ifile.write(includeFileContent.getBytes());
-              ifile.close();
+                OutputStream ifile = new FileOutputStream(includeFile);
+                ifile.write(includeFileContent.getBytes());
+                ifile.close();
 
             }
 
@@ -388,14 +387,14 @@ public class LanguageANSIC implements CompilerInterface {
             String moduleFile = null;
 
             if (addedModuleFileName != null && !addedModuleFileName.isEmpty()
-                && moduleFileContent != null && !moduleFileContent.isEmpty()) {
-              moduleFile = compileddir + File.separator + addedModuleFileName;
+                    && moduleFileContent != null && !moduleFileContent.isEmpty()) {
+                moduleFile = compileddir + File.separator + addedModuleFileName;
 
-              moduleFileContent = moduleFileContent.replaceAll("%n", "\n");
+                moduleFileContent = moduleFileContent.replaceAll("%n", "\n");
 
-              OutputStream mf = new FileOutputStream(moduleFile);
-              mf.write(moduleFileContent.getBytes());
-              mf.close();
+                OutputStream mf = new FileOutputStream(moduleFile);
+                mf.write(moduleFileContent.getBytes());
+                mf.close();
             }
 
             System.gc();
@@ -464,7 +463,7 @@ public class LanguageANSIC implements CompilerInterface {
             if (moduleFile != null) {
                 new File(moduleFile).delete();
             }
-			if (includeFile != null && !includeFile.isEmpty()) {
+            if (includeFile != null && !includeFile.isEmpty()) {
                 new File(includeFile).delete();
             }
         } catch (Exception err) {

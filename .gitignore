@@ -3,3 +3,5 @@
 /database/target/
 /www/target/
 /external-checker/target/
+/judge-external-checker/target/
+/judge-common/target/

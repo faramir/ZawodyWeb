@@ -5,13 +5,13 @@
  * This file is distributable under the Simplified BSD license. See the terms
  * of the Simplified BSD license in the documentation provided with this file.
  */
-package pl.umk.mat.zawodyweb.judge;
+package pl.umk.mat.zawodyweb.commons;
 
 /**
  *
  * @author lukash2k
  */
-class ClassInfo {
+public class ClassInfo {
 
     private int version;
     private byte[] code;

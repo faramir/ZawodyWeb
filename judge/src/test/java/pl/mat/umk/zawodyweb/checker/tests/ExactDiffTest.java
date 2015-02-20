@@ -10,12 +10,11 @@ package pl.mat.umk.zawodyweb.checker.tests;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
-import pl.umk.mat.zawodyweb.checker.CheckerResult;
-import pl.umk.mat.zawodyweb.checker.TestInput;
-import pl.umk.mat.zawodyweb.checker.TestOutput;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
 import pl.umk.mat.zawodyweb.checker.classes.ExactDiff;
 import pl.umk.mat.zawodyweb.compiler.Code;
-import pl.umk.mat.zawodyweb.compiler.Program;
+import pl.umk.mat.zawodyweb.commons.Program;
 import pl.umk.mat.zawodyweb.compiler.classes.LanguageTXT;
 
 /**
@@ -33,7 +32,7 @@ public class ExactDiffTest {
         LanguageTXT languageTXT = new LanguageTXT();
         Code code = new Code(codeText, languageTXT);
         Program program = code.compile();
-        CheckerResult result =
+        TestOutput result =
                 nd.check(program, new TestInput("", 0, 0, 0, null), test);
         return result.getStatus();
     }

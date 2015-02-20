@@ -21,9 +21,9 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.*;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.log4j.Logger;
-import pl.umk.mat.zawodyweb.checker.TestInput;
-import pl.umk.mat.zawodyweb.checker.TestOutput;
-import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.commons.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
@@ -82,17 +82,17 @@ public class LanguageMAIN implements CompilerInterface {
             try {
                 Matcher matcher = null;
 
-                matcher = Pattern.compile("c=([0-9]+)").matcher(input.getText());
+                matcher = Pattern.compile("c=([0-9]+)").matcher(input.getInputText());
                 if (matcher.find()) {
                     contest_id = Integer.valueOf(matcher.group(1));
                 }
 
-                matcher = Pattern.compile("t=([0-9]+)").matcher(input.getText());
+                matcher = Pattern.compile("t=([0-9]+)").matcher(input.getInputText());
                 if (matcher.find()) {
                     task_id = Integer.valueOf(matcher.group(1));
                 }
 
-                matcher = Pattern.compile("m=([0-9]+)").matcher(input.getText());
+                matcher = Pattern.compile("m=([0-9]+)").matcher(input.getInputText());
                 if (matcher.find()) {
                     max_points = Integer.valueOf(matcher.group(1));
                 }
@@ -112,9 +112,9 @@ public class LanguageMAIN implements CompilerInterface {
             }
         } catch (IllegalArgumentException e) {
             logger.error("Exception when parsing input", e);
-            result.setResult(ResultsStatusEnum.UNDEF.getCode());
-            result.setResultDesc(e.getMessage());
-            result.setText("MAIN IllegalArgumentException");
+            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+            result.setNotes(e.getMessage());
+            result.setOutputText("MAIN IllegalArgumentException");
             return result;
         }
         logger.debug("Contest id = " + contest_id);
@@ -144,23 +144,23 @@ public class LanguageMAIN implements CompilerInterface {
             client.executeMethod(postMethod);
             if (Pattern.compile("Logowanie udane").matcher(postMethod.getResponseBodyAsString(1024 * 1024)).find() == false) {
                 logger.error("Unable to login (" + login + ":" + password + ")");
-                result.setResult(ResultsStatusEnum.UNDEF.getCode());
-                result.setText("Logging in failed");
+                result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+                result.setOutputText("Logging in failed");
                 postMethod.releaseConnection();
                 return result;
             }
         } catch (HttpException e) {
             logger.error("Exception when logging in", e);
-            result.setResult(ResultsStatusEnum.UNDEF.getCode());
-            result.setResultDesc(e.getMessage());
-            result.setText("HttpException");
+            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+            result.setNotes(e.getMessage());
+            result.setOutputText("HttpException");
             postMethod.releaseConnection();
             return result;
         } catch (IOException e) {
             logger.error("Exception when logging in", e);
-            result.setResult(ResultsStatusEnum.UNDEF.getCode());
-            result.setResultDesc(e.getMessage());
-            result.setText("IOException");
+            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+            result.setNotes(e.getMessage());
+            result.setOutputText("IOException");
             postMethod.releaseConnection();
             return result;
         }
@@ -202,15 +202,15 @@ public class LanguageMAIN implements CompilerInterface {
             }
         } catch (HttpException ex) {
             logger.error("Exception when getting submit page", ex);
-            result.setResult(ResultsStatusEnum.UNDEF.getCode());
-            result.setResultDesc(ex.getMessage());
-            result.setText("IOException");
+            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+            result.setNotes(ex.getMessage());
+            result.setOutputText("IOException");
             return result;
         } catch (IOException ex) {
             logger.error("Exception when getting submit page", ex);
-            result.setResult(ResultsStatusEnum.UNDEF.getCode());
-            result.setResultDesc(ex.getMessage());
-            result.setText("IOException");
+            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+            result.setNotes(ex.getMessage());
+            result.setOutputText("IOException");
             return result;
         }
 
@@ -268,9 +268,9 @@ public class LanguageMAIN implements CompilerInterface {
 
         } catch (IllegalArgumentException e) {
             logger.error("Exception when submiting solution", e);
-            result.setResult(ResultsStatusEnum.UNDEF.getCode());
-            result.setResultDesc(e.getMessage());
-            result.setText("IllegalArgumentException");
+            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+            result.setNotes(e.getMessage());
+            result.setOutputText("IllegalArgumentException");
             postMethod.releaseConnection();
             return result;
         }
@@ -286,9 +286,9 @@ public class LanguageMAIN implements CompilerInterface {
             try {
                 Thread.sleep(7000);
             } catch (InterruptedException e) {
-                result.setResult(ResultsStatusEnum.UNDEF.getCode());
-                result.setResultDesc(e.getMessage());
-                result.setText("InterruptedException");
+                result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+                result.setNotes(e.getMessage());
+                result.setOutputText("InterruptedException");
                 return result;
             }
 
@@ -308,36 +308,36 @@ public class LanguageMAIN implements CompilerInterface {
                         if (resultType.equals("?")) {
                             continue;
                         } else if (resultType.matches("B..d kompilacji")) { // CE
-                            result.setResult(ResultsStatusEnum.CE.getCode());
+                            result.setStatus(ResultsStatusEnum.CE.getCode());
                             result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else if (resultType.matches("Program wyw.aszczony")) { // TLE
-                            result.setResult(ResultsStatusEnum.TLE.getCode());
+                            result.setStatus(ResultsStatusEnum.TLE.getCode());
                             result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else if (resultType.matches("B..d wykonania")) { // RTE
-                            result.setResult(ResultsStatusEnum.RE.getCode());
+                            result.setStatus(ResultsStatusEnum.RE.getCode());
                             result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else if (resultType.matches("Z.a odpowied.")) { // WA
-                            result.setResult(ResultsStatusEnum.WA.getCode());
+                            result.setStatus(ResultsStatusEnum.WA.getCode());
                             result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else if (resultType.equals("OK")) { // AC
-                            result.setResult(ResultsStatusEnum.ACC.getCode());
+                            result.setStatus(ResultsStatusEnum.ACC.getCode());
                             result.setPoints(calculatePoints(resultMatcher.group(2), input.getMaxPoints(), max_points));
                         } else {
-                            result.setResult(ResultsStatusEnum.UNDEF.getCode());
-                            result.setResultDesc("Unknown status: \"" + resultType + "\"");
+                            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+                            result.setNotes("Unknown status: \"" + resultType + "\"");
                         }
                         break result_loop;
                     }
                 }
             } catch (HttpException ex) {
-                result.setResult(ResultsStatusEnum.UNDEF.getCode());
-                result.setResultDesc(ex.getMessage());
-                result.setText("HttpException");
+                result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+                result.setNotes(ex.getMessage());
+                result.setOutputText("HttpException");
                 return result;
             } catch (IOException ex) {
-                result.setResult(ResultsStatusEnum.UNDEF.getCode());
-                result.setResultDesc(ex.getMessage());
-                result.setText("IOException");
+                result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+                result.setNotes(ex.getMessage());
+                result.setOutputText("IOException");
                 return result;
             }
         }

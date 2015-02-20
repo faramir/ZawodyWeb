@@ -1,9 +1,9 @@
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import pl.umk.mat.pcj.PCJ;
-import pl.umk.mat.pcj.StartPoint;
-import pl.umk.mat.pcj.Storage;
+import org.pcj.PCJ;
+import org.pcj.StartPoint;
+import org.pcj.Storage;
 
 public class MainClass {
 
@@ -12,8 +12,8 @@ public class MainClass {
         // arg1: storage
         // arg2: liczba watkow
 //        args = new String[]{
-//            "pl.mat.umk.zawodyweb.pcj.TestPcjApp",
-//            "pl.mat.umk.zawodyweb.pcj.TestPcjApp",
+//            "TestPcjApp",
+//            "TestPcjApp",
 //            "3"
 //        };
         try {

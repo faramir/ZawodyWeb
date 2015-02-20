@@ -8,9 +8,9 @@
 package pl.mat.umk.zawodyweb.judge.tests;
 
 import java.util.Properties;
-import pl.umk.mat.zawodyweb.checker.TestInput;
-import pl.umk.mat.zawodyweb.checker.TestOutput;
-import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.commons.CompilerInterface;
 import pl.umk.mat.zawodyweb.compiler.classes.*;
 
 /**
@@ -43,10 +43,10 @@ public class LMainTest {
 
         TestOutput o = l.runTest(script, new TestInput("11031", 1, 0, 0, null));
 
-        System.out.println("text:" + o.getText());
-        System.out.println("desc:" + o.getResultDesc());
+        System.out.println("text:" + o.getOutputText());
+        System.out.println("desc:" + o.getNotes());
         System.out.println("pnts:" + o.getPoints());
         System.out.println("rtme:" + o.getRuntime());
-        System.out.println("rslt:" + o.getResult());
+        System.out.println("rslt:" + o.getStatus());
     }
 }

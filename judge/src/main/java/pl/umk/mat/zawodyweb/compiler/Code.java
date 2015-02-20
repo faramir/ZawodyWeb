@@ -7,6 +7,9 @@
  */
 package pl.umk.mat.zawodyweb.compiler;
 
+import pl.umk.mat.zawodyweb.commons.Program;
+import pl.umk.mat.zawodyweb.commons.CompilerInterface;
+
 /**
  *
  * @author lukash2k

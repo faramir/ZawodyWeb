@@ -9,9 +9,9 @@ package pl.umk.mat.zawodyweb.externalchecker.classes;
 
 import java.util.Random;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
-import pl.umk.mat.zawodyweb.externalchecker.ExternalInput;
+import pl.umk.mat.zawodyweb.commons.TestInput;
 import pl.umk.mat.zawodyweb.externalchecker.ExternalInterface;
-import pl.umk.mat.zawodyweb.externalchecker.ExternalOutput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
 
 /**
  *
@@ -27,8 +27,8 @@ public class ExternalRandomGrader implements ExternalInterface {
     }
 
     @Override
-    public ExternalOutput check(String externalId, ExternalInput testInput, ExternalOutput testOutput) {
-        ExternalOutput output = new ExternalOutput();
+    public TestOutput check(String externalId, TestInput testInput, TestOutput testOutput) {
+        TestOutput output = new TestOutput();
         switch (random.nextInt(10)) {
             case 0:
                 output.setStatus(ResultsStatusEnum.RE.getCode());

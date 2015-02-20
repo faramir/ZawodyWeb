@@ -14,13 +14,13 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
-import pl.umk.mat.zawodyweb.checker.TestInput;
-import pl.umk.mat.zawodyweb.checker.TestOutput;
-import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.commons.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
-import pl.umk.mat.zawodyweb.judge.InterruptTimer;
-import pl.umk.mat.zawodyweb.judge.ReaderEater;
-import pl.umk.mat.zawodyweb.judge.WriterFeeder;
+import pl.umk.mat.zawodyweb.commons.InterruptTimer;
+import pl.umk.mat.zawodyweb.commons.ReaderEater;
+import pl.umk.mat.zawodyweb.commons.WriterFeeder;
 
 /**
  * @author lukash2k modified by faramir
@@ -41,9 +41,9 @@ public class LanguageCPP implements CompilerInterface {
     public TestOutput runTest(String path, TestInput input) {
         TestOutput output = new TestOutput(null);
         if (compileResult != ResultsStatusEnum.UNDEF.getCode()) {
-            output.setResult(compileResult);
+            output.setStatus(compileResult);
             if (!compileDesc.isEmpty()) {
-                output.setResultDesc(compileDesc);
+                output.setNotes(compileDesc);
             }
             return output;
         }
@@ -76,7 +76,7 @@ public class LanguageCPP implements CompilerInterface {
                 threadReaderEater = new Thread(readerEater);
                 threadReaderEater.start();
 
-                WriterFeeder writerFeeder = new WriterFeeder(outputStream, input.getText());
+                WriterFeeder writerFeeder = new WriterFeeder(outputStream, input.getInputText());
                 threadWriterFeeder = new Thread(writerFeeder);
                 threadWriterFeeder.start();
 
@@ -93,7 +93,7 @@ public class LanguageCPP implements CompilerInterface {
                 outputText = readerEater.getOutputText();
             } catch (InterruptedException ex) {
                 output.setRuntime(input.getTimeLimit());
-                output.setResult(ResultsStatusEnum.TLE.getCode());
+                output.setStatus(ResultsStatusEnum.TLE.getCode());
                 logger.debug("TLE after " + (System.currentTimeMillis() - time) + "ms.", ex);
                 return output;
 //            } catch (IOException ex) {
@@ -124,7 +124,7 @@ public class LanguageCPP implements CompilerInterface {
             } else {
                 if (exception && (int) (currentTime - time) >= input.getTimeLimit()) {
                     output.setRuntime(input.getTimeLimit());
-                    output.setResult(ResultsStatusEnum.TLE.getCode());
+                    output.setStatus(ResultsStatusEnum.TLE.getCode());
                     logger.debug("TLE after " + (currentTime - time) + "ms with Exception");
                 } else if (input.getTimeLimit() > 0) {
                     output.setRuntime(input.getTimeLimit() - 1);
@@ -133,18 +133,18 @@ public class LanguageCPP implements CompilerInterface {
 
             try {
                 if (p.exitValue() != 0) {
-                    output.setResult(ResultsStatusEnum.RE.getCode());
-                    output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
+                    output.setStatus(ResultsStatusEnum.RE.getCode());
+                    output.setNotes("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
                     return output;
                 }
             } catch (java.lang.IllegalThreadStateException ex) {
                 logger.fatal("Fatal Exception", ex);
-                output.setResult(ResultsStatusEnum.RE.getCode());
-                output.setResultDesc("Abnormal Program termination.");
+                output.setStatus(ResultsStatusEnum.RE.getCode());
+                output.setNotes("Abnormal Program termination.");
                 return output;
             }
 
-            output.setText(outputText);
+            output.setOutputText(outputText);
         } catch (Exception ex) {
             logger.fatal("Fatal Exception (timer may not be canceled)", ex);
         }

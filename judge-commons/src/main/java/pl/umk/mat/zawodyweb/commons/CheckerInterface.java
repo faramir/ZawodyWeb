@@ -5,10 +5,10 @@
  * This file is distributable under the Simplified BSD license. See the terms
  * of the Simplified BSD license in the documentation provided with this file.
  */
-package pl.umk.mat.zawodyweb.checker;
+package pl.umk.mat.zawodyweb.commons;
 
 import java.util.Properties;
-import pl.umk.mat.zawodyweb.compiler.Program;
+import pl.umk.mat.zawodyweb.commons.Program;
 
 /**
  *
@@ -28,5 +28,5 @@ public interface CheckerInterface {
      */
     public void setProperties(Properties properties);
 
-    public CheckerResult check(Program program, TestInput input, TestOutput output);
+    public TestOutput check(Program program, TestInput input, TestOutput output);
 }

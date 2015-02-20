@@ -8,11 +8,10 @@
 package pl.umk.mat.zawodyweb.checker.classes;
 
 import java.util.Properties;
-import pl.umk.mat.zawodyweb.checker.CheckerInterface;
-import pl.umk.mat.zawodyweb.checker.CheckerResult;
-import pl.umk.mat.zawodyweb.checker.TestInput;
-import pl.umk.mat.zawodyweb.checker.TestOutput;
-import pl.umk.mat.zawodyweb.compiler.Program;
+import pl.umk.mat.zawodyweb.commons.CheckerInterface;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.commons.Program;
 
 /**
  *
@@ -21,14 +20,8 @@ import pl.umk.mat.zawodyweb.compiler.Program;
 public class HTTPsubmit implements CheckerInterface {
 
     @Override
-    public CheckerResult check(Program program, TestInput input, TestOutput output) {
-        TestOutput to = program.runTest(input);
-        CheckerResult result = new CheckerResult();
-        result.setStatus(to.getResult());
-        result.setMemUsed(to.getMemUsed());
-        result.setRuntime(to.getRuntime());
-        result.setDescription(to.getResultDesc());
-        result.setPoints(to.getPoints());
+    public TestOutput check(Program program, TestInput input, TestOutput output) {
+        TestOutput result = program.runTest(input);
         return result;
     }
 

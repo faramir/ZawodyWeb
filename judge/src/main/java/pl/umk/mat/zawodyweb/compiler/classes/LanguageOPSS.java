@@ -17,9 +17,9 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
-import pl.umk.mat.zawodyweb.checker.TestInput;
-import pl.umk.mat.zawodyweb.checker.TestOutput;
-import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.commons.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
@@ -59,15 +59,15 @@ public class LanguageOPSS implements CompilerInterface {
         try {
             client.executeMethod(logging);
         } catch (HttpException e) {
-            result.setResult(ResultsStatusEnum.UNDEF.getCode());
-            result.setResultDesc(e.getMessage());
-            result.setText("HttpException");
+            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+            result.setNotes(e.getMessage());
+            result.setOutputText("HttpException");
             logging.releaseConnection();
             return result;
         } catch (IOException e) {
-            result.setResult(ResultsStatusEnum.UNDEF.getCode());
-            result.setResultDesc(e.getMessage());
-            result.setText("IOException");
+            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+            result.setNotes(e.getMessage());
+            result.setOutputText("IOException");
             logging.releaseConnection();
             return result;
         }
@@ -76,7 +76,7 @@ public class LanguageOPSS implements CompilerInterface {
         NameValuePair[] dataSendAnswer = {
             new NameValuePair("form_send_submit", "1"),
             new NameValuePair("form_send_comp", ""),
-            new NameValuePair("form_send_problem", input.getText()),
+            new NameValuePair("form_send_problem", input.getInputText()),
             new NameValuePair("form_send_lang", properties.getProperty("CODEFILE_EXTENSION")),
             new NameValuePair("form_send_sourcetext", path),
             new NameValuePair("form_send_submittxt", "Wyślij kod")
@@ -87,15 +87,15 @@ public class LanguageOPSS implements CompilerInterface {
             client.executeMethod(sendAnswer);
             status = sendAnswer.getResponseBodyAsStream();
         } catch (HttpException e) {
-            result.setResult(ResultsStatusEnum.UNDEF.getCode());
-            result.setResultDesc(e.getMessage());
-            result.setText("HttpException");
+            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+            result.setNotes(e.getMessage());
+            result.setOutputText("HttpException");
             sendAnswer.releaseConnection();
             return result;
         } catch (IOException e) {
-            result.setResult(ResultsStatusEnum.UNDEF.getCode());
-            result.setResultDesc(e.getMessage());
-            result.setText("IOException");
+            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+            result.setNotes(e.getMessage());
+            result.setOutputText("IOException");
             sendAnswer.releaseConnection();
             return result;
         }
@@ -119,9 +119,9 @@ public class LanguageOPSS implements CompilerInterface {
             m1.find();
             submitId = m1.group().split("=")[1];
         } catch (IOException e) {
-            result.setResult(ResultsStatusEnum.UNDEF.getCode());
-            result.setResultDesc(e.getMessage());
-            result.setText("IOException");
+            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+            result.setNotes(e.getMessage());
+            result.setOutputText("IOException");
             sendAnswer.releaseConnection();
             return result;
         }
@@ -130,9 +130,9 @@ public class LanguageOPSS implements CompilerInterface {
             try {
                 Thread.sleep(7000);
             } catch (InterruptedException e) {
-                result.setResult(ResultsStatusEnum.UNDEF.getCode());
-                result.setResultDesc(e.getMessage());
-                result.setText("InterruptedException");
+                result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+                result.setNotes(e.getMessage());
+                result.setOutputText("InterruptedException");
                 return result;
             }
             GetMethod answer = new GetMethod("http://opss.assecobs.pl/?menu=comp&sub=stat&comp=0&id=" + submitId);
@@ -141,15 +141,15 @@ public class LanguageOPSS implements CompilerInterface {
                 client.executeMethod(answer);
                 answerStream = answer.getResponseBodyAsStream();
             } catch (HttpException e) {
-                result.setResult(ResultsStatusEnum.UNDEF.getCode());
-                result.setResultDesc(e.getMessage());
-                result.setText("HttpException");
+                result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+                result.setNotes(e.getMessage());
+                result.setOutputText("HttpException");
                 answer.releaseConnection();
                 return result;
             } catch (IOException e) {
-                result.setResult(ResultsStatusEnum.UNDEF.getCode());
-                result.setResultDesc(e.getMessage());
-                result.setText("IOException");
+                result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+                result.setNotes(e.getMessage());
+                result.setOutputText("IOException");
                 answer.releaseConnection();
                 return result;
             }
@@ -172,42 +172,42 @@ public class LanguageOPSS implements CompilerInterface {
                     line = br.readLine();
                 }
             } catch (IOException e) {
-                result.setResult(ResultsStatusEnum.UNDEF.getCode());
-                result.setResultDesc(e.getMessage());
-                result.setText("IOException");
+                result.setStatus(ResultsStatusEnum.UNDEF.getCode());
+                result.setNotes(e.getMessage());
+                result.setOutputText("IOException");
                 sendAnswer.releaseConnection();
                 return result;
             }
             String[] col = row.split("(<td>)|(</table>)");
             result.setPoints(0);
             if (col[6].matches(".*Program zaakceptowany.*")) {
-                result.setResult(ResultsStatusEnum.ACC.getCode());
+                result.setStatus(ResultsStatusEnum.ACC.getCode());
                 result.setPoints(input.getMaxPoints());
                 result.setRuntime(10 * Integer.parseInt(col[8].replaceAll("\\.", "")));
                 result.setMemUsed(Integer.parseInt(col[9].replaceAll("\\s", "")));
                 break;
             } else if (col[6].matches(".*Błąd kompilacji.*")) {
-                result.setResult(ResultsStatusEnum.CE.getCode());
+                result.setStatus(ResultsStatusEnum.CE.getCode());
                 break;
             } else if (col[6].matches(".*Błąd wykonania.*")) {
-                result.setResult(ResultsStatusEnum.RE.getCode());
+                result.setStatus(ResultsStatusEnum.RE.getCode());
                 break;
             } else if (col[6].matches(".*Limit czasu przekroczony.*")) {
-                result.setResult(ResultsStatusEnum.TLE.getCode());
+                result.setStatus(ResultsStatusEnum.TLE.getCode());
                 break;
             } else if (col[6].matches(".*Limit pamięci przekroczony.*")) {
-                result.setResult(ResultsStatusEnum.MLE.getCode());
+                result.setStatus(ResultsStatusEnum.MLE.getCode());
                 break;
             } else if (col[6].matches(".*Błędna odpowiedź.*")) {
-                result.setResult(ResultsStatusEnum.WA.getCode());
+                result.setStatus(ResultsStatusEnum.WA.getCode());
                 break;
             } else if (col[6].matches(".*Niedozwolona funkcja.*")) {
-                result.setResult(ResultsStatusEnum.RV.getCode());
+                result.setStatus(ResultsStatusEnum.RV.getCode());
             } else if (col[6].matches(".*Uruchamianie.*")) {
             } else if (col[6].matches(".*Kompilacja.*")) {
             } else {
-                result.setResult(ResultsStatusEnum.UNKNOWN.getCode());
-                result.setResultDesc("Unknown status: \"" + col[6] + "\"");
+                result.setStatus(ResultsStatusEnum.UNKNOWN.getCode());
+                result.setNotes("Unknown status: \"" + col[6] + "\"");
                 break;
             }
             answer.releaseConnection();

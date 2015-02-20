@@ -7,6 +7,9 @@
  */
 package pl.umk.mat.zawodyweb.externalchecker;
 
+import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
@@ -54,15 +57,18 @@ public class ExternalTask implements Runnable {
                 }
 
                 Tests test = result.getTests();
-                ExternalInput testInput = new ExternalInput(test.getInput(),
+                Properties properties = new Properties(submit.getProblems().loadProperties());
+                properties.putAll(test.loadProperties());
+
+                TestInput testInput = new TestInput(test.getInput(),
                         test.getMaxpoints(),
                         test.getTimelimit(),
                         submit.getProblems().getMemlimit(),
-                        test.loadProperties()
+                        properties
                 );
-                ExternalOutput testOutput = new ExternalOutput(result.getTests().getOutput());
+                TestOutput testOutput = new TestOutput(result.getTests().getOutput());
 
-                ExternalOutput output = external.check(result.getNotes(), testInput, testOutput);
+                TestOutput output = external.check(result.getNotes(), testInput, testOutput/* TODO: load CheckerInterface*/);
 
                 if (output == null || output.getStatus() == ResultsStatusEnum.EXTERNAL.getCode()) {
                     externalResult = true;

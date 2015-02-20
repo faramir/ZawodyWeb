@@ -5,7 +5,7 @@
  * This file is distributable under the Simplified BSD license. See the terms
  * of the Simplified BSD license in the documentation provided with this file.
  */
-package pl.umk.mat.zawodyweb.checker;
+package pl.umk.mat.zawodyweb.commons;
 
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
@@ -15,13 +15,22 @@ import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
  */
 public class TestOutput {
 
-    private String text;
-    /* Possible results: MLE, TLE, CE, RE */
-    private int result;
-    private String resultDesc;
+    /* Possible statuses: MLE, TLE, CE, RE */
+    private int status;
+    private String outputText;
+    private String notes;
     private int runtime;
     private int memUsed;
     private int points;
+
+    public TestOutput() {
+        this(null);
+    }
+
+    public TestOutput(String text) {
+        this.outputText = text;
+        this.status = ResultsStatusEnum.UNDEF.getCode();
+    }
 
     public int getPoints() {
         return points;
@@ -30,8 +39,6 @@ public class TestOutput {
     public void setPoints(int points) {
         this.points = points;
     }
-
-
 
     public int getMemUsed() {
         return memUsed;
@@ -49,35 +56,27 @@ public class TestOutput {
         this.runtime = runtime;
     }
 
-
-
-    public TestOutput(String text) {
-        this.text = text;
-        this.result = ResultsStatusEnum.UNDEF.getCode();
-        this.resultDesc = null;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
-    public void setResultDesc(String resultDesc) {
-        this.resultDesc = resultDesc;
+    public String getNotes() {
+        return notes;
     }
 
-    public String getResultDesc() {
-        return resultDesc;
+    public void setOutputText(String outputText) {
+        this.outputText = outputText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
-    public void setResult(int result) {
-        this.result = result;
+    public String getOutputText() {
+        return outputText;
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public int getResult() {
-        return result;
+    public int getStatus() {
+        return status;
     }
 }

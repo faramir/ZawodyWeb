@@ -9,13 +9,13 @@ import java.util.regex.Pattern;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import org.apache.log4j.Logger;
-import pl.umk.mat.zawodyweb.checker.TestInput;
-import pl.umk.mat.zawodyweb.checker.TestOutput;
-import pl.umk.mat.zawodyweb.compiler.CompilerInterface;
+import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.commons.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
-import pl.umk.mat.zawodyweb.judge.InterruptTimer;
-import pl.umk.mat.zawodyweb.judge.ReaderEater;
-import pl.umk.mat.zawodyweb.judge.WriterFeeder;
+import pl.umk.mat.zawodyweb.commons.InterruptTimer;
+import pl.umk.mat.zawodyweb.commons.ReaderEater;
+import pl.umk.mat.zawodyweb.commons.WriterFeeder;
 
 /**
  *
@@ -37,9 +37,9 @@ public class LanguagePCJ implements CompilerInterface {
     public TestOutput runTest(String path, TestInput input) {
         TestOutput output = new TestOutput(null);
         if (compileResult != ResultsStatusEnum.UNDEF.getCode()) {
-            output.setResult(compileResult);
+            output.setStatus(compileResult);
             if (!compileDesc.isEmpty()) {
-                output.setResultDesc(compileDesc);
+                output.setNotes(compileDesc);
             }
             return output;
         }
@@ -68,11 +68,11 @@ public class LanguagePCJ implements CompilerInterface {
 
         String[] threadStrings = input.getProperty().getProperty("threadCounts").split("[, ]");
 
-        if (output.getText() == null) {
-            output.setText("");
+        if (output.getOutputText() == null) {
+            output.setOutputText("");
         }
-        if (output.getResultDesc() == null) {
-            output.setResultDesc("");
+        if (output.getNotes() == null) {
+            output.setNotes("");
         }
         for (String threadString : threadStrings) {
             threadString = threadString.trim();
@@ -81,51 +81,51 @@ public class LanguagePCJ implements CompilerInterface {
             }
             try {
                 int threadCount = Integer.parseInt(threadString);
-                TestOutput partialOutput = execute(new ArrayList<String>(command), threadCount, input);
+                TestOutput partialOutput = execute(new ArrayList<>(command), threadCount, input);
                 output.setMemUsed(Math.max(output.getMemUsed(), partialOutput.getMemUsed()));
                 output.setRuntime(Math.max(output.getRuntime(), partialOutput.getRuntime()));
-                output.setText(output.getText() + "\n>>> ---v--- " + threadCount + " ---v---\n" + partialOutput.getText());
-                if (partialOutput.getResultDesc() == null || partialOutput.getResultDesc().isEmpty()) {
-                    partialOutput.setResultDesc("");
+                output.setOutputText(output.getOutputText() + "\n>>> ---v--- " + threadCount + " ---v---\n" + partialOutput.getOutputText());
+                if (partialOutput.getNotes() == null || partialOutput.getNotes().isEmpty()) {
+                    partialOutput.setNotes("");
                 } else {
-                    partialOutput.setResultDesc(partialOutput.getResultDesc() + "\n");
+                    partialOutput.setNotes(partialOutput.getNotes() + "\n");
                 }
-                partialOutput.setResultDesc(partialOutput.getResultDesc() + "time: " + partialOutput.getRuntime());
+                partialOutput.setNotes(partialOutput.getNotes() + "time: " + partialOutput.getRuntime());
 
-                output.setResultDesc(output.getResultDesc() + "\n>>> ---v--- " + threadCount + " ---v---\n" + partialOutput.getResultDesc());
+                output.setNotes(output.getNotes() + "\n>>> ---v--- " + threadCount + " ---v---\n" + partialOutput.getNotes());
 
-                int worseResult = output.getResult();
+                int worseResult = output.getStatus();
                 int nowResult = 0;
 
-                if (worseResult > ++nowResult && partialOutput.getResult() == ResultsStatusEnum.UNDEF.getCode()) {
+                if (worseResult > ++nowResult && partialOutput.getStatus() == ResultsStatusEnum.UNDEF.getCode()) {
                     worseResult = nowResult;
-                } else if (worseResult > ++nowResult && partialOutput.getResult() == ResultsStatusEnum.UNKNOWN.getCode()) {
+                } else if (worseResult > ++nowResult && partialOutput.getStatus() == ResultsStatusEnum.UNKNOWN.getCode()) {
                     worseResult = nowResult;
-                } else if (worseResult > ++nowResult && partialOutput.getResult() == ResultsStatusEnum.RV.getCode()) {
+                } else if (worseResult > ++nowResult && partialOutput.getStatus() == ResultsStatusEnum.RV.getCode()) {
                     worseResult = nowResult;
-                } else if (worseResult > ++nowResult && partialOutput.getResult() == ResultsStatusEnum.CTLE.getCode()) {
+                } else if (worseResult > ++nowResult && partialOutput.getStatus() == ResultsStatusEnum.CTLE.getCode()) {
                     worseResult = nowResult;
-                } else if (worseResult > ++nowResult && partialOutput.getResult() == ResultsStatusEnum.CE.getCode()) {
+                } else if (worseResult > ++nowResult && partialOutput.getStatus() == ResultsStatusEnum.CE.getCode()) {
                     worseResult = nowResult;
-                } else if (worseResult > ++nowResult && partialOutput.getResult() == ResultsStatusEnum.MLE.getCode()) {
+                } else if (worseResult > ++nowResult && partialOutput.getStatus() == ResultsStatusEnum.MLE.getCode()) {
                     worseResult = nowResult;
-                } else if (worseResult > ++nowResult && partialOutput.getResult() == ResultsStatusEnum.RE.getCode()) {
+                } else if (worseResult > ++nowResult && partialOutput.getStatus() == ResultsStatusEnum.RE.getCode()) {
                     worseResult = nowResult;
-                } else if (worseResult > ++nowResult && partialOutput.getResult() == ResultsStatusEnum.TLE.getCode()) {
+                } else if (worseResult > ++nowResult && partialOutput.getStatus() == ResultsStatusEnum.TLE.getCode()) {
                     worseResult = nowResult;
-                } else if (worseResult > ++nowResult && partialOutput.getResult() == ResultsStatusEnum.WA.getCode()) {
+                } else if (worseResult > ++nowResult && partialOutput.getStatus() == ResultsStatusEnum.WA.getCode()) {
                     worseResult = nowResult;
-                } else if (worseResult > ++nowResult && partialOutput.getResult() == ResultsStatusEnum.ACC.getCode()) {
+                } else if (worseResult > ++nowResult && partialOutput.getStatus() == ResultsStatusEnum.ACC.getCode()) {
                     worseResult = nowResult;
                 }
-                output.setResult(worseResult);
+                output.setStatus(worseResult);
 
             } catch (NumberFormatException ex) {
                 logger.debug("Unable to parse thradCount: '" + threadString + "'.", ex);
             }
         }
-        output.setText(output.getText().trim());
-        output.setResultDesc(output.getResultDesc().trim());
+        output.setOutputText(output.getOutputText().trim());
+        output.setNotes(output.getNotes().trim());
 
         return output;
     }
@@ -178,7 +178,7 @@ public class LanguagePCJ implements CompilerInterface {
                 threadErrorEater = new Thread(errorEater);
                 threadErrorEater.start();
 
-                WriterFeeder writerFeeder = new WriterFeeder(outputStream, input.getText());
+                WriterFeeder writerFeeder = new WriterFeeder(outputStream, input.getInputText());
                 threadWriterFeeder = new Thread(writerFeeder);
                 threadWriterFeeder.start();
 
@@ -192,7 +192,7 @@ public class LanguagePCJ implements CompilerInterface {
                 outputText = readerEater.getOutputText();
             } catch (InterruptedException ex) {
                 output.setRuntime(input.getTimeLimit());
-                output.setResult(ResultsStatusEnum.TLE.getCode());
+                output.setStatus(ResultsStatusEnum.TLE.getCode());
                 logger.debug("TLE after " + (System.currentTimeMillis() - time) + "ms.", ex);
                 return output;
             } catch (Exception ex) {
@@ -219,25 +219,25 @@ public class LanguagePCJ implements CompilerInterface {
             } else {
                 if (exception && (int) (currentTime - time) >= input.getTimeLimit()) {
                     output.setRuntime(input.getTimeLimit());
-                    output.setResult(ResultsStatusEnum.TLE.getCode());
+                    output.setStatus(ResultsStatusEnum.TLE.getCode());
                     logger.debug("TLE after " + (currentTime - time) + "ms with Exception");
                 } else if (input.getTimeLimit() > 0) {
                     output.setRuntime(input.getTimeLimit() - 1);
                 }
             }
             try {
-                if (p.exitValue() != 0 && output.getResult() != ResultsStatusEnum.TLE.getCode()) {
-                    output.setResult(ResultsStatusEnum.RE.getCode());
-                    output.setResultDesc("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
+                if (p.exitValue() != 0 && output.getStatus() != ResultsStatusEnum.TLE.getCode()) {
+                    output.setStatus(ResultsStatusEnum.RE.getCode());
+                    output.setNotes("Abnormal Program termination.\nExit status: " + p.exitValue() + "\n");
                     return output;
                 }
             } catch (java.lang.IllegalThreadStateException ex) {
                 logger.fatal("Fatal Exception", ex);
-                output.setResult(ResultsStatusEnum.RE.getCode());
-                output.setResultDesc("Abnormal Program termination.");
+                output.setStatus(ResultsStatusEnum.RE.getCode());
+                output.setNotes("Abnormal Program termination.");
                 return output;
             }
-            output.setText(outputText);
+            output.setOutputText(outputText);
         } catch (Exception ex) {
             logger.fatal("Fatal Exception (timer may not be canceled)", ex);
         }
@@ -352,7 +352,7 @@ public class LanguagePCJ implements CompilerInterface {
         TestInput testInput = new TestInput("1",
                 1, 10000, 1000, testProperty);
         TestOutput runOutput = language.runTest(outputPath, testInput);
-        System.out.println("" + runOutput.getText() + ", " + runOutput.getPoints());
-        System.out.println("" + runOutput.getResultDesc());
+        System.out.println("" + runOutput.getOutputText() + ", " + runOutput.getPoints());
+        System.out.println("" + runOutput.getNotes());
     }
 }
