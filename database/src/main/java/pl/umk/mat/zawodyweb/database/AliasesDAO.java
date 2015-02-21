@@ -10,8 +10,6 @@ package pl.umk.mat.zawodyweb.database;
 import java.util.List;
 import pl.umk.mat.zawodyweb.database.pojo.Aliases;
 
-import pl.umk.mat.zawodyweb.database.pojo.Classes;
-
 /**
  *
  * @author faramir

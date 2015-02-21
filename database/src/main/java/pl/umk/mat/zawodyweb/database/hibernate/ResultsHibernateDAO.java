@@ -8,12 +8,9 @@
 package pl.umk.mat.zawodyweb.database.hibernate;
 
 import java.util.List;
-import java.sql.Timestamp;
-
-import pl.umk.mat.zawodyweb.database.pojo.Results;
-import pl.umk.mat.zawodyweb.database.ResultsDAO;
-
 import org.hibernate.criterion.Restrictions;
+import pl.umk.mat.zawodyweb.database.ResultsDAO;
+import pl.umk.mat.zawodyweb.database.pojo.Results;
 
 /**
  * <p>Hibernate DAO layer for Resultss</p>

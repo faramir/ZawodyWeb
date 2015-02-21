@@ -7,7 +7,23 @@
  */
 package pl.umk.mat.zawodyweb.database.hibernate;
 
-import pl.umk.mat.zawodyweb.database.*;
+import pl.umk.mat.zawodyweb.database.AliasesDAO;
+import pl.umk.mat.zawodyweb.database.ClassesDAO;
+import pl.umk.mat.zawodyweb.database.ContestsDAO;
+import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.LanguagesDAO;
+import pl.umk.mat.zawodyweb.database.LanguagesProblemsDAO;
+import pl.umk.mat.zawodyweb.database.PDFDAO;
+import pl.umk.mat.zawodyweb.database.ProblemsDAO;
+import pl.umk.mat.zawodyweb.database.QuestionsDAO;
+import pl.umk.mat.zawodyweb.database.ResultsDAO;
+import pl.umk.mat.zawodyweb.database.RolesDAO;
+import pl.umk.mat.zawodyweb.database.SeriesDAO;
+import pl.umk.mat.zawodyweb.database.SubmitsDAO;
+import pl.umk.mat.zawodyweb.database.TestsDAO;
+import pl.umk.mat.zawodyweb.database.UserLogDAO;
+import pl.umk.mat.zawodyweb.database.UsersDAO;
+import pl.umk.mat.zawodyweb.database.UsersRolesDAO;
 
 /**
  * Generated at Fri May 08 19:01:00 CEST 2009

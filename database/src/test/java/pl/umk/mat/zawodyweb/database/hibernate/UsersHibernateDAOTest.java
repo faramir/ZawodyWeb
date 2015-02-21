@@ -10,11 +10,11 @@ package pl.umk.mat.zawodyweb.database.hibernate;
 import org.hibernate.Transaction;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import pl.umk.mat.zawodyweb.database.UsersDAO;
-import static org.junit.Assert.*;
 import pl.umk.mat.zawodyweb.database.pojo.Users;
 
 /**

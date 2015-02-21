@@ -7,18 +7,15 @@
  */
 package pl.umk.mat.zawodyweb.database.pojo;
 
-import java.util.List;
 import java.io.Serializable;
-
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.GenerationType;
 
 /**
  * <p>

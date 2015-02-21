@@ -7,13 +7,11 @@
  */
 package pl.umk.mat.zawodyweb.database.hibernate;
 
-import java.util.List;
 import java.sql.Timestamp;
-
-import pl.umk.mat.zawodyweb.database.pojo.Submits;
-import pl.umk.mat.zawodyweb.database.SubmitsDAO;
-
+import java.util.List;
 import org.hibernate.criterion.Restrictions;
+import pl.umk.mat.zawodyweb.database.SubmitsDAO;
+import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
 /**
  * <p>Hibernate DAO layer for Submitss</p>

@@ -8,8 +8,6 @@
 package pl.umk.mat.zawodyweb.database;
 
 import java.util.List;
-import java.sql.Timestamp;
-
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 /**
  * <p>Generic DAO layer for Problemss</p>

@@ -8,12 +8,9 @@
 package pl.umk.mat.zawodyweb.database.hibernate;
 
 import java.util.List;
-import java.sql.Timestamp;
-
-import pl.umk.mat.zawodyweb.database.pojo.Languages;
-import pl.umk.mat.zawodyweb.database.LanguagesDAO;
-
 import org.hibernate.criterion.Restrictions;
+import pl.umk.mat.zawodyweb.database.LanguagesDAO;
+import pl.umk.mat.zawodyweb.database.pojo.Languages;
 
 /**
  * <p>Hibernate DAO layer for Languagess</p>

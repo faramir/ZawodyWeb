@@ -10,7 +10,6 @@ package pl.umk.mat.zawodyweb.database;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 
 /**

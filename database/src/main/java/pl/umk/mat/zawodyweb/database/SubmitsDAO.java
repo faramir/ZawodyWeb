@@ -7,9 +7,8 @@
  */
 package pl.umk.mat.zawodyweb.database;
 
-import java.util.List;
 import java.sql.Timestamp;
-
+import java.util.List;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 /**
  * <p>Generic DAO layer for Submitss</p>

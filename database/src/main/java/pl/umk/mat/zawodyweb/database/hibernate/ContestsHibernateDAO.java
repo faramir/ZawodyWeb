@@ -7,13 +7,11 @@
  */
 package pl.umk.mat.zawodyweb.database.hibernate;
 
-import java.util.List;
 import java.sql.Timestamp;
-
-import pl.umk.mat.zawodyweb.database.pojo.Contests;
-import pl.umk.mat.zawodyweb.database.ContestsDAO;
-
+import java.util.List;
 import org.hibernate.criterion.Restrictions;
+import pl.umk.mat.zawodyweb.database.ContestsDAO;
+import pl.umk.mat.zawodyweb.database.pojo.Contests;
 
 /**
  * <p>Hibernate DAO layer for Contestss</p>

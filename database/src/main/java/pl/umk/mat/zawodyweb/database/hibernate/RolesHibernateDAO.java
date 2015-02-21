@@ -8,12 +8,9 @@
 package pl.umk.mat.zawodyweb.database.hibernate;
 
 import java.util.List;
-import java.sql.Timestamp;
-
-import pl.umk.mat.zawodyweb.database.pojo.Roles;
-import pl.umk.mat.zawodyweb.database.RolesDAO;
-
 import org.hibernate.criterion.Restrictions;
+import pl.umk.mat.zawodyweb.database.RolesDAO;
+import pl.umk.mat.zawodyweb.database.pojo.Roles;
 
 /**
  * <p>Hibernate DAO layer for Roless</p>
