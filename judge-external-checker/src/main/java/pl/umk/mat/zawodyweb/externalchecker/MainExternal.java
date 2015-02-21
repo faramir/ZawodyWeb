@@ -25,10 +25,10 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import pl.umk.mat.zawodyweb.database.ClassesTypeEnum;
-import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
-import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
+import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Classes;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
@@ -36,7 +36,6 @@ import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$ Date: $Date$
  */
 public class MainExternal {
 
@@ -44,6 +43,7 @@ public class MainExternal {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final ScheduledExecutorService executor = new SafeSingleThreadScheduledExecutor();
     private static final Map<String, ExternalLoadedClass> externalInterfaces = new HashMap<>();
+    private static final Properties properties = new Properties();
 
     private static ExternalInterface chooseExternalInterface(Submits submit) {
         for (Results r : submit.getResultss()) {
@@ -52,9 +52,8 @@ public class MainExternal {
                     continue;
                 }
                 for (ExternalLoadedClass externalClasses : externalInterfaces.values()) {
-                    ExternalInterface external = externalClasses.getExternal();
-                    if (r.getNotes().startsWith(external.getPrefix() + ":")) {
-                        return external;
+                    if (r.getNotes().startsWith(externalClasses.getExternalPrefix() + ":")) {
+                        return externalClasses.newExternal();
                     }
                 }
             }
@@ -79,25 +78,23 @@ public class MainExternal {
         c.addOrder(Order.asc("id"));
         List<Classes> externalClasses = c.list();
 
-        BinaryClassLoader classLoader = new BinaryClassLoader();
+        for (Classes classes : externalClasses) {
+            if (externalInterfaces.containsKey(classes.getFilename()) == false
+                    || externalInterfaces.get(classes.getFilename()).getVersion() < classes.getVersion()) {
+                try {
+                    ExternalLoadedClass externalLoadedClass = new ExternalLoadedClass(classes);
+                    ExternalInterface external = externalLoadedClass.newExternal();
 
-        for (Classes clazz : externalClasses) {
-            try {
-                Class<ExternalInterface> externalClass = (Class<ExternalInterface>) classLoader.loadCompiledClass(clazz.getFilename(), clazz.getCode());
-                ExternalInterface external = externalClass.newInstance();
-                if (externalInterfaces.containsKey(clazz.getFilename()) == false
-                        || externalInterfaces.get(clazz.getFilename()).getClasses().getVersion() < clazz.getVersion()) {
-                    
-                    if (externalInterfaces.containsKey(clazz.getFilename()) == false) {
+                    if (externalInterfaces.containsKey(classes.getFilename()) == false) {
                         logger.info("Adding external checker: " + external.getClass().getName() + " (" + external.getPrefix() + ") ");
                     } else {
                         logger.info("Modyfing external checker: " + external.getClass().getName() + " (" + external.getPrefix() + ") ");
                     }
-                    
-                    externalInterfaces.put(clazz.getFilename(), new ExternalLoadedClass(external, clazz));
+
+                    externalInterfaces.put(classes.getFilename(), externalLoadedClass);
+                } catch (ClassCastException ex) {
+                    logger.fatal("Unable to initialize externalChecker class", ex);
                 }
-            } catch (InstantiationException | IllegalAccessException ex) {
-                logger.fatal("Unable to initialize externalChecker class", ex);
             }
         }
 
@@ -121,6 +118,9 @@ public class MainExternal {
                     logger.error("Unable to find external for submitId: " + submit.getId());
                     continue;
                 }
+                Properties submissionProperties = new Properties(properties);
+                external.setProperties(submissionProperties);
+                
                 executor.submit(new ExternalTask(submit, external));
             }
         }
@@ -129,9 +129,6 @@ public class MainExternal {
 
     public static void main(String[] args) {
         logger.info("ExternalChecker start at " + sdf.format(new Date()));
-
-        /* getting properties */
-        Properties properties = new Properties();
 
         properties.setProperty("REFRESH_RATE", "6000");
 
@@ -158,7 +155,6 @@ public class MainExternal {
             refreshRate = 60 * 1000;
         }
 
-        //ExternalInterface external = new ExternalRandomGrader();
         executor.scheduleWithFixedDelay(MainExternal::checkDatabaseForChanges, 0, refreshRate, TimeUnit.MILLISECONDS);
 
         synchronized (MainExternal.class) {

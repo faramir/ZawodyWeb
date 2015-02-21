@@ -70,8 +70,9 @@
     <!-- -->
     <modules>
         <module>database</module>
-        <module>judge-manager</module>
         <module>judge-commons</module>
+        <module>judge-classes</module>
+        <module>judge-manager</module>
         <module>judge</module>
         <module>judge-external-checker</module>
         <module>www</module>

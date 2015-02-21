@@ -5,11 +5,11 @@
  * This file is distributable under the Simplified BSD license. See the terms
  * of the Simplified BSD license in the documentation provided with this file.
  */
-package pl.umk.mat.zawodyweb.commons;
+package pl.umk.mat.zawodyweb.judge.commons;
 
 import java.util.Properties;
-import pl.umk.mat.zawodyweb.commons.TestInput;
-import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.judge.commons.TestInput;
+import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
 
 /**
  *

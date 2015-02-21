@@ -4,5 +4,4 @@
     <comment>Example of configuration file for External Checker</comment>
 
     <entry key="REFRESH_RATE">6000</entry>
-    <entry key="EXTERNAL_CHECKERS">pl.umk.mat.zawodyweb.externalchecker.ExternalRandomGrader</entry>
 </properties>

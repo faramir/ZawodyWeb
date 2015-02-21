@@ -5,10 +5,10 @@
  * This file is distributable under the Simplified BSD license. See the terms
  * of the Simplified BSD license in the documentation provided with this file.
  */
-package pl.umk.mat.zawodyweb.compiler;
+package pl.umk.mat.zawodyweb.judge.commons;
 
-import pl.umk.mat.zawodyweb.commons.Program;
-import pl.umk.mat.zawodyweb.commons.CompilerInterface;
+import pl.umk.mat.zawodyweb.judge.commons.Program;
+import pl.umk.mat.zawodyweb.judge.commons.CompilerInterface;
 
 /**
  *

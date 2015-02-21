@@ -7,8 +7,8 @@
  */
 package pl.umk.mat.zawodyweb.externalchecker;
 
-import pl.umk.mat.zawodyweb.commons.TestOutput;
-import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
+import pl.umk.mat.zawodyweb.judge.commons.TestInput;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.hibernate.Transaction;

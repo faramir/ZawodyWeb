@@ -7,8 +7,9 @@
  */
 package pl.umk.mat.zawodyweb.externalchecker;
 
-import pl.umk.mat.zawodyweb.commons.TestOutput;
-import pl.umk.mat.zawodyweb.commons.TestInput;
+import java.util.Properties;
+import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
+import pl.umk.mat.zawodyweb.judge.commons.TestInput;
 
 /**
  *
@@ -16,9 +17,11 @@ import pl.umk.mat.zawodyweb.commons.TestInput;
  */
 public interface ExternalInterface {
 
+    public void setProperties(Properties properties);
+
     /**
-     * @return string containing getPrefix from Submit description to distinguish
- external checkers
+     * @return string containing getPrefix from Submit description to
+     * distinguish external checkers
      */
     public String getPrefix();
 

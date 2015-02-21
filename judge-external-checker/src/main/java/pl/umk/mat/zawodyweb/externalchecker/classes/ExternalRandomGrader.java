@@ -7,11 +7,12 @@
  */
 package pl.umk.mat.zawodyweb.externalchecker.classes;
 
+import java.util.Properties;
 import java.util.Random;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
-import pl.umk.mat.zawodyweb.commons.TestInput;
+import pl.umk.mat.zawodyweb.judge.commons.TestInput;
 import pl.umk.mat.zawodyweb.externalchecker.ExternalInterface;
-import pl.umk.mat.zawodyweb.commons.TestOutput;
+import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
 
 /**
  *
@@ -20,6 +21,10 @@ import pl.umk.mat.zawodyweb.commons.TestOutput;
 public class ExternalRandomGrader implements ExternalInterface {
 
     final private static Random random = new Random();
+
+    @Override
+    public void setProperties(Properties properties) {
+    }
 
     @Override
     public String getPrefix() {

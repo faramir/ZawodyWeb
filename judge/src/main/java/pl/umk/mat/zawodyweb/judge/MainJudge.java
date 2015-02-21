@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2014, ZawodyWeb Team
+ * Copyright (c) 2009-2015, ZawodyWeb Team
  * All rights reserved.
  *
  * This file is distributable under the Simplified BSD license. See the terms
@@ -7,8 +7,6 @@
  */
 package pl.umk.mat.zawodyweb.judge;
 
-import pl.umk.mat.zawodyweb.commons.BinaryClassLoader;
-import pl.umk.mat.zawodyweb.commons.ClassInfo;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -24,20 +22,22 @@ import org.hibernate.Criteria;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import pl.umk.mat.zawodyweb.commons.CheckerInterface;
-import pl.umk.mat.zawodyweb.commons.TestInput;
-import pl.umk.mat.zawodyweb.commons.TestOutput;
-import pl.umk.mat.zawodyweb.compiler.Code;
-import pl.umk.mat.zawodyweb.commons.CompilerInterface;
-import pl.umk.mat.zawodyweb.commons.Program;
-import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Classes;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
+import pl.umk.mat.zawodyweb.judge.commons.BinaryClassLoader;
+import pl.umk.mat.zawodyweb.judge.commons.CheckerInterface;
+import pl.umk.mat.zawodyweb.judge.commons.ClassInfo;
+import pl.umk.mat.zawodyweb.judge.commons.Code;
+import pl.umk.mat.zawodyweb.judge.commons.CompilerInterface;
+import pl.umk.mat.zawodyweb.judge.commons.Program;
+import pl.umk.mat.zawodyweb.judge.commons.TestInput;
+import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
 
 /**
  *
