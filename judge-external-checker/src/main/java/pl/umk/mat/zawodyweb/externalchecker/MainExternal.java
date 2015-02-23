@@ -130,7 +130,7 @@ public class MainExternal {
     public static void main(String[] args) {
         logger.info("ExternalChecker start at " + sdf.format(new Date()));
 
-        properties.setProperty("REFRESH_RATE", "6000");
+        properties.setProperty("REFRESH_RATE", "60000");
 
         try {
             String configFile = MainExternal.class.getResource("").getPath() + "configuration.xml";

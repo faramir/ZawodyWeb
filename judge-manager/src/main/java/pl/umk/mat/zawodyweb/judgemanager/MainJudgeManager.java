@@ -77,22 +77,26 @@ public class MainJudgeManager {
         }
 
         /* displaying properties */
-        logger.info("WWW_PORT = " + properties.getProperty("WWW_PORT"));
-        logger.info("WWW_LISTEN_ADDRESS = " + properties.getProperty("WWW_LISTEN_ADDRESS"));
-        logger.info("WWW_POOL = " + properties.getProperty("WWW_POOL"));
-        logger.info("WWW_ADDRESSES = " + properties.getProperty("WWW_ADDRESSES"));
-        logger.info("WWW_TIMEOUT = " + properties.getProperty("WWW_TIMEOUT"));
-
-        logger.info("JUDGE_PORT = " + properties.getProperty("JUDGE_PORT"));
-        logger.info("JUDGE_LISTEN_ADDRESS = " + properties.getProperty("JUDGE_LISTEN_ADDRESS"));
-        logger.info("JUDGE_POOL = " + properties.getProperty("JUDGE_POOL"));
-        logger.info("JUDGE_ADDRESSES = " + properties.getProperty("JUDGE_ADDRESSES"));
-        logger.info("JUDGE_DELAY = " + properties.getProperty("JUDGE_DELAY"));
-
-        logger.info("DELAY_PROCESS = " + properties.getProperty("DELAY_PROCESS"));
-
-        logger.info("COMPILER_ERROR_TIME = " + properties.getProperty("COMPILER_ERROR_TIME"));
-        logger.info("COMPILER_ERROR_COUNT = " + properties.getProperty("COMPILER_ERROR_COUNT"));
+        for (String propertyName : properties.stringPropertyNames()) {
+            logger.info(propertyName + " = " + properties.getProperty(propertyName));
+        }
+        
+//        logger.info("WWW_PORT = " + properties.getProperty("WWW_PORT"));
+//        logger.info("WWW_LISTEN_ADDRESS = " + properties.getProperty("WWW_LISTEN_ADDRESS"));
+//        logger.info("WWW_POOL = " + properties.getProperty("WWW_POOL"));
+//        logger.info("WWW_ADDRESSES = " + properties.getProperty("WWW_ADDRESSES"));
+//        logger.info("WWW_TIMEOUT = " + properties.getProperty("WWW_TIMEOUT"));
+//
+//        logger.info("JUDGE_PORT = " + properties.getProperty("JUDGE_PORT"));
+//        logger.info("JUDGE_LISTEN_ADDRESS = " + properties.getProperty("JUDGE_LISTEN_ADDRESS"));
+//        logger.info("JUDGE_POOL = " + properties.getProperty("JUDGE_POOL"));
+//        logger.info("JUDGE_ADDRESSES = " + properties.getProperty("JUDGE_ADDRESSES"));
+//        logger.info("JUDGE_DELAY = " + properties.getProperty("JUDGE_DELAY"));
+//
+//        logger.info("DELAY_PROCESS = " + properties.getProperty("DELAY_PROCESS"));
+//
+//        logger.info("COMPILER_ERROR_TIME = " + properties.getProperty("COMPILER_ERROR_TIME"));
+//        logger.info("COMPILER_ERROR_COUNT = " + properties.getProperty("COMPILER_ERROR_COUNT"));
 
         try {
             delayProcess = Integer.parseInt(properties.getProperty("DELAY_PROCESS"));

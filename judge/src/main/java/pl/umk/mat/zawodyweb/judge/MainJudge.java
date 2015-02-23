@@ -340,19 +340,24 @@ public class MainJudge {
             delayConnect = 10 * 1000;
         }
 
-        logger.info("JUDGEMANAGER_HOST = " + properties.getProperty("JUDGEMANAGER_HOST"));
-        logger.info("JUDGEMANAGER_PORT = " + properties.getProperty("JUDGEMANAGER_PORT"));
-        logger.info("JUDGEMANAGER_DELAY_CONNECT = " + properties.getProperty("JUDGEMANAGER_DELAY_CONNECT"));
-
-        logger.info("COMPILED_DIR = " + properties.getProperty("COMPILED_DIR"));
-        logger.info("CODE_DIR = " + properties.getProperty("CODE_DIR"));
-
-        logger.info("COMPILED_FILENAME = " + properties.getProperty("COMPILED_FILENAME"));
-        logger.info("CODE_FILENAME = " + properties.getProperty("CODE_FILENAME"));
-
-        logger.info("COMPILE_TIMEOUT = " + properties.getProperty("COMPILE_TIMEOUT"));
-
-        logger.info("JAVA_POLICY = " + properties.getProperty("JAVA_POLICY"));
+        /* displaying properties */
+        for (String propertyName : properties.stringPropertyNames()) {
+            logger.info(propertyName + " = " + properties.getProperty(propertyName));
+        }
+        
+//        logger.info("JUDGEMANAGER_HOST = " + properties.getProperty("JUDGEMANAGER_HOST"));
+//        logger.info("JUDGEMANAGER_PORT = " + properties.getProperty("JUDGEMANAGER_PORT"));
+//        logger.info("JUDGEMANAGER_DELAY_CONNECT = " + properties.getProperty("JUDGEMANAGER_DELAY_CONNECT"));
+//
+//        logger.info("COMPILED_DIR = " + properties.getProperty("COMPILED_DIR"));
+//        logger.info("CODE_DIR = " + properties.getProperty("CODE_DIR"));
+//
+//        logger.info("COMPILED_FILENAME = " + properties.getProperty("COMPILED_FILENAME"));
+//        logger.info("CODE_FILENAME = " + properties.getProperty("CODE_FILENAME"));
+//
+//        logger.info("COMPILE_TIMEOUT = " + properties.getProperty("COMPILE_TIMEOUT"));
+//
+//        logger.info("JAVA_POLICY = " + properties.getProperty("JAVA_POLICY"));
 
         while (true) {
             try {
