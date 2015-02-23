@@ -1,0 +1,38 @@
+#
+# Copyright (c) 2014-2015, ICM UW
+# All rights reserved.
+#
+# This file is distributable under the Simplified BSD license. See the terms
+# of the Simplified BSD license in the documentation provided with this file.
+#
+# Author: Marek Nowicki /faramir/
+#
+{
+  Executable: "/bin/bash",
+  Arguments: ["${SCRIPT_FILE}", ],
+  Stdin: "${INPUT_FILE}",
+  Stdout: "stdout",
+  Stderr: "stderr",
+  Imports: [
+    { From: "${LIB_PATH}\\*", To: ".", },
+    { From: "${CODE_FILE}", To: "${CODE_FILE}", },
+    { From: "${INPUT_FILE}", To: "${INPUT_FILE}", },
+    { From: "${SCRIPT_FILE}", To: "${SCRIPT_FILE}", },
+  ],
+  Exports: [
+    { From: "stdout", To: "stdout", },
+    { From: "stderr", To: "stderr", },
+  ],
+  Name: "${JOB_NAME}",
+  Project: ${GRANT_ID},
+  Site: "${SITE}",
+  Resources: {
+    Nodes: ${NODES_COUNT},
+    CPUsPerNode: ${CPU_PER_NODE},
+    Memory: ${MEMORY_LIMIT},
+    Runtime: ${TIME_LIMIT},
+    Reservation: "${RESERVATION}",
+    NodesProperty: "${NODES_PROPERTY}",
+    Queue: "${QUEUE}",
+  },
+}
