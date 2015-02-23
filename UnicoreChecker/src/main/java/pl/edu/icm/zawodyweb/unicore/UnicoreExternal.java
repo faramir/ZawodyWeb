@@ -140,9 +140,7 @@ public class UnicoreExternal implements ExternalInterface {
                             return output;
                         default:
                             logger.fatal("Unknown exit code");
-                            output.setStatus(ResultsStatusEnum.UNKNOWN.getCode());
-                            output.setNotes(status);
-                            return output;
+                            return null;
 
                     }
                 } else {
@@ -152,11 +150,8 @@ public class UnicoreExternal implements ExternalInterface {
         }
 
         logger.error("EPR not found: " + externalId);
-        TestOutput output = new TestOutput();
-        output.setStatus(ResultsStatusEnum.UNKNOWN.getCode());
-        output.setNotes("Job not found");
-
-        return output;
+        
+        return null;
     }
 
     private List<String> getOutputFiles(String externalId) {

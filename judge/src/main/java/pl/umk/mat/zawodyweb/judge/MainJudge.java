@@ -15,7 +15,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -67,7 +66,7 @@ public class MainJudge {
             DataOutputStream output = new DataOutputStream(sock.getOutputStream());
             logger.info("Connection with JudgeManager on " + properties.getProperty("JUDGEMANAGER_HOST") + ":" + properties.getProperty("JUDGEMANAGER_PORT") + "...");
 
-            while (15 == 15) {
+            while (true) {
                 /*
                  * receiving submit_id
                  */
@@ -145,16 +144,18 @@ public class MainJudge {
                     }
                     submissionProperties.setProperty("CODEFILE_EXTENSION", submit.getLanguages().getExtension());
 
-                    for (Entry<Object, Object> property : submit.getProblems().loadProperties().entrySet()) {
-                        if (property.getKey() instanceof String && property.getValue() instanceof String) {
-                            String key = (String) property.getKey();
-                            String value = (String) property.getValue();
+                    submissionProperties.putAll(submit.getProblems().loadProperties());
 
-                            if (submissionProperties.containsKey(key) == false || isUpperCased(key) == false) {
-                                submissionProperties.setProperty(key, value);
-                            }
-                        }
-                    }
+//                    for (Entry<Object, Object> property : submit.getProblems().loadProperties().entrySet()) {
+//                        if (property.getKey() instanceof String && property.getValue() instanceof String) {
+//                            String key = (String) property.getKey();
+//                            String value = (String) property.getValue();
+//
+//                            if (submissionProperties.containsKey(key) == false /*|| isUpperCased(key) == false*/) {
+//                                submissionProperties.setProperty(key, value);
+//                            }
+//                        }
+//                    }
                     compiler.setProperties(submissionProperties);
 
                     /*

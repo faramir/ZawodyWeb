@@ -8,6 +8,7 @@
 package pl.umk.mat.zawodyweb.www;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -24,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.custom.datascroller.ScrollerActionEvent;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.hibernate.Criteria;
+import org.hibernate.JDBCException;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -741,7 +743,6 @@ public class RequestBean {
 //        }
 //        return editedUsersRoles;
 //    }
-
     public Aliases getEditedAlias() {
         if (editedAlias == null) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -2005,7 +2006,18 @@ public class RequestBean {
     @HttpAction(name = "dellanguage", pattern = "del/{id}/language")
     public String deleteLanguage(@Param(name = "id", encode = true) int id) {
         if (rolesBean.canEditAnyProblem()) {
-            languagesDAO.deleteById(id);
+            try {
+                languagesDAO.deleteById(id);
+                HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+                HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+            } catch (JDBCException e) {
+                e.printStackTrace();
+                SQLException ex = e.getSQLException();
+                while ((ex = ex.getNextException()) != null) {
+                    ex.printStackTrace();
+                }
+            }
+
             return "/admin/listlanguages";
         } else {
             return "/error/404";
@@ -2068,7 +2080,17 @@ public class RequestBean {
     public String deleteSeries(@Param(name = "id", encode = true) int id) {
         Series s = seriesDAO.getById(id);
         if (s != null && rolesBean.canDeleteSeries(s.getContests().getId(), id)) {
-            seriesDAO.delete(s);
+            try {
+                seriesDAO.delete(s);
+                HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+                HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+            } catch (JDBCException e) {
+                e.printStackTrace();
+                SQLException ex = e.getSQLException();
+                while ((ex = ex.getNextException()) != null) {
+                    ex.printStackTrace();
+                }
+            }
             return "problems";
         } else {
             return "/error/404";
@@ -2182,14 +2204,14 @@ public class RequestBean {
 
         try {
             UsersRoles tmpUsersRoles;
-            
+
             if (ELFunctions.isNullOrZero(temporaryUsersRolesId)) {
                 tmpUsersRoles = new UsersRoles();
                 tmpUsersRoles.setUsers(usersDAO.getById(temporaryUserId));
             } else {
                 tmpUsersRoles = usersRolesDAO.getById(temporaryUsersRolesId);
             }
-            
+
             tmpUsersRoles.setRoles(rolesDAO.getById(temporaryRoleTypeId));
             if (temporaryContestId != null) {
                 tmpUsersRoles.setContests(contestsDAO.getById(temporaryContestId));
@@ -2199,10 +2221,9 @@ public class RequestBean {
             }
 
             usersRolesDAO.saveOrUpdate(tmpUsersRoles);
-            
-            
+
             String login = tmpUsersRoles.getUsers().getLogin();
-            
+
             return goToEdituser(login);
         } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -2231,7 +2252,7 @@ public class RequestBean {
             return "listusers";
         }
     }
-    
+
     @HttpAction(name = "edituserrole", pattern = "edit/{id}/userrole")
     public String goToEdituserrole(@Param(name = "id", encode = true) int id) {
         if (!rolesBean.canEditUsers()) {
@@ -2247,8 +2268,7 @@ public class RequestBean {
             temporaryUsersRolesId = id;
             temporaryUserId = userRole.getUsers().getId();
             temporaryRoleTypeId = userRole.getRoles().getId();
-            
-            
+
             if (userRole.getContests() != null) {
                 temporaryContestId = userRole.getContests().getId();
             }
@@ -2443,7 +2463,6 @@ public class RequestBean {
                     mimetype = "application/force-download";
                 }
             } else if ("solutions".equals(type)) {
-                System.err.println("solutions!" + id);
                 Contests contest = contestsDAO.getById(id);
                 List<Integer> submissionsList = Ranking.getInstance().getSolutions(id, null, contest.getType(), new Date(), false);
                 ZipSolutions zip = new ZipSolutions();

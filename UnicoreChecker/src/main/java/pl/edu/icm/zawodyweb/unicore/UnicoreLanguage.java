@@ -78,7 +78,8 @@ public class UnicoreLanguage implements CompilerInterface {
      */
     @Override
     public void setProperties(Properties properties) {
-        this.properties = properties;
+        this.properties = new Properties(properties);
+
         addDefaultPropertyValue("UNICORECC_JOB_NAME", "ZawodyWeb-submission");
         addDefaultPropertyValue("UNICORECC_BIN_PATH", "C:\\UNICORE\\ucc-distribution-7.1.0\\bin\\ucc.bat");
     }
@@ -99,22 +100,46 @@ public class UnicoreLanguage implements CompilerInterface {
         return prefix + Long.toHexString(n) + suffix;
     }
 
+    private String processScriptText(String text, Properties testProperties, int timeLimit, int memoryLimit, String codeFile, String inputFile, String scriptFile) {
+        for (String propertyName : testProperties.stringPropertyNames()) {
+            if (propertyName.startsWith("UNICORECC_") == false) {
+                continue;
+            }
+            String value = testProperties.getProperty(propertyName);
+            if (value == null || value.isEmpty()) {
+                continue;
+            }
+            propertyName = propertyName.substring("UNICORECC_".length());
+            text = text.replace("${" + propertyName + "}", value);
+        }
+        text = text.replace("${TIME_LIMIT}", (1 + timeLimit / 1000) + "");
+        text = text.replace("${MEMORY_LIMIT}", memoryLimit + "M");
+        text = text.replace("${CODE_FILE}", codeFile);
+        text = text.replace("${INPUT_FILE}", inputFile);
+        text = text.replace("${SCRIPT_FILE}", scriptFile);
+        text = text.replaceAll("\\$\\{[-_A-Za-z0-9]*\\}", "");
+        return text;
+    }
+
     @Override
     public TestOutput runTest(String code, TestInput input) {
         TestOutput output = new TestOutput(null);
 
-        String propertiesFile = properties.getProperty("UNICORECC_PROPERTIES");
+        Properties testProperties = new Properties(properties);
+        testProperties.putAll(input.getProperties());
 
-        String codeDir = properties.getProperty("CODE_DIR");
+        String propertiesFile = testProperties.getProperty("UNICORECC_PROPERTIES");
+
+        String codeDir = testProperties.getProperty("CODE_DIR");
         codeDir = codeDir.replaceAll(File.separator + "$", "") + File.separator;
 
-        String codeFile = properties.getProperty("CODE_FILENAME");
+        String codeFile = testProperties.getProperty("CODE_FILENAME");
         String inputFile = generateFilename("input", "");
         String jobFile = generateFilename("job", ".u");
         String scriptFile = generateFilename("script", ".sh");
 
         /* create JOB description */
-        String jobtemplateFile = properties.getProperty("UNICORECC_JOB_TEMPLATE");
+        String jobtemplateFile = testProperties.getProperty("UNICORECC_JOB_TEMPLATE");
         if (jobtemplateFile == null || jobtemplateFile.isEmpty()) {
             logger.fatal("Empty or unknown UNICORECC_JOB_TEMPLATE parameter");
             return output;
@@ -123,24 +148,7 @@ public class UnicoreLanguage implements CompilerInterface {
         try {
             String jobfileText = new String(Files.readAllBytes(Paths.get(jobtemplateFile)), StandardCharsets.UTF_8);
 
-            for (String propertyName : properties.stringPropertyNames()) {
-                if (propertyName.startsWith("UNICORECC_") == false) {
-                    continue;
-                }
-                String value = properties.getProperty(propertyName);
-                if (value == null || value.isEmpty()) {
-                    continue;
-                }
-                propertyName = propertyName.substring("UNICORECC_".length());
-                jobfileText = jobfileText.replace("${" + propertyName + "}", value);
-            }
-
-            jobfileText = jobfileText.replace("${TIME_LIMIT}", (1 + input.getTimeLimit() / 1000) + "");
-            jobfileText = jobfileText.replace("${MEMORY_LIMIT}", (input.getMemoryLimit()) + "M");
-            jobfileText = jobfileText.replace("${CODE_FILE}", codeFile);
-            jobfileText = jobfileText.replace("${INPUT_FILE}", inputFile);
-            jobfileText = jobfileText.replace("${SCRIPT_FILE}", scriptFile);
-            jobfileText = jobfileText.replaceAll("\\$\\{[-_A-Za-z0-9]*\\}", "");
+            jobfileText = processScriptText(jobfileText, testProperties, input.getTimeLimit(), input.getMemoryLimit(), codeFile, inputFile, scriptFile);
 
             try (BufferedWriter out = new BufferedWriter(new FileWriter(codeDir + jobFile))) {
                 out.write(jobfileText);
@@ -155,7 +163,7 @@ public class UnicoreLanguage implements CompilerInterface {
 
 
         /* create SCRIPT file */
-        String scripttemplateFile = properties.getProperty("UNICORECC_SCRIPT_TEMPLATE");
+        String scripttemplateFile = testProperties.getProperty("UNICORECC_SCRIPT_TEMPLATE");
         if (scripttemplateFile == null || scripttemplateFile.isEmpty()) {
             logger.fatal("Empty or unknown UNICORECC_SCRIPT_TEMPLATE parameter");
             return output;
@@ -164,23 +172,7 @@ public class UnicoreLanguage implements CompilerInterface {
         try {
             String scriptfileText = new String(Files.readAllBytes(Paths.get(scripttemplateFile)), StandardCharsets.UTF_8);
 
-            for (String propertyName : properties.stringPropertyNames()) {
-                if (propertyName.startsWith("UNICORECC_") == false) {
-                    continue;
-                }
-                String value = properties.getProperty(propertyName);
-                if (value == null || value.isEmpty()) {
-                    continue;
-                }
-                propertyName = propertyName.substring("UNICORECC_".length());
-                scriptfileText = scriptfileText.replace("${" + propertyName + "}", value);
-            }
-
-            scriptfileText = scriptfileText.replace("${TIME_LIMIT}", (15 + input.getTimeLimit() / 1000) + "");
-            scriptfileText = scriptfileText.replace("${MEMORY_LIMIT}", (input.getMemoryLimit()) + "M");
-            scriptfileText = scriptfileText.replace("${CODE_FILE}", codeFile);
-            scriptfileText = scriptfileText.replace("${INPUT_FILE}", inputFile);
-            scriptfileText = scriptfileText.replaceAll("\\$\\{[-_A-Za-z0-9]*\\}", "");
+            scriptfileText = processScriptText(scriptfileText, testProperties, input.getTimeLimit(), input.getMemoryLimit(), codeFile, inputFile, scriptFile);
 
             try (BufferedWriter out = new BufferedWriter(new FileWriter(codeDir + scriptFile))) {
                 out.write(scriptfileText);
@@ -211,7 +203,7 @@ public class UnicoreLanguage implements CompilerInterface {
 
         /* run JOB using UNICORE Commandline Client */
         List<String> command = new ArrayList<>();
-        command.addAll(Arrays.asList(properties.getProperty("UNICORECC_BIN_PATH"), "run", "-v", "-a"));
+        command.addAll(Arrays.asList(testProperties.getProperty("UNICORECC_BIN_PATH"), "run", "-v", "-a"));
         if (propertiesFile != null && propertiesFile.isEmpty() == false) {
             command.add("-c");
             command.add(propertiesFile);
@@ -301,12 +293,17 @@ public class UnicoreLanguage implements CompilerInterface {
     public void closeProgram(String path) {
         String codeDir = properties.getProperty("CODE_DIR");
         codeDir = codeDir.replaceAll(File.separator + "$", "") + File.separator;
-        logger.debug("Clearing CODE_DIR: " + codeDir);
-        Arrays.stream(Paths.get(codeDir).toFile().listFiles())
-                .forEach((File f) -> {
-                    logger.trace("deleting: " + f.toString());
-                    f.delete();
-                });
+        logger.info("Clearing CODE_DIR: " + codeDir);
+        File[] files = Paths.get(codeDir).toFile().listFiles();
+        if (files == null) {
+            logger.debug("CODE_DIR does not exists");
+        } else {
+            Arrays.stream(files)
+                    .forEach((File f) -> {
+                        logger.trace("deleting: " + f.toString());
+                        f.delete();
+                    });
+        }
     }
 
 }

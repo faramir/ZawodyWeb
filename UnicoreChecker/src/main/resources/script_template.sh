@@ -12,7 +12,7 @@
 srun hostname -s | sort > nodes.lst
 uniq nodes.lst > nodes.uniq
 
-echo -e "`date`\nhosts: `uniq -c hosts.lst | xargs -I '{}' echo -n '{}, '`" 1>&2
+echo -e "`date`\nhosts: `uniq -c nodes.lst | xargs -I '{}' echo -n '{}, '`" 1>&2
 
 echo -e "\n### MODULE LOAD ###" 1>&2
 module load plgrid/tools/openmpi plgrid/tools/java8 1>&2

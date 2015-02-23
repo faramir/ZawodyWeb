@@ -66,7 +66,7 @@ public class LanguagePCJ implements CompilerInterface {
         command.add(path.substring(path.lastIndexOf(File.separator) + 1, path.lastIndexOf(".")));
         command.add(path.substring(path.lastIndexOf(File.separator) + 1, path.lastIndexOf(".")));
 
-        String[] threadStrings = input.getProperty().getProperty("threadCounts").split("[, ]");
+        String[] threadStrings = input.getProperties().getProperty("threadCounts").split("[, ]");
 
         if (output.getOutputText() == null) {
             output.setOutputText("");

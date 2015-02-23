@@ -19,14 +19,14 @@ public class TestInput {
     private final int maxPoints;
     private final int timeLimit;
     private final int memoryLimit;
-    private final Properties property;
+    private final Properties properties;
 
     public TestInput(String inputText, int maxPoints, int timeLimit, int memoryLimit, Properties property) {
         this.inputText = inputText;
         this.timeLimit = timeLimit;
         this.memoryLimit = memoryLimit;
         this.maxPoints = maxPoints;
-        this.property = property;
+        this.properties = property;
     }
 
     /**
@@ -53,7 +53,7 @@ public class TestInput {
         return inputText;
     }
 
-    public Properties getProperty() {
-        return property;
+    public Properties getProperties() {
+        return properties;
     }
 }

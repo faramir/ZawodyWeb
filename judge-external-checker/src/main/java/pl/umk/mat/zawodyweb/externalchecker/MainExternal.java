@@ -45,22 +45,6 @@ public class MainExternal {
     private static final Map<String, ExternalLoadedClass> externalInterfaces = new HashMap<>();
     private static final Properties properties = new Properties();
 
-    private static ExternalInterface chooseExternalInterface(Submits submit) {
-        for (Results r : submit.getResultss()) {
-            if (r.getStatus() == ResultsStatusEnum.EXTERNAL.getCode()) {
-                if (r.getNotes() == null || r.getNotes().isEmpty()) {
-                    continue;
-                }
-                for (ExternalLoadedClass externalClasses : externalInterfaces.values()) {
-                    if (r.getNotes().startsWith(externalClasses.getExternalPrefix() + ":")) {
-                        return externalClasses.newExternal();
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
     private static void checkDatabaseForChanges() {
         Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
@@ -120,11 +104,27 @@ public class MainExternal {
                 }
                 Properties submissionProperties = new Properties(properties);
                 external.setProperties(submissionProperties);
-                
-                executor.submit(new ExternalTask(submit, external));
+
+                executor.submit(new ExternalTask(submit.getId(), external));
             }
         }
 
+    }
+
+    private static ExternalInterface chooseExternalInterface(Submits submit) {
+        for (Results r : submit.getResultss()) {
+            if (r.getStatus() == ResultsStatusEnum.EXTERNAL.getCode()) {
+                if (r.getNotes() == null || r.getNotes().isEmpty()) {
+                    continue;
+                }
+                for (ExternalLoadedClass externalClasses : externalInterfaces.values()) {
+                    if (r.getNotes().startsWith(externalClasses.getExternalPrefix() + ":")) {
+                        return externalClasses.newExternal();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public static void main(String[] args) {
@@ -145,10 +145,12 @@ public class MainExternal {
             logger.info("Failed to read configuration file:", ex);
         }
 
-        int refreshRate;
         /* displaying properties */
-        logger.info("REFRESH_RATE = " + properties.getProperty("REFRESH_RATE"));
+        for (String propertyName : properties.stringPropertyNames()) {
+            logger.info(propertyName + " = " + properties.getProperty(propertyName));
+        }
 
+        int refreshRate;
         try {
             refreshRate = Integer.parseInt(properties.getProperty("REFRESH_RATE"));
         } catch (NumberFormatException ex) {

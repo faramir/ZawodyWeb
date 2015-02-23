@@ -30,11 +30,11 @@ public class ExternalTask implements Runnable {
 
     private static final Logger logger = Logger.getLogger(ExternalTask.class);
 
-    private final Submits submit;
+    private final int submitId;
     private final ExternalInterface external;
 
-    public ExternalTask(Submits submit, ExternalInterface external) {
-        this.submit = submit;
+    public ExternalTask(int submitId, ExternalInterface external) {
+        this.submitId = submitId;
         this.external = external;
     }
 
@@ -47,6 +47,8 @@ public class ExternalTask implements Runnable {
 
             boolean manualResult = false;
             boolean externalResult = false;
+
+            Submits submit = submitsDAO.getById(submitId);
 
             for (Results result : submit.getResultss()) {
                 if (result.getStatus() == ResultsStatusEnum.MANUAL.getCode()) {
@@ -68,7 +70,9 @@ public class ExternalTask implements Runnable {
                 );
                 TestOutput testOutput = new TestOutput(result.getTests().getOutput());
 
-                TestOutput output = external.check(result.getNotes(), testInput, testOutput/* TODO: load CheckerInterface*/);
+                String externalId = result.getNotes().substring(external.getPrefix().length() + 1);
+
+                TestOutput output = external.check(externalId, testInput, testOutput/* TODO: load CheckerInterface?*/);
 
                 if (output == null || output.getStatus() == ResultsStatusEnum.EXTERNAL.getCode()) {
                     externalResult = true;
@@ -88,6 +92,8 @@ public class ExternalTask implements Runnable {
                 submit.setState(SubmitsStateEnum.EXTERNAL.getCode());
             } else if (manualResult == true) {
                 submit.setState(SubmitsStateEnum.MANUAL.getCode());
+            } else {
+                submit.setState(SubmitsStateEnum.DONE.getCode());
             }
 
             submitsDAO.saveOrUpdate(submit);
