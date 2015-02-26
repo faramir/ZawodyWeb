@@ -15,8 +15,7 @@ import pl.umk.mat.zawodyweb.externalchecker.ExternalInterface;
 import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
 
 /**
- *
- * @author faramir
+ * @author Marek Nowicki /faramir/
  */
 public class ExternalRandomGrader implements ExternalInterface {
 

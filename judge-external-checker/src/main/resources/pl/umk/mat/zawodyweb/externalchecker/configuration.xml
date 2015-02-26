@@ -3,5 +3,7 @@
 <properties>
     <comment>Example of configuration file for External Checker</comment>
 
-    <entry key="REFRESH_RATE">6000</entry>
+    <entry key="REFRESH_RATE">60000</entry>
+
+    <entry key="EXTERNALS_DIR">/path/to/externals</entry>
 </properties>

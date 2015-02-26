@@ -39,6 +39,7 @@ public class JudgesListener extends Thread {
     public JudgesListener(ServerSocket judgeSocket, Properties properties,
             ConcurrentLinkedQueue<Integer> submitsQueue,
             CompilerErrorHandler compilerErrorHandler) {
+        super("Judges Listener");
         this.judgeSocket = judgeSocket;
         this.submitsQueue = submitsQueue;
         this.compilerErrorHandler = compilerErrorHandler;

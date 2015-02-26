@@ -8,7 +8,6 @@
 package pl.umk.mat.zawodyweb.externalchecker;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,7 +34,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Results;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
 /**
- * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
+ * @author Marek Nowicki /faramir/
  */
 public class MainExternal {
 
@@ -70,9 +69,9 @@ public class MainExternal {
                     ExternalInterface external = externalLoadedClass.newExternal();
 
                     if (externalInterfaces.containsKey(classes.getFilename()) == false) {
-                        logger.info("Adding external checker: " + external.getClass().getName() + " (" + external.getPrefix() + ") ");
+                        logger.info("Adding external checker: " + external.getClass().getName() + " (" + external.getPrefix() + ") with version " + externalLoadedClass.getVersion());
                     } else {
-                        logger.info("Modyfing external checker: " + external.getClass().getName() + " (" + external.getPrefix() + ") ");
+                        logger.info("Modyfing external checker: " + external.getClass().getName() + " (" + external.getPrefix() + ") to version " + externalLoadedClass.getVersion());
                     }
 
                     externalInterfaces.put(classes.getFilename(), externalLoadedClass);
@@ -139,10 +138,8 @@ public class MainExternal {
             }
             logger.info("Reading configuration file: " + configFile);
             properties.loadFromXML(new FileInputStream(configFile));
-        } catch (FileNotFoundException ex) {
-            logger.info("Failed to read configuration file!");
         } catch (IOException ex) {
-            logger.info("Failed to read configuration file:", ex);
+            logger.info("Failed to read configuration file!", ex);
         }
 
         /* displaying properties */

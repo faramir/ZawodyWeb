@@ -31,7 +31,7 @@ public class WWWListener extends Thread {
     private int soTimeout;
 
     public WWWListener(ServerSocket wwwSocket, Properties properties, ConcurrentLinkedQueue<Integer> submitsQueue) {
-        super();
+        super("WWW Listener Thread");
         this.wwwSocket = wwwSocket;
         this.submitsQueue = submitsQueue;
         addresses = properties.getProperty("WWW_ADDRESSES").split("[ ]+");

@@ -85,7 +85,7 @@ public class UnicoreLanguage implements CompilerInterface {
     }
 
     private void addDefaultPropertyValue(String propertyName, String value) {
-        if (this.properties.containsKey(propertyName) == false) {
+        if (this.properties.getProperty(propertyName) == null) {
             this.properties.setProperty(propertyName, value);
         }
     }
@@ -146,6 +146,7 @@ public class UnicoreLanguage implements CompilerInterface {
         }
 
         try {
+            logger.debug("Preparing jobfile: " + codeDir + jobFile);
             String jobfileText = new String(Files.readAllBytes(Paths.get(jobtemplateFile)), StandardCharsets.UTF_8);
 
             jobfileText = processScriptText(jobfileText, testProperties, input.getTimeLimit(), input.getMemoryLimit(), codeFile, inputFile, scriptFile);
@@ -170,6 +171,8 @@ public class UnicoreLanguage implements CompilerInterface {
         }
 
         try {
+            logger.debug("Preparing scriptfile: " + codeDir + scriptFile);
+
             String scriptfileText = new String(Files.readAllBytes(Paths.get(scripttemplateFile)), StandardCharsets.UTF_8);
 
             scriptfileText = processScriptText(scriptfileText, testProperties, input.getTimeLimit(), input.getMemoryLimit(), codeFile, inputFile, scriptFile);
@@ -215,6 +218,8 @@ public class UnicoreLanguage implements CompilerInterface {
         String outputText = null;
 
         try {
+            logger.debug("Executing command: " + Arrays.toString(command.toArray()));
+
             ProcessBuilder pb = new ProcessBuilder(command);
             pb.directory(Paths.get(codeDir).toFile());
             pb.redirectErrorStream(true);
@@ -249,12 +254,12 @@ public class UnicoreLanguage implements CompilerInterface {
         /* save result (EPR from job file) in Description/Notes */
         for (String line : outputText.split("[\\r\\n]+")) { //"\\r?\\n"
             line = line.trim();
+            logger.trace("> " + line);
             if (!line.endsWith(".job")) {
                 continue;
             }
 
             try (InputStream jobInputStream = new BufferedInputStream(new FileInputStream(line))) {
-
                 JsonReader jsonReader = Json.createReader(jobInputStream);
                 JsonObject json = jsonReader.readObject();
                 String eprPath = json.getString("epr");
@@ -268,8 +273,7 @@ public class UnicoreLanguage implements CompilerInterface {
                 return output;
             }
         }
-        logger.error("UCC does not return EPR:");
-        logger.trace(outputText);
+        logger.error("UCC does not return EPR");
 
         return output;
     }

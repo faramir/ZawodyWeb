@@ -9,14 +9,14 @@ package pl.umk.mat.zawodyweb.externalchecker;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 /**
- *
- * @author faramir
+ * @author Marek Nowicki /faramir/
  */
 public class BinaryClassLoader extends ClassLoader {
 
@@ -45,8 +45,8 @@ public class BinaryClassLoader extends ClassLoader {
 
         try {
             byte[] classBytes = entries.get(name);
-            logger.trace("loading: " + name);
             if (classBytes != null) {
+                logger.trace("Loading class: " + name);
                 c = defineClass(name, classBytes, 0, classBytes.length);
                 if (c != null) {
                     return c;
@@ -56,8 +56,12 @@ public class BinaryClassLoader extends ClassLoader {
             ex.printStackTrace(System.err);
         }
 
-        loadByParent(name);
+        c = loadByParent(name);
 
+        if (c != null) {
+            return c;
+        }
+        
         throw new ClassNotFoundException("Class not found: " + name);
     }
 
@@ -65,10 +69,14 @@ public class BinaryClassLoader extends ClassLoader {
     public Class<?> loadCompiledClass(String name, byte[] code) {
         Class<?> c = findLoadedClass(name);
         if (c != null) {
+            logger.trace("Class already loaded: " + name);
             return c;
         }
 
-        logger.trace("loading compiled: " + name);
+        logger.trace("Loading class: " + name);
+//        Arrays.stream(Thread.currentThread().getStackTrace()).forEach(
+//                st -> logger.trace(st.toString())
+//        );
 
         Class<?> result = this.defineClass(name, code, 0, code.length);
         this.resolveClass(result);
@@ -82,10 +90,7 @@ public class BinaryClassLoader extends ClassLoader {
      */
     public Class<?> loadClassFromBinaryJar(String name, byte[] jarBytes) {
         try {
-            JarInputStream jis = null;
-            try {
-                jis = new JarInputStream(new ByteArrayInputStream(jarBytes));
-
+            try (JarInputStream jis = new JarInputStream(new ByteArrayInputStream(jarBytes))) {
                 JarEntry entry;
 
                 while ((entry = jis.getNextJarEntry()) != null) {
@@ -110,16 +115,12 @@ public class BinaryClassLoader extends ClassLoader {
                 }
 
                 return loadCompiledClass(name, entries.get(name));
-            } finally {
-                if (jis != null) {
-                    jis.close();
-                }
             }
         } catch (IOException ex) {
             throw new ClassFormatError(ex.getLocalizedMessage());
         }
     }
-    
+
     public Class<?> loadBinary(String name, byte[] bytes) {
         try {
             return loadCompiledClass(name, bytes);

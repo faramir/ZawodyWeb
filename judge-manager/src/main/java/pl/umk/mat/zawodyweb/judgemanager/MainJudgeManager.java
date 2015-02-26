@@ -26,9 +26,7 @@ import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
 /**
- * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$
- * Date: $Date$
+ * @author Marek Nowicki /faramir/
  */
 public class MainJudgeManager {
 
@@ -240,7 +238,7 @@ public class MainJudgeManager {
         ServerSocket judgeSocket = null;
 
         public ExitHookThread(ServerSocket wwwSocket, ServerSocket judgeSocket) {
-            super();
+            super("ExitHook Thread");
             this.wwwSocket = wwwSocket;
             this.judgeSocket = judgeSocket;
         }

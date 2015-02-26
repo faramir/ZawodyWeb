@@ -12,8 +12,7 @@ import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
 import pl.umk.mat.zawodyweb.judge.commons.TestInput;
 
 /**
- *
- * @author faramir
+ * @author Marek Nowicki /faramir/
  */
 public interface ExternalInterface {
 

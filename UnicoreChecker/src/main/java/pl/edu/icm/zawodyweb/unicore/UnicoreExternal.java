@@ -8,10 +8,13 @@
 package pl.edu.icm.zawodyweb.unicore;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +23,14 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.externalchecker.ExternalInterface;
 import pl.umk.mat.zawodyweb.judge.commons.ReaderEater;
@@ -35,6 +45,13 @@ public class UnicoreExternal implements ExternalInterface {
     private static final Logger logger = Logger.getLogger(UnicoreExternal.class);
     private Properties properties;
 
+    /**
+     * <code>REFRESH_RATE</code>
+     *
+     * <code>EXTERNALS_DIR</code>
+     *
+     * <code>UNICORECC_BIN_PATH</code>
+     */
     @Override
     public void setProperties(Properties properties) {
         this.properties = properties;
@@ -42,7 +59,7 @@ public class UnicoreExternal implements ExternalInterface {
     }
 
     private void addDefaultPropertyValue(String propertyName, String value) {
-        if (this.properties.containsKey(propertyName) == false) {
+        if (this.properties.getProperty(propertyName) == null) {
             this.properties.setProperty(propertyName, value);
         }
     }
@@ -57,35 +74,7 @@ public class UnicoreExternal implements ExternalInterface {
         logger.info("Checking external: " + externalId);
         List<String> command = Arrays.asList(properties.getProperty("UNICORECC_BIN_PATH"), "job-status", "-v", externalId);
 
-        Thread threadReaderEater = null;
-        Process p = null;
-        String outputText = null;
-
-        try {
-            ProcessBuilder pb = new ProcessBuilder(command);
-            pb.redirectErrorStream(true);
-            p = pb.start();
-            BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            ReaderEater readerEater = new ReaderEater(inputStream);
-            threadReaderEater = new Thread(readerEater);
-            threadReaderEater.start();
-
-            p.waitFor();
-            threadReaderEater.join();
-
-            outputText = readerEater.getOutputText();
-        } catch (InterruptedException | IOException ex) {
-            logger.fatal("Error in executing UCC command", ex);
-            return null;
-        } finally {
-            if (p != null) {
-                p.destroy();
-            }
-            if (threadReaderEater != null) {
-                threadReaderEater.interrupt();
-            }
-        }
+        String outputText = executeCommand(command);
 
         if (outputText == null) {
             logger.fatal("Output from UCC is null");
@@ -102,6 +91,7 @@ public class UnicoreExternal implements ExternalInterface {
         // FAILED
         // SUCCESSFUL exit code: NNN
         for (String line : outputText.split("[\\r\\n]+")) {
+            line = line.trim();
             logger.trace("> " + line);
             if (line.startsWith(externalId) == true) {
                 String status = line.substring(externalId.length()).trim();
@@ -150,7 +140,7 @@ public class UnicoreExternal implements ExternalInterface {
         }
 
         logger.error("EPR not found: " + externalId);
-        
+
         return null;
     }
 
@@ -171,52 +161,29 @@ public class UnicoreExternal implements ExternalInterface {
 
         logger.info("Getting output files using: " + externalId + " and jobId: " + jobId);
 
-        Thread threadReaderEater = null;
-        Process p = null;
-        String outputText = null;
-
-        try {
-            ProcessBuilder pb = new ProcessBuilder(command);
-            pb.redirectErrorStream(true);
-            p = pb.start();
-            BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            ReaderEater readerEater = new ReaderEater(inputStream);
-            threadReaderEater = new Thread(readerEater);
-            threadReaderEater.start();
-
-            p.waitFor();
-            threadReaderEater.join();
-
-            outputText = readerEater.getOutputText();
-        } catch (InterruptedException | IOException ex) {
-            logger.fatal("Error in executing UCC command", ex);
-            return null;
-        } finally {
-            if (p != null) {
-                p.destroy();
-            }
-            if (threadReaderEater != null) {
-                threadReaderEater.interrupt();
-            }
-        }
+        String outputText = executeCommand(command);
 
         if (outputText == null) {
             logger.fatal("Output from UCC is null");
             return null;
         }
 
-        System.out.println("output: " + outputText);
+        logger.trace(outputText);
 
-        List<String> files = new ArrayList<>();
         try {
-            Files.list(Paths.get(jobId)).forEach(path -> files.add(path.toFile().toString()));
+            Path path;
+            if (properties.getProperty("EXTERNALS_DIR") != null) {
+                path = Paths.get(properties.getProperty("EXTERNALS_DIR"), jobId);
+            } else {
+                path = Paths.get(jobId);
+            }
+            return Files.list(path)
+                    .map(p -> p.toFile().toString())
+                    .collect(Collectors.toList());
         } catch (IOException ex) {
             logger.fatal("Unable to read from directory", ex);
             return null;
         }
-
-        return files;
     }
 
     private void updateOutputWhenFailed(TestOutput output, String externalId) {
@@ -235,6 +202,29 @@ public class UnicoreExternal implements ExternalInterface {
         if (outputText == null) {
             logger.info("No readable stderr file?");
             output.setStatus(ResultsStatusEnum.UNKNOWN.getCode());
+
+            List<String> command = Arrays.asList(properties.getProperty("UNICORECC_BIN_PATH"), "wsrf", "getproperties", externalId);
+
+            String xmlText = executeCommand(command);
+            String logText = extractLogFromXml(xmlText);
+
+            if (logText != null) {
+                String[] lines = logText.split("[\\r\\n]+");
+                int i = lines.length;
+                while (i > 0) {
+                    String line = lines[--i];
+                    logger.trace("> " + line);
+                    if (line.contains("Processing failed, aborting")) {
+                        break;
+                    }
+                }
+                String notes = "";
+                while (i < lines.length) {
+                    notes += lines[i++] + "\n";
+                }
+                output.setNotes(notes);
+            }
+
             return;
         }
 
@@ -242,6 +232,7 @@ public class UnicoreExternal implements ExternalInterface {
         int i = lines.length;
         while (i > 0) {
             String line = lines[--i];
+            logger.trace("> " + line);
             if (line.startsWith("slurmstepd:") == false) {
                 ++i;
                 break;
@@ -298,6 +289,7 @@ public class UnicoreExternal implements ExternalInterface {
         Pattern pattern = Pattern.compile("^### ELAPSED TIME IN NANOS: (?<nanos>[0-9]+) ###$");
         while (i > 0) {
             String line = lines[--i];
+            logger.trace("> " + line);
             Matcher matcher = pattern.matcher(line);
             if (matcher.matches()) {
                 String nanos = matcher.group("nanos");
@@ -323,7 +315,6 @@ public class UnicoreExternal implements ExternalInterface {
         } else {
             output.setStatus(ResultsStatusEnum.WA.getCode());
             output.setPoints(0);
-
         }
     }
 
@@ -350,6 +341,7 @@ public class UnicoreExternal implements ExternalInterface {
         Pattern pattern = Pattern.compile("^### ELAPSED TIME IN NANOS: (?<nanos>[0-9]+) ###$");
         while (i > 0) {
             String line = lines[--i];
+            logger.trace("> " + line);
             Matcher matcher = pattern.matcher(line);
             if (matcher.matches()) {
                 String nanos = matcher.group("nanos");
@@ -383,6 +375,7 @@ public class UnicoreExternal implements ExternalInterface {
         Pattern pattern = Pattern.compile("^### ERROR: COMPILER_ERROR: (?:[0-9]+) ###$");
         while (i > 0) {
             String line = lines[--i];
+            logger.trace("> " + line);
             if (stop < 0) {
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.matches()) {
@@ -425,6 +418,7 @@ public class UnicoreExternal implements ExternalInterface {
         Pattern pattern = Pattern.compile("^### ERROR: MODULE_ERROR: (?:[0-9]+) ###$");
         while (i > 0) {
             String line = lines[--i];
+            logger.trace("> " + line);
             if (stop < 0) {
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.matches()) {
@@ -441,5 +435,62 @@ public class UnicoreExternal implements ExternalInterface {
                 }
             }
         }
+    }
+
+    private String executeCommand(List<String> command) {
+        Thread threadReaderEater = null;
+        Process p = null;
+
+        try {
+            logger.debug("Executing command: " + Arrays.toString(command.toArray()));
+
+            ProcessBuilder pb = new ProcessBuilder(command);
+            if (properties.getProperty("EXTERNALS_DIR") != null) {
+                pb.directory(new File(properties.getProperty("EXTERNALS_DIR")));
+            }
+
+            pb.redirectErrorStream(true);
+            p = pb.start();
+            BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            ReaderEater readerEater = new ReaderEater(inputStream);
+            threadReaderEater = new Thread(readerEater);
+            threadReaderEater.start();
+
+            p.waitFor();
+            threadReaderEater.join();
+
+            return readerEater.getOutputText();
+        } catch (InterruptedException | IOException ex) {
+            logger.fatal("Error when executing command", ex);
+            return null;
+        } finally {
+            if (p != null) {
+                p.destroy();
+            }
+            if (threadReaderEater != null) {
+                threadReaderEater.interrupt();
+            }
+        }
+    }
+
+    private String extractLogFromXml(String xmlFileString) {
+        if (xmlFileString == null) {
+            return null;
+        }
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(new ByteArrayInputStream(xmlFileString.getBytes(StandardCharsets.UTF_8)));
+            doc.getDocumentElement().normalize();
+
+            NodeList nList = doc.getElementsByTagName("jms:Log");
+            if (nList.getLength() >= 1) {
+                return nList.item(0).getTextContent();
+            }
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
+            logger.error("Unable to parse XML string.", ex);
+        }
+        return null;
     }
 }

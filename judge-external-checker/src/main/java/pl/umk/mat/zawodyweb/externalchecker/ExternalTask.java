@@ -23,8 +23,7 @@ import pl.umk.mat.zawodyweb.database.pojo.Submits;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
 
 /**
- *
- * @author faramir
+ * @author Marek Nowicki /faramir/
  */
 public class ExternalTask implements Runnable {
 

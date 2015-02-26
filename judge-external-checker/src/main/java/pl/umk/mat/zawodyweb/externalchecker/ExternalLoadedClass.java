@@ -1,22 +1,20 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2015, Marek Nowicki
+ * All rights reserved.
+ *
+ * This file is distributable under the Simplified BSD license. See the terms
+ * of the Simplified BSD license in the documentation provided with this file.
  */
 package pl.umk.mat.zawodyweb.externalchecker;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pl.umk.mat.zawodyweb.database.pojo.Classes;
 
 /**
- *
- * @author faramir
+ * @author Marek Nowicki /faramir/
  */
 public class ExternalLoadedClass {
 
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ExternalLoadedClass.class);
-    private static final BinaryClassLoader classLoader = new BinaryClassLoader();
     private final String externalPrefix;
     private final Classes classes;
 
@@ -49,7 +47,7 @@ public class ExternalLoadedClass {
     }
 
     private ExternalInterface newExternal0() throws InstantiationException, IllegalAccessException {
-        Class<ExternalInterface> externalClass = (Class<ExternalInterface>) classLoader.loadCompiledClass(classes.getFilename(), classes.getCode());
+        Class<ExternalInterface> externalClass = (Class<ExternalInterface>) new BinaryClassLoader().loadCompiledClass(classes.getFilename(), classes.getCode());
         return externalClass.newInstance();
     }
 }
