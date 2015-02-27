@@ -143,6 +143,7 @@ img.nomargin {
     border-width: 1px;
     list-style: none;
     background: url(../images/bg_top1.png) repeat-x;
+    background-size: contain;
 }
 
 #top_menu ul li{
@@ -156,6 +157,7 @@ img.nomargin {
     color: #609588;
     text-decoration: none;
     background: url(../images/bg_top2.png) repeat-x;
+    background-size: contain;
 }
 
 #top_menu ul li.spacer {
@@ -267,6 +269,7 @@ img.nomargin {
     margin: 20px 0 0px 0px;
     padding: 5px 0 0 0;
     background: #e9f7df url(../images/seriaGora.png) repeat-x;
+    background-size: contain;
 }
 
 .profilform div.seriaDol {
@@ -276,12 +279,13 @@ img.nomargin {
     margin: 0px 0px 10px 0px;
     height: 30px;
     background: #e9f7df url(../images/seriaDol.png) repeat-x;
+    background-size: contain;
 }
 
 .profilform div.zadanko div.nazwa {
     font-size: 32px;
-    background: #ddf3cf;
     background: #ddf3cf url(../images/trescGora.png) repeat-x;
+    background-size: contain;
     margin: auto;
     text-align: center;
     padding-top: 10px;
@@ -411,6 +415,7 @@ img.nomargin {
     margin: 0px auto 10px auto;
     text-align: center;
     background: #ddf3cf url(../images/trescDol.png) repeat-x;;
+    background-size: contain;
     padding: 10px 0 10px 0;
 }
 
@@ -504,6 +509,7 @@ img.nomargin {
     width: 375px;
     padding: 0px 1px;
     background: #def4cf url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+    background-size: contain;
 }
 .profilform textarea {
     margin-right:20px;
@@ -524,6 +530,7 @@ img.nomargin {
     width: 379px;
     padding: 0px 1px;
     background: #def4cf url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+    background-size: contain;
 }
 
 .profilform input.widecheck {
@@ -536,6 +543,7 @@ img.nomargin {
     height: 14px;
     padding: 0;
     background: #def4cf url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+    background-size: contain;
 }
 
 .profilform input.check {
@@ -546,6 +554,7 @@ img.nomargin {
     clear:right;
     padding: 0px 0px;
     background: #def4cf url(../images/ui-bg_highlight-hard_75_d7c5f2_1x20.png) repeat-x;
+    background-size: contain;
 }
 
 .profilform .captcha {
@@ -576,11 +585,13 @@ img.nomargin {
 .bigHeight {
     height: 15em;
     background: #def4cf url(../images/ui-bg_1x150.png) repeat-x;
+    background-size: contain;
 }
 
 .smaHeight {
     height: 4em;
     background: #def4cf url(../images/ui-bg_highlight-hard_75_d7c5f2_1x50.png) repeat-x;
+    background-size: contain;
 }
 
 .profilform input.longerInput {
@@ -639,6 +650,7 @@ img.nomargin {
 .profilform table th {
     color: #000;
     background: #04ab99 url(../images/th_bg1.png) repeat-x;;
+    background-size: contain;
     text-align: center;
     font-weight: bold;
     padding: 1px;
@@ -680,6 +692,7 @@ img.nomargin {
 .paginator {
     text-align: center;
     background: url(../images/pagin.png) repeat-x;
+    background-size: contain;
     width: 305px;
     margin: 0px auto;
     padding: 0px;
@@ -736,6 +749,7 @@ img.nomargin {
 
 .paginator tr:hover {
     background: url(../images/pagin.png) repeat-x;
+    background-size: contain;
 }
 
 .pagingrid tr:hover {
@@ -1153,6 +1167,7 @@ tbody {
     font-weight: bold;
     font-size: 18px;
     background: #ddf3cf url(../images/trescGora.png) repeat-x;
+    background-size: contain;
     height: 1.7em;
     padding-top: 10px;
     border: solid #c7f1aa;

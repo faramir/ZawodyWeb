@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>Example of configuration file for Judge</comment>
+
+    <entry key="JUDGEMANAGER_HOST">127.0.0.1</entry>
+    <entry key="JUDGEMANAGER_PORT">8088</entry>
+    <entry key="JUDGEMANAGER_DELAY_CONNECT">10000</entry>
+
+    <entry key="COMPILED_FILENAME">a.out</entry>
+    <entry key="COMPILED_DIR">/path/to/judges/submits/NUMBER/compiled</entry>
+
+    <entry key="CODE_FILENAME">a</entry>
+    <entry key="CODE_DIR">/path/to/judges/submits/NUMBER/sources</entry>
+
+    <entry key="COMPILE_TIMEOUT">30000</entry>
+
+    <entry key="pcj.library">/path/to/judges/pcj/PCJ-4.0.1.SNAPSHOT-bin.jar</entry>
+    <entry key="pcj.main_class">/path/to/judges/pcj/MainClass.java</entry>
+
+    <entry key="UNICORECC_PROPERTIES"></entry>
+    <entry key="UNICORECC_BIN_PATH">/path/to/ucc/bin/ucc</entry>
+    <entry key="UNICORECC_LIB_PATH">/path/to/judges/unicore/libs</entry>
+    <entry key="UNICORECC_JOB_TEMPLATE">/path/to/judges/unicore/job_template.u</entry>
+    <entry key="UNICORECC_SCRIPT_TEMPLATE">/path/to/judges/unicore/script_template.sh</entry>
+    <entry key="UNICORECC_GRANT_ID">grantId</entry>
+    <entry key="UNICORECC_NODES_PROPERTY"></entry>
+    <entry key="UNICORECC_QUEUE">queueName</entry>
+    <entry key="UNICORECC_RESERVATION"></entry>
+    <entry key="UNICORECC_SITE">siteName</entry>
+
+</properties>

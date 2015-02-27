@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>Example of configuration file for JudgeManager</comment>
+
+    <entry key="WWW_LISTEN_ADDRESS">127.0.0.1</entry>
+    <entry key="WWW_PORT">8087</entry>
+    <entry key="WWW_POOL">8</entry>
+    <entry key="WWW_ADDRESSES">127.0.0.1</entry>
+    <entry key="WWW_TIMEOUT">10000</entry>
+
+    <entry key="JUDGE_ADDRESSES">127.0.0.1</entry>
+    <entry key="JUDGE_PORT">8088</entry>
+    <entry key="JUDGE_POOL">16</entry>
+    <entry key="JUDGE_LISTEN_ADDRESS"/>
+    <entry key="JUDGE_DELAY">2500</entry>
+
+    <entry key="DELAY_PROCESS">600000</entry>
+
+    <entry key="COMPILER_ERROR_TIME">2700000</entry>
+    <entry key="COMPILER_ERROR_COUNT">6</entry>
+</properties>
