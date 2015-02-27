@@ -132,7 +132,8 @@ public class JudgesListener extends Thread {
                                     Integer result = s.getState();
 
                                     if (result.equals(SubmitsStateEnum.DONE.getCode())
-                                            || result.equals(SubmitsStateEnum.MANUAL.getCode())) {
+                                            || result.equals(SubmitsStateEnum.MANUAL.getCode())
+                                            || result.equals(SubmitsStateEnum.EXTERNAL.getCode())) {
                                         logger.info("Checked submit(" + submitId + ") by Judge: " + judgeHost);
                                     } else {
                                         logger.error("Checked submit(" + submitId + ") with ERROR(" + result + ") by Judge: " + judgeHost);
