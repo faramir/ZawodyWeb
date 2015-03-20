@@ -28,7 +28,7 @@
                         <t:saveState id="saveid" value="#{requestBean.temporaryTestId}" />
                         <div>
                             <h:outputLabel for="ordering">${messages.test_number}:</h:outputLabel>
-                            <h:inputText id="ordering" value="#{requestBean.editedTest.testorder}" />
+                            <h:inputText id="ordering" maxlength="15" value="#{requestBean.editedTest.testorder}" />
                             <h:message for="ordering" errorClass="error" />
                             <br class="clear" />
                         </div>

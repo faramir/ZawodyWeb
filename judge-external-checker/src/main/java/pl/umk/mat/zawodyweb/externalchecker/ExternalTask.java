@@ -69,7 +69,12 @@ public class ExternalTask implements Runnable {
                 );
                 TestOutput testOutput = new TestOutput(result.getTests().getOutput());
 
-                String externalId = result.getNotes().substring(external.getPrefix().length() + 1);
+                String notes = result.getNotes();
+                if (notes == null) {
+                    notes = "";
+                }
+                
+                String externalId = notes.substring(external.getPrefix().length() + 1);
 
                 TestOutput output = external.check(externalId, testInput, testOutput/* TODO: load CheckerInterface?*/);
 
@@ -99,7 +104,7 @@ public class ExternalTask implements Runnable {
 
             transaction.commit();
         } catch (Throwable t) {
-            logger.fatal(t);
+            logger.fatal("Exception in ExternalTask", t);
             transaction.rollback();
         }
     }

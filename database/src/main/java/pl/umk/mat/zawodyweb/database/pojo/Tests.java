@@ -54,8 +54,7 @@ public class Tests implements Serializable, Comparable<Tests> {
         String t2 = o.getTestorder();
 
         if (t1 == null || t2 == null || t1.compareTo(t2) == 0) {
-            return this.getId().intValue() == o.getId().intValue() ? 0
-                    : this.getId() < o.getId() ? -1 : 1;
+            return this.getId() - o.getId();
         }
         Matcher m1 = pattern.matcher(t1);
         Matcher m2 = pattern.matcher(t2);
@@ -65,7 +64,7 @@ public class Tests implements Serializable, Comparable<Tests> {
             // matcher.group(1) fetches any non-digits captured by the
             // first parentheses in PATTERN.
             int nonDigitCompare = m1.group(1).compareTo(m2.group(1));
-            if (0 != nonDigitCompare) {
+            if (nonDigitCompare!=0) {
                 return nonDigitCompare;
             }
 
@@ -316,7 +315,7 @@ public class Tests implements Serializable, Comparable<Tests> {
     }
 
     @Basic
-    @Column(name = "testorder", length = 5)
+    @Column(name = "testorder", length = 15)
     public String getTestorder() {
         return testorder;
     }

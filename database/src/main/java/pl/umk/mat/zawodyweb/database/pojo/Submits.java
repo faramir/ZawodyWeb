@@ -10,6 +10,7 @@ package pl.umk.mat.zawodyweb.database.pojo;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.SortedSet;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -22,7 +23,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import org.hibernate.annotations.OrderBy;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 
 /**
  * <p>Pojo mapping TABLE public.submits</p>
@@ -77,7 +79,7 @@ public class Submits implements Serializable {
     /**
      * List of Results
      */
-    private List<Results> resultss = null;
+    private SortedSet<Results> resultss = null;
 
     /**
      * @return id
@@ -259,15 +261,16 @@ public class Submits implements Serializable {
      */
     // resultsPK
     @OneToMany(mappedBy = "submits", cascade = CascadeType.REMOVE)
-    @OrderBy(clause = "id asc")
-    public List<Results> getResultss() {
+//    @OrderBy(clause = "id asc")
+    @Sort(type = SortType.NATURAL)
+    public SortedSet<Results> getResultss() {
         return this.resultss;
     }
 
     /**
      * Set the list of Results
      */
-    public void setResultss(List<Results> resultss) {
+    public void setResultss(SortedSet<Results> resultss) {
         this.resultss = resultss;
     }
 }

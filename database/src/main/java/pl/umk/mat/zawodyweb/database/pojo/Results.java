@@ -19,16 +19,24 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * <p>Pojo mapping TABLE public.results</p>
+ * <p>
+ * Pojo mapping TABLE public.results</p>
  *
- * <p>Generated at Fri May 08 19:00:59 CEST 2009</p>
+ * <p>
+ * Generated at Fri May 08 19:00:59 CEST 2009</p>
+ *
  * @author Salto-db Generator v1.1 / EJB3
- * 
+ *
  */
 @Entity
 @Table(name = "results", schema = "public")
 @SuppressWarnings("serial")
-public class Results implements Serializable {
+public class Results implements Serializable, Comparable<Results> {
+
+    @Override
+    public int compareTo(Results o) {
+        return this.getTests().compareTo(o.getTests());
+    }
 
     /**
      * Attribute id.

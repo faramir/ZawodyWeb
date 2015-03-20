@@ -102,14 +102,10 @@ public class UnicoreLanguage implements CompilerInterface {
 
     private String processScriptText(String text, Properties testProperties, int timeLimit, int memoryLimit, String codeFile, String inputFile, String scriptFile) {
         for (String propertyName : testProperties.stringPropertyNames()) {
-            if (propertyName.startsWith("UNICORECC_") == false) {
-                continue;
-            }
             String value = testProperties.getProperty(propertyName);
             if (value == null || value.isEmpty()) {
                 continue;
             }
-            propertyName = propertyName.substring("UNICORECC_".length());
             text = text.replace("${" + propertyName + "}", value);
         }
         text = text.replace("${TIME_LIMIT}", (1 + timeLimit / 1000) + "");
@@ -150,6 +146,7 @@ public class UnicoreLanguage implements CompilerInterface {
             String jobfileText = new String(Files.readAllBytes(Paths.get(jobtemplateFile)), StandardCharsets.UTF_8);
 
             jobfileText = processScriptText(jobfileText, testProperties, input.getTimeLimit(), input.getMemoryLimit(), codeFile, inputFile, scriptFile);
+            logger.trace(jobfileText);
 
             try (BufferedWriter out = new BufferedWriter(new FileWriter(codeDir + jobFile))) {
                 out.write(jobfileText);
@@ -176,6 +173,7 @@ public class UnicoreLanguage implements CompilerInterface {
             String scriptfileText = new String(Files.readAllBytes(Paths.get(scripttemplateFile)), StandardCharsets.UTF_8);
 
             scriptfileText = processScriptText(scriptfileText, testProperties, input.getTimeLimit(), input.getMemoryLimit(), codeFile, inputFile, scriptFile);
+            logger.trace(scriptfileText);
 
             try (BufferedWriter out = new BufferedWriter(new FileWriter(codeDir + scriptFile))) {
                 out.write(scriptfileText);

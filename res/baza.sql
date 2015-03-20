@@ -117,7 +117,7 @@ CREATE TABLE TESTS (
         timeLimit           int,
         maxPoints           int,
         visibility          int,
-        testorder           varchar(5),
+        testorder           varchar(15),
         config              text
 );
 

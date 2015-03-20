@@ -399,6 +399,7 @@ public class LanguageUVA implements CompilerInterface {
             try {
                 id = Integer.parseInt(msg);
             } catch (NumberFormatException ex) {
+                logger.info("Unable to get UVa-ACM Submit id. Message: " + msg);
             }
 
             if (id == 0) {

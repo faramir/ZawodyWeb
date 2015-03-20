@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.SortedSet;
 import pl.umk.mat.zawodyweb.database.AliasesDAO;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
@@ -118,7 +119,7 @@ public class ELFunctions {
 
         if (s.getState() == null || !s.getState().equals(SubmitsStateEnum.DONE.getCode()) || s.getResultss() == null || s.getResultss().isEmpty()) {
         } else {
-            List<Results> results = s.getResultss();
+            SortedSet<Results> results = s.getResultss();
 
             for (Results r : results) {
                 if (testVisible(r.getTests())) {

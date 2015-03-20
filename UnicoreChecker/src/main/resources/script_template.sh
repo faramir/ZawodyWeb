@@ -32,7 +32,7 @@ fi
 
 echo -e "\n### START EXECUTION ###" 1>&2
 timer=`date +%s%N`
-mpiexec --hostfile nodes.uniq bash -c 'java -cp .:PCJ-4.0.1.SNAPSHOT-bin.jar MainClass ${CODE_FILE} ${CODE_FILE} nodes.lst < ${INPUT_FILE}'
+mpiexec --hostfile nodes.uniq bash -c 'java -cp .:PCJ-4.0.1.SNAPSHOT-bin.jar ${UNICORECC_JVMARGS} MainClass ${CODE_FILE} ${CODE_FILE} nodes.lst < ${INPUT_FILE}'
 RUNTIME_ERROR=$?
 timer=$(( `date +%s%N` - $timer ))
 echo -e "\n### ELAPSED TIME IN NANOS: $timer ###" 1>&2
