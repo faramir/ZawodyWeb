@@ -102,6 +102,8 @@ public class MainExternal {
                     continue;
                 }
                 Properties submissionProperties = new Properties(properties);
+                submissionProperties.putAll(submit.getLanguages().loadProperties());
+                submissionProperties.putAll(submit.getProblems().loadProperties());
                 external.setProperties(submissionProperties);
 
                 executor.submit(new ExternalTask(submit.getId(), external));

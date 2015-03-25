@@ -122,7 +122,7 @@ public class Contests implements Serializable {
 
     /**
      *
-     * @param config
+     * @param pass
      */
     public void setPass(String pass) {
         this.pass = pass;

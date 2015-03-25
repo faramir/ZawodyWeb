@@ -64,7 +64,7 @@ public class Tests implements Serializable, Comparable<Tests> {
             // matcher.group(1) fetches any non-digits captured by the
             // first parentheses in PATTERN.
             int nonDigitCompare = m1.group(1).compareTo(m2.group(1));
-            if (nonDigitCompare!=0) {
+            if (nonDigitCompare != 0) {
                 return nonDigitCompare;
             }
 
@@ -232,8 +232,7 @@ public class Tests implements Serializable, Comparable<Tests> {
     }
 
     /**
-     * @deprecated only for Hibernate. Instead, use
-     * loadProperties()
+     * @deprecated only for Hibernate. Instead, use loadProperties()
      * @return config
      */
     @Basic(fetch = FetchType.LAZY)
@@ -244,21 +243,19 @@ public class Tests implements Serializable, Comparable<Tests> {
 
     public Properties loadProperties() {
         Properties result = new Properties();
-        if (config == null) {
-            return new Properties();
-        }
-        try {
-            result.load(new StringReader(config));
-        } catch (IOException ex) {
-            //This shouldn't happend. Not ever!
-            Logger.getLogger(Tests.class.getName()).log(Level.SEVERE, null, ex);
+        if (config != null) {
+            try {
+                result.load(new StringReader(config));
+            } catch (IOException ex) {
+                //This shouldn't happend. Not ever!
+                Logger.getLogger(Tests.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return result;
     }
 
     /**
-     * @deprecated only for Hibernate. Instead, use
-     * saveProperities()
+     * @deprecated only for Hibernate. Instead, use saveProperities()
      * @param config new value for visibility
      */
     public void setConfig(String config) {
@@ -267,13 +264,13 @@ public class Tests implements Serializable, Comparable<Tests> {
 
     public void saveProperties(Properties properties) {
         if (properties == null) {
+            this.config = null;
             return;
         }
         try {
             StringWriter sw = new StringWriter();
             properties.store(sw, new String());
             this.config = sw.toString();
-
         } catch (IOException ex) {
             //This also shouldn't ever happend.
             Logger.getLogger(Tests.class.getName()).log(Level.SEVERE, null, ex);

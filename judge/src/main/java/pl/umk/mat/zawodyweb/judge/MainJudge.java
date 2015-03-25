@@ -46,14 +46,9 @@ import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
 public class MainJudge {
 
     private static final org.apache.log4j.Logger logger = Logger.getLogger(MainJudge.class);
-    private static final List<ClassInfo> classes = new ArrayList<ClassInfo>();
+    private static final List<ClassInfo> classes = new ArrayList<>();
     private static final Properties properties = new Properties();
     private static long delayConnect;
-
-    private static boolean isUpperCased(String str) {
-        // return str.matches("^[^a-z]*$");
-        return str.toUpperCase().equals(str);
-    }
 
     private static void connectToJudgeManager() throws IOException, InstantiationException, IllegalAccessException {
         /*
@@ -144,18 +139,9 @@ public class MainJudge {
                     }
                     submissionProperties.setProperty("CODEFILE_EXTENSION", submit.getLanguages().getExtension());
 
+                    submissionProperties.putAll(submit.getLanguages().loadProperties());
                     submissionProperties.putAll(submit.getProblems().loadProperties());
 
-//                    for (Entry<Object, Object> property : submit.getProblems().loadProperties().entrySet()) {
-//                        if (property.getKey() instanceof String && property.getValue() instanceof String) {
-//                            String key = (String) property.getKey();
-//                            String value = (String) property.getValue();
-//
-//                            if (submissionProperties.containsKey(key) == false /*|| isUpperCased(key) == false*/) {
-//                                submissionProperties.setProperty(key, value);
-//                            }
-//                        }
-//                    }
                     compiler.setProperties(submissionProperties);
 
                     /*

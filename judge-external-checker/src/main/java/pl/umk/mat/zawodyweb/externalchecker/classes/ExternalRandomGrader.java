@@ -22,6 +22,11 @@ public class ExternalRandomGrader implements ExternalInterface {
     final private static Random random = new Random();
 
     @Override
+    public Properties getProperties() {
+        return null;
+    }
+
+    @Override
     public void setProperties(Properties properties) {
     }
 

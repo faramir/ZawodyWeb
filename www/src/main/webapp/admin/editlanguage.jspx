@@ -47,6 +47,12 @@
                             <br class="clear" />
                         </div>
                         <div>
+                            <h:outputLabel for="config" >${messages.language_config}:</h:outputLabel>
+                            <h:inputTextarea id="config" styleClass="bigHeight" required="false" value="#{requestBean.editedLanguage.config}"/>
+                            <h:message for="config" errorClass="error" />
+                            <br class="clear" />
+                        </div>
+                        <div>
                             <a4j:commandButton id="save" reRender="formEditLanguage" styleClass="submit" type="submit" value="#{messages.save}" action="#{requestBean.saveLanguage}" />
                             <h:message for="save" errorClass="error" />
                             <br class="clear" />

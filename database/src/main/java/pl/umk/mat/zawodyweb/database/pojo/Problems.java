@@ -150,8 +150,7 @@ public class Problems implements Serializable {
     }
 
     /**
-     * @deprecated only for Hibernate. Instead, use
-     * loadProperties()
+     * @deprecated only for Hibernate. Instead, use loadProperties()
      * @return text
      */
     @Basic(fetch = FetchType.LAZY)
@@ -161,8 +160,7 @@ public class Problems implements Serializable {
     }
 
     /**
-     * @deprecated only for Hibernate. Instead, use
-     * saveProperities()
+     * @deprecated only for Hibernate. Instead, use saveProperities()
      * @param config
      */
     public void setConfig(String config) {
@@ -171,14 +169,13 @@ public class Problems implements Serializable {
 
     public Properties loadProperties() {
         Properties result = new Properties();
-        if (config == null) {
-            return new Properties();
-        }
-        try {
-            result.load(new StringReader(config));
-        } catch (IOException ex) {
-            //This shouldn't happend. Not ever!
-            Logger.getLogger(Problems.class.getName()).log(Level.SEVERE, null, ex);
+        if (config != null) {
+            try {
+                result.load(new StringReader(config));
+            } catch (IOException ex) {
+                //This shouldn't happend. Not ever!
+                Logger.getLogger(Problems.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return result;
     }
@@ -188,13 +185,13 @@ public class Problems implements Serializable {
      */
     public void saveProperties(Properties properties) {
         if (properties == null) {
+            this.config = null;
             return;
         }
         try {
             StringWriter sw = new StringWriter();
             properties.store(sw, new String());
             this.config = sw.toString();
-
         } catch (IOException ex) {
             //This also shouldn't ever happend.
             Logger.getLogger(Problems.class.getName()).log(Level.SEVERE, null, ex);

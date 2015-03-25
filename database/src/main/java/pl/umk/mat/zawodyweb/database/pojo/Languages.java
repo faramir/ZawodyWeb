@@ -7,11 +7,18 @@
  */
 package pl.umk.mat.zawodyweb.database.pojo;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,9 +28,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * <p>Pojo mapping TABLE public.languages</p>
+ * <p>
+ * Pojo mapping TABLE public.languages</p>
  *
- * <p>Generated at Fri May 08 19:00:59 CEST 2009</p>
+ * <p>
+ * Generated at Fri May 08 19:00:59 CEST 2009</p>
  *
  * @author Salto-db Generator v1.1 / EJB3
  *
@@ -45,6 +54,10 @@ public class Languages implements Serializable {
      * Attribute extension.
      */
     private String extension;
+    /**
+     * Config extension.
+     */
+    private String config;
     /**
      * Attribute classes
      */
@@ -106,6 +119,59 @@ public class Languages implements Serializable {
      */
     public void setExtension(String extension) {
         this.extension = extension;
+    }
+
+    /**
+     * @deprecated only for Hibernate. Instead, use loadProperties()
+     * @return text
+     */
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "config", length = 2147483647)
+    public String getConfig() {
+        return this.config;
+    }
+
+    /**
+     * @deprecated only for Hibernate. Instead, use saveProperities()
+     * @param config
+     */
+    public void setConfig(String config) {
+        this.config = config;
+    }
+
+    public Properties loadProperties() {
+        Properties result = new Properties();
+        if (config != null) {
+            try {
+                result.load(new StringReader(config));
+            } catch (IOException ex) {
+                //This shouldn't happend. Not ever!
+                Logger.getLogger(Languages.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param text new value for text
+     */
+    public void saveProperties(Properties properties) {
+        if (properties == null) {
+            this.config = null;
+            return;
+        }
+        try {
+            StringWriter sw = new StringWriter();
+            properties.store(sw, new String());
+            this.config = sw.toString();
+        } catch (IOException ex) {
+            //This also shouldn't ever happend.
+            Logger.getLogger(Languages.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void saveProperties(String properties) {
+        this.config = properties;
     }
 
     /**

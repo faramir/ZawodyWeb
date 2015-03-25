@@ -124,7 +124,8 @@ CREATE TABLE TESTS (
 CREATE TABLE LANGUAGES ( 
         id                  serial primary key,
         name                varchar(40) unique,
-        extension           varchar(8)
+        extension           varchar(8),
+        config              text
 );
 
 CREATE TABLE CLASSES ( 

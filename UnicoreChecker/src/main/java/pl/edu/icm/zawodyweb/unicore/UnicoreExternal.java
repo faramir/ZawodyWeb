@@ -55,7 +55,13 @@ public class UnicoreExternal implements ExternalInterface {
     @Override
     public void setProperties(Properties properties) {
         this.properties = properties;
+        
         addDefaultPropertyValue("UNICORECC_BIN_PATH", "C:\\UNICORE\\ucc-distribution-7.1.0\\bin\\ucc.bat");
+    }
+
+    @Override
+    public Properties getProperties() {
+        return properties;
     }
 
     private void addDefaultPropertyValue(String propertyName, String value) {

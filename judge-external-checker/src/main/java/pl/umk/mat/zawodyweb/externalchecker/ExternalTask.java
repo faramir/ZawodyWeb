@@ -58,14 +58,11 @@ public class ExternalTask implements Runnable {
                 }
 
                 Tests test = result.getTests();
-                Properties properties = new Properties(submit.getProblems().loadProperties());
-                properties.putAll(test.loadProperties());
-
                 TestInput testInput = new TestInput(test.getInput(),
                         test.getMaxpoints(),
                         test.getTimelimit(),
                         submit.getProblems().getMemlimit(),
-                        properties
+                        test.loadProperties()
                 );
                 TestOutput testOutput = new TestOutput(result.getTests().getOutput());
 

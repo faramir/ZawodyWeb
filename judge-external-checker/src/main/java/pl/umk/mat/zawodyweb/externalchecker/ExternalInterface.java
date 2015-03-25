@@ -16,6 +16,7 @@ import pl.umk.mat.zawodyweb.judge.commons.TestInput;
  */
 public interface ExternalInterface {
 
+    public Properties getProperties();
     public void setProperties(Properties properties);
 
     /**
