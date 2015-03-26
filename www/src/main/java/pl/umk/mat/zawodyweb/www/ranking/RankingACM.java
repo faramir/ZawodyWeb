@@ -66,13 +66,13 @@ public class RankingACM implements RankingInterface {
         int id_user;
         int points;
         long totalTime;
-        ArrayList<SolutionACM> solutions;
+        List<SolutionACM> solutions;
 
         public UserACM(int id_user, Users users) {
             this.id_user = id_user;
             this.points = 0;
             this.totalTime = 0;
-            this.solutions = new ArrayList<SolutionACM>();
+            this.solutions = new ArrayList<>();
 
             this.login = users.getLogin();
             this.firstname = users.getFirstname();
@@ -161,14 +161,12 @@ public class RankingACM implements RankingInterface {
         Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
         Timestamp checkTimestamp;
-        String checkTimestampStr;
         Timestamp visibleTimestamp;
-        String visibleTimestampStr;
 
         UsersDAO usersDAO = DAOFactory.DEFAULT.buildUsersDAO();
         SeriesDAO seriesDAO = DAOFactory.DEFAULT.buildSeriesDAO();
         ProblemsDAO problemsDAO = DAOFactory.DEFAULT.buildProblemsDAO();
-        HashMap<Integer, UserACM> mapUserACM = new HashMap<Integer, UserACM>();
+        Map<Integer, UserACM> mapUserACM = new HashMap<>();
 
         boolean allTests;
         boolean frozenRanking = false;
@@ -201,13 +199,11 @@ public class RankingACM implements RankingInterface {
                 }
             }
 
-            checkTimestampStr = checkTimestamp.toString();
             if (checkTimestamp.before(series.getStartdate())) {
                 visibleTimestamp = new Timestamp(0);
             } else {
                 visibleTimestamp = new Timestamp(series.getStartdate().getTime());
             }
-            visibleTimestampStr = visibleTimestamp.toString();
 
             if (series.getUnfreezedate() != null) {
                 if (checkDate.after(series.getUnfreezedate())) {
@@ -222,26 +218,26 @@ public class RankingACM implements RankingInterface {
 
                 // select sum(maxpoints) from tests where problemsid='7' and visibility=1
                 Number maxPoints;
-                Number noTests;
+                Number testCount;
                 if (allTests) {
                     Object[] o = (Object[]) hibernateSession.createCriteria(Tests.class).setProjection(
                             Projections.projectionList().add(Projections.sum("maxpoints")).add(Projections.rowCount())).add(Restrictions.eq("problems.id", problems.getId())).uniqueResult();
                     maxPoints = (Number) o[0];
-                    noTests = (Number) o[1];
+                    testCount = (Number) o[1];
                 } else {
                     Object[] o = (Object[]) hibernateSession.createCriteria(Tests.class).setProjection(
                             Projections.projectionList().add(Projections.sum("maxpoints")).add(Projections.rowCount())).add(Restrictions.and(Restrictions.eq("problems.id", problems.getId()), Restrictions.eq("visibility", 1))).uniqueResult();
                     maxPoints = (Number) o[0];
-                    noTests = (Number) o[1];
+                    testCount = (Number) o[1];
                 }
                 if (maxPoints == null) {
                     maxPoints = 0; // To nie powinno się nigdy zdarzyć ;).. chyba, że nie ma testu przy zadaniu?
                 }
-                if (noTests == null) {
-                    noTests = 0; // To nie powinno się zdarzyć nigdy.
+                if (testCount == null) {
+                    testCount = 0; // To nie powinno się zdarzyć nigdy.
                 }
 
-                Query query = null;
+                Query query;
                 if (allTests == true) {
                     query = hibernateSession.createSQLQuery(""
                             + "select usersid, min(sdate) sdate " // zapytanie zewnętrzne znajduję minimalną datę wysłania poprawnego rozwiązania dla każdego usera
@@ -249,20 +245,27 @@ public class RankingACM implements RankingInterface {
                             + "where id in ("
                             + "    select submits.id " // zapytanie wewnętrzne znajduje wszystkie id, które zdobyły maksa punktów
                             + "    from submits,results,tests "
-                            + "    where submits.problemsid='" + problems.getId() + "' "
+                            + "    where submits.problemsid = :problemsId "
                             + "      and submits.id=results.submitsid "
                             + "	     and tests.id = results.testsid "
-                            + "      and results.submitresult='" + ResultsStatusEnum.ACC + "' "
-                            + "      and submits.result='" + SubmitsStateEnum.DONE.getCode() + "' "
-                            + "      and sdate <= '" + checkTimestampStr + "' "
-                            + "      and sdate >= '" + visibleTimestampStr + "' "
+                            + "      and results.status = :statusAcc "
+                            + "      and submits.state = :stateDone "
+                            + "      and sdate <= :currentTimestamp "
+                            + "      and sdate >= :visibleTimestamp "
                             + "      and visibleInRanking=true"
                             //+ "      and tests.visibility=1 "
                             + "    group by submits.id,usersid,sdate "
-                            + "    having sum(points)='" + maxPoints + "' "
-                            + "      and count(points)='" + noTests + "' "
+                            + "    having sum(points) = :maxPoints "
+                            + "      and count(points) = :testCount "
                             + "  ) "
-                            + "group by usersid");
+                            + "group by usersid")
+                            .setInteger("problemsId", problems.getId())
+                            .setInteger("statusAcc", ResultsStatusEnum.ACC.getCode())
+                            .setInteger("stateDone", SubmitsStateEnum.DONE.getCode())
+                            .setInteger("maxPoints", maxPoints.intValue())
+                            .setInteger("testCount", testCount.intValue())
+                            .setTimestamp("currentTimestamp", checkTimestamp)
+                            .setTimestamp("visibleTimestamp", visibleTimestamp);
                 } else {
                     query = hibernateSession.createSQLQuery(""
                             + "select usersid, min(sdate) sdate "
@@ -270,20 +273,27 @@ public class RankingACM implements RankingInterface {
                             + "where id in ("
                             + "    select submits.id "
                             + "    from submits,results,tests "
-                            + "    where submits.problemsid='" + problems.getId() + "' "
+                            + "    where submits.problemsid = :problemsId "
                             + "      and submits.id=results.submitsid "
                             + "	     and tests.id = results.testsid "
-                            + "      and results.submitresult='" + ResultsStatusEnum.ACC + "' "
-                            + "      and submits.result='" + SubmitsStateEnum.DONE.getCode() + "' "
-                            + "      and sdate <= '" + checkTimestampStr + "' "
-                            + "      and sdate >= '" + visibleTimestampStr + "' "
+                            + "      and results.status = :statusAcc "
+                            + "      and submits.state = :stateDone "
+                            + "      and sdate <= :currentTimestamp "
+                            + "      and sdate >= :visibleTimestamp "
                             + "      and visibleInRanking=true"
                             + "	     and tests.visibility=1 " // FIXME: should be ok
                             + "    group by submits.id,usersid,sdate "
-                            + "    having sum(points)='" + maxPoints + "' "
-                            + "      and count(points)='" + noTests + "' "
+                            + "    having sum(points) = :maxPoints "
+                            + "      and count(points) = :testCount "
                             + "  ) "
-                            + "group by usersid");
+                            + "group by usersid")
+                            .setInteger("problemsId", problems.getId())
+                            .setInteger("statusAcc", ResultsStatusEnum.ACC.getCode())
+                            .setInteger("stateDone", SubmitsStateEnum.DONE.getCode())
+                            .setInteger("maxPoints", maxPoints.intValue())
+                            .setInteger("testCount", testCount.intValue())
+                            .setTimestamp("currentTimestamp", checkTimestamp)
+                            .setTimestamp("visibleTimestamp", visibleTimestamp);
                 }
 
                 for (Object list : query.list()) { // tu jest zwrócona lista "zaakceptowanych" w danym momencie rozwiązań zadania
@@ -306,12 +316,12 @@ public class RankingACM implements RankingInterface {
 
                     user.add(maxPoints.intValue(),
                             new SolutionACM(problems.getAbbrev(),
-                            ((Timestamp) o[1]).getTime(),
-                            (maxPoints.equals(0) ? 0 : ((Timestamp) o[1]).getTime() - series.getStartdate().getTime()) / 1000,
-                            series.getPenaltytime() * bombs.intValue(),
-                            bombs.intValue(),
-                            problems.getName(),
-                            frozenSeria));
+                                    ((Timestamp) o[1]).getTime(),
+                                    (maxPoints.equals(0) ? 0 : ((Timestamp) o[1]).getTime() - series.getStartdate().getTime()) / 1000,
+                                    series.getPenaltytime() * bombs.intValue(),
+                                    bombs.intValue(),
+                                    problems.getName(),
+                                    frozenSeria));
                 }
             }
 
@@ -320,14 +330,14 @@ public class RankingACM implements RankingInterface {
         /*
          * Tworzenie rankingu z danych
          */
-        ArrayList<UserACM> cre = new ArrayList<UserACM>();
+        List<UserACM> cre = new ArrayList<>();
         cre.addAll(mapUserACM.values());
         Collections.sort(cre);
 
         /*
          * nazwy kolumn
          */
-        ArrayList<String> columnsCaptions = new ArrayList<String>();
+        List<String> columnsCaptions = new ArrayList<>();
         columnsCaptions.add(messages.getString("points"));
         columnsCaptions.add(messages.getString("time"));
         columnsCaptions.add(messages.getString("solutions"));
@@ -335,7 +345,7 @@ public class RankingACM implements RankingInterface {
         /*
          * nazwy klas css-owych dla kolumn
          */
-        ArrayList<String> columnsCSS = new ArrayList<String>();
+        List<String> columnsCSS = new ArrayList<>();
         columnsCSS.add("small");    // points
         columnsCSS.add("nowrap small");    // time
         columnsCSS.add("big left");      // solutions
@@ -343,7 +353,7 @@ public class RankingACM implements RankingInterface {
         /*
          * tabelka z rankingiem
          */
-        ArrayList<RankingEntry> vectorRankingEntry = new ArrayList<RankingEntry>();
+        List<RankingEntry> vectorRankingEntry = new ArrayList<>();
         int place = 0;
         long totalTime = -1;
         int points = Integer.MAX_VALUE;
@@ -353,7 +363,7 @@ public class RankingACM implements RankingInterface {
                 points = user.points;
                 totalTime = user.totalTime;
             }
-            ArrayList<String> v = new ArrayList<String>();
+            List<String> v = new ArrayList<>();
             v.add(Integer.toString(user.points));
             v.add(parseTime(user.totalTime));
             v.add(user.getSolutionsForRanking());
@@ -379,14 +389,12 @@ public class RankingACM implements RankingInterface {
         Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
         Timestamp checkTimestamp;
-        String checkTimestampStr;
         Timestamp visibleTimestamp;
-        String visibleTimestampStr;
 
         SeriesDAO seriesDAO = DAOFactory.DEFAULT.buildSeriesDAO();
         ProblemsDAO problemsDAO = DAOFactory.DEFAULT.buildProblemsDAO();
 
-        List<Integer> submits = new ArrayList<Integer>();
+        List<Integer> submits = new ArrayList<>();
 
         boolean allTests;
 
@@ -412,13 +420,11 @@ public class RankingACM implements RankingInterface {
                 }
             }
 
-            checkTimestampStr = checkTimestamp.toString();
             if (checkTimestamp.before(series.getStartdate())) {
                 visibleTimestamp = new Timestamp(0);
             } else {
                 visibleTimestamp = new Timestamp(series.getStartdate().getTime());
             }
-            visibleTimestampStr = visibleTimestamp.toString();
 
             if (series.getUnfreezedate() != null) {
                 if (checkDate.after(series.getUnfreezedate())) {
@@ -433,26 +439,26 @@ public class RankingACM implements RankingInterface {
 
                 // select sum(maxpoints) from tests where problemsid='7' and visibility=1
                 Number maxPoints;
-                Number noTests;
+                Number testCount;
                 if (allTests) {
                     Object[] o = (Object[]) hibernateSession.createCriteria(Tests.class).setProjection(
                             Projections.projectionList().add(Projections.sum("maxpoints")).add(Projections.rowCount())).add(Restrictions.eq("problems.id", problems.getId())).uniqueResult();
                     maxPoints = (Number) o[0];
-                    noTests = (Number) o[1];
+                    testCount = (Number) o[1];
                 } else {
                     Object[] o = (Object[]) hibernateSession.createCriteria(Tests.class).setProjection(
                             Projections.projectionList().add(Projections.sum("maxpoints")).add(Projections.rowCount())).add(Restrictions.and(Restrictions.eq("problems.id", problems.getId()), Restrictions.eq("visibility", 1))).uniqueResult();
                     maxPoints = (Number) o[0];
-                    noTests = (Number) o[1];
+                    testCount = (Number) o[1];
                 }
                 if (maxPoints == null) {
                     maxPoints = 0; // To nie powinno się nigdy zdarzyć ;).. chyba, że nie ma testu przy zadaniu?
                 }
-                if (noTests == null) {
-                    noTests = 0; // To nie powinno się zdarzyć nigdy.
+                if (testCount == null) {
+                    testCount = 0; // To nie powinno się zdarzyć nigdy.
                 }
 
-                Query query = null;
+                Query query;
                 if (allTests == true) {
                     query = hibernateSession.createSQLQuery(""
                             + "select min(id) sid " // zapytanie zewnętrzne znajduję minimalną datę wysłania poprawnego rozwiązania dla każdego usera
@@ -460,20 +466,27 @@ public class RankingACM implements RankingInterface {
                             + "where id in ("
                             + "    select submits.id " // zapytanie wewnętrzne znajduje wszystkie id, które zdobyły maksa punktów
                             + "    from submits,results,tests "
-                            + "    where submits.problemsid='" + problems.getId() + "' "
-                            + "      and submits.id=results.submitsid "
+                            + "    where submits.problemsid = :problemsId "
+                            + "      and submits.id = results.submitsid "
                             + "	     and tests.id = results.testsid "
-                            + "      and results.submitresult='" + ResultsStatusEnum.ACC + "' "
-                            + "      and submits.result='" + SubmitsStateEnum.DONE.getCode() + "' "
-                            + "      and sdate <= '" + checkTimestampStr + "' "
-                            + "      and sdate >= '" + visibleTimestampStr + "' "
+                            + "      and results.status = :statusAcc "
+                            + "      and submits.state = :stateDone "
+                            + "      and sdate <= :currentTimestamp "
+                            + "      and sdate >= :visibleTimestamp "
                             + "      and visibleInRanking=true"
                             //+ "      and tests.visibility=1 "
                             + "    group by submits.id,usersid,sdate "
-                            + "    having sum(points)='" + maxPoints + "' "
-                            + "      and count(points)='" + noTests + "' "
+                            + "    having sum(points) = :maxPoints "
+                            + "      and count(points) = :testsCount "
                             + "  ) "
-                            + "group by usersid");
+                            + "group by usersid")
+                            .setInteger("problemsId", problems.getId())
+                            .setInteger("statusAcc", ResultsStatusEnum.ACC.getCode())
+                            .setInteger("stateDone", SubmitsStateEnum.DONE.getCode())
+                            .setInteger("maxPoints", maxPoints.intValue())
+                            .setInteger("testCount", testCount.intValue())
+                            .setTimestamp("currentTimestamp", checkTimestamp)
+                            .setTimestamp("visibleTimestamp", visibleTimestamp);
                 } else {
                     query = hibernateSession.createSQLQuery(""
                             + "select min(id) sid "
@@ -481,20 +494,27 @@ public class RankingACM implements RankingInterface {
                             + "where id in ("
                             + "    select submits.id "
                             + "    from submits,results,tests "
-                            + "    where submits.problemsid='" + problems.getId() + "' "
-                            + "      and submits.id=results.submitsid "
+                            + "    where submits.problemsid = :problemsId "
+                            + "      and submits.id = results.submitsid "
                             + "	     and tests.id = results.testsid "
-                            + "      and results.submitresult='" + ResultsStatusEnum.ACC + "' "
-                            + "      and submits.result='" + SubmitsStateEnum.DONE.getCode() + "' "
-                            + "      and sdate <= '" + checkTimestampStr + "' "
-                            + "      and sdate >= '" + visibleTimestampStr + "' "
+                            + "      and results.status = :statusAcc "
+                            + "      and submits.state = :stateDone "
+                            + "      and sdate <= :currentTimestamp "
+                            + "      and sdate >= :visibleTimestamp "
                             + "      and visibleInRanking=true"
                             + "	     and tests.visibility=1 " // FIXME: should be ok
                             + "    group by submits.id,usersid,sdate "
-                            + "    having sum(points)='" + maxPoints + "' "
-                            + "      and count(points)='" + noTests + "' "
+                            + "    having sum(points) = :maxPoints "
+                            + "      and count(points) = :testCount "
                             + "  ) "
-                            + "group by usersid");
+                            + "group by usersid")
+                            .setInteger("problemsId", problems.getId())
+                            .setInteger("statusAcc", ResultsStatusEnum.ACC.getCode())
+                            .setInteger("stateDone", SubmitsStateEnum.DONE.getCode())
+                            .setInteger("maxPoints", maxPoints.intValue())
+                            .setInteger("testCount", testCount.intValue())
+                            .setTimestamp("currentTimestamp", checkTimestamp)
+                            .setTimestamp("visibleTimestamp", visibleTimestamp);
                 }
 
                 for (Object id : query.list()) { // tu jest zwrócona lista "zaakceptowanych" w danym momencie rozwiązań zadania

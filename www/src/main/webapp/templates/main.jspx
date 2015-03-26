@@ -117,7 +117,7 @@
                 <ui:insert name="pageContent" />
             </div>
             <div id="copy">
-                <h:outputLink value="https://github.com/faramir/ZawodyWeb"><h:outputText value="ZawodyWeb Team - &amp;copy;2009-2015" escape="false" /></h:outputLink>
+                <h:outputLink value="https://github.com/faramir/ZawodyWeb"><h:outputText value="&amp;copy; 2009-2015 &amp;bull; ZawodyWeb Team" escape="false" /></h:outputLink>
             </div>
         </div>
     </body>

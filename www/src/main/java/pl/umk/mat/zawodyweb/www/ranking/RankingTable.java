@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2014, ZawodyWeb Team
+ * Copyright (c) 2009-2015, ZawodyWeb Team
  * All rights reserved.
  *
  * This file is distributable under the Simplified BSD license. See the terms
@@ -7,19 +7,18 @@
  */
 package pl.umk.mat.zawodyweb.www.ranking;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$
- * Date: $Date$
+ * @version $Rev$ Date: $Date$
  */
 public class RankingTable {
 
-    private ArrayList<String> columnsCaptions;
-    private ArrayList<String> columnsCSS;
-    private ArrayList<RankingEntry> table;
+    private List<String> columnsCaptions;
+    private List<String> columnsCSS;
+    private List<RankingEntry> table;
     private Boolean frozenRanking;
     private Date generationDate;
     private long generationTime;
@@ -28,7 +27,7 @@ public class RankingTable {
     public RankingTable() {
     }
 
-    public RankingTable(ArrayList<String> columnsCaptions, ArrayList<String> columnsCSS, ArrayList<RankingEntry> table, Boolean frozenRanking) {
+    public RankingTable(List<String> columnsCaptions, List<String> columnsCSS, List<RankingEntry> table, Boolean frozenRanking) {
         this.columnsCaptions = columnsCaptions;
         this.columnsCSS = columnsCSS;
         this.table = table;
@@ -38,42 +37,42 @@ public class RankingTable {
     /**
      * @return the columnsCaptions
      */
-    public ArrayList<String> getColumnsCaptions() {
+    public List<String> getColumnsCaptions() {
         return columnsCaptions;
     }
 
     /**
      * @param columnsCaptions the columnsCaptions to set
      */
-    public void setColumnsCaptions(ArrayList<String> columnsCaptions) {
+    public void setColumnsCaptions(List<String> columnsCaptions) {
         this.columnsCaptions = columnsCaptions;
     }
 
     /**
      * @return the columnsCSS
      */
-    public ArrayList<String> getColumnsCSS() {
+    public List<String> getColumnsCSS() {
         return columnsCSS;
     }
 
     /**
      * @param columnsCSS the columnsCSS to set
      */
-    public void setColumnsCSS(ArrayList<String> columnsCSS) {
+    public void setColumnsCSS(List<String> columnsCSS) {
         this.columnsCSS = columnsCSS;
     }
 
     /**
      * @return the table
      */
-    public ArrayList<RankingEntry> getTable() {
+    public List<RankingEntry> getTable() {
         return table;
     }
 
     /**
      * @param table the table to set
      */
-    public void setTable(ArrayList<RankingEntry> table) {
+    public void setTable(List<RankingEntry> table) {
         this.table = table;
     }
 

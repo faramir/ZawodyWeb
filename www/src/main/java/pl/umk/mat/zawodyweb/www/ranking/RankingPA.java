@@ -64,15 +64,15 @@ public class RankingPA implements RankingInterface {
         boolean loginOnly;
         int id_user;
         int points;
-        ArrayList<Integer> vPoints;
-        HashMap<Integer, Integer> solutions;
+        List<Integer> vPoints;
+        Map<Integer, Integer> solutions;
 
         public UserKI(int id_user, Users users) {
             this.id_user = id_user;
 
             this.points = 0;
-            this.vPoints = new ArrayList<Integer>();
-            this.solutions = new HashMap<Integer, Integer>();
+            this.vPoints = new ArrayList<>();
+            this.solutions = new HashMap<>();
 
             this.login = users.getLogin();
             this.firstname = users.getFirstname();
@@ -101,7 +101,7 @@ public class RankingPA implements RankingInterface {
                 s = u2.vPoints.size();
             }
             for (int i = 0; i < s; ++i) {
-                if (this.vPoints.get(i) == u2.vPoints.get(i)) {
+                if (Objects.equals(this.vPoints.get(i), u2.vPoints.get(i))) {
                     continue;
                 }
                 if (this.vPoints.get(i) < u2.vPoints.get(i)) {
@@ -148,15 +148,13 @@ public class RankingPA implements RankingInterface {
         Session hibernateSession = HibernateUtil.getSessionFactory().getCurrentSession();
 
         Timestamp checkTimestamp;
-        String checkTimestampStr;
         Timestamp visibleTimestamp;
-        String visibleTimestampStr;
 
         UsersDAO usersDAO = DAOFactory.DEFAULT.buildUsersDAO();
         SeriesDAO seriesDAO = DAOFactory.DEFAULT.buildSeriesDAO();
         ProblemsDAO problemsDAO = DAOFactory.DEFAULT.buildProblemsDAO();
-        HashMap<Integer, UserKI> mapUserKI = new HashMap<Integer, UserKI>();
-        ArrayList<ProblemsKI> vectorProblemsKI = new ArrayList<ProblemsKI>();
+        Map<Integer, UserKI> mapUserKI = new HashMap<>();
+        List<ProblemsKI> vectorProblemsKI = new ArrayList<>();
 
         boolean allTests;
         boolean frozenRanking = false;
@@ -189,14 +187,11 @@ public class RankingPA implements RankingInterface {
                 }
             }
 
-            checkTimestampStr = checkTimestamp.toString();
             if (checkTimestamp.before(series.getStartdate())) {
                 visibleTimestamp = new Timestamp(0);
             } else {
                 visibleTimestamp = new Timestamp(series.getStartdate().getTime());
             }
-            visibleTimestampStr = visibleTimestamp.toString();
-
 
             if (series.getUnfreezedate() != null) {
                 if (checkDate.after(series.getUnfreezedate())) {
@@ -216,40 +211,48 @@ public class RankingPA implements RankingInterface {
                     query = hibernateSession.createSQLQuery(""
                             + "select usersid, sum(points) "
                             + "from submits,results,tests "
-                            + "where submits.problemsid='" + problems.getId() + "' "
+                            + "where submits.problemsid = :problemsId "
                             + "  and submits.id=results.submitsid "
                             + "  and tests.id=results.testsid"
                             + "  and sdate in ( "
                             + "        select max(sdate) "
                             + "	     from submits "
-                            + "        where submits.problemsid='" + problems.getId() + "' "
-                            + "          and submits.result='" + SubmitsStateEnum.DONE.getCode() + "' "
-                            + "          and sdate <= '" + checkTimestampStr + "' "
-                            + "          and sdate >= '" + visibleTimestampStr + "' "
+                            + "        where submits.problemsid = :problemsId "
+                            + "          and submits.state = :stateDone "
+                            + "          and sdate <= :currentTimestamp "
+                            + "          and sdate >= :visibleTimestamp "
                             + "          and visibleInRanking=true"
                             + //"	       and tests.visibility=1 " +
                             "	     group by usersid "
                             + "      ) "
-                            + "group by usersid, submits.id");
+                            + "group by usersid, submits.id")
+                            .setInteger("problemsId", problems.getId())
+                            .setInteger("stateDone", SubmitsStateEnum.DONE.getCode())
+                            .setTimestamp("currentTimestamp", checkTimestamp)
+                            .setTimestamp("visibleTimestamp", visibleTimestamp);
                 } else {
                     query = hibernateSession.createSQLQuery(""
                             + "select usersid, sum(points) "
                             + "from submits,results,tests "
-                            + "where submits.problemsid='" + problems.getId() + "' "
+                            + "where submits.problemsid = :problemsId "
                             + "  and submits.id=results.submitsid "
                             + "  and tests.id=results.testsid"
                             + "	 and tests.visibility=1 " // FIXME: should be ok
                             + "  and sdate in ( "
                             + "        select max(sdate) "
                             + "	     from submits "
-                            + "        where submits.problemsid='" + problems.getId() + "' "
-                            + "          and submits.result='" + SubmitsStateEnum.DONE.getCode() + "' "
-                            + "          and sdate <= '" + checkTimestampStr + "' "
-                            + "          and sdate >= '" + visibleTimestampStr + "' "
+                            + "        where submits.problemsid = :problemsId "
+                            + "          and submits.state = :stateDone "
+                            + "          and sdate <= :currentTimestamp "
+                            + "          and sdate >= :visibleTimestamp "
                             + "          and visibleInRanking=true"
                             + "	     group by usersid "
                             + "      ) "
-                            + "group by usersid, submits.id");
+                            + "group by usersid, submits.id")
+                            .setInteger("problemsId", problems.getId())
+                            .setInteger("stateDone", SubmitsStateEnum.DONE.getCode())
+                            .setTimestamp("currentTimestamp", checkTimestamp)
+                            .setTimestamp("visibleTimestamp", visibleTimestamp);
                 }
 
                 for (Object list : query.list()) {
@@ -271,7 +274,7 @@ public class RankingPA implements RankingInterface {
         /*
          * Tworzenie rankingu z danych
          */
-        ArrayList<UserKI> cre = new ArrayList<UserKI>();
+        List<UserKI> cre = new ArrayList<>();
         cre.addAll(mapUserKI.values());
         Collections.sort(cre);
 
@@ -280,8 +283,8 @@ public class RankingPA implements RankingInterface {
         /*
          * nazwy kolumn i CSSy
          */
-        ArrayList<String> columnsCSS = new ArrayList<String>();
-        ArrayList<String> columnsCaptions = new ArrayList<String>();
+        List<String> columnsCSS = new ArrayList<>();
+        List<String> columnsCaptions = new ArrayList<>();
         for (ProblemsKI problemsKI : vectorProblemsKI) {
             columnsCaptions.add(RankingUtils.formatText(problemsKI.abbrev, problemsKI.name, problemsKI.frozen ? "frozen" : null));
             columnsCSS.add("small");
@@ -292,7 +295,7 @@ public class RankingPA implements RankingInterface {
         /*
          * tabelka z rankingiem
          */
-        ArrayList<RankingEntry> vectorRankingEntry = new ArrayList<RankingEntry>();
+        List<RankingEntry> vectorRankingEntry = new ArrayList<>();
         int place = 1;
         UserKI userTmp = cre.get(0);
         for (UserKI user : cre) {
@@ -300,7 +303,7 @@ public class RankingPA implements RankingInterface {
                 ++place;
                 userTmp = user;
             }
-            ArrayList<String> v = new ArrayList<String>();
+            List<String> v = new ArrayList<>();
             for (ProblemsKI problemsKI : vectorProblemsKI) {
                 Integer solution_points = user.solutions.get(problemsKI.id_problem);
                 if (solution_points == null) {
@@ -339,7 +342,7 @@ public class RankingPA implements RankingInterface {
         SeriesDAO seriesDAO = DAOFactory.DEFAULT.buildSeriesDAO();
         ProblemsDAO problemsDAO = DAOFactory.DEFAULT.buildProblemsDAO();
 
-        List<Integer> submits = new ArrayList<Integer>();
+        List<Integer> submits = new ArrayList<>();
 
         boolean allTests;
 
@@ -373,7 +376,6 @@ public class RankingPA implements RankingInterface {
             }
             visibleTimestampStr = visibleTimestamp.toString();
 
-
             if (series.getUnfreezedate() != null) {
                 if (checkDate.after(series.getUnfreezedate())) {
                     allTests = true;
@@ -390,40 +392,48 @@ public class RankingPA implements RankingInterface {
                     query = hibernateSession.createSQLQuery(""
                             + "select submits.id sid "
                             + "from submits,results,tests "
-                            + "where submits.problemsid='" + problems.getId() + "' "
+                            + "where submits.problemsid = :problemsId "
                             + "  and submits.id=results.submitsid "
                             + "  and tests.id=results.testsid"
                             + "  and sdate in ( "
                             + "        select max(sdate) "
                             + "	     from submits "
-                            + "        where submits.problemsid='" + problems.getId() + "' "
-                            + "          and submits.result='" + SubmitsStateEnum.DONE.getCode() + "' "
-                            + "          and sdate <= '" + checkTimestampStr + "' "
-                            + "          and sdate >= '" + visibleTimestampStr + "' "
+                            + "        where submits.problemsid = :problemsId "
+                            + "          and submits.state = :stateDone "
+                            + "          and sdate <= :currentTimestamp "
+                            + "          and sdate >= :visibleTimestamp "
                             + "          and visibleInRanking=true"
                             + //"	       and tests.visibility=1 " +
                             "	     group by usersid "
                             + "      ) "
-                            + "group by usersid, submits.id");
+                            + "group by usersid, submits.id")
+                            .setInteger("problemsId", problems.getId())
+                            .setInteger("stateDone", SubmitsStateEnum.DONE.getCode())
+                            .setTimestamp("currentTimestamp", checkTimestamp)
+                            .setTimestamp("visibleTimestamp", visibleTimestamp);
                 } else {
                     query = hibernateSession.createSQLQuery(""
                             + "select submits.id sid "
                             + "from submits,results,tests "
-                            + "where submits.problemsid='" + problems.getId() + "' "
+                            + "where submits.problemsid = :problemsId "
                             + "  and submits.id=results.submitsid "
                             + "  and tests.id=results.testsid"
                             + "	 and tests.visibility=1 " // FIXME: should be ok
                             + "  and sdate in ( "
                             + "        select max(sdate) "
                             + "	     from submits "
-                            + "        where submits.problemsid='" + problems.getId() + "' "
-                            + "          and submits.result='" + SubmitsStateEnum.DONE.getCode() + "' "
-                            + "          and sdate <= '" + checkTimestampStr + "' "
-                            + "          and sdate >= '" + visibleTimestampStr + "' "
+                            + "        where submits.problemsid = :problemsId "
+                            + "          and submits.state = :stateDone "
+                            + "          and sdate <= :currentTimestamp "
+                            + "          and sdate >= :visibleTimestamp "
                             + "          and visibleInRanking=true"
                             + "	     group by usersid "
                             + "      ) "
-                            + "group by usersid, submits.id");
+                            + "group by usersid, submits.id")
+                            .setInteger("problemsId", problems.getId())
+                            .setInteger("stateDone", SubmitsStateEnum.DONE.getCode())
+                            .setTimestamp("currentTimestamp", checkTimestamp)
+                            .setTimestamp("visibleTimestamp", visibleTimestamp);
                 }
 
                 for (Object id : query.list()) {

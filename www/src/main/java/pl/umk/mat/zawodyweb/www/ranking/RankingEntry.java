@@ -8,6 +8,7 @@
 package pl.umk.mat.zawodyweb.www.ranking;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
@@ -20,18 +21,13 @@ public class RankingEntry {
     private String surname;
     private String login;
     private boolean loginOnly;
-    private ArrayList<String> table;
+    private List<String> table;
 
     RankingEntry() {
-        place = -1;
-        name = "";
-        surname = "";
-        login = "";
-        loginOnly = false;
-        table = new ArrayList<String>();
+        this(-1, "", "", "", false, new ArrayList<>());
     }
 
-    public RankingEntry(int place, String name, String surname, String login, boolean loginOnly, ArrayList<String> table) {
+    public RankingEntry(int place, String name, String surname, String login, boolean loginOnly, List<String> table) {
         this.place = place;
         this.name = name;
         this.surname = surname;
@@ -68,14 +64,14 @@ public class RankingEntry {
     /**
      * @return the table
      */
-    public ArrayList<String> getTable() {
+    public List<String> getTable() {
         return table;
     }
 
     /**
      * @param table the table to set
      */
-    public void setTable(ArrayList<String> table) {
+    public void setTable(List<String> table) {
         this.table = table;
     }
 }

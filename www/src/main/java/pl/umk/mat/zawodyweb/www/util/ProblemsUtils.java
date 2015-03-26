@@ -87,61 +87,6 @@ public class ProblemsUtils {
             testsDAO.save(newTest);
         }
 
-        /*
-         * FIXME: Connection: Tests <--> Results is broken in new Result(?)
-         */
-//         if (copyUsersSolutions) {
-//            Criteria crit = HibernateUtil.getSessionFactory().getCurrentSession().createCriteria(Submits.class);
-//            Query query = HibernateUtil.getSessionFactory().getCurrentSession().createSQLQuery("" +
-//                    "SELECT DISTINCT ON (submits.usersid) " +
-//                    "      submits.id, submits.usersid, SUM(results.points) AS suma " +
-//                    "   FROM submits, results " +
-//                    "      WHERE submits.problemsid ='" + sourceProblem.getId() + "' " +
-//                    "        AND submits.id = results.submitsid " +
-//                    "        AND results.submitresult = '" + CheckerErrors.ACC + "' " +
-//                    "        AND submits.result = '" + SubmitsResultEnum.DONE.getCode() + "' " +
-//                    "      GROUP BY " +
-//                    "        submits.id, submits.usersid " +
-//                    "   ORDER BY " +
-//                    "        submits.usersid ASC, suma DESC");
-//            Vector<Criterion> vCrit = new Vector<Criterion>();
-//            for (Object list : query.list()) {
-//                Object[] o = (Object[]) list;
-//                vCrit.add(Restrictions.eq("id", o[0]));
-//            }
-//            if (vCrit.size() != 0) {
-//                Criterion c = vCrit.remove(0);
-//                for (Criterion criterion : vCrit) {
-//                    c = Restrictions.or(c, criterion);
-//                }
-//                crit.add(c);
-//                List<Submits> lista = crit.list();
-//                for (Submits oldSubmits : lista) {
-//                    Submits newSubmit = new Submits();
-//                    newSubmit.setCode(oldSubmits.getCode());
-//                    newSubmit.setFilename(oldSubmits.getFilename());
-//                    newSubmit.setLanguages(oldSubmits.getLanguages());
-//                    newSubmit.setNotes(oldSubmits.getNotes());
-//                    newSubmit.setProblems(destinationProblem);
-//                    newSubmit.setResult(oldSubmits.getResult());
-//                    newSubmit.setSdate(oldSubmits.getSdate());
-//                    newSubmit.setUsers(oldSubmits.getUsers());
-//                    DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(newSubmit);
-//                    List<Results> findBySubmitsid = DAOFactory.DEFAULT.buildResultsDAO().findBySubmitsid(oldSubmits.getId());
-//                    for (Results oldResults : findBySubmitsid) {
-//                        Results newResults = new Results();
-//                        newResults.setMemory(oldResults.getMemory());
-//                        newResults.setNotes(oldResults.getNotes());
-//                        newResults.setPoints(oldResults.getPoints());
-//                        newResults.setRuntime(oldResults.getRuntime());
-//                        newResults.setSubmitResult(oldResults.getSubmitResult());
-//                        newResults.setSubmits(newSubmit);
-//                        newResults.setTests(oldResults.getTests()); // FIXME: THIS LINE 
-//                        DAOFactory.DEFAULT.buildResultsDAO().save(newResults);
-//                    }
-//                }
-//            }
-//        }
         return destinationProblem;
     }
 
