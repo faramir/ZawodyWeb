@@ -7,9 +7,13 @@
     <ui:define name="pageContent">
         <div id="formSubmit" class="profilform" style="width:100%;">
             <div class="about">
-                <div class="praca">
-                    <h:outputText value="Zespół pracujący nad serwisem:" />
+                <div class="praca">O serwisie</div>
+                <div style="text-align:justify;width:60%;margin: 0 auto">
+                    <p>Serwis konkursowy <b>ZawodyWeb</b> został stworzony w ramach laboratorium z przedmiotu <i>Modelowanie i Analiza Systemów Informatycznych (MASI)</i> w roku akademickim 2008/2009 na <i>Wydziale Matematyki i Informatyki</i> <i>Uniwersytetu Mikołaja Kopernika w Toruniu</i>.</p>
+                    <p>Więcej informacji można uzyskać na stronie:</p>
+                    <p align="center"><h:outputLink value="https://github.com/faramir/ZawodyWeb">https://github.com/faramir/ZawodyWeb</h:outputLink></p>
                 </div>
+                <div class="praca"><h:outputText value="Zespół pracujący nad serwisem:" /></div>
                 <h:graphicImage alt="Zespół" url="/media/images/CRW_3238.jpg" />
                 <h:graphicImage alt="Zespół" url="/media/images/CRW_3170.jpg" />
                 <h:graphicImage alt="Zespół" url="/media/images/CRW_3177.jpg" />

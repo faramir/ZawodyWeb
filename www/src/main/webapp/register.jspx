@@ -4,15 +4,6 @@
         ${messages.registration}
     </ui:define>
     <ui:define name="pageContent">
-        <div class="frozen" style="text-align: center">
-            Jeśli jesteś użytkownikiem <b>OLAT WMiI UMK</b><br/>
-            <b><u>NIE twórz konta w serwisie ZawodyWeb</u></b>,<br/>
-            ale <h:outputLink value="#{facesContext.externalContext.requestContextPath}/login.html" styleClass="frozen"><b> zaloguj </b></h:outputLink>się za pomocą danych z serwisu OLAT.
-            <br/><br/>
-            Jeśli posiadasz konto na serwerach <b>WMiI UMK</b><br/>
-            <b><u>NIE twórz konta w serwisie ZawodyWeb</u></b>,<br/>
-            ale <h:outputLink value="#{facesContext.externalContext.requestContextPath}/login.html" styleClass="frozen"><b> zaloguj </b></h:outputLink>się za pomocą wydziałowego loginu i hasła.
-        </div>
         <a4j:form id="formRegister" styleClass="profilform">
             <fieldset>
                 <div>

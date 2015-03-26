@@ -117,7 +117,7 @@
                 <ui:insert name="pageContent" />
             </div>
             <div id="copy">
-                <h:outputText value="ZawodyWeb Team - &amp;copy; 2009-2014 - Wydział Matematyki i Informatyki UMK" escape="false" />
+                <h:outputLink value="https://github.com/faramir/ZawodyWeb"><h:outputText value="ZawodyWeb Team - &amp;copy;2009-2015" escape="false" /></h:outputLink>
             </div>
         </div>
     </body>
