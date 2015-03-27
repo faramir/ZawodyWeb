@@ -1,7 +1,7 @@
 ZawodyWeb
 =========
 
-Serwis konkursowy ZawodyWeb został stworzony w ramach laboratorium z przedmiotu Modelowanie i Analiza Systemów Informatycznych (MASI) w roku akademickim 2008/2009 na Wydziale Matematyki i Informatyki Uniwersytetu Mikołaja Kopernika w Toruniu.
+Serwis konkursowy ZawodyWeb został stworzony jako wynik analiz prowadzonych w ramach laboratorium z przedmiotu Modelowanie i Analiza Systemów Informatycznych (MASI) w roku akademickim 2008/2009 na Wydziale Matematyki i Informatyki Uniwersytetu Mikołaja Kopernika w Toruniu.
 
 Zespół rozwijający ZawodyWeb
 ----------------------------
