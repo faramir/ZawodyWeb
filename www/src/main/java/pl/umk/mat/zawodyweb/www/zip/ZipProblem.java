@@ -38,6 +38,7 @@ public class ZipProblem {
         xmlProblem.setDiff(problem.getClasses().getDescription());
         xmlProblem.setVisible(problem.getVisibleinranking());
         xmlProblem.setViewpdf(problem.getViewpdf());
+        xmlProblem.setConfig(problem.getConfig());
 
         xmlProblem.setText(setText(out, problem.getText()));
         xmlProblem.setPdf(setPDF(out, problem.getPDF()));
