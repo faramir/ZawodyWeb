@@ -12,10 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
-import java.util.List;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -23,7 +20,8 @@ import javax.imageio.ImageWriter;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
 
 /**
  *
@@ -32,56 +30,45 @@ import org.apache.pdfbox.pdmodel.PDPage;
 public class PdfToImage {
 
     public static BufferedImage process(InputStream pdfFile) {
-        PDDocument pdf = null;
         BufferedImage output = null;
-        try {
-            pdf = PDDocument.load(pdfFile, true);
-            if (pdf.isEncrypted()) {
-                pdf.decrypt("");
-            }
+        try (PDDocument pdfDocument = PDDocument.load(pdfFile)) {
+            PDFRenderer renderer = new PDFRenderer(pdfDocument);
 
-            List<PDPage> pdfPages = pdf.getDocumentCatalog().getAllPages();
-            if (pdfPages.isEmpty() == false) {
-                Iterator<PDPage> it = pdfPages.iterator();
-                PDPage page = it.next();
+            int pageCount = pdfDocument.getNumberOfPages();
 
-                BufferedImage bi = page.convertToImage(BufferedImage.TYPE_USHORT_565_RGB, 72 * 2);
-                if (pdfPages.size() == 1) {
-                    output = bi;
-                } else {
-                    int width = bi.getWidth();
-                    int height = bi.getHeight();
+            if (pageCount > 0) {
+                int width = 0;
+                int height = -1;
 
-                    output = new BufferedImage(width, height * pdfPages.size(),
-                            BufferedImage.TYPE_USHORT_565_RGB);
-
-                    Graphics2D g = output.createGraphics();
-                    g.drawImage(bi, 0, 0, null);
-                    g.setColor(Color.red);
-
-                    int pageNo = 0;
-                    while (it.hasNext()) {
-                        ++pageNo;
-
-                        page = it.next();
-                        bi = page.convertToImage(BufferedImage.TYPE_USHORT_565_RGB, 72 * 2);
-
-                        g.drawImage(bi, 0, pageNo * height, null);
-                        g.drawLine(0, pageNo * height, width, pageNo * height);
+                BufferedImage[] pdfPages = new BufferedImage[pageCount];
+                for (int pageNo = 0; pageNo < pageCount; ++pageNo) {
+                    pdfPages[pageNo] = renderer.renderImageWithDPI(pageNo, 200.0f, ImageType.RGB);
+                    if (pdfPages[pageNo].getWidth() > width) {
+                        width = pdfPages[pageNo].getWidth();
                     }
-                    g.dispose();
+                    height += pdfPages[pageNo].getHeight() + 1;
                 }
+
+                output = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+                Graphics2D g = output.createGraphics();
+                g.setColor(Color.red);
+                int currentHeight = 0;
+                for (int pageNo = 0; pageNo < pageCount; ++pageNo) {
+                    if (pageNo > 0) {
+                        g.drawLine(0, currentHeight, width, currentHeight);
+                        ++currentHeight;
+                    }
+                    g.drawImage(pdfPages[pageNo],
+                            (width - pdfPages[pageNo].getWidth()) / 2,
+                            currentHeight,
+                            null);
+                    currentHeight += pdfPages[pageNo].getHeight();
+                }
+                g.dispose();
             }
         } catch (Exception ex) {
             throw new RuntimeException("Exception converting pdf to image: ", ex);
-        } finally {
-            if (pdf != null) {
-                try {
-                    pdf.close();
-                } catch (IOException ex) {
-                    throw new RuntimeException("Exception when closing pdf: ", ex);
-                }
-            }
         }
         return output;
     }
