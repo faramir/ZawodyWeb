@@ -53,6 +53,7 @@ public class ProblemsUtils {
         destinationProblem.setCodesize(sourceProblem.getCodesize());
         destinationProblem.setVisibleinranking(sourceProblem.getVisibleinranking());
         destinationProblem.setViewpdf(sourceProblem.getViewpdf());
+        destinationProblem.setConfig(sourceProblem.getConfig());
 
         PDF pdf = sourceProblem.getPDF();
         if (pdf != null) {
@@ -84,6 +85,7 @@ public class ProblemsUtils {
             newTest.setTestorder(oldTest.getTestorder());
             newTest.setTimelimit(oldTest.getTimelimit());
             newTest.setVisibility(oldTest.getVisibility());
+            newTest.setConfig(oldTest.getConfig());
             testsDAO.save(newTest);
         }
 

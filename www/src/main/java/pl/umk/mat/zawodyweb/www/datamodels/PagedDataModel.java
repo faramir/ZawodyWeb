@@ -21,7 +21,7 @@ public class PagedDataModel extends DataModel {
     private List list;
 
     public PagedDataModel(List list, int totalRowsCount) {
-        setWrappedData(list);
+        this.list = list;
         this.totalRowsCount = totalRowsCount;
     }
 
@@ -51,9 +51,9 @@ public class PagedDataModel extends DataModel {
 
     @Override
     public boolean isRowAvailable() {
-        try{
+        try {
             return getRowIndex() < list.size();
-        }catch(Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
@@ -65,6 +65,6 @@ public class PagedDataModel extends DataModel {
 
     @Override
     public void setWrappedData(Object list) {
-        this.list = (List)list;
+        this.list = (List) list;
     }
 }

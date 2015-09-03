@@ -55,7 +55,7 @@ public class UnicoreExternal implements ExternalInterface {
     @Override
     public void setProperties(Properties properties) {
         this.properties = properties;
-        
+
         addDefaultPropertyValue("UNICORECC_BIN_PATH", "C:\\UNICORE\\ucc-distribution-7.1.0\\bin\\ucc.bat");
     }
 
@@ -305,6 +305,7 @@ public class UnicoreExternal implements ExternalInterface {
                 if (matcher.matches()) {
                     String nanos = matcher.group("nanos");
                     output.setRuntime((int) (Long.parseLong(nanos) / 1_000_000));
+                    logger.debug("Elapsed time: " + output.getRuntime());
                     break;
                 }
             }
@@ -315,15 +316,18 @@ public class UnicoreExternal implements ExternalInterface {
                 String stdout = stdoutScanner.next();
                 String test = testScanner.next();
                 if (stdout.equals(test) == false) {
+                    logger.debug("Output is different: WA (0 points)");
                     output.setStatus(ResultsStatusEnum.WA.getCode());
                     output.setPoints(0);
                     return;
                 }
             }
             if (stdoutScanner.hasNext() == testScanner.hasNext()) {
+                logger.debug("Output is the same: ACC (" + testInput.getMaxPoints() + " points)");
                 output.setStatus(ResultsStatusEnum.ACC.getCode());
                 output.setPoints(testInput.getMaxPoints());
             } else {
+                logger.debug("Output is different: WA (0 points)");
                 output.setStatus(ResultsStatusEnum.WA.getCode());
                 output.setPoints(0);
             }
@@ -361,6 +365,7 @@ public class UnicoreExternal implements ExternalInterface {
                 if (matcher.matches()) {
                     String nanos = matcher.group("nanos");
                     output.setRuntime((int) (Long.parseLong(nanos) / 1_000_000));
+                    logger.debug("Elapsed time: " + output.getRuntime());
                     break;
                 }
             }

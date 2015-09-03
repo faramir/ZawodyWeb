@@ -73,10 +73,16 @@
         <repository>
             <id>people.apache.org</id>
             <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <snapshots>
+                <updatePolicy>interval:40320</updatePolicy>
+            </snapshots>
         </repository>
         <repository>
             <id>repository.apache.org-snapshots</id>
             <url>http://repository.apache.org/snapshots</url>
+            <snapshots>
+                <updatePolicy>interval:40320</updatePolicy>
+            </snapshots>
         </repository>
         <repository>
             <id>repo.maven.apache.org</id>

@@ -73,6 +73,7 @@ public class ZipTest {
         tests.setMaxpoints(xmlTest.getMaxpoints());
         tests.setTestorder(xmlTest.getOrder());
         tests.setTimelimit(xmlTest.getTimelimit());
+        tests.setConfig(xmlTest.getConfig());
         tests.setVisibility(1); // FIXME: należy wartość pobrać z pliku XML (brak)
 
         return tests;

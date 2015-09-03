@@ -54,7 +54,18 @@ public class Tests implements Serializable, Comparable<Tests> {
         String t2 = o.getTestorder();
 
         if (t1 == null || t2 == null || t1.compareTo(t2) == 0) {
-            return this.getId() - o.getId();
+            if (this.getId() == null || o.getId() == null) {
+                if (this.getId() == null && o.getId() == null) {
+                    return 0;
+                }
+                if (this.getId() == null) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            } else {
+                return this.getId() - o.getId();
+            }
         }
         Matcher m1 = pattern.matcher(t1);
         Matcher m2 = pattern.matcher(t2);

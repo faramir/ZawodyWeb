@@ -95,6 +95,7 @@ public class ZipProblem {
         problem.setCodesize(xmlProblem.getCodesize());
         problem.setVisibleinranking(xmlProblem.getVisible());
         problem.setViewpdf(xmlProblem.getViewpdf());
+        problem.setConfig(xmlProblem.getConfig());
 
         String textFile = xmlProblem.getText();
         if (textFile == null || textFile.isEmpty()) {
@@ -129,7 +130,7 @@ public class ZipProblem {
 
         List<String> langs = xmlProblem.getLanguages().getLanguages();
         if (languages != null && langs != null) {
-            List<LanguagesProblems> lps = new ArrayList<LanguagesProblems>();
+            List<LanguagesProblems> lps = new ArrayList<>();
 
             nextLang:
             for (String lang : langs) {
@@ -147,7 +148,7 @@ public class ZipProblem {
         }
 
         if (xmlProblem.getTests().getTests() != null) {
-            SortedSet<Tests> tests = new TreeSet<Tests>();
+            SortedSet<Tests> tests = new TreeSet<>();
 
             for (Test test : xmlProblem.getTests().getTests()) {
                 tests.add(ZipTest.getTest(in, test));

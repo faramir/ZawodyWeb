@@ -90,7 +90,7 @@ public class RequestBean {
     private Aliases editedAlias;
     private Classes editedClass;
     private Languages editedLanguage;
-    private UsersRoles editedUsersRoles;
+//    private UsersRoles editedUsersRoles;
     private List<LanguagesProblems> temporaryLanguagesProblems = null;
     private List<Contests> contests = null;
     private List<Series> contestsSeries = null;
@@ -575,7 +575,7 @@ public class RequestBean {
             List<Integer> ratableSeries = null;
 
             if (!sessionBean.isShowOnlyMySubmissions()) {
-                ratableSeries = new ArrayList<Integer>();
+                ratableSeries = new ArrayList<>();
                 for (Series s : getCurrentContest().getSeriess()) {
                     if (rolesBean.canRate(getCurrentContest().getId(), s.getId())) {
                         ratableSeries.add(s.getId());
