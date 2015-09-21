@@ -158,7 +158,6 @@ public class Tests implements Serializable, Comparable<Tests> {
         this.id = id;
     }
 
-    /* liste transiente */
     /**
      * @return input
      */

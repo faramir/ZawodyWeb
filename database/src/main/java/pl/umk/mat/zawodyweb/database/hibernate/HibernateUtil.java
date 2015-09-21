@@ -8,7 +8,7 @@
 package pl.umk.mat.zawodyweb.database.hibernate;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
 
 /**
  * Generated at Fri May 08 19:01:00 CEST 2009
@@ -22,7 +22,7 @@ public final class HibernateUtil {
 
     static {
         try {
-            sessionFactory = new AnnotationConfiguration().configure().
+            sessionFactory = new Configuration().configure().
                     configure("/mappings.cfg.xml").
                     buildSessionFactory();
         } catch (Throwable ex) {

@@ -17,6 +17,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import org.hibernate.SessionFactory;
 import org.hibernate.StaleObjectStateException;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 
 public class HibernateSessionRequestFilter implements Filter {
@@ -42,7 +43,8 @@ public class HibernateSessionRequestFilter implements Filter {
             throw staleEx;
         } catch (Throwable ex) {
             try {
-                if (sf.getCurrentSession().getTransaction().isActive()) {
+                TransactionStatus status = sf.getCurrentSession().getTransaction().getStatus();
+                if (status.isOneOf(TransactionStatus.ACTIVE) && status.canRollback()) {
                     sf.getCurrentSession().getTransaction().rollback();
                 }
             } catch (Throwable rbEx) {
