@@ -174,51 +174,6 @@ public class Tests implements Serializable, Comparable<Tests> {
         this.input = input;
     }
 
-    
-//    @Lob
-//    @Basic(fetch = FetchType.LAZY)
-//    @Column(name = "input", length = 2147483647)
-//    @Type(type = "org.hibernate.type.TextType")
-//    public Clob getInput() {
-//        return input;
-//    }
-//
-//    /**
-//     * @param input new value for input
-//     */
-//    public void setInput(Clob input) {
-//        this.input = input;
-//    }
-//    
-//    public void setInputAsString(String string) {
-//        try {
-//            this.input.truncate(0L);
-//            this.input.setString(1L, string);
-//        } catch (SQLException ex) {
-//            Logger.getLogger(Tests.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
-//
-//    @Transient
-//    public String getInputAsString() {
-//        try {
-//            Reader reader = getInput().getCharacterStream();
-//            int ch;
-//            StringBuilder sb = new StringBuilder();
-//            while ((ch = reader.read()) != -1) {
-//                sb.append((char) ch);
-//            }
-//            return sb.toString();
-//        } catch (IOException ex) {
-//            Logger.getLogger(Tests.class.getName()).log(Level.SEVERE, "Unable to read input", ex);
-//        } catch (SQLException ex) {
-//            Logger.getLogger(Tests.class.getName()).log(Level.SEVERE, "Unable to read input", ex);
-//        }
-//
-//        return null;
-//    }
-
-    
     /**
      * @return output
      */
@@ -235,7 +190,6 @@ public class Tests implements Serializable, Comparable<Tests> {
         this.output = output;
     }
 
-    /* liste transiente */
     /**
      * @return timelimit
      */
@@ -252,7 +206,6 @@ public class Tests implements Serializable, Comparable<Tests> {
         this.timelimit = timelimit;
     }
 
-    /* liste transiente */
     /**
      * @return maxpoints
      */

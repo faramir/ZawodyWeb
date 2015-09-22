@@ -14,14 +14,24 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.function.SQLFunction;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.type.StringType;
+import org.hibernate.type.Type;
 import pl.umk.mat.zawodyweb.database.AliasesDAO;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
+import pl.umk.mat.zawodyweb.database.hibernate.HibernateUtil;
 import pl.umk.mat.zawodyweb.database.pojo.Aliases;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Results;
@@ -257,9 +267,7 @@ public class ELFunctions {
                         return (sint & mask) == (cint & mask);
                     }
                 }
-            } catch (UnknownHostException ex) {
-            } catch (NumberFormatException ex) {
-            } catch (IndexOutOfBoundsException ex) {
+            } catch (UnknownHostException | NumberFormatException | IndexOutOfBoundsException ex) {
             }
         } else {
             return clientIp.startsWith(ipMask);
@@ -290,7 +298,7 @@ public class ELFunctions {
             return null;
         }
 
-        List<String> openIPs = new ArrayList<String>();
+        List<String> openIPs = new ArrayList<>();
         for (String e : ips.split("[;,\\s]")) {
             e = e.trim();
             if (e.isEmpty() == false) {
@@ -322,11 +330,10 @@ public class ELFunctions {
     /**
      * http://stackoverflow.com/questions/277521/how-to-identify-the-file-content-is-in-ascii-or-binary/277568#277568
      *
-     * If the first two bytes are hex FE FF, the file is tentatively UTF-16 BE.
-     * If the first two bytes are hex FF FE, and the following two bytes are not
-     * hex 00 00 , the file is tentatively UTF-16 LE. If the first four bytes
-     * are hex 00 00 FE FF, the file is tentatively UTF-32 BE. If the first four
-     * bytes are hex FF FE 00 00, the file is tentatively UTF-32 LE.
+     * If the first two bytes are hex FE FF, the file is tentatively UTF-16 BE. If the first two
+     * bytes are hex FF FE, and the following two bytes are not hex 00 00 , the file is tentatively
+     * UTF-16 LE. If the first four bytes are hex 00 00 FE FF, the file is tentatively UTF-32 BE. If
+     * the first four bytes are hex FF FE 00 00, the file is tentatively UTF-32 LE.
      *
      * @param text
      * @return true if file is binary
@@ -355,14 +362,54 @@ public class ELFunctions {
         return new String(submits.getCode());
     }
 
-    public static Integer getStringLength(String s) {
-        return s.length();
+    public static String truncate(String s, Integer limit, String continuationMark) {
+        if (s.length() > limit) {
+            return s.substring(0, limit) + continuationMark;
+        }
+        return s;
     }
 
-    public static String getPrefix(String s, Integer length) {
-        if (length > s.length()) {
-            return s;
+    public static String getInputPartOfTest(Tests test, Integer limit) {
+        return getPartOfTest(test, "input", limit);
+    }
+
+    public static String getOutputPartOfTest(Tests test, Integer limit) {
+        return getPartOfTest(test, "output", limit);
+    }
+
+    private static String getPartOfTest(Tests test, String part, Integer limit) {
+        if (test == null || ("input".equals(part) == false && "output".equals(part) == false)) {
+            return "";
         }
-        return s.substring(0, length);
+
+        String substr = null;
+
+        SessionFactory sf = HibernateUtil.getSessionFactory();
+        if (sf instanceof SessionFactoryImplementor) {
+            SessionFactoryImplementor sfi = (SessionFactoryImplementor) HibernateUtil.getSessionFactory();
+            Dialect dialect = sfi.getDialect();
+
+            if (dialect != null) {
+                SQLFunction function = dialect.getFunctions().get("substr");
+                if (function != null) {
+                    substr = function.render(StringType.INSTANCE, Arrays.asList("input", 0, limit), sfi);
+                }
+
+            }
+        }
+
+        if (substr == null) {
+            substr = String.format("substr('%s',%d,%d)", "input", 1, limit);
+        }
+
+        return (String) sf.getCurrentSession()
+                .createCriteria(Tests.class)
+                .setProjection(
+                        Projections.sqlProjection(
+                                substr + " as short",
+                                new String[]{"short"},
+                                new Type[]{StringType.INSTANCE}))
+                .add(Restrictions.idEq(test.getId()))
+                .uniqueResult();
     }
 }

@@ -224,13 +224,18 @@
         <function-signature>java.lang.String getSubmitCodeString(pl.umk.mat.zawodyweb.database.pojo.Submits)</function-signature>
     </function>
     <function>
-        <function-name>length</function-name>
+        <function-name>truncate</function-name>
         <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
-        <function-signature>java.lang.Integer getStringLength(java.lang.String)</function-signature>
+        <function-signature>java.lang.String truncate(java.lang.String, java.lang.Integer, java.lang.String)</function-signature>
     </function>
     <function>
-        <function-name>getPrefix</function-name>
+        <function-name>getInputPartOfTest</function-name>
         <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
-        <function-signature>java.lang.String getPrefix(java.lang.String, java.lang.Integer)</function-signature>
+        <function-signature>java.lang.String getInputPartOfTest(pl.umk.mat.zawodyweb.database.pojo.Tests, java.lang.Integer)</function-signature>
+    </function>
+    <function>
+        <function-name>getOutputPartOfTest</function-name>
+        <function-class>pl.umk.mat.zawodyweb.www.ELFunctions</function-class>
+        <function-signature>java.lang.String getOutputPartOfTest(pl.umk.mat.zawodyweb.database.pojo.Tests, java.lang.Integer)</function-signature>
     </function>
 </facelet-taglib>

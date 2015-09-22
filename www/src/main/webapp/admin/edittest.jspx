@@ -1,6 +1,6 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:c="http://java.sun.com/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk"
-                xmlns:zw="http://zawodyweb.mat.umk.pl/">
+                xmlns:zw="http://zawodyweb.mat.umk.pl/" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
     <ui:define name="pageTitle">
         <c:choose>
             <c:when test="#{param.id == '0' or param.id == null}">
@@ -47,11 +47,11 @@
                         <div>
                             <h:outputLabel styleClass="required" for="input">${messages.test_input}:</h:outputLabel>
                             <c:choose>
-                                <c:when test="#{zw:length(requestBean.editedTest.input) le 61440}">
+                                <c:when test="#{fn:length(requestBean.editedTest.input) le 61440}">
                                     <h:inputTextarea id="input" styleClass="bigHeight" value="#{requestBean.editedTest.input}"/>
                                 </c:when>
                                 <c:otherwise>
-                                    <h:inputTextarea id="input" styleClass="bigHeight" readonly="true" value="#{messages.testlimit_exceeded} (#{zw:length(requestBean.editedTest.input)} B): #{zw:getPrefix(requestBean.editedTest.input, 1024)}..."/>
+                                    <h:inputTextarea id="input" styleClass="bigHeight" readonly="true" value="#{messages.testlimit_exceeded} (#{fn:length(requestBean.editedTest.input)} B): #{zw:getInputPartOfTest(requestBean.editedTest, 1024)}..."/>
                                 </c:otherwise>
                             </c:choose>
                             <br class="clear" />
@@ -59,11 +59,11 @@
                         <div>
                             <h:outputLabel styleClass="required" for="output">${messages.test_output}:</h:outputLabel>
                             <c:choose>
-                                <c:when test="#{zw:length(requestBean.editedTest.output) le 61440}">
+                                <c:when test="#{fn:length(requestBean.editedTest.output) le 61440}">
                                     <h:inputTextarea id="output" styleClass="bigHeight" value="#{requestBean.editedTest.output}"/>
                                 </c:when>
                                 <c:otherwise>
-                                    <h:inputTextarea id="output" styleClass="bigHeight" readonly="true" value="#{messages.testlimit_exceeded} (#{zw:length(requestBean.editedTest.output)} B): #{zw:getPrefix(requestBean.editedTest.output, 1024)}..."/>
+                                    <h:inputTextarea id="output" styleClass="bigHeight" readonly="true" value="#{messages.testlimit_exceeded} (#{fn:length(requestBean.editedTest.output)} B): #{zw:getOutputPartOfTest(requestBean.editedTest, 1024)}..."/>
                                 </c:otherwise>
                             </c:choose>
                             <br class="clear" />

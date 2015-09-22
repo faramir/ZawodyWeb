@@ -22,7 +22,8 @@ public final class HibernateUtil {
 
     static {
         try {
-            sessionFactory = new Configuration().configure().
+            Configuration configuration = new Configuration();
+            sessionFactory = configuration.configure().
                     configure("/mappings.cfg.xml").
                     buildSessionFactory();
         } catch (Throwable ex) {
