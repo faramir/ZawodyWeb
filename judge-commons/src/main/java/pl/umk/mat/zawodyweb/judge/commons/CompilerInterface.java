@@ -8,8 +8,6 @@
 package pl.umk.mat.zawodyweb.judge.commons;
 
 import java.util.Properties;
-import pl.umk.mat.zawodyweb.judge.commons.TestInput;
-import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
 
 /**
  *

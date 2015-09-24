@@ -8,6 +8,7 @@
 package pl.umk.mat.zawodyweb.compiler.classes;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
 import org.apache.commons.httpclient.HttpClient;
@@ -28,7 +29,7 @@ import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
  */
 public class LanguageLA implements CompilerInterface {
 
-    public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageLA.class);
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageLA.class);
     private Properties properties;
     private HttpClient client;
     private final String acmSite = "https://icpcarchive.ecs.baylor.edu/";
@@ -58,23 +59,16 @@ public class LanguageLA implements CompilerInterface {
     }
 
     private void logIn(String login, String password) throws HttpException, IOException {
-        ArrayList<NameValuePair> vectorLoginData;
+        List<NameValuePair> vectorLoginData;
         GetMethod get = new GetMethod(acmSite);
 
         try {
             client.executeMethod(get);
             InputStream firstGet = get.getResponseBodyAsStream();
-            BufferedReader br;
-
-            try {
-                br = new BufferedReader(new InputStreamReader(firstGet, "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                logger.error("UnsupportedEncodingException ", e);
-                return;
-            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(firstGet, StandardCharsets.UTF_8));
 
             String line, name, value;
-            vectorLoginData = new ArrayList<NameValuePair>();
+            vectorLoginData = new ArrayList<>();
             vectorLoginData.add(new NameValuePair("username", login));
             vectorLoginData.add(new NameValuePair("passwd", password));
 
@@ -91,7 +85,6 @@ public class LanguageLA implements CompilerInterface {
                 line = br.readLine();
             }
         } finally {
-
             get.releaseConnection();
         }
         vectorLoginData.add(new NameValuePair("remember", "yes"));
@@ -173,14 +166,7 @@ public class LanguageLA implements CompilerInterface {
         try {
             client.executeMethod(get);
             InputStream firstGet = get.getResponseBodyAsStream();
-            BufferedReader br;
-
-            try {
-                br = new BufferedReader(new InputStreamReader(firstGet, "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                logger.error("UnsupportedEncodingException ", e);
-                return "";
-            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(firstGet, StandardCharsets.UTF_8));
 
             String line;
             StringBuilder sb = new StringBuilder();
@@ -207,7 +193,7 @@ public class LanguageLA implements CompilerInterface {
     private List<Map<String, String>> processResults(BufferedReader br) throws IOException {
         String line;
         StringBuilder sb;
-        List<Map<String, String>> results = new ArrayList<Map<String, String>>();
+        List<Map<String, String>> results = new ArrayList<>();
 
         while ((line = br.readLine()) != null) {
             if (line.matches(".*<td>[0-9]+</td>.*")) {
@@ -219,7 +205,7 @@ public class LanguageLA implements CompilerInterface {
                 }
                 String[] split = sb.toString().split("(<td[^>]*>)|(</td>)");
 
-                Map<String, String> result = new HashMap<String, String>();
+                Map<String, String> result = new HashMap<>();
                 result.put("id", split[1].trim());
                 result.put("problemid", (split[3].replaceAll("<[^>]*>", "")).trim());
                 result.put("status", (split[7].replaceAll("<[^>]*>", "")).trim());
@@ -266,7 +252,7 @@ public class LanguageLA implements CompilerInterface {
                 throw new TimeoutException("Too slow to answer.. destroy");
             }
 
-            logger.info("Checking answer on LA-ACM");
+            logger.info("Checking answer on UVa-ACM");
             List<Map<String, String>> results = getResults(limitOnPage);
 
             String sid = String.valueOf(id);
@@ -358,19 +344,19 @@ public class LanguageLA implements CompilerInterface {
 
         Random random = new Random();
 
-        String login = properties.getProperty("livearchive.login");
-        String password = properties.getProperty("livearchive.password");
+        String login = properties.getProperty("uva.login");
+        String password = properties.getProperty("uva.password");
 
         int inQueue;
         try {
-            inQueue = Integer.parseInt(properties.getProperty("livearchive.inqueue"));
+            inQueue = Integer.parseInt(properties.getProperty("uva.inqueue"));
         } catch (NumberFormatException e) {
             inQueue = 4;
         }
 
         long maxTime;
         try {
-            maxTime = Long.parseLong(properties.getProperty("livearchive.max_time"));
+            maxTime = Long.parseLong(properties.getProperty("uva.max_time"));
         } catch (NumberFormatException e) {
             maxTime = 10L * 60;
         }
@@ -379,14 +365,14 @@ public class LanguageLA implements CompilerInterface {
 
         try {
             logIn(login, password);
-            logger.info("Logged to LA-ACM");
+            logger.info("Logged to UVa-ACM");
 
             for (int i = 3; i >= 0; --i) {
                 if (checkInQueueStatus(input.getInputText()) > inQueue) {
                     if (i == 0) {
                         result.setStatus(ResultsStatusEnum.UNDEF.getCode());
                         result.setNotes("More than " + inQueue + " submissions of " + input.getInputText() + " in queue.");
-                        result.setOutputText("LA-ACM judge broken?");
+                        result.setOutputText("UVa-ACM judge broken?");
                         logger.info(result.getNotes());
                         return result;
                     } else {
@@ -402,6 +388,7 @@ public class LanguageLA implements CompilerInterface {
             try {
                 id = Integer.parseInt(msg);
             } catch (NumberFormatException ex) {
+                logger.info("Unable to get UVa-ACM Submit id. Message: " + msg);
             }
 
             if (id == 0) {
@@ -409,12 +396,12 @@ public class LanguageLA implements CompilerInterface {
                 result.setNotes(msg);
                 return result;
             } else {
-                logger.info("LA-ACM Submit id = " + id);
+                logger.info("UVa-ACM Submit id = " + id);
 
                 checkResults(id, maxTime, input, result);
             }
             logOut();
-            logger.info("Logged out from LA-ACM");
+            logger.info("Logged out from UVa-ACM");
         } catch (Exception e) {
             logger.info("Exception: ", e);
             result.setStatus(ResultsStatusEnum.UNDEF.getCode());

@@ -311,48 +311,48 @@ public class LanguagePCJ implements CompilerInterface {
         }
     }
 
-    public static void main(String[] args) {
-        LanguagePCJ language = new LanguagePCJ();
-        Properties properties = new Properties();
-        properties.setProperty("CODE_FILENAME", "TestPcjApp");
-        properties.setProperty("CODE_DIR", "C:\\Users\\UMK\\Documents\\codes\\java\\ZawodyWeb\\branches\\pcj_zw\\res\\temp");
-        properties.setProperty("pcj.library", "C:\\Users\\UMK\\Documents\\codes\\java\\ZawodyWeb\\branches\\pcj_zw\\res\\pcj\\PCJ.jar");
-        properties.setProperty("pcj.main_class", "C:\\Users\\UMK\\Documents\\codes\\java\\ZawodyWeb\\branches\\pcj_zw\\res\\pcj\\MainClass.java");
-
-        language.setProperties(properties);
-//        C:\Users\UMK\Documents\codes\java\ZawodyWeb\branches\pcj_zw\res\temp
-        String outputPath = language.compile(("import java.util.Scanner;\n"
-                + "import pl.umk.mat.pcj.PCJ;\n"
-                + "import pl.umk.mat.pcj.StartPoint;\n"
-                + "import pl.umk.mat.pcj.Storage;\n"
-                + "\n"
-                + "/**\n"
-                + " *\n"
-                + " * @author faramir\n"
-                + " */\n"
-                + "public class TestPcjApp extends Storage implements StartPoint {\n"
-                + "\n"
-                + "    @Override\n"
-                + "    public void main() throws Throwable {\n"
-                //+ "        System.out.println(\"My id: \" + PCJ.myId());\n"
-                + "        if (PCJ.myId() == 0) {\n"
-                + "            Scanner scanner = new Scanner(System.in);\n"
-                + "            System.out.println(scanner.nextInt() * 2);\n"
-                + "        }\n"
-                + "    }\n"
-                + "\n"
-                + "}\n"
-                + "").getBytes());
-        System.out.println("" + language.compileResult);
-        System.out.println("" + language.compileDesc);
-        System.out.println("" + outputPath);
-        Properties testProperty = new Properties();
-        testProperty.setProperty("threadCounts", "1,2,3,4");
-
-        TestInput testInput = new TestInput("1",
-                1, 10000, 1000, testProperty);
-        TestOutput runOutput = language.runTest(outputPath, testInput);
-        System.out.println("" + runOutput.getOutputText() + ", " + runOutput.getPoints());
-        System.out.println("" + runOutput.getNotes());
-    }
+//    public static void main(String[] args) {
+//        LanguagePCJ language = new LanguagePCJ();
+//        Properties properties = new Properties();
+//        properties.setProperty("CODE_FILENAME", "TestPcjApp");
+//        properties.setProperty("CODE_DIR", "C:\\Users\\UMK\\Documents\\codes\\java\\ZawodyWeb\\branches\\pcj_zw\\res\\temp");
+//        properties.setProperty("pcj.library", "C:\\Users\\UMK\\Documents\\codes\\java\\ZawodyWeb\\branches\\pcj_zw\\res\\pcj\\PCJ.jar");
+//        properties.setProperty("pcj.main_class", "C:\\Users\\UMK\\Documents\\codes\\java\\ZawodyWeb\\branches\\pcj_zw\\res\\pcj\\MainClass.java");
+//
+//        language.setProperties(properties);
+////        C:\Users\UMK\Documents\codes\java\ZawodyWeb\branches\pcj_zw\res\temp
+//        String outputPath = language.compile(("import java.util.Scanner;\n"
+//                + "import pl.umk.mat.pcj.PCJ;\n"
+//                + "import pl.umk.mat.pcj.StartPoint;\n"
+//                + "import pl.umk.mat.pcj.Storage;\n"
+//                + "\n"
+//                + "/**\n"
+//                + " *\n"
+//                + " * @author faramir\n"
+//                + " */\n"
+//                + "public class TestPcjApp extends Storage implements StartPoint {\n"
+//                + "\n"
+//                + "    @Override\n"
+//                + "    public void main() throws Throwable {\n"
+//                //+ "        System.out.println(\"My id: \" + PCJ.myId());\n"
+//                + "        if (PCJ.myId() == 0) {\n"
+//                + "            Scanner scanner = new Scanner(System.in);\n"
+//                + "            System.out.println(scanner.nextInt() * 2);\n"
+//                + "        }\n"
+//                + "    }\n"
+//                + "\n"
+//                + "}\n"
+//                + "").getBytes());
+//        System.out.println("" + language.compileResult);
+//        System.out.println("" + language.compileDesc);
+//        System.out.println("" + outputPath);
+//        Properties testProperty = new Properties();
+//        testProperty.setProperty("threadCounts", "1,2,3,4");
+//
+//        TestInput testInput = new TestInput("1",
+//                1, 10000, 1000, testProperty);
+//        TestOutput runOutput = language.runTest(outputPath, testInput);
+//        System.out.println("" + runOutput.getOutputText() + ", " + runOutput.getPoints());
+//        System.out.println("" + runOutput.getNotes());
+//    }
 }

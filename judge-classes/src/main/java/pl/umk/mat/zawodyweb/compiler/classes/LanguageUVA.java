@@ -8,6 +8,7 @@
 package pl.umk.mat.zawodyweb.compiler.classes;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
 import org.apache.commons.httpclient.HttpClient;
@@ -22,17 +23,16 @@ import pl.umk.mat.zawodyweb.judge.commons.CompilerInterface;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
- * Copied from LanguageLA, acmSite =
- * http://uva.onlinejudge.org/
+ * Copied from LanguageLA, acmSite = http://uva.onlinejudge.org/
  *
  * @author faramir
  */
 public class LanguageUVA implements CompilerInterface {
 
-    public static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageUVA.class);
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageUVA.class);
     private Properties properties;
     private HttpClient client;
-    private final String acmSite = "http://uva.onlinejudge.org/";
+    private final String acmSite = "https://uva.onlinejudge.org/";
 
     @Override
     public void setProperties(Properties properties) {
@@ -59,21 +59,16 @@ public class LanguageUVA implements CompilerInterface {
     }
 
     private void logIn(String login, String password) throws HttpException, IOException {
-        ArrayList<NameValuePair> vectorLoginData;
+        List<NameValuePair> vectorLoginData;
         GetMethod get = new GetMethod(acmSite);
 
         try {
             client.executeMethod(get);
             InputStream firstGet = get.getResponseBodyAsStream();
-            BufferedReader br = null;
-
-            try {
-                br = new BufferedReader(new InputStreamReader(firstGet, "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(firstGet, StandardCharsets.UTF_8));
 
             String line, name, value;
-            vectorLoginData = new ArrayList<NameValuePair>();
+            vectorLoginData = new ArrayList<>();
             vectorLoginData.add(new NameValuePair("username", login));
             vectorLoginData.add(new NameValuePair("passwd", password));
 
@@ -90,7 +85,6 @@ public class LanguageUVA implements CompilerInterface {
                 line = br.readLine();
             }
         } finally {
-
             get.releaseConnection();
         }
         vectorLoginData.add(new NameValuePair("remember", "yes"));
@@ -127,7 +121,7 @@ public class LanguageUVA implements CompilerInterface {
                     langId = null;
                 }
             }
-            
+
             if (langId == null) {
                 String fileExt = properties.getProperty("CODEFILE_EXTENSION");
                 if (fileExt.equals("c")) {
@@ -172,12 +166,7 @@ public class LanguageUVA implements CompilerInterface {
         try {
             client.executeMethod(get);
             InputStream firstGet = get.getResponseBodyAsStream();
-            BufferedReader br = null;
-
-            try {
-                br = new BufferedReader(new InputStreamReader(firstGet, "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(firstGet, StandardCharsets.UTF_8));
 
             String line;
             StringBuilder sb = new StringBuilder();
@@ -204,7 +193,7 @@ public class LanguageUVA implements CompilerInterface {
     private List<Map<String, String>> processResults(BufferedReader br) throws IOException {
         String line;
         StringBuilder sb;
-        List<Map<String, String>> results = new ArrayList<Map<String, String>>();
+        List<Map<String, String>> results = new ArrayList<>();
 
         while ((line = br.readLine()) != null) {
             if (line.matches(".*<td>[0-9]+</td>.*")) {
@@ -216,7 +205,7 @@ public class LanguageUVA implements CompilerInterface {
                 }
                 String[] split = sb.toString().split("(<td[^>]*>)|(</td>)");
 
-                Map<String, String> result = new HashMap<String, String>();
+                Map<String, String> result = new HashMap<>();
                 result.put("id", split[1].trim());
                 result.put("problemid", (split[3].replaceAll("<[^>]*>", "")).trim());
                 result.put("status", (split[7].replaceAll("<[^>]*>", "")).trim());
@@ -448,5 +437,61 @@ public class LanguageUVA implements CompilerInterface {
 
     @Override
     public void closeProgram(String path) {
+    }
+
+    public static void main(String[] args) {
+        CompilerInterface language = new LanguageUVA();
+        Properties properties = new Properties();
+
+        properties.setProperty("uva.languageId", "3");
+        properties.setProperty("CODEFILE_EXTENSION","cpp");
+        properties.setProperty("uva.login", "spamz");
+        properties.setProperty("uva.password", "spamz2");
+        properties.setProperty("uva.inqueue", "100");
+        properties.setProperty("uva.max_time", "60");
+
+        
+        
+        language.setProperties(properties);
+        
+        TestOutput output = language.runTest("#include<iostream>\n" +
+                "\n" +
+                "#define max(a,b) ((a)<(b) ? (b):(a))\n" +
+                "\n" +
+                "using namespace std;\n" +
+                "\n" +
+                "int main(){\n" +
+                "    int n, m, caseN = 0;\n" +
+                "    int n_tower[100+10], m_tower[100+10], c[100+10][100+10];\n" +
+                "    cin >> n >> m;\n" +
+                "    while (m != 0 && n != 0){\n" +
+                "        for(int i = 0; i < 110; ++i){\n" +
+                "            for(int j = 0; j < 110; ++j){\n" +
+                "                c[i][j] = 0;\n" +
+                "            }\n" +
+                "        }\n" +
+                "        for(int i = 1; i <= n; ++i)\n" +
+                "            cin >> n_tower[i];\n" +
+                "        for(int i = 1; i <= m; ++i)\n" +
+                "            cin >> m_tower[i];\n" +
+                "        for(int i = 1; i <= n; ++i){\n" +
+                "            for(int j = 1; j <= m; ++j){\n" +
+                "                if(n_tower[i] == m_tower[j])\n" +
+                "                    c[i][j] = c[i-1][j-1] + 1;\n" +
+                "                else\n" +
+                "                    c[i][j] = max(c[i][j-1], c[i-1][j]);\n" +
+                "            }\n" +
+                "        }\n" +
+                "        cout << \"Twin Towers #\" << ++caseN << endl;\n" +
+                "        cout << \"Number of Tiles : \" << c[n][m] << endl << endl;\n" +
+                "        cin >> n >> m;\n" +
+                "    }\n" +
+                "\n" +
+                "    return 0;\n" +
+                "}", new TestInput("10066", 1, 0, 0, null));
+        
+        System.out.println("Notes: "+output.getNotes());
+        System.out.println("Output text: "+output.getOutputText());
+        System.out.println("Points: "+output.getPoints());
     }
 }

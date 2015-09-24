@@ -23,7 +23,7 @@ public class BinaryClassLoader extends ClassLoader {
 
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(BinaryClassLoader.class);
 
-    private final Map<String, byte[]> entries = new HashMap<String, byte[]>();
+    private final Map<String, byte[]> entries = new HashMap<>();
 
     private Class<?> loadByParent(String name) throws ClassNotFoundException {
         if (getParent() != null) {
