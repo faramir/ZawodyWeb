@@ -8,6 +8,7 @@
 package pl.umk.mat.zawodyweb.compiler.classes;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -89,7 +90,6 @@ public class LanguageCPP implements CompilerInterface {
 //                if (readerEater.getException() != null) {
 //                    throw readerEater.getException();
 //                }
-
                 outputText = readerEater.getOutputText();
             } catch (InterruptedException ex) {
                 output.setRuntime(input.getTimeLimit());
@@ -121,14 +121,12 @@ public class LanguageCPP implements CompilerInterface {
 
             if ((int) (currentTime - time) < input.getTimeLimit()) {
                 output.setRuntime((int) (currentTime - time));
-            } else {
-                if (exception && (int) (currentTime - time) >= input.getTimeLimit()) {
-                    output.setRuntime(input.getTimeLimit());
-                    output.setStatus(ResultsStatusEnum.TLE.getCode());
-                    logger.debug("TLE after " + (currentTime - time) + "ms with Exception");
-                } else if (input.getTimeLimit() > 0) {
-                    output.setRuntime(input.getTimeLimit() - 1);
-                }
+            } else if (exception && (int) (currentTime - time) >= input.getTimeLimit()) {
+                output.setRuntime(input.getTimeLimit());
+                output.setStatus(ResultsStatusEnum.TLE.getCode());
+                logger.debug("TLE after " + (currentTime - time) + "ms with Exception");
+            } else if (input.getTimeLimit() > 0) {
+                output.setRuntime(input.getTimeLimit() - 1);
             }
 
             try {
@@ -239,7 +237,16 @@ public class LanguageCPP implements CompilerInterface {
             InterruptTimer timer = new InterruptTimer();
             Thread threadReaderEater = null;
             try {
-                p = new ProcessBuilder("g++", "-O2", "-static", "-o", compilefile, codefile, "-lm").start();
+                List<String> command = new ArrayList<>(
+                        Arrays.asList("g++", "-O2", "-static", "-o", compilefile, codefile, "-lm"));
+
+                String args = properties.getProperty("g++.args");
+                if (args != null && args.isEmpty() == false) {
+                    command.addAll(Arrays.asList(args.split(" ")));
+                }
+
+                p = new ProcessBuilder(command).start();
+
                 BufferedReader inputStream = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
                 timer.schedule(Thread.currentThread(), Integer.parseInt(properties.getProperty("COMPILE_TIMEOUT")));
