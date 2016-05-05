@@ -42,7 +42,6 @@ public class ExternalTask implements Runnable {
         Transaction transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         try {
             SubmitsDAO submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
-            ResultsDAO resultsDAO = DAOFactory.DEFAULT.buildResultsDAO();
 
             boolean manualResult = false;
             boolean externalResult = false;
@@ -70,7 +69,7 @@ public class ExternalTask implements Runnable {
                 if (notes == null) {
                     notes = "";
                 }
-                
+
                 String externalId = notes.substring(external.getPrefix().length() + 1);
 
                 TestOutput output = external.check(externalId, testInput, testOutput/* TODO: load CheckerInterface?*/);
@@ -81,12 +80,18 @@ public class ExternalTask implements Runnable {
                 }
 
                 result.setStatus(output.getStatus());
-                result.setNotes(output.getNotes());
                 result.setPoints(output.getPoints());
                 result.setRuntime(output.getRuntime());
                 result.setMemory(output.getMemUsed());
+                result.setNotes(output.getNotes());
 
-                resultsDAO.saveOrUpdate(result);
+                logger.debug("Saving result:"
+                        + " status: " + ResultsStatusEnum.getByCode(result.getStatus())
+                        + ", points: " + result.getPoints()
+                        + ", runtime: " + result.getRuntime()
+                        + ", memory: " + result.getMemory()
+                        + ", notes: '" + result.getNotes() + "'");
+                DAOFactory.DEFAULT.buildResultsDAO().saveOrUpdate(result);
             }
 
             if (externalResult == true) {
@@ -97,8 +102,10 @@ public class ExternalTask implements Runnable {
                 submit.setState(SubmitsStateEnum.DONE.getCode());
             }
 
+            logger.debug("Changing submit status to: " + SubmitsStateEnum.getByCode(submit.getState()));
             submitsDAO.saveOrUpdate(submit);
 
+            logger.debug("Commiting changes");
             transaction.commit();
         } catch (Throwable t) {
             logger.fatal("Exception in ExternalTask", t);

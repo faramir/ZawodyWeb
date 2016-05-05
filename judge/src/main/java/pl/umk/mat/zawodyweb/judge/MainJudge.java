@@ -234,7 +234,7 @@ public class MainJudge {
                         dbResult.setStatus(result.getStatus());
                         dbResult.setSubmits(submit);
                         dbResult.setTests(test);
-                        DAOFactory.DEFAULT.buildResultsDAO().save(dbResult);
+                        DAOFactory.DEFAULT.buildResultsDAO().saveOrUpdate(dbResult);
                         logger.info("Test " + test.getTestorder() + " finished with result " + result.getStatus() + "(" + result.getNotes() + ").");
                     }
 
@@ -330,7 +330,7 @@ public class MainJudge {
         for (String propertyName : properties.stringPropertyNames()) {
             logger.info(propertyName + " = " + properties.getProperty(propertyName));
         }
-        
+
 //        logger.info("JUDGEMANAGER_HOST = " + properties.getProperty("JUDGEMANAGER_HOST"));
 //        logger.info("JUDGEMANAGER_PORT = " + properties.getProperty("JUDGEMANAGER_PORT"));
 //        logger.info("JUDGEMANAGER_DELAY_CONNECT = " + properties.getProperty("JUDGEMANAGER_DELAY_CONNECT"));
@@ -344,7 +344,6 @@ public class MainJudge {
 //        logger.info("COMPILE_TIMEOUT = " + properties.getProperty("COMPILE_TIMEOUT"));
 //
 //        logger.info("JAVA_POLICY = " + properties.getProperty("JAVA_POLICY"));
-
         while (true) {
             try {
                 connectToJudgeManager();

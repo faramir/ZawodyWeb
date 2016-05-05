@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -83,6 +84,11 @@ public class MainExternal {
 
         if (externalInterfaces.isEmpty()) {
             logger.fatal("No external checkers available.");
+        } else {
+            logger.trace("Available EXTERNAL prefixes: " + String.join(",",
+                    externalInterfaces.values().stream()
+                    .map(ExternalLoadedClass::getExternalPrefix)
+                    .collect(Collectors.toList())));
         }
     }
 
@@ -96,6 +102,7 @@ public class MainExternal {
         } else {
             logger.info("Found " + submitsList.size() + " solution(s) with EXTERNAL state");
             for (Submits submit : submitsList) {
+                logger.debug("Looking for external for submitId: " + submit.getId());
                 ExternalInterface external = chooseExternalInterface(submit);
                 if (external == null) {
                     logger.error("Unable to find external for submitId: " + submit.getId());
@@ -114,6 +121,7 @@ public class MainExternal {
 
     private static ExternalInterface chooseExternalInterface(Submits submit) {
         for (Results r : submit.getResultss()) {
+            logger.trace("   submit result (" + r.getId() + ") status is " + ResultsStatusEnum.getByCode(r.getStatus()) + " with notes: " + r.getNotes());
             if (r.getStatus() == ResultsStatusEnum.EXTERNAL.getCode()) {
                 if (r.getNotes() == null || r.getNotes().isEmpty()) {
                     continue;

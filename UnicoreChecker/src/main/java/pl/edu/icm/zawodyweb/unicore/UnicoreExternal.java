@@ -303,6 +303,7 @@ public class UnicoreExternal implements ExternalInterface {
                 logger.trace("> " + line);
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.matches()) {
+                    logger.debug("Line (" + line + ") matches");
                     String nanos = matcher.group("nanos");
                     output.setRuntime((int) (Long.parseLong(nanos) / 1_000_000));
                     logger.debug("Elapsed time: " + output.getRuntime());
@@ -319,6 +320,7 @@ public class UnicoreExternal implements ExternalInterface {
                     logger.debug("Output is different: WA (0 points)");
                     output.setStatus(ResultsStatusEnum.WA.getCode());
                     output.setPoints(0);
+                    output.setNotes("");
                     return;
                 }
             }
@@ -326,10 +328,12 @@ public class UnicoreExternal implements ExternalInterface {
                 logger.debug("Output is the same: ACC (" + testInput.getMaxPoints() + " points)");
                 output.setStatus(ResultsStatusEnum.ACC.getCode());
                 output.setPoints(testInput.getMaxPoints());
+                output.setNotes("");
             } else {
                 logger.debug("Output is different: WA (0 points)");
                 output.setStatus(ResultsStatusEnum.WA.getCode());
                 output.setPoints(0);
+                output.setNotes("");
             }
         } finally {
             deleteFiles(files);
@@ -405,15 +409,13 @@ public class UnicoreExternal implements ExternalInterface {
                     if (matcher.matches()) {
                         stop = i;
                     }
-                } else {
-                    if ("### COMPILE FILES ###".equals(line)) {
-                        String notes = "";
-                        for (int j = i + 1; j < stop; ++j) {
-                            notes += lines[j] + "\n";
-                        }
-                        output.setNotes(notes);
-                        return;
+                } else if ("### COMPILE FILES ###".equals(line)) {
+                    String notes = "";
+                    for (int j = i + 1; j < stop; ++j) {
+                        notes += lines[j] + "\n";
                     }
+                    output.setNotes(notes);
+                    return;
                 }
             }
         } finally {
@@ -452,15 +454,13 @@ public class UnicoreExternal implements ExternalInterface {
                     if (matcher.matches()) {
                         stop = i;
                     }
-                } else {
-                    if ("### MODULE LOAD ###".equals(line)) {
-                        String notes = "";
-                        for (int j = i + 1; j < stop; ++j) {
-                            notes += lines[j] + "\n";
-                        }
-                        output.setNotes(notes);
-                        return;
+                } else if ("### MODULE LOAD ###".equals(line)) {
+                    String notes = "";
+                    for (int j = i + 1; j < stop; ++j) {
+                        notes += lines[j] + "\n";
                     }
+                    output.setNotes(notes);
+                    return;
                 }
             }
         } finally {
