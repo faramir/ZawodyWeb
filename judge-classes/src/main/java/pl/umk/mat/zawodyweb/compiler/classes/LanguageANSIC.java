@@ -29,7 +29,7 @@ import pl.umk.mat.zawodyweb.judge.commons.WriterFeeder;
  */
 public class LanguageANSIC implements CompilerInterface {
 
-    public static final org.apache.log4j.Logger logger = Logger.getLogger(LanguageC.class);
+    public static final org.apache.log4j.Logger logger = Logger.getLogger(LanguageANSIC.class);
     private Properties properties;
     private int compileResult = ResultsStatusEnum.UNDEF.getCode();
     private String compileDesc = "";
