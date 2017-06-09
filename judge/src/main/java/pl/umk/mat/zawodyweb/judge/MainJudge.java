@@ -51,16 +51,12 @@ public class MainJudge {
     private static long delayConnect;
 
     private static void connectToJudgeManager() throws IOException, InstantiationException, IllegalAccessException {
-        /*
-         * connecting to JudgeManager
-         */
-        Socket sock = null;
-        try {
-            sock = new Socket(InetAddress.getByName(properties.getProperty("JUDGEMANAGER_HOST")), Integer.parseInt(properties.getProperty("JUDGEMANAGER_PORT")));
+        try (Socket sock = new Socket(InetAddress.getByName(properties.getProperty("JUDGEMANAGER_HOST")), Integer.parseInt(properties.getProperty("JUDGEMANAGER_PORT")))) {
             DataInputStream input = new DataInputStream(sock.getInputStream());
             DataOutputStream output = new DataOutputStream(sock.getOutputStream());
             logger.info("Connection with JudgeManager on " + properties.getProperty("JUDGEMANAGER_HOST") + ":" + properties.getProperty("JUDGEMANAGER_PORT") + "...");
 
+            long timeWithoutAction = System.currentTimeMillis();
             while (true) {
                 /*
                  * receiving submit_id
@@ -69,8 +65,14 @@ public class MainJudge {
                 try {
                     id = input.readInt();
                     if (id == 0) {
+                        if (System.currentTimeMillis() - timeWithoutAction >= 5L * 60L * 1000L) {
+                            logger.info("Connection with JudgeManager is still established.");
+                            timeWithoutAction = System.currentTimeMillis();
+                        }
                         continue; // FIXME: brzydkie, bo brzydkie, ale przynajmniej w ten sposób można sprawdzić, czy połączenie jest utrzymane...
                     }
+                    
+                    timeWithoutAction = System.currentTimeMillis();
                     logger.info("Received submit id: " + id);
                 } catch (IOException ex) {
                     logger.error("Connection to JudgeManager closed, shutting down Judge...");
@@ -278,12 +280,9 @@ public class MainJudge {
                  */
                 logger.info("Processing SubmitID: " + id + " finished.");
                 output.writeInt(id);
+                output.flush();
             }
             // dalton said: "never": HibernateUtil.getSessionFactory().getCurrentSession().close();
-        } finally {
-            if (sock != null) {
-                sock.close();
-            }
         }
     }
 

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.log4j.Logger;
@@ -24,17 +25,16 @@ import pl.umk.mat.zawodyweb.database.pojo.Submits;
 
 /**
  * @author <a href="mailto:faramir@mat.umk.pl">Marek Nowicki</a>
- * @version $Rev$
- * Date: $Date$
+ * @version $Rev$ Date: $Date$
  */
 public class JudgesListener extends Thread {
 
-    private static final Logger logger = Logger.getLogger(JudgesListener.class);
-    private ServerSocket judgeSocket;
-    private ConcurrentLinkedQueue<Integer> submitsQueue;
-    private CompilerErrorHandler compilerErrorHandler;
-    private String[] addresses;
-    private long queueDelayTime;
+    private static final Logger LOGGER = Logger.getLogger(JudgesListener.class);
+    private final ServerSocket judgeSocket;
+    private final ConcurrentLinkedQueue<Integer> submitsQueue;
+    private final CompilerErrorHandler compilerErrorHandler;
+    private final String[] addresses;
+    private final long queueDelayTime;
 
     public JudgesListener(ServerSocket judgeSocket, Properties properties,
             ConcurrentLinkedQueue<Integer> submitsQueue,
@@ -43,7 +43,7 @@ public class JudgesListener extends Thread {
         this.judgeSocket = judgeSocket;
         this.submitsQueue = submitsQueue;
         this.compilerErrorHandler = compilerErrorHandler;
-        addresses = properties.getProperty("JUDGE_ADDRESSES").split("[ ]+");
+        addresses = properties.getProperty("JUDGE_ADDRESSES").split("[ ,;]+");
         queueDelayTime = Long.parseLong(properties.getProperty("JUDGE_DELAY"));
     }
 
@@ -58,10 +58,12 @@ public class JudgesListener extends Thread {
 
     private class JudgeWaiter extends Thread {
 
-        private Socket judgeClient;
+        private final int judgeNo;
+        private final Socket judgeClient;
 
-        public JudgeWaiter(Socket judgeClient) {
-            super();
+        public JudgeWaiter(int judgeNo, Socket judgeClient) {
+            super("JudgeWaiter-" + judgeNo);
+            this.judgeNo = judgeNo;
             this.judgeClient = judgeClient;
         }
 
@@ -78,30 +80,39 @@ public class JudgesListener extends Thread {
             Transaction transaction;
             String judgeHost = judgeClient.getInetAddress().getHostAddress();
 
-            logger.info("Judge connected from: " + judgeHost);
+            LOGGER.info("Judge[" + judgeNo + "] connected from: " + judgeHost);
             try {
                 DataInputStream in = new DataInputStream(judgeClient.getInputStream());
                 DataOutputStream out = new DataOutputStream(judgeClient.getOutputStream());
 
+                long timeWithoutAction = System.currentTimeMillis();
                 while (true) {
                     submitId = submitsQueue.poll();
 
                     if (submitId == null) {
                         out.writeInt(0); // FIXME: brzydkie, bo brzydkie... ciąg dalszy opisu w Judge
+                        out.flush();
+                        if (System.currentTimeMillis() - timeWithoutAction >= 5L * 60L * 1000L) {
+                            LOGGER.info("Judge[" + judgeNo + "] is still alive: " + judgeHost);
+                            timeWithoutAction = System.currentTimeMillis();
+                        }
                         delay(queueDelayTime);
-                    } else {
-                        logger.info("submit_id from queue: " + submitId);
-                        try {
-                            transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+                        continue;
+                    }
 
-                            Submits s = DAOFactory.DEFAULT.buildSubmitsDAO().getById(submitId);
-                            if (s != null) {
-                                if (s.getState().equals(SubmitsStateEnum.WAIT.getCode()) == true) {
-                                    int compilerId = s.getLanguages().getClasses().getId();
+                    timeWithoutAction = System.currentTimeMillis();
+                    LOGGER.info("Received submit_id from queue: " + submitId + " for Judge[" + judgeNo + "]");
+                    try {
+                        transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
-                                    transaction.commit();
+                        Submits s = DAOFactory.DEFAULT.buildSubmitsDAO().getById(submitId);
+                        if (s != null) {
+                            if (s.getState().equals(SubmitsStateEnum.WAIT.getCode()) == true) {
+                                int compilerId = s.getLanguages().getClasses().getId();
 
-                                    /*
+                                transaction.commit();
+
+                                /*
                                      * TODO: sprawdzanie, czy dany compiler dziala dobrze
                                      *       compiler to tez uruchamiacz - nie sprawdzamy porownywacza
                                      *       ...
@@ -110,59 +121,60 @@ public class JudgesListener extends Thread {
                                      * - jesli tak, to nie procesujemy zadania i nie wrzucamy na liste,
                                      *   bo i tak po 10 minutach (DELAY_PROCESS) pojawi sie znowu
                                      * - jesli nie bylo problemow to normalnie
-                                     */
-                                    if (compilerErrorHandler.canUseCompiler(compilerId) == false) {
-                                        logger.info("There were problems with compiler(" + compilerId + "). Not sending submit(" + submitId + ").");
-                                        continue;
-                                    }
+                                 */
+                                if (compilerErrorHandler.canUseCompiler(compilerId) == false) {
+                                    LOGGER.info("There were problems with compiler(" + compilerId + "). Not sending submit(" + submitId + ") to Judge[" + judgeNo + "].");
+                                    continue;
+                                }
 
-                                    out.writeInt(submitId);
-                                    logger.info("Sending submit(" + submitId + ") to Judge: " + judgeHost);
-                                    out.flush();
-                                    in.readInt();
+                                out.writeInt(submitId);
+                                LOGGER.info("Sending submit(" + submitId + ") to Judge[" + judgeNo + "]");
+                                out.flush();
+                                in.readInt();
 
-                                    /*
+                                /*
                                      * TODO: po sprawdzeniu rozwiazania, gdy wynikiem nie jest DONE i MANUAL
                                      *       dodajemy informacje do JudgeManager o problemie z kompilatorem K
                                      *       i wyswietlamy stosowny komunikat
-                                     */
+                                 */
+                                transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+                                s = DAOFactory.DEFAULT.buildSubmitsDAO().getById(submitId);
+                                Integer result = s.getState();
 
-                                    transaction = HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-                                    s = DAOFactory.DEFAULT.buildSubmitsDAO().getById(submitId);
-                                    Integer result = s.getState();
-
-                                    if (result.equals(SubmitsStateEnum.DONE.getCode())
-                                            || result.equals(SubmitsStateEnum.MANUAL.getCode())
-                                            || result.equals(SubmitsStateEnum.EXTERNAL.getCode())) {
-                                        logger.info("Checked submit(" + submitId + ") by Judge: " + judgeHost);
-                                    } else {
-                                        logger.error("Checked submit(" + submitId + ") with ERROR(" + result + ") by Judge: " + judgeHost);
-                                        compilerErrorHandler.addCompilerError(compilerId);
-                                    }
+                                if (result.equals(SubmitsStateEnum.DONE.getCode())
+                                        || result.equals(SubmitsStateEnum.MANUAL.getCode())
+                                        || result.equals(SubmitsStateEnum.EXTERNAL.getCode())) {
+                                    LOGGER.info("Checked submit(" + submitId + ") by Judge[" + judgeNo + "]");
                                 } else {
-                                    logger.info("Submit(" + submitId + ") don't have WAIT(" + SubmitsStateEnum.WAIT.getCode() + ") status - it have (" + s.getState() + ")");
+                                    LOGGER.error("Checked submit(" + submitId + ") with ERROR(" + result + ") by Judge[" + judgeNo + "]");
+                                    compilerErrorHandler.addCompilerError(compilerId);
                                 }
                             } else {
-                                logger.info("Error getting submit(" + submitId + ")");
+                                LOGGER.info("Submit(" + submitId + ") don't have WAIT(" + SubmitsStateEnum.WAIT.getCode() + ") status - it have (" + s.getState() + ")."
+                                        + " Not sending submit to Judge[" + judgeNo + "]");
                             }
-
-                            transaction.commit();
-                        } catch (SocketException ex) {
-                            logger.info("Exception occurs. Add submit(" + submitId + ") to queue", ex);
-                            submitsQueue.add(submitId);
-                            return;
-                        } catch (IOException ex) {
-                            logger.info("Exception occurs. Add submit(" + submitId + ") to queue", ex);
-                            submitsQueue.add(submitId);
+                        } else {
+                            LOGGER.info("Error getting submit(" + submitId + ") for Judge[" + judgeNo + "]");
                         }
+
+                        transaction.commit();
+                    } catch (SocketException ex) {
+                        LOGGER.info("Exception occurs while submitting to Judge[" + judgeNo + "]. Add submit(" + submitId + ") to queue", ex);
+                        submitsQueue.add(submitId);
+                        return;
+                    } catch (IOException ex) {
+                        LOGGER.info("Exception occurs while submitting to Judge[" + judgeNo + "]. Add submit(" + submitId + ") to queue", ex);
+                        submitsQueue.add(submitId);
                     }
                 }
             } catch (IOException ex) {
+                LOGGER.error("IOException occurs with Judge[" + judgeNo + "]", ex);
             } finally {
                 try {
-                    logger.info("Judge disconnected: " + judgeHost);
+                    LOGGER.info("Judge[" + judgeNo + "] disconnected: " + judgeHost);
                     judgeClient.close();
                 } catch (IOException ex) {
+                    LOGGER.error("Exception while closing connection with Judge[" + judgeNo + "]", ex);
                 }
             }
         }
@@ -170,23 +182,24 @@ public class JudgesListener extends Thread {
 
     @Override
     public void run() {
-        logger.info("Listening for connection from Judges...");
+        LOGGER.info("Listening for connection from Judges...");
+        int judgeNo = 0;
         while (judgeSocket.isClosed() == false) {
             try {
                 Socket judgeClient = judgeSocket.accept();
                 if (isAccepted(judgeClient.getInetAddress().getHostAddress()) == false) {
-                    logger.warn("Refused judge connection from: " + judgeClient.getInetAddress().getHostAddress());
+                    LOGGER.warn("Refused judge connection from: " + judgeClient.getInetAddress().getHostAddress() + ". Not in the white list: " + Arrays.toString(addresses));
 
                     judgeClient.close();
 
                     continue;
                 }
 
-                new JudgeWaiter(judgeClient).start();
+                new JudgeWaiter(judgeNo++, judgeClient).start();
             } catch (SocketException ex) {
-                logger.info("JudgesListener: " + ex.getMessage());
+                LOGGER.info("SocketException occurs in JudgesListener: ", ex);
             } catch (IOException ex) {
-                logger.error("Exception occurs: ", ex);
+                LOGGER.error("IOException occurs in JudgeListener: ", ex);
             }
         }
     }
