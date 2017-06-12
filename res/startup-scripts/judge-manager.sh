@@ -13,7 +13,7 @@ APPLICATION="judge-manager"
 
 WORK_DIR=`dirname "$0"`
 PID_FILE="$WORK_DIR"/"${APPLICATION}.pid"
-JAVA_PATH=/path/to/java
+JAVA_HOME=/path/to/java
 OUTPUT_FILE="$WORK_DIR"/"${APPLICATION}.out"
 JAR_FILE="$WORK_DIR"/"${APPLICATION}-jar-with-dependencies.jar"
 LOG4J_FILE="$WORK_DIR"/"${APPLICATION}-log4j.xml"

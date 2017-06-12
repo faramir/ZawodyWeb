@@ -76,7 +76,7 @@ function startApp {
     fi
   fi
   
-  eval "\"$JAVA_PATH\"/bin/java"  \
+  eval "\"$JAVA_HOME\"/bin/java"  \
        -Dlog4j.configuration=file:$LOG4J_FILE \
        -jar "\"$JAR_FILE\"" \
        "\"$CONFIGURATION_FILE\"" \

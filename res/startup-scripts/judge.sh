@@ -15,7 +15,7 @@ WORK_DIR=`dirname "$0"`
 SUBMITS_DIR="$WORK_DIR"/"submits"
 mkdir -p $SUBMITS_DIR
 
-JAVA_PATH=/path/to/java
+JAVA_HOME=/path/to/java
 JAR_FILE="$WORK_DIR"/"${APPLICATION}-jar-with-dependencies.jar"
 LOG4J_FILE="$WORK_DIR"/"${APPLICATION}-log4j.xml"
 
