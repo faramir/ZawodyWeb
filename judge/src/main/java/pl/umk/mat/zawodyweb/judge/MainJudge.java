@@ -129,15 +129,15 @@ public class MainJudge {
                     CompilerInterface compiler;
                     if (found) {
                         if (classes.get(iVectorClassInfo).getVersion() >= compilerClasses.getVersion()) {
-                            compiler = (CompilerInterface) new BinaryClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
+                            compiler = (CompilerInterface) new BinaryClassLoader().loadClassFromByteArray(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
                         } else {
                             classes.get(iVectorClassInfo).setVersion(compilerClasses.getVersion());
                             classes.get(iVectorClassInfo).setCode(compilerClasses.getCode());
-                            compiler = (CompilerInterface) new BinaryClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
+                            compiler = (CompilerInterface) new BinaryClassLoader().loadClassFromByteArray(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
                         }
                     } else {
                         classes.add(new ClassInfo(compilerClasses.getId(), compilerClasses.getFilename(), compilerClasses.getCode(), compilerClasses.getVersion()));
-                        compiler = (CompilerInterface) new BinaryClassLoader().loadCompiledClass(compilerClasses.getFilename(), compilerClasses.getCode()).newInstance();
+                        compiler = (CompilerInterface) new BinaryClassLoader().loadClassFromByteArray(compilerClasses.getFilename(), compilerClasses.getCode()).newInstance();
                     }
                     submissionProperties.setProperty("CODEFILE_EXTENSION", submit.getLanguages().getExtension());
 
@@ -162,15 +162,15 @@ public class MainJudge {
                     CheckerInterface checker;
                     if (found) {
                         if (classes.get(iVectorClassInfo).getVersion() >= diffClasses.getVersion()) {
-                            checker = (CheckerInterface) new BinaryClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
+                            checker = (CheckerInterface) new BinaryClassLoader().loadClassFromByteArray(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
                         } else {
                             classes.get(iVectorClassInfo).setVersion(diffClasses.getVersion());
                             classes.get(iVectorClassInfo).setCode(diffClasses.getCode());
-                            checker = (CheckerInterface) new BinaryClassLoader().loadCompiledClass(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
+                            checker = (CheckerInterface) new BinaryClassLoader().loadClassFromByteArray(classes.get(iVectorClassInfo).getFilename(), classes.get(iVectorClassInfo).getCode()).newInstance();
                         }
                     } else {
                         classes.add(new ClassInfo(diffClasses.getId(), diffClasses.getFilename(), diffClasses.getCode(), diffClasses.getVersion()));
-                        checker = (CheckerInterface) new BinaryClassLoader().loadCompiledClass(diffClasses.getFilename(), diffClasses.getCode()).newInstance();
+                        checker = (CheckerInterface) new BinaryClassLoader().loadClassFromByteArray(diffClasses.getFilename(), diffClasses.getCode()).newInstance();
                     }
                     checker.setProperties(submissionProperties);
 

@@ -15,7 +15,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 /**
- *
  * @author lukash2k
  * @author faramir
  */
@@ -57,18 +56,33 @@ public class BinaryClassLoader extends ClassLoader {
             ex.printStackTrace(System.err);
         }
 
-        loadByParent(name);
+        c = loadByParent(name);
+        if (c != null) {
+            return c;
+        }
 
         throw new ClassNotFoundException("Class not found: " + name);
     }
 
-    public Class<?> loadCompiledClass(String name, byte[] code) {
+    public Class<?> loadClassFromByteArray(String name, byte[] code) {
         Class<?> c = findLoadedClass(name);
         if (c != null) {
             return c;
         }
 
-        logger.trace("loading compiled: " + name);
+        if (code.length < 4) {
+            throw new ClassFormatError("Byte array is too short: " + code.length);
+        }
+        if (code[0] == 0x50 && code[1] == 0x4B && code[2] == 0x03 && code[3] == 0x04) {
+            // PK\x03\x04 -> jar file
+            return loadClassFromBinaryJar(name, code);
+        } else {
+            return loadCompiledClass(name, code);
+        }
+    }
+
+    private Class<?> loadCompiledClass(String name, byte[] code) {
+        logger.trace("Loading compiled class: " + name);
 
         Class<?> result = this.defineClass(name, code, 0, code.length);
         this.resolveClass(result);
@@ -76,32 +90,12 @@ public class BinaryClassLoader extends ClassLoader {
         return result;
     }
 
-//    /**
-//     * @throws ClassFormatError is thrown when there is problem with loading JAR
-//     * file
-//     */
-//    public Manifest loadManifestFromBinaryJar(byte[] jarBytes) {
-//        try {
-//            JarInputStream jis = null;
-//            try {
-//                jis = new JarInputStream(new ByteArrayInputStream(jarBytes));
-//                
-//                return jis.getManifest();
-//            } finally {
-//                if (jis != null) {
-//                    jis.close();
-//                }
-//            }
-//        } catch (IOException ex) {
-//            throw new ClassFormatError(ex.getLocalizedMessage());
-//        }
-//    }
-
     /**
      * @throws ClassFormatError is thrown when there is problem with loading JAR
-     * file
+     *                          file
      */
-    public Class<?> loadClassFromBinaryJar(String name, byte[] jarBytes) {
+    private Class<?> loadClassFromBinaryJar(String name, byte[] jarBytes) {
+        logger.trace("Loading class from jar: " + name);
         try {
             JarInputStream jis = null;
             try {
@@ -125,9 +119,13 @@ public class BinaryClassLoader extends ClassLoader {
                     int classSize = (int) entry.getSize();
                     byte[] classBytes = new byte[classSize];
 
-                    jis.read(classBytes, 0, classSize);
+                    int offset = 0;
+                    while (offset < classSize) {
+                        offset += jis.read(classBytes, offset, classSize - offset);
+                    }
 
                     entries.put(className, classBytes);
+                    logger.trace("Adding jar entry: " + className + " [size: " + classSize + "]");
                 }
 
                 return loadCompiledClass(name, entries.get(name));
