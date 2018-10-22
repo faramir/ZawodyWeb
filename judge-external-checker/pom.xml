@@ -16,7 +16,6 @@
     <!-- -->
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -89,14 +88,14 @@
     <!-- -->
     <dependencies>
         <dependency>
-            <groupId>${parent.groupId}</groupId>
+            <groupId>${project.parent.groupId}</groupId>
             <artifactId>database</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
-            <groupId>${parent.groupId}</groupId>
+            <groupId>${project.parent.groupId}</groupId>
             <artifactId>judge-commons</artifactId>
-            <version>${parent.version}</version>
+            <version>3.4.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>

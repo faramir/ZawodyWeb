@@ -95,7 +95,7 @@ public class SessionBean {
      *
      * @return
      */
-    @HttpAction(name = "openid", pattern = "openid")
+    @HttpAction(value = "openid", pattern = "openid")
     public String openIdResponse() {
         FacesContext context = FacesContext.getCurrentInstance();
         Identifier identifier = openIdConsumer.verifyResponse((HttpServletRequest) context.getExternalContext().getRequest());
@@ -303,7 +303,7 @@ public class SessionBean {
         return "start";
     }
 
-    @HttpAction(name = "logout", pattern = "logout")
+    @HttpAction(value = "logout", pattern = "logout")
     public String logOut() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);

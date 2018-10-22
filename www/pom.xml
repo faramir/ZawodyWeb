@@ -4,7 +4,7 @@
     <groupId>pl.umk.mat.zawodyweb</groupId>
     <artifactId>www</artifactId>
     <name>www</name>
-    <version>3.3.0-SNAPSHOT</version>
+    <version>3.3.1-SNAPSHOT</version>
     <description>WWW of ZawodyWEB</description>
     <packaging>war</packaging>
     <!-- -->
@@ -16,7 +16,6 @@
     <!-- -->
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -54,9 +53,11 @@
             </plugin>
             <plugin> <!-- mvn clean jetty:run -->
                 <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
-                <version>6.1.26</version>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>8.1.16.v20140903</version>
                 <configuration>
+                    <stopPort>8082</stopPort>
+                    <stopKey>jetty-stop</stopKey>
                     <scanIntervalSeconds>1</scanIntervalSeconds>
                     <connectors>
                         <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
@@ -71,30 +72,23 @@
     <!-- -->
     <repositories>
         <repository>
-            <id>people.apache.org</id>
-            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <id>maven central</id>
+            <url>http://central.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>gradle java-net</id>
+            <url>http://repo.gradle.org/gradle/java-net</url>
+        </repository>
+        <repository>
+            <id>jboss thirdparty</id>
+            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
+        </repository>
+        <repository>
+            <id>apache snapshot</id>
+            <url>https://repository.apache.org/snapshots</url>
             <snapshots>
                 <updatePolicy>interval:40320</updatePolicy>
             </snapshots>
-        </repository>
-        <repository>
-            <id>repository.apache.org-snapshots</id>
-            <url>http://repository.apache.org/snapshots</url>
-            <snapshots>
-                <updatePolicy>interval:40320</updatePolicy>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>repo.maven.apache.org</id>
-            <url>http://repo.maven.apache.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>appfuse</id>
-            <url>http://static.appfuse.org/repository/</url>
-        </repository>
-        <repository>
-            <id>jdom</id>
-            <url>http://code.berkeleybop.org/maven/repository/org/</url>
         </repository>
     </repositories>
     <!-- -->
@@ -120,11 +114,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
@@ -139,27 +128,27 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
-            <version>1.1.2</version>
+            <version>1.2</version>
         </dependency>
         <dependency>
-            <groupId>taglibs</groupId>
-            <artifactId>standard</artifactId>
-            <version>1.1.2</version>
+            <groupId>org.apache.taglibs</groupId>
+            <artifactId>taglibs-standard-impl</artifactId>
+            <version>1.2.5</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>2.5.6.SEC03</version>
+            <version>5.1.1.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>2.5.6.SEC03</version>
+            <version>5.1.1.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>2.5.6.SEC03</version>
+            <version>5.1.1.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
@@ -173,14 +162,14 @@
         </dependency>
         <dependency>
             <groupId>org.apache.myfaces.tomahawk</groupId>
-            <artifactId>tomahawk-sandbox</artifactId>
-            <version>1.1.9-SNAPSHOT</version>
+            <artifactId>tomahawk</artifactId>
+            <version>1.1.14</version>
         </dependency>
         <dependency>
             <groupId>org.restfaces</groupId>
             <artifactId>restfaces</artifactId>
-            <!--version>1.3.1.1-SNAPSHOT</version-->
-            <version>1.2</version>
+            <version>1.3.1.1-SNAPSHOT</version>
+            <!--<version>1.2</version>-->
         </dependency>
         <dependency>
             <groupId>com.sun.facelets</groupId>
@@ -188,44 +177,34 @@
             <version>1.1.15</version>
         </dependency>
         <dependency>
-            <groupId>com.lowagie</groupId>
-            <artifactId>itext</artifactId>
-            <version>1.4.8</version>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.13</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>1.1.1</version>
+            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.7</version>
+            <version>1.11</version>
         </dependency>
         <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.6</version>
         </dependency>
-        <!--dependency>
-            <groupId>net.sourceforge.nekohtml</groupId>
-            <artifactId>nekohtml</artifactId>
-            <version>1.9.14</version>
-        </dependency>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.9.1</version>
-        </dependency-->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>1.4</version>
+            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>org.richfaces.ui</groupId>
             <artifactId>richfaces-ui</artifactId>
-            <version>3.3.2.GA</version>
+            <version>3.3.4.Final</version>
             <exclusions>
                 <exclusion>
                     <artifactId>jsf-api</artifactId>
@@ -238,36 +217,41 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.richfaces.framework</groupId>
+            <artifactId>richfaces-impl</artifactId>
+            <version>3.3.4.Final</version>
+        </dependency>
+        <dependency>
             <groupId>org.openid4java</groupId>
             <artifactId>openid4java-consumer</artifactId>
             <version>0.9.6</version>
             <type>pom</type>
         </dependency>
         <dependency>
-            <artifactId>el-api</artifactId>
             <groupId>javax.el</groupId>
-            <version>1.2</version>
+            <artifactId>javax.el-api</artifactId>
+            <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
-            <groupId>jdom</groupId>
-            <version>1.1.1</version>
+            <version>2.0.2</version>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.5</version>
+            <artifactId>javax.mail-api</artifactId>
+            <version>1.6.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.0.12</version>
         </dependency>
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>fontbox</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>2.0.12</version>
         </dependency>
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
