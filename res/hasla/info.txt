@@ -1,0 +1,25 @@
+# GENEROWANIE 6 HASEŁ:
+tr -dc -- '_a-zA-Z1-9' < /dev/urandom | fold -w 12 | head -n 6 \
+  | awk 'BEGIN{i=0}{printf("konkurs%03d\t%s\n",i,$0);++i}'
+
+
+# PRZETWARZANIE HASEŁ DO ZW
+javac -cp '.;commons-codec-1.10.jar' ZawodyWebPassword.java
+
+java -cp '.;commons-codec-1.10.jar' ZawodyWebPassword < passwords.txt
+
+# TWORZENIE UZYTKOWNIKOW:
+INSERT INTO users (id, firstname, lastname, email, birthdate, login, pass, address, school, tutor, emailnotification,  schooltype, rdate, ldate, fdate, onlylogin) VALUES
+
+="(default, '"&C2&"', '"&D2&"', '"&E2&"', '1999-01-01', '"&F2&"', '"&H2&"', '', '', '', NULL,default,NOW(),NULL,NULL,true), "
+
+
+# ZMIANA DANYCH LOGOWANIA:
+java -cp '.;commons-codec-1.10.jar' ZawodyWebPassword < passwords2018.txt | sed 's/\r//g' | awk '{print "('\''"$1"'\'', '\''"$4"'\'')," }'
+
+UPDATE users SET
+  firstname='konkurs', pass=foo.pass, lastname=SUBSTRING(foo.login FROM '...$'), birthdate='2018-04-20', ldate=NULL, fdate=NULL, email='fri@mat.umk.pl', onlylogin=TRUE, rdate='2017-03-21 13:19:22.51736'
+FROM (VALUES
+...
+) AS foo(login, pass)
+WHERE users.login=foo.login;
