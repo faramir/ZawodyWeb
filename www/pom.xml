@@ -4,14 +4,14 @@
     <groupId>pl.umk.mat.zawodyweb</groupId>
     <artifactId>www</artifactId>
     <name>www</name>
-    <version>3.3.1-SNAPSHOT</version>
+    <version>3.4.0-SNAPSHOT</version>
     <description>WWW of ZawodyWEB</description>
     <packaging>war</packaging>
     <!-- -->
     <parent>
         <groupId>pl.umk.mat.zawodyweb</groupId>
         <artifactId>zawodyweb</artifactId>
-        <version>3.3.0-SNAPSHOT</version>
+        <version>3.4.0-SNAPSHOT</version>
     </parent>
     <!-- -->
     <build>
@@ -25,7 +25,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -35,7 +34,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.5</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>
@@ -43,7 +41,7 @@
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven2-plugin</artifactId>
-                <version>1.1.4</version>
+                <version>1.5.1</version>
                 <configuration>
                     <container>
                         <containerId>tomcat5x</containerId>
@@ -93,11 +91,6 @@
     </repositories>
     <!-- -->
     <dependencies>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>database</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -257,6 +250,11 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>jempbox</artifactId>
             <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>database</artifactId>
+            <version>3.4.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

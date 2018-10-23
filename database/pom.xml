@@ -4,14 +4,14 @@
     <groupId>pl.umk.mat.zawodyweb</groupId>
     <artifactId>database</artifactId>
     <name>database</name>
-    <version>3.3.0-SNAPSHOT</version>
+    <version>3.4.0-SNAPSHOT</version>
     <description>Database handler for ZawodyWEB</description>
     <packaging>jar</packaging>
     <!-- -->
     <parent>
         <groupId>pl.umk.mat.zawodyweb</groupId>
         <artifactId>zawodyweb</artifactId>
-        <version>3.3.0-SNAPSHOT</version>
+        <version>3.4.0-SNAPSHOT</version>
     </parent>
     <!-- -->
     <pluginRepositories>
@@ -38,7 +38,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -48,7 +47,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.5</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>
@@ -153,7 +151,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.2-1004-jdbc4</version>
+            <version>42.2.5</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
