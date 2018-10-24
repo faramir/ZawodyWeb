@@ -1317,3 +1317,20 @@ pre.code {
     font-size: 12px;
 }
 
+div.gprd {
+    width: 80%;
+    margin: 0 auto;
+    text-align: justify;
+}
+
+div.gprd input {
+    float: left;
+    width: auto;
+    clear: none;
+}
+
+div.gprd label {
+    height: auto;
+    float: none;
+    display: inline;
+}

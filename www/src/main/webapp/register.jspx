@@ -1,5 +1,5 @@
 <ui:composition template="/templates/main.jspx" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://myfaces.apache.org/sandbox">
+                xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:t="http://myfaces.apache.org/tomahawk">
     <ui:define name="pageTitle">
         ${messages.registration}
     </ui:define>
@@ -23,7 +23,7 @@
                 <div>
                     <h:outputLabel for="repPasswd" styleClass="required">${messages.repeat_passwd}:</h:outputLabel>
                     <h:inputSecret id="repPasswd" required="true" value="#{requestBean.repPasswd}">
-                        <s:validateCompareTo for="passwd" operator="==" message="#{messages.passwords_doesnt_match}" />
+                        <t:validateEqual for="passwd" message="#{messages.passwords_doesnt_match}" />
                     </h:inputSecret>
                     <h:message for="repPasswd" errorClass="error" />
                     <br class="clear" />
@@ -72,10 +72,16 @@
                     <h:inputText id="captcha" required="true" validator="#{requestBean.validateCaptcha}" />
                     <h:message for="captcha" errorClass="error" />
                     <div class="captcha">
-                        <t:captcha id="captchaImage" imageWidth="375" imageHeight="70" captchaSessionKeyName="captchaKey"  />
+                        <t:captcha id="captchaImage" imageWidth="375" imageHeight="70" captchaSessionKeyName="captchaKey" />
                     </div>
                     <br class="clear" />
                     <br />
+                </div>
+                <div class="gprd">
+                    <h:selectBooleanCheckbox id="gprd" validator="#{requestBean.validateGprd}" />
+                    <h:outputLabel for="gprd" class="required">${messages.gprd_information_clause}</h:outputLabel>
+                    <h:message for="gprd" errorClass="error" />
+                    <br class="clear" />
                 </div>
                 <div>
                     <a4j:commandButton id="save" reRender="formRegister" styleClass="submit" type="submit" value="#{messages.register}" action="#{requestBean.registerUser}" />

@@ -7,21 +7,8 @@
  */
 package pl.umk.mat.zawodyweb.www;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlInputSecret;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.myfaces.custom.datascroller.ScrollerActionEvent;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.hibernate.Criteria;
@@ -48,14 +35,31 @@ import pl.umk.mat.zawodyweb.www.util.SubmitsUtils;
 import pl.umk.mat.zawodyweb.www.zip.ZipFile;
 import pl.umk.mat.zawodyweb.www.zip.ZipSolutions;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlInputSecret;
+import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlSelectBooleanCheckbox;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 /**
- *
  * @author slawek
  * @author faramir
  */
 @Instance("#{requestBean}")
 public class RequestBean {
 
+    private static final Logger logger = Logger.getLogger(RequestBean.class);
     private static final ResourceBundle messages = ResourceBundle.getBundle("pl.umk.mat.zawodyweb.www.Messages");
     private SubmitsDAO submitsDAO = DAOFactory.DEFAULT.buildSubmitsDAO();
     private AliasesDAO aliasesDAO = DAOFactory.DEFAULT.buildAliasesDAO();
@@ -90,7 +94,7 @@ public class RequestBean {
     private Aliases editedAlias;
     private Classes editedClass;
     private Languages editedLanguage;
-//    private UsersRoles editedUsersRoles;
+    //    private UsersRoles editedUsersRoles;
     private List<LanguagesProblems> temporaryLanguagesProblems = null;
     private List<Contests> contests = null;
     private List<Series> contestsSeries = null;
@@ -712,7 +716,7 @@ public class RequestBean {
         return editedLanguage;
     }
 
-//    public UsersRoles getEditedUsersRoles() {
+    //    public UsersRoles getEditedUsersRoles() {
 //        if (editedUsersRoles == null) {
 //            FacesContext context = FacesContext.getCurrentInstance();
 //
@@ -945,7 +949,7 @@ public class RequestBean {
         this.temporaryQuestionId = temporaryQuestionId;
     }
 
-//    public Integer[] getTemporaryUserRolesIds() {
+    //    public Integer[] getTemporaryUserRolesIds() {
 //        return temporaryUserRolesIds;
 //    }
 //
@@ -1590,8 +1594,8 @@ public class RequestBean {
                         replace("%CONTEST%", question.getContests().getName()).
                         replace("%URL%", url).
                         replace("%PROBLEM%", (problem == null || problem.getId() == 0)
-                                        ? messages.getString("questions_general")
-                                        : problem.getName()).
+                                ? messages.getString("questions_general")
+                                : problem.getName()).
                         trim();
 
                 String text = messages.getString("email_question_text").
@@ -1600,8 +1604,8 @@ public class RequestBean {
                         replace("%CONTEST%", question.getContests().getName()).
                         replace("%URL%", url).
                         replace("%PROBLEM%", (problem == null || problem.getId() == 0)
-                                        ? messages.getString("questions_general")
-                                        : problem.getName()).
+                                ? messages.getString("questions_general")
+                                : problem.getName()).
                         trim();
 
                 EmailSender.send(emails, subject, text);
@@ -2531,18 +2535,28 @@ public class RequestBean {
     /**
      * Validates component with captcha text entered.
      *
-     * @param context faces context in which component resides
+     * @param context   faces context in which component resides
      * @param component component to be validated
-     * @param obj data entered in component
+     * @param obj       data entered in component
      */
     public void validateCaptcha(FacesContext context, UIComponent component, Object obj) {
         String captcha = (String) obj;
         ExternalContext extContext = context.getExternalContext();
-        String tmp = (String) extContext.getSessionMap().get("captchaKey");
+        String tmp = (String) extContext.getSessionMap().get("captchaSessionKeyName_captchaKey");
 
-        if (!captcha.toLowerCase().equals(tmp.toLowerCase())) {
+        if (captcha == null || tmp == null || !captcha.toLowerCase().equals(tmp.toLowerCase())) {
             ((HtmlInputText) component).setValid(false);
             String summary = messages.getString("bad_captcha");
+            WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, component, summary, null);
+
+            logger.trace("CAPTCHA incorrect: '" + captcha + "' != '" + tmp + "'");
+        }
+    }
+
+    public void validateGprd(FacesContext context, UIComponent component, Object obj) {
+        if ((Boolean) obj == false) {
+            ((HtmlSelectBooleanCheckbox) component).setValid(false);
+            String summary = messages.getString("gprd_required");
             WWWHelper.AddMessage(context, FacesMessage.SEVERITY_ERROR, component, summary, null);
         }
     }

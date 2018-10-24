@@ -158,6 +158,18 @@
             <artifactId>tomahawk</artifactId>
             <version>1.1.14</version>
         </dependency>
+        <!--dependency>
+            <groupId>org.apache.myfaces.tomahawk</groupId>
+            <artifactId>tomahawk-sandbox</artifactId>
+            <version>1.1.9-SNAPSHOT</version>
+        </dependency-->
+        <dependency>
+            <groupId>org.apache.myfaces.tomahawk</groupId>
+            <artifactId>tomahawk-sandbox</artifactId>
+            <version>1.1.9-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../res/libs/tomahawk-sandbox-1.1.9-SNAPSHOT.jar</systemPath>
+        </dependency>
         <dependency>
             <groupId>org.restfaces</groupId>
             <artifactId>restfaces</artifactId>
