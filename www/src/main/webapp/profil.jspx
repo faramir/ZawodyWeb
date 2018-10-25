@@ -65,8 +65,8 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="viewpdf">${messages.onlylogin}</h:outputLabel>
-                            <h:selectBooleanCheckbox id="viewpdf" value="#{requestBean.editedUser.onlylogin}" styleClass="check" />
+                            <h:outputLabel for="onlylogin_profile">${messages.onlylogin}</h:outputLabel>
+                            <h:selectBooleanCheckbox id="onlylogin_profile" value="#{requestBean.editedUser.onlylogin}" styleClass="check" />
                             <br class="clear" />                                
                         </div>
                         <div>

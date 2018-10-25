@@ -68,6 +68,11 @@
                     <br class="clear" />
                 </div>
                 <div>
+                    <h:outputLabel for="onlylogin">${messages.onlylogin}</h:outputLabel>
+                    <h:selectBooleanCheckbox id="onlylogin" value="#{requestBean.newUser.onlylogin}" styleClass="check" />
+                    <br class="clear" />
+                </div>
+                <div>
                     <h:outputLabel for="captcha" styleClass="required">${messages.text_from_picture}:</h:outputLabel>
                     <h:inputText id="captcha" required="true" validator="#{requestBean.validateCaptcha}" />
                     <h:message for="captcha" errorClass="error" />
