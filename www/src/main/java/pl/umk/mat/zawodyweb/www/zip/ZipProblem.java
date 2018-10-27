@@ -41,7 +41,7 @@ public class ZipProblem {
         xmlProblem.setConfig(problem.getConfig());
 
         xmlProblem.setText(setText(out, problem.getText()));
-        xmlProblem.setPdf(setPDF(out, problem.getFiles()));
+        xmlProblem.setFiles(setPDF(out, problem.getFiles()));
 
         Problem.Languages languages = new Problem.Languages();
         xmlProblem.setLanguages(languages);
@@ -106,7 +106,7 @@ public class ZipProblem {
         }
         problem.setText(new String(in.getFile(textFile), "UTF-8"));
 
-        String pdfFile = xmlProblem.getPdf();
+        String pdfFile = xmlProblem.getFiles();
 
         if (pdfFile != null && pdfFile.isEmpty() == false) {
             if (in.containsFile(pdfFile) == false) {

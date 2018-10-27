@@ -33,9 +33,17 @@
                     </c:if>
                 </div>
                 <div class="files">
-                    <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/files.html" title="PDF" rendered="#{requestBean.currentProblem.PDF != null}"><h:graphicImage alt="${messages.pdf_download}" title="${messages.pdf_download}" url="/media/images/icon-files.png" /></h:outputLink>
-                    </div>
-                    <div class="tresc">
+                    <c:choose>
+                    <c:when test="#{requestBean.currentProblem.files == null}"/>
+                        <c:when test="#{requestBean.currentProblem.files.extension == 'pdf'}">
+                            <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/files.html" rendered="#{requestBean.currentProblem.files != null}"><h:graphicImage alt="${messages.pdf_download}" title="${messages.pdf_download}" url="/media/images/icon-pdf.png" /></h:outputLink>
+                        </c:when>
+                    <c:otherwise>
+                        <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/files.html" rendered="#{requestBean.currentProblem.files != null}"><h:graphicImage alt="${messages.pdf_download}" title="${messages.file_download}" url="/media/images/icon-unknown.png" /></h:outputLink>
+                    </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="tresc">
                     <h:outputText value="${zw:nlToBr(requestBean.currentProblem.text)}" escape="false" />
                     <zw:problem-files problem="${requestBean.currentProblem}"/>
                 </div>
