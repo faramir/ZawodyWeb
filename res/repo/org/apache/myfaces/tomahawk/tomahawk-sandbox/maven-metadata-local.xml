@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.apache.myfaces.tomahawk</groupId>
+  <artifactId>tomahawk-sandbox</artifactId>
+  <versioning>
+    <versions>
+      <version>1.1.9-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20181027084137</lastUpdated>
+  </versioning>
+</metadata>

@@ -9,11 +9,10 @@ package pl.umk.mat.zawodyweb.externalchecker;
 
 import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
 import pl.umk.mat.zawodyweb.judge.commons.TestInput;
-import java.util.Properties;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 import org.hibernate.Transaction;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
-import pl.umk.mat.zawodyweb.database.ResultsDAO;
 import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 import pl.umk.mat.zawodyweb.database.SubmitsDAO;
 import pl.umk.mat.zawodyweb.database.SubmitsStateEnum;
@@ -45,6 +44,7 @@ public class ExternalTask implements Runnable {
 
             boolean manualResult = false;
             boolean externalResult = false;
+            boolean changedResult = false;
 
             Submits submit = submitsDAO.getById(submitId);
 
@@ -91,22 +91,28 @@ public class ExternalTask implements Runnable {
                         + ", runtime: " + result.getRuntime()
                         + ", memory: " + result.getMemory()
                         + ", notes: '" + result.getNotes() + "'");
-                DAOFactory.DEFAULT.buildResultsDAO().saveOrUpdate(result);
+                DAOFactory.DEFAULT.buildResultsDAO().update(result);
+                changedResult = true;
             }
 
-            if (externalResult == true) {
-                submit.setState(SubmitsStateEnum.EXTERNAL.getCode());
-            } else if (manualResult == true) {
-                submit.setState(SubmitsStateEnum.MANUAL.getCode());
+            if (changedResult) {
+                if (externalResult == true) {
+                    submit.setState(SubmitsStateEnum.EXTERNAL.getCode());
+                } else if (manualResult == true) {
+                    submit.setState(SubmitsStateEnum.MANUAL.getCode());
+                } else {
+                    submit.setState(SubmitsStateEnum.DONE.getCode());
+                }
+
+                logger.debug("Changing submit status to: " + SubmitsStateEnum.getByCode(submit.getState()));
+                submitsDAO.update(submit);
+
+                logger.debug("Commiting changes");
+                transaction.commit();
             } else {
-                submit.setState(SubmitsStateEnum.DONE.getCode());
+                logger.debug("Nothing changed.");
+                transaction.rollback();
             }
-
-            logger.debug("Changing submit status to: " + SubmitsStateEnum.getByCode(submit.getState()));
-            submitsDAO.saveOrUpdate(submit);
-
-            logger.debug("Commiting changes");
-            transaction.commit();
         } catch (Throwable t) {
             logger.fatal("Exception in ExternalTask", t);
             transaction.rollback();

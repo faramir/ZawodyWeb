@@ -1649,8 +1649,8 @@ public class RequestBean {
         return null;
     }
 
-    @HttpAction(value = "rejudge_submit", pattern = "rejudge/{id}/submit")
-    public String reJudgeSubmit(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "rejudge_submit", pattern = "rejudge/{id}/submit")
+    public String reJudgeSubmit(@Param(name = "id", encode = true) int id) {
         Submits s = submitsDAO.getById(id);
 
         if (s != null && rolesBean.canRate(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
@@ -1661,8 +1661,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "rejudge_problem", pattern = "rejudge/{id}/problem")
-    public String reJudgeProblem(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "rejudge_problem", pattern = "rejudge/{id}/problem")
+    public String reJudgeProblem(@Param(name = "id", encode = true) int id) {
         Problems p = problemsDAO.getById(id);
 
         if (p != null && rolesBean.canRate(p.getSeries().getContests().getId(), p.getSeries().getId())) {
@@ -1673,8 +1673,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "rejudge_seria", pattern = "rejudge/{id}/seria")
-    public String reJudgeSeria(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "rejudge_seria", pattern = "rejudge/{id}/seria")
+    public String reJudgeSeria(@Param(name = "id", encode = true) int id) {
         Series s = seriesDAO.getById(id);
 
         if (s != null && rolesBean.canRate(s.getContests().getId(), s.getId())) {
@@ -1685,8 +1685,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "rejudge_contest", pattern = "rejudge/{id}/contest")
-    public String reJudgeContest(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "rejudge_contest", pattern = "rejudge/{id}/contest")
+    public String reJudgeContest(@Param(name = "id", encode = true) int id) {
         Contests c = contestsDAO.getById(id);
 
         if (c != null && rolesBean.canRateContest(c)) {
@@ -1697,8 +1697,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "problems", pattern = "problems/{id}/{title}")
-    public String goToProblems(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy) {
+    @HttpAction(name = "problems", pattern = "problems/{id}/{title}")
+    public String goToProblems(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
 
         if (getCurrentContest() == null) {
@@ -1708,8 +1708,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "questions", pattern = "questions/{id}/{title}")
-    public String goToQuestions(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy) {
+    @HttpAction(name = "questions", pattern = "questions/{id}/{title}")
+    public String goToQuestions(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
         if (getCurrentContest() == null) {
             return "/error/404";
@@ -1718,8 +1718,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "ranking", pattern = "ranking/{id}/{title}")
-    public String goToRanking(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy) {
+    @HttpAction(name = "ranking", pattern = "ranking/{id}/{title}")
+    public String goToRanking(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
         if (getCurrentContest() == null) {
             return "/error/404";
@@ -1734,8 +1734,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "ranking_date", pattern = "ranking/{id}/{title}/{date}")
-    public String goToRankingDate(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy, @Param(value = "date", encode = true) String date) {
+    @HttpAction(name = "ranking_date", pattern = "ranking/{id}/{title}/{date}")
+    public String goToRankingDate(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy, @Param(name = "date", encode = true) String date) {
         selectContest(id);
         if (getCurrentContest() == null) {
             return "/error/404";
@@ -1754,8 +1754,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "ranking_seria", pattern = "ranking_seria/{id}/{title}")
-    public String goToRankingSeria(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy) {
+    @HttpAction(name = "ranking_seria", pattern = "ranking_seria/{id}/{title}")
+    public String goToRankingSeria(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         Series serie = seriesDAO.getById(id);
         if (serie == null
                 || (ELFunctions.isValidIP(serie.getOpenips(), getClientIp()) == false
@@ -1780,8 +1780,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "ranking_seria_date", pattern = "ranking_seria/{id}/{title}/{date}")
-    public String goToRankingSeriaDate(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy, @Param(value = "date", encode = true) String date) {
+    @HttpAction(name = "ranking_seria_date", pattern = "ranking_seria/{id}/{title}/{date}")
+    public String goToRankingSeriaDate(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy, @Param(name = "date", encode = true) String date) {
         Series serie = seriesDAO.getById(id);
         if (serie == null
                 || (ELFunctions.isValidIP(serie.getOpenips(), getClientIp()) == false
@@ -1811,8 +1811,8 @@ public class RequestBean {
 
     }
 
-    @HttpAction(value = "subranking", pattern = "subranking/{id}/{title}")
-    public String goToSubranking(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy) {
+    @HttpAction(name = "subranking", pattern = "subranking/{id}/{title}")
+    public String goToSubranking(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
         if (getCurrentContest() == null) {
             return "/error/404";
@@ -1827,8 +1827,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "rules", pattern = "rules/{id}/{title}")
-    public String goToRules(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy) {
+    @HttpAction(name = "rules", pattern = "rules/{id}/{title}")
+    public String goToRules(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
         if (getCurrentContest() == null) {
             return "/error/404";
@@ -1837,8 +1837,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "submissions", pattern = "submissions/{id}/{title}")
-    public String goToSubmissions(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy) {
+    @HttpAction(name = "submissions", pattern = "submissions/{id}/{title}")
+    public String goToSubmissions(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         selectContest(id);
 
         if (sessionBean.getCurrentContestId() != sessionBean.getSubmissionsContestId() || (new Date().getTime() - sessionBean.getSubmissionsLastVisit()) > 60 * 60 * 1000) {
@@ -1858,8 +1858,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "submissions_username", pattern = "submissions_username/{username}")
-    public String goToSubmissionsUsername(@Param(value = "username", encode = true) String username) {
+    @HttpAction(name = "submissions_username", pattern = "submissions_username/{username}")
+    public String goToSubmissionsUsername(@Param(name = "username", encode = true) String username) {
         try {
             sessionBean.setSubmissionsUserId(usersDAO.findByLogin(username).get(0).getId());
         } catch (Exception e) {
@@ -1874,8 +1874,8 @@ public class RequestBean {
 
     }
 
-    @HttpAction(value = "submissions_problem", pattern = "submissions_problem/{id}")
-    public String goToSubmissionsProblem(@Param(value = "id", encode = true) Integer id) {
+    @HttpAction(name = "submissions_problem", pattern = "submissions_problem/{id}")
+    public String goToSubmissionsProblem(@Param(name = "id", encode = true) Integer id) {
         try {
             Problems p = problemsDAO.getById(id);
             selectContest(p.getSeries().getContests().getId());
@@ -1892,8 +1892,8 @@ public class RequestBean {
 
     }
 
-    @HttpAction(value = "submissions_seria", pattern = "submissions_seria/{id}")
-    public String goToSubmissionsSeries(@Param(value = "id", encode = true) Integer id) {
+    @HttpAction(name = "submissions_seria", pattern = "submissions_seria/{id}")
+    public String goToSubmissionsSeries(@Param(name = "id", encode = true) Integer id) {
         if (getCurrentContest() == null || sessionBean.isShowOnlyMySubmissions() == true) {
             return "/error/404";
         } else {
@@ -1910,8 +1910,8 @@ public class RequestBean {
 
     }
 
-    @HttpAction(value = "submission", pattern = "submission/{id}/{title}")
-    public String goToSubmission(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy) {
+    @HttpAction(name = "submission", pattern = "submission/{id}/{title}")
+    public String goToSubmission(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         currentSubmit = submitsDAO.getById(id);
 
         if (currentSubmit == null) {
@@ -1923,8 +1923,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "code", pattern = "code/{id}/{title}")
-    public String goToViewCode(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy) {
+    @HttpAction(name = "code", pattern = "code/{id}/{title}")
+    public String goToViewCode(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         String res = goToSubmission(id, dummy);
         if (res.equals("submission")) {
             res = "view_code";
@@ -1932,8 +1932,8 @@ public class RequestBean {
         return res;
     }
 
-    @HttpAction(value = "rate", pattern = "rate/{id}/{title}")
-    public String goToRate(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy) {
+    @HttpAction(name = "rate", pattern = "rate/{id}/{title}")
+    public String goToRate(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         String res = goToSubmission(id, dummy);
         if (res.equals("submission")) {
             ratingMode = true;
@@ -1942,8 +1942,8 @@ public class RequestBean {
         return res;
     }
 
-    @HttpAction(value = "problem", pattern = "problem/{id}/{title}")
-    public String goToProblem(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy) {
+    @HttpAction(name = "problem", pattern = "problem/{id}/{title}")
+    public String goToProblem(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         currentProblem = problemsDAO.getById(id);
 
         if (currentProblem != null) {
@@ -1966,8 +1966,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "question", pattern = "question/{id}/{title}")
-    public String goToQuestion(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy) {
+    @HttpAction(name = "question", pattern = "question/{id}/{title}")
+    public String goToQuestion(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         temporaryQuestionId = id;
         editedQuestion = questionsDAO.getById(id);
 
@@ -1980,8 +1980,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "submit", pattern = "submit/{id}/{title}")
-    public String goToSubmit(@Param(value = "id", encode = true) int id, @Param(value = "title", encode = true) String dummy) {
+    @HttpAction(name = "submit", pattern = "submit/{id}/{title}")
+    public String goToSubmit(@Param(name = "id", encode = true) int id, @Param(name = "title", encode = true) String dummy) {
         currentProblem = problemsDAO.getById(id);
 
         if (currentProblem == null) {
@@ -1993,8 +1993,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "delcontest", pattern = "del/{id}/contest")
-    public String deleteContest(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "delcontest", pattern = "del/{id}/contest")
+    public String deleteContest(@Param(name = "id", encode = true) int id) {
         if (rolesBean.canDeleteContest(id, null)) {
             contestsDAO.deleteById(id);
             if (sessionBean.getCurrentContestId() != null && sessionBean.getCurrentContestId().equals(id)) {
@@ -2007,8 +2007,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "dellanguage", pattern = "del/{id}/language")
-    public String deleteLanguage(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "dellanguage", pattern = "del/{id}/language")
+    public String deleteLanguage(@Param(name = "id", encode = true) int id) {
         if (rolesBean.canEditAnyProblem()) {
             try {
                 languagesDAO.deleteById(id);
@@ -2028,8 +2028,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "delalias", pattern = "del/{id}/alias")
-    public String deleteAliases(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "delalias", pattern = "del/{id}/alias")
+    public String deleteAliases(@Param(name = "id", encode = true) int id) {
         if (rolesBean.canEditAnyProblem()) {
             aliasesDAO.deleteById(id);
             return "/admin/listaliases";
@@ -2038,8 +2038,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "delclass", pattern = "del/{id}/class")
-    public String deleteClasses(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "delclass", pattern = "del/{id}/class")
+    public String deleteClasses(@Param(name = "id", encode = true) int id) {
         if (rolesBean.canEditAnyProblem()) {
             classesDAO.deleteById(id);
             return "/admin/listclasses";
@@ -2048,8 +2048,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "delsubmit", pattern = "del/{id}/submit")
-    public String deleteSubmit(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "delsubmit", pattern = "del/{id}/submit")
+    public String deleteSubmit(@Param(name = "id", encode = true) int id) {
         Submits s = submitsDAO.getById(id);
 
         if (s != null && rolesBean.canAddProblem(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
@@ -2060,8 +2060,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "ghostsubmit", pattern = "ghost/{id}/submit")
-    public String ghostSubmit(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "ghostsubmit", pattern = "ghost/{id}/submit")
+    public String ghostSubmit(@Param(name = "id", encode = true) int id) {
         Submits s = submitsDAO.getById(id);
 
         if (s != null && rolesBean.canRate(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
@@ -2074,14 +2074,14 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "addseries", pattern = "add/{id}/series")
-    public String goToAddseries(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "addseries", pattern = "add/{id}/series")
+    public String goToAddseries(@Param(name = "id", encode = true) int id) {
         temporaryContestId = id;
         return "/admin/editseries";
     }
 
-    @HttpAction(value = "delseries", pattern = "del/{id}/series")
-    public String deleteSeries(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "delseries", pattern = "del/{id}/series")
+    public String deleteSeries(@Param(name = "id", encode = true) int id) {
         Series s = seriesDAO.getById(id);
         if (s != null && rolesBean.canDeleteSeries(s.getContests().getId(), id)) {
             try {
@@ -2101,8 +2101,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "deltest", pattern = "del/{id}/test")
-    public String deleteTest(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "deltest", pattern = "del/{id}/test")
+    public String deleteTest(@Param(name = "id", encode = true) int id) {
         Tests s = testsDAO.getById(id);
         if (s != null && rolesBean.canEditProblem(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getId())) {
             temporaryProblemId = s.getProblems().getId();
@@ -2113,8 +2113,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "addproblem", pattern = "add/{id}/problem")
-    public String goToAddProblem(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "addproblem", pattern = "add/{id}/problem")
+    public String goToAddProblem(@Param(name = "id", encode = true) int id) {
         Series s = seriesDAO.getById(id);
         if (s != null) {
             temporarySeriesId = id;
@@ -2124,13 +2124,13 @@ public class RequestBean {
         return "/admin/editproblem";
     }
 
-    @HttpAction(value = "putcontest", pattern = "put/contest")
+    @HttpAction(name = "putcontest", pattern = "put/contest")
     public String goToPutContest() {
         return "/admin/uploadcontest";
     }
 
-    @HttpAction(value = "putserie", pattern = "put/{id}/serie")
-    public String goToPutSerie(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "putserie", pattern = "put/{id}/serie")
+    public String goToPutSerie(@Param(name = "id", encode = true) int id) {
         Contests c = contestsDAO.getById(id);
         if (c != null) {
             temporaryContestId = c.getId();
@@ -2139,8 +2139,8 @@ public class RequestBean {
         return "/admin/uploadserie";
     }
 
-    @HttpAction(value = "putproblem", pattern = "put/{id}/problem")
-    public String goToPutProblem(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "putproblem", pattern = "put/{id}/problem")
+    public String goToPutProblem(@Param(name = "id", encode = true) int id) {
         Series s = seriesDAO.getById(id);
         if (s != null) {
             temporarySeriesId = id;
@@ -2150,8 +2150,8 @@ public class RequestBean {
         return "/admin/uploadproblem";
     }
 
-    @HttpAction(value = "puttest", pattern = "put/{id}/test")
-    public String goToPutTest(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "puttest", pattern = "put/{id}/test")
+    public String goToPutTest(@Param(name = "id", encode = true) int id) {
         Problems p = problemsDAO.getById(id);
         if (p != null) {
             temporaryProblemId = id;
@@ -2162,8 +2162,8 @@ public class RequestBean {
         return "/admin/uploadtest";
     }
 
-    @HttpAction(value = "delproblem", pattern = "del/{id}/problem")
-    public String deleteProblem(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "delproblem", pattern = "del/{id}/problem")
+    public String deleteProblem(@Param(name = "id", encode = true) int id) {
         Problems p = problemsDAO.getById(id);
 
         if (p != null && rolesBean.canDeleteProblem(p.getSeries().getContests().getId(), p.getSeries().getId())) {
@@ -2174,8 +2174,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "addtest", pattern = "add/{id}/test")
-    public String goToAddtest(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "addtest", pattern = "add/{id}/test")
+    public String goToAddtest(@Param(name = "id", encode = true) int id) {
         Problems p = problemsDAO.getById(id);
         if (p != null) {
             temporaryProblemId = id;
@@ -2186,8 +2186,8 @@ public class RequestBean {
         return "/admin/edittest";
     }
 
-    @HttpAction(value = "edituser", pattern = "edit/{id}/user")
-    public String goToEdituser(@Param(value = "id", encode = true) String username) {
+    @HttpAction(name = "edituser", pattern = "edit/{id}/user")
+    public String goToEdituser(@Param(name = "id", encode = true) String username) {
         if (!rolesBean.canEditUsers()) {
             return "/error/404";
         }
@@ -2237,8 +2237,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "adduserrole", pattern = "add/{id}/userrole")
-    public String goToAdduserrole(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "adduserrole", pattern = "add/{id}/userrole")
+    public String goToAdduserrole(@Param(name = "id", encode = true) int id) {
         if (!rolesBean.canEditUsers()) {
             return "/error/404";
         }
@@ -2257,8 +2257,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "edituserrole", pattern = "edit/{id}/userrole")
-    public String goToEdituserrole(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "edituserrole", pattern = "edit/{id}/userrole")
+    public String goToEdituserrole(@Param(name = "id", encode = true) int id) {
         if (!rolesBean.canEditUsers()) {
             return "/error/404";
         }
@@ -2286,8 +2286,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "deluserrole", pattern = "del/{id}/userrole")
-    public String deleteUserrole(@Param(value = "id", encode = true) int id) {
+    @HttpAction(name = "deluserrole", pattern = "del/{id}/userrole")
+    public String deleteUserrole(@Param(name = "id", encode = true) int id) {
         if (!rolesBean.canEditUsers()) {
             return "/error/404";
         }
@@ -2305,8 +2305,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "clock", pattern = "clock/{date}")
-    public String goToClock(@Param(value = "date", encode = true) String date) {
+    @HttpAction(name = "clock", pattern = "clock/{date}")
+    public String goToClock(@Param(name = "date", encode = true) String date) {
         try {
             temporaryDate = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(date);
         } catch (Exception e) {
@@ -2337,8 +2337,8 @@ public class RequestBean {
         return "clock";
     }
 
-    @HttpAction(value = "viewpdfasimage", pattern = "view/{id}/pdf")
-    public String viewPdfAsImage(@Param(value = "id", encode = true) int id) throws IOException {
+    @HttpAction(name = "viewpdfasimage", pattern = "view/{id}/pdf")
+    public String viewPdfAsImage(@Param(name = "id", encode = true) int id) throws IOException {
         try {
             String name = StringUtils.EMPTY;
             String mimetype = StringUtils.EMPTY;
@@ -2380,8 +2380,8 @@ public class RequestBean {
         }
     }
 
-    @HttpAction(value = "getfile", pattern = "get/{id}/{type}")
-    public String getFile(@Param(value = "id", encode = true) int id, @Param(value = "type", encode = true) String type) throws IOException {
+    @HttpAction(name = "getfile", pattern = "get/{id}/{type}")
+    public String getFile(@Param(name = "id", encode = true) int id, @Param(name = "type", encode = true) String type) throws IOException {
         try {
             String name = StringUtils.EMPTY;
             String mimetype = StringUtils.EMPTY;
