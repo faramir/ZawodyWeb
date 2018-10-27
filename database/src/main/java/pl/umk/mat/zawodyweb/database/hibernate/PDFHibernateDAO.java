@@ -8,7 +8,7 @@
 package pl.umk.mat.zawodyweb.database.hibernate;
 
 import pl.umk.mat.zawodyweb.database.PDFDAO;
-import pl.umk.mat.zawodyweb.database.pojo.PDF;
+import pl.umk.mat.zawodyweb.database.pojo.Files;
 
 /**
  * <p>Hibernate DAO layer for Classess</p>
@@ -18,7 +18,7 @@ import pl.umk.mat.zawodyweb.database.pojo.PDF;
  * @see http://www.hibernate.org/328.html
  */
 public class PDFHibernateDAO extends
-		AbstractHibernateDAO<PDF, Integer> implements
+		AbstractHibernateDAO<Files, Integer> implements
 		PDFDAO {
 
 	

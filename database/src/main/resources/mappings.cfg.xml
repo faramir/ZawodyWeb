@@ -21,6 +21,6 @@
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.UserLog"/>
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.Roles"/>
         <mapping class="pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems"/>
-        <mapping class="pl.umk.mat.zawodyweb.database.pojo.PDF"/>
+        <mapping class="pl.umk.mat.zawodyweb.database.pojo.Files"/>
     </session-factory>
 </hibernate-configuration>

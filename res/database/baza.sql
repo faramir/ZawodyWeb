@@ -130,16 +130,18 @@ CREATE TABLE LANGUAGES (
 
 CREATE TABLE CLASSES ( 
         id                  serial primary key,
-        filename            varchar(255) unique,
+        filename            varchar(255),
         version             int,
         description         varchar(255),
         type                int,
         code                bytea
 );
 
-CREATE TABLE PDF (  
-        id              serial primary key,
-        pdf             bytea
+CREATE TABLE FILES (  
+        id                  serial primary key,
+        bytes               bytea,
+        filename            varchar(255),
+        extension           varchar(8)
 );
 
 CREATE TABLE USERLOG ( 
@@ -160,7 +162,7 @@ ALTER TABLE SERIES ADD contestsId int REFERENCES CONTESTS(id);
 ALTER TABLE QUESTIONS ADD usersId int REFERENCES USERS(id);
 ALTER TABLE QUESTIONS ADD contestsId int REFERENCES CONTESTS(id);
 ALTER TABLE PROBLEMS ADD seriesId int REFERENCES SERIES(id);
-ALTER TABLE PROBLEMS ADD pdfId int REFERENCES PDF(id);
+ALTER TABLE PROBLEMS ADD filesId int REFERENCES PDF(id);
 ALTER TABLE RESULTS ADD submitsId int REFERENCES SUBMITS(id);
 ALTER TABLE SUBMITS ADD problemsId int REFERENCES PROBLEMS(id);
 ALTER TABLE QUESTIONS ADD tasksId int REFERENCES PROBLEMS(id);

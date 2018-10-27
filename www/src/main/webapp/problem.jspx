@@ -32,12 +32,12 @@
                         ${messages.problem_codesize_prefix}: ${requestBean.currentProblem.codesize} ${messages.problem_codesize_sufix}
                     </c:if>
                 </div>
-                <div class="pdf">
-                    <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/pdf.html" title="PDF" rendered="#{requestBean.currentProblem.PDF != null}"><h:graphicImage alt="${messages.pdf_download}" title="${messages.pdf_download}" url="/media/images/pdf.png" /></h:outputLink>
+                <div class="files">
+                    <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/files.html" title="PDF" rendered="#{requestBean.currentProblem.PDF != null}"><h:graphicImage alt="${messages.pdf_download}" title="${messages.pdf_download}" url="/media/images/icon-files.png" /></h:outputLink>
                     </div>
                     <div class="tresc">
                     <h:outputText value="${zw:nlToBr(requestBean.currentProblem.text)}" escape="false" />
-                    <zw:problem-pdf problem="${requestBean.currentProblem}"/>
+                    <zw:problem-files problem="${requestBean.currentProblem}"/>
                 </div>
                 <div class="wyslij">
                     <h:panelGroup rendered="${(zw:submitIpOk(requestBean.currentProblem, requestBean.clientIp) and zw:submitDateOk(requestBean.currentProblem)) or zw:canEditProblem(rolesBean, requestBean.currentProblem.series.contests.id, requestBean.currentProblem.series.id)}">

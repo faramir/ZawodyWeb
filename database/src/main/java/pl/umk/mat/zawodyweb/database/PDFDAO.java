@@ -7,7 +7,8 @@
  */
 package pl.umk.mat.zawodyweb.database;
 
-import pl.umk.mat.zawodyweb.database.pojo.PDF;
+import pl.umk.mat.zawodyweb.database.pojo.Files;
+
 /**
  * <p>Generic DAO layer for Classess</p>
  * <p>Generated at Fri May 08 19:00:59 CEST 2009</p>
@@ -15,7 +16,7 @@ import pl.umk.mat.zawodyweb.database.pojo.PDF;
  * @author Salto-db Generator v1.1 / EJB3 + Hibernate DAO
  * @see http://www.hibernate.org/328.html
  */
-public interface PDFDAO extends GenericDAO<PDF,Integer> {
+public interface PDFDAO extends GenericDAO<Files,Integer> {
 
 	/*
 	 * TODO : Add specific businesses daos here.

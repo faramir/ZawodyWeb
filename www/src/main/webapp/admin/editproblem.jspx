@@ -39,7 +39,7 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="pdf">
+                            <h:outputLabel for="files">
                                 <c:choose>
                                     <c:when test="#{requestBean.editedProblem.PDF == null}">
                                         ${messages.problem_pdf}:
@@ -49,8 +49,8 @@
                                     </c:otherwise>
                                 </c:choose>
                             </h:outputLabel>
-                            <t:inputFileUpload id="pdf" styleClass="longerInput" value="#{requestBean.temporaryFile}" storage="file" accept="application/pdf" />
-                            <h:message for="pdf" errorClass="error" />
+                            <t:inputFileUpload id="files" styleClass="longerInput" value="#{requestBean.temporaryFile}" storage="file" accept="application/files" />
+                            <h:message for="files" errorClass="error" />
                             <br class="clear" />
                         </div>
                         <c:if test="#{requestBean.editedProblem.PDF != null}">

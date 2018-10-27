@@ -41,7 +41,7 @@ public class ZipProblem {
         xmlProblem.setConfig(problem.getConfig());
 
         xmlProblem.setText(setText(out, problem.getText()));
-        xmlProblem.setPdf(setPDF(out, problem.getPDF()));
+        xmlProblem.setPdf(setPDF(out, problem.getFiles()));
 
         Problem.Languages languages = new Problem.Languages();
         xmlProblem.setLanguages(languages);
@@ -71,15 +71,15 @@ public class ZipProblem {
         return textFile;
     }
 
-    private static String setPDF(ZipOutputStream out, PDF pdf) throws IOException {
-        if (pdf == null) {
+    private static String setPDF(ZipOutputStream out, Files files) throws IOException {
+        if (files == null) {
             return null;
         }
 
-        String pdfFile = String.format("problem%03d.pdf", out.getProblem());
+        String pdfFile = String.format("problem%03d.files", out.getProblem());
         ZipEntry entry = new ZipEntry(pdfFile);
         out.putNextEntry(entry);
-        out.write(pdf.getPdf());
+        out.write(files.getPdf());
         out.closeEntry();
 
         return pdfFile;
@@ -110,11 +110,11 @@ public class ZipProblem {
 
         if (pdfFile != null && pdfFile.isEmpty() == false) {
             if (in.containsFile(pdfFile) == false) {
-                throw new FileNotFoundException("PDF file not found in zip archive: " + pdfFile);
+                throw new FileNotFoundException("Files file not found in zip archive: " + pdfFile);
             } else {
-                PDF pdf = new PDF();
-                pdf.setPdf(in.getFile(pdfFile));
-                problem.setPDF(pdf);
+                Files files = new Files();
+                files.setPdf(in.getFile(pdfFile));
+                problem.setFiles(files);
             }
         }
 

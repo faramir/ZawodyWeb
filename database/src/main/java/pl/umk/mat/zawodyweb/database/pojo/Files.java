@@ -20,16 +20,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- *
  * @author lukash2k
  */
 @Entity
-@Table(name = "pdf", schema = "public")
+@Table(name = "files", schema = "public")
 @SuppressWarnings("serial")
-public class PDF implements Serializable {
+public class Files implements Serializable {
 
     private Integer id;
     private byte[] pdf;
+    private String filename;
+    private String extension;
     List<Problems> problemss = null;
 
     @Basic
@@ -45,7 +46,7 @@ public class PDF implements Serializable {
     }
 
     @Basic
-    @Column(name = "pdf")
+    @Column(name = "bytes")
     public byte[] getPdf() {
         return pdf;
     }
@@ -54,9 +55,30 @@ public class PDF implements Serializable {
         this.pdf = pdf;
     }
 
-    @OneToMany(mappedBy = "PDF", cascade=CascadeType.REMOVE)
+
+    @Basic
+    @Column(name = "filename", length = 255)
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    @Basic
+    @Column(name = "extension", length = 8)
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+
+    @OneToMany(mappedBy = "Files", cascade = CascadeType.REMOVE)
     public List<Problems> getProblems() {
-        return  this.problemss;
+        return this.problemss;
     }
 
     public void setProblems(List<Problems> problems) {

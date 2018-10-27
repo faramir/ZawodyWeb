@@ -45,7 +45,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -1531,20 +1530,20 @@ public class RequestBean {
             }
 
             if (temporaryFile != null) {
-                PDF current = tmpProblem.getPDF();
+                Files current = tmpProblem.getFiles();
                 if (current == null) {
-                    current = new PDF();
+                    current = new Files();
                 }
 
                 current.setPdf(temporaryFile.getBytes());
                 pdfDAO.saveOrUpdate(current);
-                tmpProblem.setPDF(current);
+                tmpProblem.setFiles(current);
             }
 
             if (deletePdf) {
-                //PDF tmp = tmpProblem.getPDF();
+                //Files tmp = tmpProblem.getFiles();
                 //pdfDAO.delete(tmp);
-                tmpProblem.setPDF(null);
+                tmpProblem.setFiles(null);
             }
 
             problemsDAO.saveOrUpdate(tmpProblem);
@@ -2353,9 +2352,9 @@ public class RequestBean {
                 problem = null;
             }
 
-            if (problem != null && problem.getPDF() != null) {
+            if (problem != null && problem.getFiles() != null) {
                 name = problem.getName() + ".jpg";
-                content = PdfToImage.convertPdf(problem.getPDF().getPdf());
+                content = PdfToImage.convertPdf(problem.getFiles().getPdf());
                 mimetype = "image/jpeg";
             }
 
@@ -2396,9 +2395,9 @@ public class RequestBean {
                     problem = null;
                 }
 
-                if (problem != null && problem.getPDF() != null) {
+                if (problem != null && problem.getFiles() != null) {
                     name = problem.getName() + ".pdf";
-                    content = problem.getPDF().getPdf();
+                    content = problem.getFiles().getPdf();
                     mimetype = "application/pdf";
                 }
             } else if ("code".equals(type)) {

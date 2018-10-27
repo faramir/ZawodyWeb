@@ -12,7 +12,7 @@ import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.LanguagesProblemsDAO;
 import pl.umk.mat.zawodyweb.database.TestsDAO;
 import pl.umk.mat.zawodyweb.database.pojo.LanguagesProblems;
-import pl.umk.mat.zawodyweb.database.pojo.PDF;
+import pl.umk.mat.zawodyweb.database.pojo.Files;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
 import pl.umk.mat.zawodyweb.database.pojo.Submits;
@@ -55,12 +55,12 @@ public class ProblemsUtils {
         destinationProblem.setViewpdf(sourceProblem.getViewpdf());
         destinationProblem.setConfig(sourceProblem.getConfig());
 
-        PDF pdf = sourceProblem.getPDF();
-        if (pdf != null) {
-            PDF newPdf = new PDF();
-            newPdf.setPdf(pdf.getPdf());
-            DAOFactory.DEFAULT.buildPDFDAO().saveOrUpdate(newPdf);
-            destinationProblem.setPDF(newPdf);
+        Files files = sourceProblem.getFiles();
+        if (files != null) {
+            Files newFiles = new Files();
+            newFiles.setPdf(files.getPdf());
+            DAOFactory.DEFAULT.buildPDFDAO().saveOrUpdate(newFiles);
+            destinationProblem.setFiles(newFiles);
         }
 
         destinationProblem.setSeries(destinationSerie);

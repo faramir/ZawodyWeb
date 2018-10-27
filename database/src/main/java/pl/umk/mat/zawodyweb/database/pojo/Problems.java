@@ -94,7 +94,7 @@ public class Problems implements Serializable {
      * List of Submits
      */
     private SortedSet<Tests> testss = null;
-    private PDF pdfData = null;
+    private Files filesData = null;
     private String config;
     private Boolean visibleinranking = true;
     private Boolean viewpdf = false;
@@ -206,16 +206,16 @@ public class Problems implements Serializable {
      * @return pdf
      */
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "pdfid")
-    public PDF getPDF() {
-        return pdfData;
+    @JoinColumn(name = "filesid")
+    public Files getFiles() {
+        return filesData;
     }
 
     /**
-     * @param pdf new value for pdf
+     * @param files new value for files
      */
-    public void setPDF(PDF pdf) {
-        this.pdfData = pdf;
+    public void setFiles(Files files) {
+        this.filesData = files;
     }
 
     /**
