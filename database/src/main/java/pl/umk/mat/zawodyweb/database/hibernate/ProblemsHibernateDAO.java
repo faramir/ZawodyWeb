@@ -38,13 +38,6 @@ public class ProblemsHibernateDAO extends
 	}
 	
 	/**
-	 * Find Problems by pdf
-	 */
-	public List<Problems> findByPdf(byte[] pdf) {
-		return findByCriteria(Restrictions.eq("pdf", pdf));
-	}
-	
-	/**
 	 * Find Problems by abbrev
 	 */
 	public List<Problems> findByAbbrev(String abbrev) {

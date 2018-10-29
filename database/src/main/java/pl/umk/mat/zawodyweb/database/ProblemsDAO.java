@@ -36,11 +36,6 @@ public interface ProblemsDAO extends GenericDAO<Problems,Integer> {
 	public List<Problems> findByText(String text);
 
 	/**
-	 * Find Problems by pdf
-	 */
-	public List<Problems> findByPdf(byte[] pdf);
-
-	/**
 	 * Find Problems by abbrev
 	 */
 	public List<Problems> findByAbbrev(String abbrev);

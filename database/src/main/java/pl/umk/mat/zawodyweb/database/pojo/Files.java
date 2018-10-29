@@ -28,7 +28,7 @@ import javax.persistence.Table;
 public class Files implements Serializable {
 
     private Integer id;
-    private byte[] pdf;
+    private byte[] bytes;
     private String filename;
     private String extension;
     List<Problems> problemss = null;
@@ -47,12 +47,12 @@ public class Files implements Serializable {
 
     @Basic
     @Column(name = "bytes")
-    public byte[] getPdf() {
-        return pdf;
+    public byte[] getBytes() {
+        return bytes;
     }
 
-    public void setPdf(byte[] pdf) {
-        this.pdf = pdf;
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
     }
 
 

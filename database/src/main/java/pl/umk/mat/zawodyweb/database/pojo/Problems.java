@@ -203,7 +203,7 @@ public class Problems implements Serializable {
     }
 
     /**
-     * @return pdf
+     * @return files
      */
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "filesid")

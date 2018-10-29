@@ -7,6 +7,7 @@
  */
 package pl.umk.mat.zawodyweb.www;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.myfaces.custom.datascroller.ScrollerActionEvent;
@@ -74,7 +75,7 @@ public class RequestBean {
     private UsersDAO usersDAO = DAOFactory.DEFAULT.buildUsersDAO();
     private RolesDAO rolesDAO = DAOFactory.DEFAULT.buildRolesDAO();
     private UsersRolesDAO usersRolesDAO = DAOFactory.DEFAULT.buildUsersRolesDAO();
-    private PDFDAO pdfDAO = DAOFactory.DEFAULT.buildPDFDAO();
+    private FilesDAO filesDAO = DAOFactory.DEFAULT.buildFilesDAO();
     private SessionBean sessionBean;
     private RolesBean rolesBean;
     private Users newUser = new Users();
@@ -136,7 +137,7 @@ public class RequestBean {
     private UploadedFile temporaryFile;
     private String answer;
     private boolean publicAnswer;
-    private boolean deletePdf;
+    private boolean deleteFile;
     private boolean ratingMode = false;
     private Integer ratingEditNote;
 
@@ -1003,12 +1004,12 @@ public class RequestBean {
         this.temporaryFile = temporaryFile;
     }
 
-    public Boolean getDeletePdf() {
-        return deletePdf;
+    public Boolean getDeleteFile() {
+        return deleteFile;
     }
 
-    public void setDeletePdf(Boolean deletePdf) {
-        this.deletePdf = deletePdf;
+    public void setDeleteFile(Boolean deleteFile) {
+        this.deleteFile = deleteFile;
     }
 
     public boolean isPublicAnswer() {
@@ -1535,14 +1536,17 @@ public class RequestBean {
                     current = new Files();
                 }
 
-                current.setPdf(temporaryFile.getBytes());
-                pdfDAO.saveOrUpdate(current);
+                String name = temporaryFile.getName();
+                current.setFilename(FilenameUtils.getBaseName(name));
+                current.setExtension(FilenameUtils.getExtension(name));
+                current.setBytes(temporaryFile.getBytes());
+                filesDAO.saveOrUpdate(current);
                 tmpProblem.setFiles(current);
             }
 
-            if (deletePdf) {
+            if (deleteFile) {
                 //Files tmp = tmpProblem.getFiles();
-                //pdfDAO.delete(tmp);
+                //filesDAO.delete(tmp);
                 tmpProblem.setFiles(null);
             }
 
@@ -2354,7 +2358,7 @@ public class RequestBean {
 
             if (problem != null && problem.getFiles() != null) {
                 name = problem.getName() + ".jpg";
-                content = PdfToImage.convertPdf(problem.getFiles().getPdf());
+                content = PdfToImage.convertPdf(problem.getFiles().getBytes());
                 mimetype = "image/jpeg";
             }
 
@@ -2385,7 +2389,7 @@ public class RequestBean {
             String name = StringUtils.EMPTY;
             String mimetype = StringUtils.EMPTY;
             byte[] content = null;
-            if ("pdf".equals(type)) {
+            if ("file".equals(type)) {
                 Problems problem = problemsDAO.getById(id);
 
                 if (problem != null
@@ -2396,9 +2400,10 @@ public class RequestBean {
                 }
 
                 if (problem != null && problem.getFiles() != null) {
-                    name = problem.getName() + ".pdf";
-                    content = problem.getFiles().getPdf();
-                    mimetype = "application/pdf";
+                    Files file = problem.getFiles();
+                    name = problem.getName() + "." + file.getExtension();
+                    content = file.getBytes();
+                    mimetype = "application/" + file.getExtension();
                 }
             } else if ("code".equals(type)) {
                 Submits s = submitsDAO.getById(id);

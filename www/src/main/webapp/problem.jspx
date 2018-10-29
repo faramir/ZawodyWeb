@@ -33,15 +33,22 @@
                     </c:if>
                 </div>
                 <div class="files">
+                    <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/file.html" rendered="#{requestBean.currentProblem.files != null}">
                     <c:choose>
-                    <c:when test="#{requestBean.currentProblem.files == null}"/>
                         <c:when test="#{requestBean.currentProblem.files.extension == 'pdf'}">
-                            <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/files.html" rendered="#{requestBean.currentProblem.files != null}"><h:graphicImage alt="${messages.pdf_download}" title="${messages.pdf_download}" url="/media/images/icon-pdf.png" /></h:outputLink>
+                             <h:graphicImage alt="${messages.file_download}" title="${messages.file_download}" url="/media/images/icon-pdf.png" />
                         </c:when>
-                    <c:otherwise>
-                        <h:outputLink id="icon" value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/files.html" rendered="#{requestBean.currentProblem.files != null}"><h:graphicImage alt="${messages.pdf_download}" title="${messages.file_download}" url="/media/images/icon-unknown.png" /></h:outputLink>
-                    </c:otherwise>
+                        <c:when test="#{requestBean.currentProblem.files.extension == 'txt'}">
+                            <h:graphicImage alt="${messages.file_download}" title="${messages.file_download}" url="/media/images/icon-txt.png" />
+                        </c:when>
+                        <c:when test="#{requestBean.currentProblem.files.extension == 'zip'}">
+                            <h:graphicImage alt="${messages.file_download}" title="${messages.file_download}" url="/media/images/icon-zip.png" />
+                        </c:when>
+                        <c:otherwise>
+                            <h:graphicImage alt="${messages.file_download}" title="${messages.file_download}" url="/media/images/icon-unknown.png" />
+                        </c:otherwise>
                     </c:choose>
+                    </h:outputLink>
                 </div>
                 <div class="tresc">
                     <h:outputText value="${zw:nlToBr(requestBean.currentProblem.text)}" escape="false" />

@@ -15,12 +15,13 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.zip.ZipEntry;
+
 import pl.umk.mat.zawodyweb.database.pojo.*;
+import pl.umk.mat.zawodyweb.database.xml.FilesType;
 import pl.umk.mat.zawodyweb.database.xml.Problem;
 import pl.umk.mat.zawodyweb.database.xml.Test;
 
 /**
- *
  * @author faramir
  */
 public class ZipProblem {
@@ -41,7 +42,7 @@ public class ZipProblem {
         xmlProblem.setConfig(problem.getConfig());
 
         xmlProblem.setText(setText(out, problem.getText()));
-        xmlProblem.setFiles(setPDF(out, problem.getFiles()));
+        xmlProblem.setFiles(setFiles(out, problem.getFiles()));
 
         Problem.Languages languages = new Problem.Languages();
         xmlProblem.setLanguages(languages);
@@ -71,7 +72,7 @@ public class ZipProblem {
         return textFile;
     }
 
-    private static String setPDF(ZipOutputStream out, Files files) throws IOException {
+    private static FilesType setFiles(ZipOutputStream out, Files files) throws IOException {
         if (files == null) {
             return null;
         }
@@ -79,14 +80,19 @@ public class ZipProblem {
         String pdfFile = String.format("problem%03d.files", out.getProblem());
         ZipEntry entry = new ZipEntry(pdfFile);
         out.putNextEntry(entry);
-        out.write(files.getPdf());
+        out.write(files.getBytes());
         out.closeEntry();
 
-        return pdfFile;
+        FilesType filesType = new FilesType();
+        filesType.setBytes(pdfFile);
+        filesType.setFilename(files.getFilename());
+        filesType.setExtension(files.getExtension());
+
+        return filesType;
     }
 
     static Problems getProblem(ZipInputStream in, Problem xmlProblem,
-            List<Languages> languages, List<Classes> diffClasses)
+                               List<Languages> languages, List<Classes> diffClasses)
             throws UnsupportedEncodingException, FileNotFoundException {
         Problems problem = new Problems();
         problem.setName(xmlProblem.getName());
@@ -106,15 +112,20 @@ public class ZipProblem {
         }
         problem.setText(new String(in.getFile(textFile), "UTF-8"));
 
-        String pdfFile = xmlProblem.getFiles();
+        FilesType filesType = xmlProblem.getFiles();
 
-        if (pdfFile != null && pdfFile.isEmpty() == false) {
-            if (in.containsFile(pdfFile) == false) {
-                throw new FileNotFoundException("Files file not found in zip archive: " + pdfFile);
-            } else {
-                Files files = new Files();
-                files.setPdf(in.getFile(pdfFile));
-                problem.setFiles(files);
+        if (filesType != null) {
+            String bytesLocation = filesType.getBytes();
+            if (bytesLocation != null && bytesLocation.isEmpty() == false) {
+                if (in.containsFile(bytesLocation) == false) {
+                    throw new FileNotFoundException("Files file not found in zip archive: " + bytesLocation);
+                } else {
+                    Files files = new Files();
+                    files.setBytes(in.getFile(bytesLocation));
+                    files.setFilename(filesType.getFilename());
+                    files.setExtension(filesType.getExtension());
+                    problem.setFiles(files);
+                }
             }
         }
 

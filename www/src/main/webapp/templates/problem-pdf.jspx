@@ -2,7 +2,7 @@
               xmlns:c="http://java.sun.com/jstl/core" >
     <c:if test="#{problem != null and problem.PDF != null and problem.viewpdf == true}">
         <br style="clear: both"/>
-        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/files.html" title="PDF" style="margin:10px 0 0 0">
+        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/get/#{requestBean.currentProblem.id}/file.html" title="PDF" style="margin:10px 0 0 0">
             <h:graphicImage alt="#{messages.pdf_download}" title="#{messages.pdf_download}" url="/view/#{requestBean.currentProblem.id}/files.html" style="float:none;width:100%;margin:0;padding:0"/>
         </h:outputLink>
     </c:if>

@@ -39,31 +39,34 @@
                             <br class="clear" />
                         </div>
                         <div>
-                            <h:outputLabel for="files">
-                                <c:choose>
-                                    <c:when test="#{requestBean.editedProblem.PDF == null}">
-                                        ${messages.problem_pdf}:
-                                    </c:when>
-                                    <c:otherwise>
-                                        ${messages.problem_change_pdf}:
-                                    </c:otherwise>
-                                </c:choose>
-                            </h:outputLabel>
-                            <t:inputFileUpload id="files" styleClass="longerInput" value="#{requestBean.temporaryFile}" storage="file" accept="application/files" />
-                            <h:message for="files" errorClass="error" />
-                            <br class="clear" />
+                            <c:choose>
+                                <c:when test="#{requestBean.editedProblem.files == null}">
+                                    <h:outputLabel for="files">${messages.problem_file}:</h:outputLabel>
+                                    <t:inputFileUpload id="files" styleClass="longerInput" value="#{requestBean.temporaryFile}" storage="file" />
+                                    <h:message for="files" errorClass="error" />
+                                    <br class="clear" />
+                                </c:when>
+                                <c:otherwise>
+                                    <h:outputLabel for="files">${messages.problem_change_file}:</h:outputLabel>
+                                    <t:inputFileUpload id="files" styleClass="longerInput" value="#{requestBean.temporaryFile}" storage="file" />
+                                    <h:inputText readonly="true" value="#{requestBean.editedProblem.files.name}" />
+                                    <h:inputText readonly="true" value="#{requestBean.editedProblem.files.extension}" />
+                                    <h:message for="files" errorClass="error" />
+                                    <br class="clear" />
+                                </c:otherwise>
+                            </c:choose>
                         </div>
-                        <c:if test="#{requestBean.editedProblem.PDF != null}">
+                        <c:if test="#{requestBean.editedProblem.files != null}">
                             <div>
-                                <h:outputLabel for="pdfdel">${messages.problem_delete_pdf}</h:outputLabel>
-                                <h:selectBooleanCheckbox id="pdfdel" value="#{requestBean.deletePdf}" styleClass="check" />
+                                <h:outputLabel for="filedel">${messages.problem_delete_file}</h:outputLabel>
+                                <h:selectBooleanCheckbox id="filedel" value="#{requestBean.deleteFile}" styleClass="check" />
                                 <br class="clear" />
                             </div>
                         </c:if>
                         <div>
                             <h:outputLabel for="viewpdf">${messages.problem_viewpdf}</h:outputLabel>
                             <h:selectBooleanCheckbox id="viewpdf" value="#{requestBean.editedProblem.viewpdf}" styleClass="check" />
-                            <br class="clear" />                                
+                            <br class="clear" />
                         </div>
                         <div>
                             <h:outputLabel styleClass="required" for="abbrev">${messages.problem_abbrev}:</h:outputLabel>

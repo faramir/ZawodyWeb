@@ -13,7 +13,7 @@ import pl.umk.mat.zawodyweb.database.ContestsDAO;
 import pl.umk.mat.zawodyweb.database.DAOFactory;
 import pl.umk.mat.zawodyweb.database.LanguagesDAO;
 import pl.umk.mat.zawodyweb.database.LanguagesProblemsDAO;
-import pl.umk.mat.zawodyweb.database.PDFDAO;
+import pl.umk.mat.zawodyweb.database.FilesDAO;
 import pl.umk.mat.zawodyweb.database.ProblemsDAO;
 import pl.umk.mat.zawodyweb.database.QuestionsDAO;
 import pl.umk.mat.zawodyweb.database.ResultsDAO;
@@ -154,7 +154,7 @@ public class HibernateDAOFactory extends DAOFactory {
     }
 
     @Override
-    public PDFDAO buildPDFDAO() {
-        return new PDFHibernateDAO();
+    public FilesDAO buildFilesDAO() {
+        return new FilesHibernateDAO();
     }
 }

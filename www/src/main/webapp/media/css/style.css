@@ -315,7 +315,7 @@ img.nomargin {
     text-align: right;
 }
 
-.profilform div.zadanko div.pdf {
+.profilform div.zadanko div.files {
     font-size: 11px;
     padding-bottom: 5px;
     margin: 0px 0 0 0;
@@ -323,11 +323,11 @@ img.nomargin {
     display: block;
 }
 
-.profilform div.zadanko div.pdf a {
+.profilform div.zadanko div.files a {
     display: inline-table;
 }
 
-.profilform div.zadanko div.pdf a img {
+.profilform div.zadanko div.files a img {
     margin: 0px 0 0 0;
     padding: 0px 0 0px 5px;
     float: right;
