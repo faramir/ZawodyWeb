@@ -42,23 +42,20 @@
                             <c:choose>
                                 <c:when test="#{requestBean.editedProblem.files == null}">
                                     <h:outputLabel for="files">${messages.problem_file}:</h:outputLabel>
-                                    <t:inputFileUpload id="files" styleClass="longerInput" value="#{requestBean.temporaryFile}" storage="file" />
-                                    <h:message for="files" errorClass="error" />
-                                    <br class="clear" />
                                 </c:when>
                                 <c:otherwise>
                                     <h:outputLabel for="files">${messages.problem_change_file}:</h:outputLabel>
-                                    <t:inputFileUpload id="files" styleClass="longerInput" value="#{requestBean.temporaryFile}" storage="file" />
-                                    <h:inputText readonly="true" value="#{requestBean.editedProblem.files.name}" />
-                                    <h:inputText readonly="true" value="#{requestBean.editedProblem.files.extension}" />
-                                    <h:message for="files" errorClass="error" />
-                                    <br class="clear" />
                                 </c:otherwise>
                             </c:choose>
+                            <t:inputFileUpload id="files" styleClass="longerInput" value="#{requestBean.temporaryFile}" storage="file" />
+                            <h:message for="files" errorClass="error" />
+                            <br class="clear" />
                         </div>
                         <c:if test="#{requestBean.editedProblem.files != null}">
                             <div>
                                 <h:outputLabel for="filedel">${messages.problem_delete_file}</h:outputLabel>
+                                <h:inputText readonly="true" value="#{requestBean.editedProblem.files.filename}" />
+                                <h:inputText readonly="true" value="#{requestBean.editedProblem.files.extension}" />
                                 <h:selectBooleanCheckbox id="filedel" value="#{requestBean.deleteFile}" styleClass="check" />
                                 <br class="clear" />
                             </div>

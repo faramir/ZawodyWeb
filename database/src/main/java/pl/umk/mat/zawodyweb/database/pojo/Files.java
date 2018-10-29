@@ -76,7 +76,7 @@ public class Files implements Serializable {
         this.extension = extension;
     }
 
-    @OneToMany(mappedBy = "Files", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "files", cascade = CascadeType.REMOVE)
     public List<Problems> getProblems() {
         return this.problemss;
     }

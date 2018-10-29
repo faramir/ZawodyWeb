@@ -52,7 +52,7 @@
                 </div>
                 <div class="tresc">
                     <h:outputText value="${zw:nlToBr(requestBean.currentProblem.text)}" escape="false" />
-                    <zw:problem-files problem="${requestBean.currentProblem}"/>
+                    <zw:problem-pdf problem="${requestBean.currentProblem}"/>
                 </div>
                 <div class="wyslij">
                     <h:panelGroup rendered="${(zw:submitIpOk(requestBean.currentProblem, requestBean.clientIp) and zw:submitDateOk(requestBean.currentProblem)) or zw:canEditProblem(rolesBean, requestBean.currentProblem.series.contests.id, requestBean.currentProblem.series.id)}">
