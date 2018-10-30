@@ -121,9 +121,9 @@ public class ZipProblem {
                     throw new FileNotFoundException("Files file not found in zip archive: " + bytesLocation);
                 } else {
                     Files files = new Files();
-                    files.setBytes(in.getFile(bytesLocation));
                     files.setFilename(filesType.getFilename());
                     files.setExtension(filesType.getExtension());
+                    files.setBytes(in.getFile(bytesLocation));
                     problem.setFiles(files);
                 }
             }

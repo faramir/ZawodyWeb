@@ -58,6 +58,8 @@ public class ProblemsUtils {
         Files files = sourceProblem.getFiles();
         if (files != null) {
             Files newFiles = new Files();
+            newFiles.setFilename(files.getFilename());
+            newFiles.setExtension(files.getExtension());
             newFiles.setBytes(files.getBytes());
             DAOFactory.DEFAULT.buildFilesDAO().saveOrUpdate(newFiles);
             destinationProblem.setFiles(newFiles);
