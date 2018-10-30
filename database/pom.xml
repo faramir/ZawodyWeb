@@ -51,36 +51,6 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <!-- -->
-            <!--plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <tasks>
-                        <taskdef name="instrument" classname="org.hibernate.tool.instrument.cglib.InstrumentTask">
-                            <classpath>
-                                <path refid="maven.runtime.classpath" />
-                                <path refid="maven.plugin.classpath" />
-                            </classpath>
-                        </taskdef>
-                        <instrument verbose="false">
-                            <fileset dir="${project.build.outputDirectory}">
-                                <include name="pl/umk/mat/zawodyweb/database/pojo/**/*.class" />
-                            </fileset>
-                        </instrument>
-                    </tasks>
-                </configuration>
-            </plugin-->
-            <!-- -->
             <plugin>
                 <groupId>com.sun.tools.xjc.maven2</groupId>
                 <artifactId>maven-jaxb-plugin</artifactId>
@@ -98,6 +68,26 @@
                     <schemaDirectory>src/main/resources/xml</schemaDirectory>
                     <extension>true</extension>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.hibernate.orm.tooling</groupId>
+                <artifactId>hibernate-enhance-maven-plugin</artifactId>
+                <version>5.3.7.Final</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <dir>${project.build.outputDirectory}/pl/umk/mat/zawodyweb/database/pojo</dir>
+                            <failOnError>true</failOnError>
+                            <enableLazyInitialization>true</enableLazyInitialization>
+                            <enableDirtyTracking>false</enableDirtyTracking>
+                            <enableAssociationManagement>false</enableAssociationManagement>
+                            <enableExtendedEnhancement>false</enableExtendedEnhancement>
+                        </configuration>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
