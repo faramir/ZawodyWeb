@@ -34,7 +34,7 @@ public class SubmitsUtils {
         submit.setState(SubmitsStateEnum.WAIT.getCode());
         DAOFactory.DEFAULT.buildSubmitsDAO().saveOrUpdate(submit);
         ResultsDAO resultsDAO = DAOFactory.DEFAULT.buildResultsDAO();
-        for (Results r : submit.getResultss()) { //resultsDAO.findBySubmitsid(submit.getId())) {
+        for (Results r : resultsDAO.findBySubmitsid(submit.getId())) {
             resultsDAO.delete(r);
         }
 
