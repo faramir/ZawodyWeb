@@ -38,9 +38,6 @@ public class SubmitsUtils {
             resultsDAO.delete(r);
         }
 
-        HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
-        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-
         JudgeManagerConnector.getInstance().sentToJudgeManager(submit.getId());
     }
 }
