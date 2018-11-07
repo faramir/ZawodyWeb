@@ -53,7 +53,7 @@ public class LanguageCS implements CompilerInterface {
         System.gc();
         List<String> command = Arrays.asList("mono", path);
         if (!System.getProperty("os.name").toLowerCase().matches("(?s).*windows.*")) {
-            command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && '" + "mono" + " " + path + "'");
+            command = Arrays.asList("bash", "-c", "ulimit -v " + (input.getMemoryLimit() * 1024) + " -t " + (5 + input.getTimeLimit() / 1000) + " && mono '" + path + "'");
         } else {
             logger.error("OS without bash: " + System.getProperty("os.name") + ". Memory Limit check is off.");
         }
@@ -168,7 +168,7 @@ public class LanguageCS implements CompilerInterface {
                 + "TcpListener TcpClient Socket SocketStream MemoryStream " 
 				+ "Reflection Process " // te klasy moga na za wiele pozwalac
 				+ "Thread ThreadPool " // rozwazylbym odkomentowanie (zwlaszcza Thread)
-                + "ApplicationDomain ConfigurationManager ";
+                + "ApplicationDomain ConfigurationManager";
 				// trzeba sporo dopisac
         StringBuilder strWithoutComments = new StringBuilder();
         int len = str.length() - 1;
@@ -237,7 +237,7 @@ public class LanguageCS implements CompilerInterface {
             InterruptTimer timer = new InterruptTimer();
             try {
                 List<String> command = new ArrayList<String>(
-                        Arrays.asList("mcs", "-optimalize+", "-debug-", "-unsafe-", 
+                        Arrays.asList("mcs", "-optimize+", "-debug-", "-unsafe-",
 						"-sdk:4.5", "-out:" + compilefile, codefile));
 
                 String args = properties.getProperty("gcc.args");
