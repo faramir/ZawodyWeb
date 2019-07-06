@@ -16,16 +16,16 @@ import pl.umk.mat.zawodyweb.database.pojo.Classes;
 import pl.umk.mat.zawodyweb.database.pojo.Languages;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
-import pl.umk.mat.zawodyweb.database.xml.Problem;
-import pl.umk.mat.zawodyweb.database.xml.Serie;
+import pl.umk.mat.zawodyweb.database.xml.ProblemType;
+import pl.umk.mat.zawodyweb.database.xml.SerieType;
 
 /**
  *
  * @author faramir
  */
 public class ZipSerie {
-    
-    static Serie addSerie(ZipOutputStream out, Serie xmlSerie, Series serie) throws IOException {
+
+    static SerieType addSerie(ZipOutputStream out, SerieType xmlSerie, Series serie) throws IOException {
         xmlSerie.setName(serie.getName());
         xmlSerie.setStartdate(ZipFile.convert(serie.getStartdate()));
         xmlSerie.setEnddate(ZipFile.convert(serie.getEnddate()));
@@ -35,18 +35,18 @@ public class ZipSerie {
         xmlSerie.setHiddenblocked(serie.getHiddenblocked());
         xmlSerie.setOpenips(serie.getOpenips());
         xmlSerie.setVisible(serie.getVisibleinranking());
-        xmlSerie.setProblems(new Serie.Problems());
+        xmlSerie.setProblems(new SerieType.Problems());
         
         for (Problems problem : serie.getProblemss()) {
-            Problem xmlProblem = new Problem();
+            ProblemType xmlProblem = new ProblemType();
             ZipProblem.addProblem(out, xmlProblem, problem);
-            xmlSerie.getProblems().getProblems().add(xmlProblem);
+            xmlSerie.getProblems().getProblem().add(xmlProblem);
         }
         
         return xmlSerie;
     }
     
-    static Series getSerie(ZipInputStream in, Serie xmlSerie,
+    static Series getSerie(ZipInputStream in, SerieType xmlSerie,
             List<Languages> languages, List<Classes> diffClasses)
             throws UnsupportedEncodingException, FileNotFoundException {
         Series serie = new Series();
@@ -56,14 +56,14 @@ public class ZipSerie {
         serie.setFreezedate(ZipFile.convert(xmlSerie.getFreezedate()));
         serie.setUnfreezedate(ZipFile.convert(xmlSerie.getUnfreezedate()));
         serie.setPenaltytime(xmlSerie.getPenaltytime());
-        serie.setHiddenblocked(xmlSerie.getHiddenblocked());
+        serie.setHiddenblocked(xmlSerie.isHiddenblocked());
         serie.setOpenips(xmlSerie.getOpenips());
-        serie.setVisibleinranking(xmlSerie.getVisible());
+        serie.setVisibleinranking(xmlSerie.isVisible());
         
-        if (xmlSerie.getProblems().getProblems() != null) {
+        if (xmlSerie.getProblems().getProblem() != null) {
             List<Problems> problems = new ArrayList<Problems>();
             
-            for (Problem problem : xmlSerie.getProblems().getProblems()) {
+            for (ProblemType problem : xmlSerie.getProblems().getProblem()) {
                 problems.add(ZipProblem.getProblem(in, problem, languages, diffClasses));
             }
             

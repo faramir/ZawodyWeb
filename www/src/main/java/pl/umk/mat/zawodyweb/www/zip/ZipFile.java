@@ -15,15 +15,14 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import pl.umk.mat.zawodyweb.database.pojo.*;
-import pl.umk.mat.zawodyweb.database.xml.Contest;
-import pl.umk.mat.zawodyweb.database.xml.Problem;
-import pl.umk.mat.zawodyweb.database.xml.Serie;
-import pl.umk.mat.zawodyweb.database.xml.Test;
+import pl.umk.mat.zawodyweb.database.xml.ContestType;
+import pl.umk.mat.zawodyweb.database.xml.ProblemType;
+import pl.umk.mat.zawodyweb.database.xml.SerieType;
+import pl.umk.mat.zawodyweb.database.xml.TestType;
 
 /**
  *
@@ -68,7 +67,7 @@ public class ZipFile {
         out.setMethod(ZipOutputStream.DEFLATED);
         out.setLevel(java.util.zip.Deflater.BEST_COMPRESSION);
 
-        Contest xml = new Contest();
+        ContestType xml = new ContestType();
         ZipContest.addContest(out, xml, contest);
         putXml(out, "contest.xml", xml);
 
@@ -83,7 +82,7 @@ public class ZipFile {
         out.setMethod(ZipOutputStream.DEFLATED);
         out.setLevel(java.util.zip.Deflater.BEST_COMPRESSION);
 
-        Serie xml = new Serie();
+        SerieType xml = new SerieType();
         ZipSerie.addSerie(out, xml, serie);
         putXml(out, "serie.xml", xml);
 
@@ -98,7 +97,7 @@ public class ZipFile {
         out.setMethod(ZipOutputStream.DEFLATED);
         out.setLevel(java.util.zip.Deflater.BEST_COMPRESSION);
 
-        Problem xml = new Problem();
+        ProblemType xml = new ProblemType();
         ZipProblem.addProblem(out, xml, problem);
         putXml(out, "problem.xml", xml);
 
@@ -115,9 +114,9 @@ public class ZipFile {
 
         pl.umk.mat.zawodyweb.database.xml.Tests xml = new pl.umk.mat.zawodyweb.database.xml.Tests();
         for (Tests test : tests) {
-            Test xmlTest = new Test();
+            TestType xmlTest = new TestType();
             ZipTest.addTest(out, xmlTest, test);
-            xml.getTests().add(xmlTest);
+            xml.getTest().add(xmlTest);
         }
         putXml(out, "tests.xml", xml);
 
@@ -132,7 +131,7 @@ public class ZipFile {
         out.setMethod(ZipOutputStream.DEFLATED);
         out.setLevel(java.util.zip.Deflater.BEST_COMPRESSION);
 
-        Test xml = new Test();
+        TestType xml = new TestType();
         ZipTest.addTest(out, xml, test);
         putXml(out, "test.xml", xml);
 
@@ -150,7 +149,7 @@ public class ZipFile {
             throw new FileNotFoundException("Description file not found in zip archive: contest.xml");
         }
 
-        Contest xmlContest = (Contest) xmlParser.parseString(new String(in.getFile("contest.xml"), "UTF-8"));
+        ContestType xmlContest = (ContestType) xmlParser.parseString(new String(in.getFile("contest.xml"), "UTF-8"));
         return ZipContest.getContest(in, xmlContest, languages, diffClasses);
     }
 
@@ -163,7 +162,7 @@ public class ZipFile {
             throw new FileNotFoundException("Description file not found in zip archive: serie.xml");
         }
 
-        Serie xmlSerie = (Serie) xmlParser.parseString(new String(in.getFile("serie.xml"), "UTF-8"));
+        SerieType xmlSerie = (SerieType) xmlParser.parseString(new String(in.getFile("serie.xml"), "UTF-8"));
         return ZipSerie.getSerie(in, xmlSerie, languages, diffClasses);
     }
 
@@ -176,7 +175,7 @@ public class ZipFile {
             throw new FileNotFoundException("Description file not found in zip archive: problem.xml");
         }
 
-        Problem xmlProblem = (Problem) xmlParser.parseString(new String(in.getFile("problem.xml"), "UTF-8"));
+        ProblemType xmlProblem = (ProblemType) xmlParser.parseString(new String(in.getFile("problem.xml"), "UTF-8"));
         return ZipProblem.getProblem(in, xmlProblem, languages, diffClasses);
     }
 
@@ -189,7 +188,7 @@ public class ZipFile {
             throw new FileNotFoundException("Description file not found in zip archive: test.xml");
         }
 
-        Test xmlTest = (Test) xmlParser.parseString(new String(in.getFile("test.xml"), "UTF-8"));
+        TestType xmlTest = (TestType) xmlParser.parseString(new String(in.getFile("test.xml"), "UTF-8"));
         return ZipTest.getTest(in, xmlTest);
     }
 
@@ -198,22 +197,22 @@ public class ZipFile {
         ZipInputStream in = new ZipInputStream(tests);
 
         if (in.containsFile("problem.xml")) {
-            Problem xmlProblem = (Problem) xmlParser.parseString(new String(in.getFile("problem.xml"), "UTF-8"));
+            ProblemType xmlProblem = (ProblemType) xmlParser.parseString(new String(in.getFile("problem.xml"), "UTF-8"));
             List<Tests> list = new ArrayList<Tests>();
-            for (Test xmlTest : xmlProblem.getTests().getTests()) {
+            for (TestType xmlTest : xmlProblem.getTests().getTest()) {
                 list.add(ZipTest.getTest(in, xmlTest));
             }
             return list;
         } else if (in.containsFile("tests.xml")) {
             pl.umk.mat.zawodyweb.database.xml.Tests xmlTests = (pl.umk.mat.zawodyweb.database.xml.Tests) xmlParser.parseString(new String(in.getFile("tests.xml"), "UTF-8"));
             List<Tests> list = new ArrayList<Tests>();
-            for (Test xmlTest : xmlTests.getTests()) {
+            for (TestType xmlTest : xmlTests.getTest()) {
                 list.add(ZipTest.getTest(in, xmlTest));
             }
             return list;
         }
         if (in.containsFile("test.xml")) {
-            Test xmlTest = (Test) xmlParser.parseString(new String(in.getFile("test.xml"), "UTF-8"));
+            TestType xmlTest = (TestType) xmlParser.parseString(new String(in.getFile("test.xml"), "UTF-8"));
             List<Tests> list = new ArrayList<Tests>();
             list.add(ZipTest.getTest(in, xmlTest));
             return list;
