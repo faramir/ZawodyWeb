@@ -14,6 +14,7 @@ import java.util.concurrent.TimeoutException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
@@ -32,7 +33,7 @@ public class LanguageUVA implements CompilerInterface {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageUVA.class);
     private Properties properties;
     private HttpClient client;
-    private final String acmSite = "https://uva.onlinejudge.org/";
+    private final String acmSite = "https://onlinejudge.org/";
 
     @Override
     public void setProperties(Properties properties) {
@@ -416,6 +417,7 @@ public class LanguageUVA implements CompilerInterface {
     private void prepareHttpClient() {
         client = new HttpClient();
         HttpClientParams params = client.getParams();
+        params.setParameter(HttpClientParams.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
         params.setParameter("http.useragent", "Opera/9.80 (X11; Linux x86_64; U) Presto/2.12.388 Version/12.11");
         client.setParams(params);
     }
