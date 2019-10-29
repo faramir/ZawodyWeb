@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.zip.ZipEntry;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
-import pl.umk.mat.zawodyweb.database.xml.Test;
+import pl.umk.mat.zawodyweb.database.xml.TestType;
 
 /**
  *
@@ -20,7 +20,7 @@ import pl.umk.mat.zawodyweb.database.xml.Test;
  */
 public class ZipTest {
 
-    static Test addTest(ZipOutputStream out, Test xmlTest, Tests test) throws IOException {
+    static TestType addTest(ZipOutputStream out, TestType xmlTest, Tests test) throws IOException {
         out.nextTest();
 
         ZipEntry entry;
@@ -47,7 +47,7 @@ public class ZipTest {
         return xmlTest;
     }
 
-    static Tests getTest(ZipInputStream in, Test xmlTest) throws FileNotFoundException, UnsupportedEncodingException {
+    static Tests getTest(ZipInputStream in, TestType xmlTest) throws FileNotFoundException, UnsupportedEncodingException {
         String infile = xmlTest.getInput();
         String outfile = xmlTest.getOutput();
 

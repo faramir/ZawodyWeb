@@ -16,16 +16,16 @@ import pl.umk.mat.zawodyweb.database.pojo.Classes;
 import pl.umk.mat.zawodyweb.database.pojo.Contests;
 import pl.umk.mat.zawodyweb.database.pojo.Languages;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
-import pl.umk.mat.zawodyweb.database.xml.Contest;
-import pl.umk.mat.zawodyweb.database.xml.Serie;
+import pl.umk.mat.zawodyweb.database.xml.ContestType;
+import pl.umk.mat.zawodyweb.database.xml.SerieType;
 
 /**
  *
  * @author faramir
  */
 public class ZipContest {
-    
-    static Contest addContest(ZipOutputStream out, Contest xmlContest, Contests contest) throws IOException {
+
+    static ContestType addContest(ZipOutputStream out, ContestType xmlContest, Contests contest) throws IOException {
         xmlContest.setName(contest.getName());
         xmlContest.setType(contest.getType());
         xmlContest.setStartdate(ZipFile.convert(contest.getStartdate()));
@@ -37,18 +37,18 @@ public class ZipContest {
         xmlContest.setSubtype(contest.getSubtype());
         xmlContest.setSubtypename(contest.getSubtypename());
         xmlContest.setVisible(contest.getVisibility());
-        xmlContest.setSeries(new Contest.Series());
+        xmlContest.setSeries(new ContestType.Series());
         
         for (Series serie : contest.getSeriess()) {
-            Serie xmlSerie = new Serie();
+            SerieType xmlSerie = new SerieType();
             ZipSerie.addSerie(out, xmlSerie, serie);
-            xmlContest.getSeries().getSeries().add(xmlSerie);
+            xmlContest.getSeries().getSerie().add(xmlSerie);
         }
         
         return xmlContest;
     }
     
-    static Contests getContest(ZipInputStream in, Contest xmlContest,
+    static Contests getContest(ZipInputStream in, ContestType xmlContest,
             List<Languages> languages, List<Classes> diffClasses)
             throws UnsupportedEncodingException, FileNotFoundException {
         Contests contest = new Contests();
@@ -63,12 +63,12 @@ public class ZipContest {
         contest.setRankingrefreshrate(xmlContest.getRefreshrate());
         contest.setSubtype(xmlContest.getSubtype());
         contest.setSubtypename(xmlContest.getSubtypename());
-        contest.setVisibility(xmlContest.getVisible());
+        contest.setVisibility(xmlContest.isVisible());
         
-        if (xmlContest.getSeries().getSeries() != null) {
+        if (xmlContest.getSeries() != null) {
             List<Series> series = new ArrayList<Series>();
             
-            for (Serie serie : xmlContest.getSeries().getSeries()) {
+            for (SerieType serie : xmlContest.getSeries().getSerie()) {
                 series.add(ZipSerie.getSerie(in, serie, languages, diffClasses));
             }
             

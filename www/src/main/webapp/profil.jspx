@@ -48,7 +48,7 @@
                         </div>
                         <div>
                             <h:outputLabel for="homeaddress_profile">${messages.homeaddress}:</h:outputLabel>
-                            <h:inputTextarea id="homeaddress_profile" styleClass="smaHeight" required="false" value="#{sessionBean.currentUser.address}">
+                            <h:inputTextarea id="homeaddress_profile" styleClass="smaHeight" required="false" value="#{requestBean.editedUser.address}">
                             </h:inputTextarea>
                             <br class="clear" />
                         </div>

@@ -18,8 +18,8 @@ import java.util.zip.ZipEntry;
 
 import pl.umk.mat.zawodyweb.database.pojo.*;
 import pl.umk.mat.zawodyweb.database.xml.FilesType;
-import pl.umk.mat.zawodyweb.database.xml.Problem;
-import pl.umk.mat.zawodyweb.database.xml.Test;
+import pl.umk.mat.zawodyweb.database.xml.ProblemType;
+import pl.umk.mat.zawodyweb.database.xml.TestType;
 
 /**
  * @author faramir
@@ -29,7 +29,7 @@ public class ZipProblem {
     private ZipProblem() {
     }
 
-    static void addProblem(ZipOutputStream out, Problem xmlProblem, Problems problem) throws IOException {
+    static void addProblem(ZipOutputStream out, ProblemType xmlProblem, Problems problem) throws IOException {
         out.nextProblem();
 
         xmlProblem.setName(problem.getName());
@@ -44,21 +44,21 @@ public class ZipProblem {
         xmlProblem.setText(setText(out, problem.getText()));
         xmlProblem.setFiles(setFiles(out, problem.getFiles()));
 
-        Problem.Languages languages = new Problem.Languages();
+        ProblemType.Languages languages = new ProblemType.Languages();
         xmlProblem.setLanguages(languages);
 
-        Problem.Tests tests = new Problem.Tests();
+        ProblemType.Tests tests = new ProblemType.Tests();
         xmlProblem.setTests(tests);
 
-        List<String> langs = languages.getLanguages();
+        List<String> langs = languages.getLanguage();
         for (LanguagesProblems lp : problem.getLanguagesProblemss()) {
             langs.add(lp.getLanguages().getName());
         }
 
         for (Tests test : problem.getTestss()) {
-            Test xmlTest = new Test();
+            TestType xmlTest = new TestType();
             ZipTest.addTest(out, xmlTest, test);
-            xmlProblem.getTests().getTests().add(xmlTest);
+            xmlProblem.getTests().getTest().add(xmlTest);
         }
     }
 
@@ -91,7 +91,7 @@ public class ZipProblem {
         return filesType;
     }
 
-    static Problems getProblem(ZipInputStream in, Problem xmlProblem,
+    static Problems getProblem(ZipInputStream in, ProblemType xmlProblem,
                                List<Languages> languages, List<Classes> diffClasses)
             throws UnsupportedEncodingException, FileNotFoundException {
         Problems problem = new Problems();
@@ -99,8 +99,8 @@ public class ZipProblem {
         problem.setAbbrev(xmlProblem.getAbbrev());
         problem.setMemlimit(xmlProblem.getMemlimit());
         problem.setCodesize(xmlProblem.getCodesize());
-        problem.setVisibleinranking(xmlProblem.getVisible());
-        problem.setViewpdf(xmlProblem.getViewpdf());
+        problem.setVisibleinranking(xmlProblem.isVisible());
+        problem.setViewpdf(xmlProblem.isViewpdf());
         problem.setConfig(xmlProblem.getConfig());
 
         String textFile = xmlProblem.getText();
@@ -139,7 +139,7 @@ public class ZipProblem {
             }
         }
 
-        List<String> langs = xmlProblem.getLanguages().getLanguages();
+        List<String> langs = xmlProblem.getLanguages().getLanguage();
         if (languages != null && langs != null) {
             List<LanguagesProblems> lps = new ArrayList<>();
 
@@ -158,10 +158,10 @@ public class ZipProblem {
             problem.setLanguagesProblemss(lps);
         }
 
-        if (xmlProblem.getTests().getTests() != null) {
+        if (xmlProblem.getTests().getTest() != null) {
             SortedSet<Tests> tests = new TreeSet<>();
 
-            for (Test test : xmlProblem.getTests().getTests()) {
+            for (TestType test : xmlProblem.getTests().getTest()) {
                 tests.add(ZipTest.getTest(in, test));
             }
 
