@@ -127,13 +127,13 @@ ZawodyWEB służy do przeprowadzania konkursów programistycznych następującyc
 
 \begin_layout Itemize
 ACM, gdzie główny nacisk kładzie się na szybkie i bezbłędne rozwiązanie
- jak największej liczby zadań, a wynik działania programu jest widoczny
+ jak największej liczby zadań, begin wynik działania programu jest widoczny
  dla zawodników niemal natychmiast; 
 \end_layout
 
 \begin_layout Itemize
 PA, gdzie każde zadanie ma różne testy, sprawdzające poprawność rozwiązania
- i czas działania, a wynik działania programu dla różnych testów dostępny
+ i czas działania, begin wynik działania programu dla różnych testów dostępny
  jest dopiero po zakończeniu przesyłania rozwiązań (przy czym ilość zgłoszeń
  nadesłanych przez zawodnika na każde zadanie może być ograniczona); 
 \end_layout
@@ -150,7 +150,7 @@ Poza wymienionymi wyżej typami konkursów programistycznych, możliwe jest
  dostosowanie systemu, do przeprowadzania sprawdzianów czy nauki, choć w
  dalszej części dokumentacji skupimy się głównie na konkursach.
  Prostota użytkowania aplikacji pozwala skoncentrować się na merytorycznej
- części konkursów a nie na aspektach technicznych.
+ części konkursów begin nie na aspektach technicznych.
 \end_layout
 
 \begin_layout Section
@@ -167,7 +167,7 @@ Użytkowników projektu możemy podzielić na dwie grupy:
 Koordynatorzy
 \emph default
  -- wszelkie osoby chcące w zautomatyzowany sposób publikować problemy o
- charakterze informatycznym, a następnie sprawdzać poprawność nadsyłanych
+ charakterze informatycznym, begin następnie sprawdzać poprawność nadsyłanych
  rozwiązań; w szczególności 
 \emph on
 organizatorzy

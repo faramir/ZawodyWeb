@@ -10,9 +10,10 @@ package pl.umk.mat.zawodyweb.www.zip;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
 import pl.umk.mat.zawodyweb.database.pojo.Tests;
-import pl.umk.mat.zawodyweb.database.xml.TestType;
+import pl.umk.mat.zawodyweb.database.xml.Test;
 
 /**
  *
@@ -20,7 +21,7 @@ import pl.umk.mat.zawodyweb.database.xml.TestType;
  */
 public class ZipTest {
 
-    static TestType addTest(ZipOutputStream out, TestType xmlTest, Tests test) throws IOException {
+    static Test addTest(ZipOutputStream out, Test xmlTest, Tests test) throws IOException {
         out.nextTest();
 
         ZipEntry entry;
@@ -28,13 +29,13 @@ public class ZipTest {
         String inputFile = String.format("in%03d.txt", out.getTest());
         entry = new ZipEntry(inputFile);
         out.putNextEntry(entry);
-        out.write(test.getInput().getBytes("UTF-8"));
+        out.write(test.getInput().getBytes(StandardCharsets.UTF_8));
         out.closeEntry();
 
         String outputFile = String.format("out%03d.txt", out.getTest());
         entry = new ZipEntry(outputFile);
         out.putNextEntry(entry);
-        out.write(test.getOutput().getBytes("UTF-8"));
+        out.write(test.getOutput().getBytes(StandardCharsets.UTF_8));
         out.closeEntry();
 
         xmlTest.setInput(inputFile);
@@ -47,7 +48,7 @@ public class ZipTest {
         return xmlTest;
     }
 
-    static Tests getTest(ZipInputStream in, TestType xmlTest) throws FileNotFoundException, UnsupportedEncodingException {
+    static Tests getTest(ZipInputStream in, Test xmlTest) throws FileNotFoundException {
         String infile = xmlTest.getInput();
         String outfile = xmlTest.getOutput();
 
@@ -59,17 +60,17 @@ public class ZipTest {
             throw new FileNotFoundException("Output file not found in zip archive!");
         }
 
-        if (in.containsFile(infile) == false) {
+        if (!in.containsFile(infile)) {
             throw new FileNotFoundException("Input file not found in zip archive: " + infile);
         }
 
-        if (in.containsFile(outfile) == false) {
+        if (!in.containsFile(outfile)) {
             throw new FileNotFoundException("Output file not found in zip archive: " + outfile);
         }
 
         Tests tests = new Tests();
-        tests.setInput(new String(in.getFile(infile), "UTF-8"));
-        tests.setOutput(new String(in.getFile(outfile), "UTF-8"));
+        tests.setInput(new String(in.getFile(infile), StandardCharsets.UTF_8));
+        tests.setOutput(new String(in.getFile(outfile), StandardCharsets.UTF_8));
         tests.setMaxpoints(xmlTest.getMaxpoints());
         tests.setTestorder(xmlTest.getOrder());
         tests.setTimelimit(xmlTest.getTimelimit());

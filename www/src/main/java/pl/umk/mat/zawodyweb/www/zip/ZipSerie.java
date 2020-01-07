@@ -16,8 +16,8 @@ import pl.umk.mat.zawodyweb.database.pojo.Classes;
 import pl.umk.mat.zawodyweb.database.pojo.Languages;
 import pl.umk.mat.zawodyweb.database.pojo.Problems;
 import pl.umk.mat.zawodyweb.database.pojo.Series;
-import pl.umk.mat.zawodyweb.database.xml.ProblemType;
-import pl.umk.mat.zawodyweb.database.xml.SerieType;
+import pl.umk.mat.zawodyweb.database.xml.Problem;
+import pl.umk.mat.zawodyweb.database.xml.Serie;
 
 /**
  *
@@ -25,7 +25,7 @@ import pl.umk.mat.zawodyweb.database.xml.SerieType;
  */
 public class ZipSerie {
 
-    static SerieType addSerie(ZipOutputStream out, SerieType xmlSerie, Series serie) throws IOException {
+    static Serie addSerie(ZipOutputStream out, Serie xmlSerie, Series serie) throws IOException {
         xmlSerie.setName(serie.getName());
         xmlSerie.setStartdate(ZipFile.convert(serie.getStartdate()));
         xmlSerie.setEnddate(ZipFile.convert(serie.getEnddate()));
@@ -35,18 +35,18 @@ public class ZipSerie {
         xmlSerie.setHiddenblocked(serie.getHiddenblocked());
         xmlSerie.setOpenips(serie.getOpenips());
         xmlSerie.setVisible(serie.getVisibleinranking());
-        xmlSerie.setProblems(new SerieType.Problems());
+        xmlSerie.setProblems(new Serie.Problems());
         
         for (Problems problem : serie.getProblemss()) {
-            ProblemType xmlProblem = new ProblemType();
+            Problem xmlProblem = new Problem();
             ZipProblem.addProblem(out, xmlProblem, problem);
-            xmlSerie.getProblems().getProblem().add(xmlProblem);
+            xmlSerie.getProblems().getProblems().add(xmlProblem);
         }
         
         return xmlSerie;
     }
     
-    static Series getSerie(ZipInputStream in, SerieType xmlSerie,
+    static Series getSerie(ZipInputStream in, Serie xmlSerie,
             List<Languages> languages, List<Classes> diffClasses)
             throws UnsupportedEncodingException, FileNotFoundException {
         Series serie = new Series();
@@ -60,10 +60,10 @@ public class ZipSerie {
         serie.setOpenips(xmlSerie.getOpenips());
         serie.setVisibleinranking(xmlSerie.isVisible());
         
-        if (xmlSerie.getProblems().getProblem() != null) {
-            List<Problems> problems = new ArrayList<Problems>();
+        if (xmlSerie.getProblems().getProblems() != null) {
+            List<Problems> problems = new ArrayList<>();
             
-            for (ProblemType problem : xmlSerie.getProblems().getProblem()) {
+            for (Problem problem : xmlSerie.getProblems().getProblems()) {
                 problems.add(ZipProblem.getProblem(in, problem, languages, diffClasses));
             }
             

@@ -10,6 +10,7 @@ package pl.umk.mat.zawodyweb.www.zip;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
@@ -18,8 +19,8 @@ import java.util.zip.ZipEntry;
 
 import pl.umk.mat.zawodyweb.database.pojo.*;
 import pl.umk.mat.zawodyweb.database.xml.FilesType;
-import pl.umk.mat.zawodyweb.database.xml.ProblemType;
-import pl.umk.mat.zawodyweb.database.xml.TestType;
+import pl.umk.mat.zawodyweb.database.xml.Problem;
+import pl.umk.mat.zawodyweb.database.xml.Test;
 
 /**
  * @author faramir
@@ -29,7 +30,7 @@ public class ZipProblem {
     private ZipProblem() {
     }
 
-    static void addProblem(ZipOutputStream out, ProblemType xmlProblem, Problems problem) throws IOException {
+    static void addProblem(ZipOutputStream out, Problem xmlProblem, Problems problem) throws IOException {
         out.nextProblem();
 
         xmlProblem.setName(problem.getName());
@@ -44,21 +45,21 @@ public class ZipProblem {
         xmlProblem.setText(setText(out, problem.getText()));
         xmlProblem.setFiles(setFiles(out, problem.getFiles()));
 
-        ProblemType.Languages languages = new ProblemType.Languages();
+        Problem.Languages languages = new Problem.Languages();
         xmlProblem.setLanguages(languages);
 
-        ProblemType.Tests tests = new ProblemType.Tests();
+        Problem.Tests tests = new Problem.Tests();
         xmlProblem.setTests(tests);
 
-        List<String> langs = languages.getLanguage();
+        List<String> langs = languages.getLanguages();
         for (LanguagesProblems lp : problem.getLanguagesProblemss()) {
             langs.add(lp.getLanguages().getName());
         }
 
         for (Tests test : problem.getTestss()) {
-            TestType xmlTest = new TestType();
+            Test xmlTest = new Test();
             ZipTest.addTest(out, xmlTest, test);
-            xmlProblem.getTests().getTest().add(xmlTest);
+            xmlProblem.getTests().getTests().add(xmlTest);
         }
     }
 
@@ -66,7 +67,7 @@ public class ZipProblem {
         String textFile = String.format("problem%03d.html", out.getProblem());
         ZipEntry entry = new ZipEntry(textFile);
         out.putNextEntry(entry);
-        out.write(text.getBytes("UTF-8"));
+        out.write(text.getBytes(StandardCharsets.UTF_8));
         out.closeEntry();
 
         return textFile;
@@ -91,7 +92,7 @@ public class ZipProblem {
         return filesType;
     }
 
-    static Problems getProblem(ZipInputStream in, ProblemType xmlProblem,
+    static Problems getProblem(ZipInputStream in, Problem xmlProblem,
                                List<Languages> languages, List<Classes> diffClasses)
             throws UnsupportedEncodingException, FileNotFoundException {
         Problems problem = new Problems();
@@ -107,17 +108,17 @@ public class ZipProblem {
         if (textFile == null || textFile.isEmpty()) {
             throw new FileNotFoundException("Text file not found in zip archive!");
         }
-        if (in.containsFile(textFile) == false) {
+        if (!in.containsFile(textFile)) {
             throw new FileNotFoundException("Text file not found in zip archive: " + textFile);
         }
-        problem.setText(new String(in.getFile(textFile), "UTF-8"));
+        problem.setText(new String(in.getFile(textFile), StandardCharsets.UTF_8));
 
         FilesType filesType = xmlProblem.getFiles();
 
         if (filesType != null) {
             String bytesLocation = filesType.getBytes();
-            if (bytesLocation != null && bytesLocation.isEmpty() == false) {
-                if (in.containsFile(bytesLocation) == false) {
+            if (bytesLocation != null && !bytesLocation.isEmpty()) {
+                if (!in.containsFile(bytesLocation)) {
                     throw new FileNotFoundException("Files file not found in zip archive: " + bytesLocation);
                 } else {
                     Files files = new Files();
@@ -139,7 +140,7 @@ public class ZipProblem {
             }
         }
 
-        List<String> langs = xmlProblem.getLanguages().getLanguage();
+        List<String> langs = xmlProblem.getLanguages().getLanguages();
         if (languages != null && langs != null) {
             List<LanguagesProblems> lps = new ArrayList<>();
 
@@ -158,10 +159,10 @@ public class ZipProblem {
             problem.setLanguagesProblemss(lps);
         }
 
-        if (xmlProblem.getTests().getTest() != null) {
+        if (xmlProblem.getTests().getTests() != null) {
             SortedSet<Tests> tests = new TreeSet<>();
 
-            for (TestType test : xmlProblem.getTests().getTest()) {
+            for (Test test : xmlProblem.getTests().getTests()) {
                 tests.add(ZipTest.getTest(in, test));
             }
 

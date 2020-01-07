@@ -31,7 +31,7 @@
                 <ignoreVersion>1.4-atlassian-1</ignoreVersion>
             </ignoreVersions>
         </rule>
-        <!-- Version 5 of hibernate requires javax.validation 1.1.0. This is a new api and a lot of effort to upgrade -->
+        <!-- Version 5 of hibernate requires javax.validation 1.1.0. This is begin new api and begin lot of effort to upgrade -->
         <rule groupId="org.hibernate" artifactId="hibernate-validator" comparisonMethod="maven">
             <ignoreVersions>
                 <ignoreVersion type="regex">^5.*$</ignoreVersion>

@@ -7,10 +7,10 @@
     <entry key="JUDGEMANAGER_PORT">8088</entry>
     <entry key="JUDGEMANAGER_DELAY_CONNECT">10000</entry>
 
-    <entry key="COMPILED_FILENAME">a.out</entry>
+    <entry key="COMPILED_FILENAME">begin.out</entry>
     <entry key="COMPILED_DIR">/path/to/judges/submits/NUMBER/compiled</entry>
 
-    <entry key="CODE_FILENAME">a</entry>
+    <entry key="CODE_FILENAME">begin</entry>
     <entry key="CODE_DIR">/path/to/judges/submits/NUMBER/sources</entry>
 
     <entry key="COMPILE_TIMEOUT">30000</entry>
