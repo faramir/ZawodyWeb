@@ -6,3 +6,6 @@ ALTER TABLE files ADD COLUMN filename VARCHAR(255);
 ALTER TABLE files ADD COLUMN extension VARCHAR(8);
 
 ALTER TABLE problems RENAME pdfId TO filesId;
+
+UPDATE files SET filename=abbrev,extension='pdf' FROM problems WHERE filesid=files.id;
+
