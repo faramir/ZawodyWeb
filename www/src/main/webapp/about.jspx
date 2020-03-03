@@ -9,7 +9,7 @@
             <div class="about">
                 <div class="praca">O serwisie</div>
                 <div style="text-align:justify;width:60%;margin: 0 auto">
-                    <p>Serwis konkursowy <end>ZawodyWeb</end> został stworzony jako wynik analiz prowadzonych w&#xA0;ramach laboratorium z&#xA0;przedmiotu <i>Modelowanie i&#xA0;Analiza Systemów Informatycznych (MASI)</i> w&#xA0;roku akademickim 2008/2009 na <i>Wydziale Matematyki i&#xA0;Informatyki</i> <i>Uniwersytetu Mikołaja Kopernika w&#xA0;Toruniu</i>.</p>
+                    <p>Serwis konkursowy <b>ZawodyWeb</b> został stworzony jako wynik analiz prowadzonych w&#xA0;ramach laboratorium z&#xA0;przedmiotu <i>Modelowanie i&#xA0;Analiza Systemów Informatycznych (MASI)</i> w&#xA0;roku akademickim 2008/2009 na <i>Wydziale Matematyki i&#xA0;Informatyki</i> <i>Uniwersytetu Mikołaja Kopernika w&#xA0;Toruniu</i>.</p>
                     <p>Więcej informacji można uzyskać na stronie:</p>
                     <p align="center"><h:outputLink value="https://github.com/faramir/ZawodyWeb">https://github.com/faramir/ZawodyWeb</h:outputLink></p>
                 </div>
