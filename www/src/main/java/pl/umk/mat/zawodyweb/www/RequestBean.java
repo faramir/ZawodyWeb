@@ -2394,7 +2394,7 @@ public class RequestBean {
 
                 if (problem != null
                         && (problem.getSeries().getStartdate().after(new Date())
-                        || problem.getSeries().getContests().getVisibility() == false)
+                            || !problem.getSeries().getContests().getVisibility())
                         && !rolesBean.canEditProblem(problem.getSeries().getContests().getId(), null)) {
                     problem = null;
                 }
@@ -2413,7 +2413,10 @@ public class RequestBean {
                 }
             } else if ("code".equals(type)) {
                 Submits s = submitsDAO.getById(id);
-                if (s != null && s.getUsers().getId().equals(sessionBean.getCurrentUser().getId()) || rolesBean.canRate(s.getProblems().getSeries().getContests().getId(), s.getProblems().getSeries().getContests().getId())) {
+                if (s != null
+                            && (s.getUsers().getId().equals(sessionBean.getCurrentUser().getId())
+                                || rolesBean.canRate(s.getProblems().getSeries().getContests().getId(),
+                                                     s.getProblems().getSeries().getId()))) {
                     if (s.getCode() != null) {
                         name = s.getFilename();
                         content = s.getCode();
@@ -2432,11 +2435,9 @@ public class RequestBean {
             } else if ("contest".equals(type)) {
                 Contests contest = contestsDAO.getById(id);
 
-                if (contest != null && !rolesBean.canEditContest(contest.getId(), null)) {
-                    contest = null;
-                }
+                if (contest != null
+                            && rolesBean.canEditContest(contest.getId(), null)) {
 
-                if (contest != null) {
                     content = ZipFile.zipContest(contest);
                     name = ELFunctions.filterUri(contest.getName()) + ".zip";
                     mimetype = "application/force-download";
@@ -2444,11 +2445,8 @@ public class RequestBean {
             } else if ("serie".equals(type)) {
                 Series serie = seriesDAO.getById(id);
 
-                if (serie != null && !rolesBean.canEditSeries(serie.getContests().getId(), serie.getId())) {
-                    serie = null;
-                }
-
-                if (serie != null) {
+                if (serie != null
+                            && rolesBean.canEditSeries(serie.getContests().getId(), serie.getId())) {
                     content = ZipFile.zipSerie(serie);
                     name = ELFunctions.filterUri(serie.getContests().getName()) + "_" + ELFunctions.filterUri(serie.getName()) + ".zip";
                     mimetype = "application/force-download";
@@ -2456,11 +2454,9 @@ public class RequestBean {
             } else if ("problem".equals(type)) {
                 Problems problem = problemsDAO.getById(id);
 
-                if (problem != null && !rolesBean.canEditProblem(problem.getSeries().getContests().getId(), null)) {
-                    problem = null;
-                }
-
-                if (problem != null) {
+                if (problem != null
+                            && rolesBean.canEditProblem(problem.getSeries().getContests().getId(),
+                                                        problem.getSeries().getId())) {
                     content = ZipFile.zipProblem(problem);
                     name = ELFunctions.filterUri(problem.getAbbrev()) + "_" + ELFunctions.filterUri(problem.getName()) + ".zip";
                     mimetype = "application/force-download";
@@ -2469,10 +2465,7 @@ public class RequestBean {
                 Tests test = testsDAO.getById(id);
                 if (test != null) {
                     Problems problem = test.getProblems();
-                    if (!rolesBean.canEditProblem(problem.getSeries().getContests().getId(), null)) {
-                        test = null;
-                    }
-                    if (test != null) {
+                    if (rolesBean.canEditProblem(problem.getSeries().getContests().getId(), null)) {
                         content = ZipFile.zipTest(test);
                         name = ELFunctions.filterUri(problem.getAbbrev()) + "_test" + test.getTestorder() + ".zip";
                         mimetype = "application/force-download";
@@ -2480,14 +2473,18 @@ public class RequestBean {
                 }
             } else if ("solutions".equals(type)) {
                 Contests contest = contestsDAO.getById(id);
-                List<Integer> submissionsList = Ranking.getInstance().getSolutions(id, null, contest.getType(), new Date(), false);
-                ZipSolutions zip = new ZipSolutions();
-                for (int sid : submissionsList) {
-                    zip.addSubmit(submitsDAO.getById(sid));
+
+                if (contest != null
+                            && rolesBean.canEditContest(contest.getId(), null)) {
+                    List<Integer> submissionsList = Ranking.getInstance().getSolutions(id, null, contest.getType(), new Date(), false);
+                    ZipSolutions zip = new ZipSolutions();
+                    for (int sid : submissionsList) {
+                        zip.addSubmit(submitsDAO.getById(sid));
+                    }
+                    content = zip.finish();
+                    name = ELFunctions.filterUri(contest.getName()) + "_solutions.zip";
+                    mimetype = "application/force-download";
                 }
-                content = zip.finish();
-                name = ELFunctions.filterUri(contest.getName()) + "_solutions.zip";
-                mimetype = "application/force-download";
             }
 
             if (content != null) {
