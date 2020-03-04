@@ -7,23 +7,33 @@
  */
 package pl.umk.mat.zawodyweb.compiler.classes;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
+import pl.umk.mat.zawodyweb.judge.commons.CompilerInterface;
 import pl.umk.mat.zawodyweb.judge.commons.TestInput;
 import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
-import pl.umk.mat.zawodyweb.judge.commons.CompilerInterface;
-import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
- *
  * @author Jakub Prabucki (modified by faramir)
  */
 public class LanguageOPSS implements CompilerInterface {
@@ -43,59 +53,52 @@ public class LanguageOPSS implements CompilerInterface {
         String login = properties.getProperty("opss.login");
         String password = properties.getProperty("opss.password");
 
-        HttpClient client = new HttpClient();
+        RequestConfig requestConfig = RequestConfig.custom()
+                                              .setCookieSpec(CookieSpecs.DEFAULT)
+                                              .build();
 
-        HttpClientParams params = client.getParams();
-        params.setParameter("http.useragent", "Opera/9.64 (Windows NT 6.0; U; pl) Presto/2.1.1");
-        client.setParams(params);
+        HttpClient client = HttpClients.custom()
+                                    .setDefaultRequestConfig(requestConfig)
+                                    .setUserAgent("Opera/9.80 (X11; Linux x86_64; U) Presto/2.12.388 Version/12.11")
+                                    .build();
 
-        PostMethod logging = new PostMethod(loginUrl);
-        NameValuePair[] dataLogging = {
-            new NameValuePair("login_form_submit", "1"),
-            new NameValuePair("login_form_login", login),
-            new NameValuePair("login_form_pass", password)
-        };
-        logging.setRequestBody(dataLogging);
+        HttpPost logging = new HttpPost(loginUrl);
+        List<NameValuePair> dataLogging = Arrays.asList(new NameValuePair[]{
+                new BasicNameValuePair("login_form_submit", "1"),
+                new BasicNameValuePair("login_form_login", login),
+                new BasicNameValuePair("login_form_pass", password)
+        });
         try {
-            client.executeMethod(logging);
-        } catch (HttpException e) {
+            logging.setEntity(new UrlEncodedFormEntity(dataLogging));
+            client.execute(logging);
+        } catch (Exception e) {
             result.setStatus(ResultsStatusEnum.UNDEF.getCode());
             result.setNotes(e.getMessage());
-            result.setOutputText("HttpException");
-            logging.releaseConnection();
-            return result;
-        } catch (IOException e) {
-            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
-            result.setNotes(e.getMessage());
-            result.setOutputText("IOException");
+            result.setOutputText(e.getClass().getName());
             logging.releaseConnection();
             return result;
         }
         logging.releaseConnection();
-        PostMethod sendAnswer = new PostMethod("http://opss.assecobs.pl/?menu=comp&sub=send&comp=0");
-        NameValuePair[] dataSendAnswer = {
-            new NameValuePair("form_send_submit", "1"),
-            new NameValuePair("form_send_comp", ""),
-            new NameValuePair("form_send_problem", input.getInputText()),
-            new NameValuePair("form_send_lang", properties.getProperty("CODEFILE_EXTENSION")),
-            new NameValuePair("form_send_sourcetext", path),
-            new NameValuePair("form_send_submittxt", "Wyślij kod")
-        };
-        sendAnswer.setRequestBody(dataSendAnswer);
+
+        HttpPost sendAnswer = new HttpPost("http://opss.assecobs.pl/?menu=comp&sub=send&comp=0");
+        List<NameValuePair> dataSendAnswer = Arrays.asList(new NameValuePair[]{
+                new BasicNameValuePair("form_send_submit", "1"),
+                new BasicNameValuePair("form_send_comp", ""),
+                new BasicNameValuePair("form_send_problem", input.getInputText()),
+                new BasicNameValuePair("form_send_lang", properties.getProperty("CODEFILE_EXTENSION")),
+                new BasicNameValuePair("form_send_sourcetext", path),
+                new BasicNameValuePair("form_send_submittxt", "Wyślij kod")
+        });
         InputStream status = null;
         try {
-            client.executeMethod(sendAnswer);
-            status = sendAnswer.getResponseBodyAsStream();
-        } catch (HttpException e) {
+            sendAnswer.setEntity(new UrlEncodedFormEntity(dataSendAnswer));
+            HttpResponse response = client.execute(sendAnswer);
+            HttpEntity entity = response.getEntity();
+            status = entity.getContent();
+        } catch (Exception e) {
             result.setStatus(ResultsStatusEnum.UNDEF.getCode());
             result.setNotes(e.getMessage());
-            result.setOutputText("HttpException");
-            sendAnswer.releaseConnection();
-            return result;
-        } catch (IOException e) {
-            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
-            result.setNotes(e.getMessage());
-            result.setOutputText("IOException");
+            result.setOutputText(e.getClass().getName());
             sendAnswer.releaseConnection();
             return result;
         }
@@ -118,10 +121,10 @@ public class LanguageOPSS implements CompilerInterface {
             Matcher m1 = p1.matcher(m.group());
             m1.find();
             submitId = m1.group().split("=")[1];
-        } catch (IOException e) {
+        } catch (Exception e) {
             result.setStatus(ResultsStatusEnum.UNDEF.getCode());
             result.setNotes(e.getMessage());
-            result.setOutputText("IOException");
+            result.setOutputText(e.getClass().getName());
             sendAnswer.releaseConnection();
             return result;
         }
@@ -135,21 +138,16 @@ public class LanguageOPSS implements CompilerInterface {
                 result.setOutputText("InterruptedException");
                 return result;
             }
-            GetMethod answer = new GetMethod("http://opss.assecobs.pl/?menu=comp&sub=stat&comp=0&id=" + submitId);
+            HttpGet answer = new HttpGet("http://opss.assecobs.pl/?menu=comp&sub=stat&comp=0&id=" + submitId);
             InputStream answerStream = null;
             try {
-                client.executeMethod(answer);
-                answerStream = answer.getResponseBodyAsStream();
-            } catch (HttpException e) {
+                HttpResponse response = client.execute(answer);
+                HttpEntity entity = response.getEntity();
+                answerStream = entity.getContent();
+            } catch (Exception e) {
                 result.setStatus(ResultsStatusEnum.UNDEF.getCode());
                 result.setNotes(e.getMessage());
-                result.setOutputText("HttpException");
-                answer.releaseConnection();
-                return result;
-            } catch (IOException e) {
-                result.setStatus(ResultsStatusEnum.UNDEF.getCode());
-                result.setNotes(e.getMessage());
-                result.setOutputText("IOException");
+                result.setOutputText(e.getClass().getName());
                 answer.releaseConnection();
                 return result;
             }
@@ -212,12 +210,10 @@ public class LanguageOPSS implements CompilerInterface {
             }
             answer.releaseConnection();
         } while (true);
-        GetMethod logout = new GetMethod("http://opss.assecobs.pl/?logoff");
+        HttpGet logout = new HttpGet("http://opss.assecobs.pl/?logoff");
         try {
-            client.executeMethod(logout);
-        } catch (HttpException e) {
-            logout.releaseConnection();
-        } catch (IOException e) {
+            client.execute(logout);
+        } catch (Exception e) {
             logout.releaseConnection();
         }
         logout.releaseConnection();

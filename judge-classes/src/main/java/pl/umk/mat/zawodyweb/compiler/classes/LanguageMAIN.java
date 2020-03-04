@@ -10,24 +10,36 @@ package pl.umk.mat.zawodyweb.compiler.classes;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import org.apache.commons.httpclient.*;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.*;
-import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
+import pl.umk.mat.zawodyweb.judge.commons.CompilerInterface;
 import pl.umk.mat.zawodyweb.judge.commons.TestInput;
 import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
-import pl.umk.mat.zawodyweb.judge.commons.CompilerInterface;
-import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
- *
  * @author Marek Nowicki
  */
 public class LanguageMAIN implements CompilerInterface {
@@ -42,12 +54,13 @@ public class LanguageMAIN implements CompilerInterface {
 
     /**
      * Calculate gained points from MAIN to points in ZawodyWeb
-     * @param _points string representing MAIN points
+     *
+     * @param _points     string representing MAIN points
      * @param task_points points for test in ZawodyWeb
-     * @param max_points max points for problem in MAIN
-     * @return
+     * @param max_points  max points for problem in MAIN
+     * @return calculated points
      */
-    private Integer calculatePoints(String _points, int task_points, Integer max_points) {
+    private int calculatePoints(String _points, int task_points, Integer max_points) {
         try {
             int points = Integer.parseInt(_points);
             if (max_points == null) {
@@ -60,13 +73,14 @@ public class LanguageMAIN implements CompilerInterface {
             }
         } catch (NumberFormatException ex) {
             logger.info("Failed to calculate gained points (" + _points + ").", ex);
+            throw ex;
         }
-        return null;
     }
 
     /**
      * Sprawdza rozwiązanie na input
-     * @param path kod źródłowy
+     *
+     * @param path  kod źródłowy
      * @param input w formacie:
      *              <pre>c=NUMER_KONKURSU<br/>t=NUMER_ZADANIA<br/>m=MAX_POINTS</pre>
      * @return
@@ -125,42 +139,41 @@ public class LanguageMAIN implements CompilerInterface {
         String login = properties.getProperty("main_edu_pl.login");
         String password = properties.getProperty("main_edu_pl.password");
 
-        HttpClient client = new HttpClient();
+        RequestConfig requestConfig = RequestConfig.custom()
+                                              .setCookieSpec(CookieSpecs.DEFAULT)
+                                              .build();
 
-        HttpClientParams params = client.getParams();
-        params.setParameter("http.useragent", "Opera/9.64 (Windows NT 6.0; U; pl) Presto/2.1.1");
-        //params.setParameter("http.protocol.handle-redirects", true);
-        client.setParams(params);
+        HttpClient client = HttpClients.custom()
+                                    .setDefaultRequestConfig(requestConfig)
+                                    .setUserAgent("Opera/9.80 (X11; Linux x86_64; U) Presto/2.12.388 Version/12.11")
+                                    .build();
+
         /* logowanie */
         logger.debug("Logging in");
-        PostMethod postMethod = new PostMethod(loginUrl);
-        NameValuePair[] dataLogging = {
-            new NameValuePair("auth", "1"),
-            new NameValuePair("login", login),
-            new NameValuePair("pass", password)
-        };
-        postMethod.setRequestBody(dataLogging);
+        HttpPost postMethod = new HttpPost(loginUrl);
+        List<NameValuePair> dataLogging = Arrays.asList(new NameValuePair[]{
+                new BasicNameValuePair("auth", "1"),
+                new BasicNameValuePair("login", login),
+                new BasicNameValuePair("pass", password)
+        });
         try {
-            client.executeMethod(postMethod);
-            if (Pattern.compile("Logowanie udane").matcher(postMethod.getResponseBodyAsString(1024 * 1024)).find() == false) {
+            postMethod.setEntity(new UrlEncodedFormEntity(dataLogging));
+            HttpResponse response = client.execute(postMethod);
+            HttpEntity entity = response.getEntity();
+            String responseString = EntityUtils.toString(entity, "UTF-8");
+
+            if (!Pattern.compile("Logowanie udane").matcher(responseString).find()) {
                 logger.error("Unable to login (" + login + ":" + password + ")");
                 result.setStatus(ResultsStatusEnum.UNDEF.getCode());
                 result.setOutputText("Logging in failed");
                 postMethod.releaseConnection();
                 return result;
             }
-        } catch (HttpException e) {
+        } catch (Exception e) {
             logger.error("Exception when logging in", e);
             result.setStatus(ResultsStatusEnum.UNDEF.getCode());
             result.setNotes(e.getMessage());
-            result.setOutputText("HttpException");
-            postMethod.releaseConnection();
-            return result;
-        } catch (IOException e) {
-            logger.error("Exception when logging in", e);
-            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
-            result.setNotes(e.getMessage());
-            result.setOutputText("IOException");
+            result.setOutputText(e.getClass().getName());
             postMethod.releaseConnection();
             return result;
         }
@@ -168,14 +181,17 @@ public class LanguageMAIN implements CompilerInterface {
 
         /* wchodzenie na stronę z wysyłaniem zadań i pobieranie pól z hidden */
         logger.debug("Getting submit page");
-        ArrayList<Part> values = new ArrayList<Part>();
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
         try {
-            GetMethod getMethod = new GetMethod("http://main.edu.pl/user.phtml?op=submit&m=insert&c=" + contest_id);
-            client.executeMethod(getMethod);
-            String response = getMethod.getResponseBodyAsString(1024 * 1024);
+            HttpGet getMethod = new HttpGet("http://main.edu.pl/user.phtml?op=submit&m=insert&c=" + contest_id);
+            HttpResponse response = client.execute(getMethod);
+            HttpEntity entity = response.getEntity();
+            String responseString = EntityUtils.toString(entity, "UTF-8");
             getMethod.releaseConnection();
 
-            Matcher tagMatcher = Pattern.compile("<input[^>]*>").matcher(response);
+            Matcher tagMatcher = Pattern.compile("<input[^>]*>").matcher(responseString);
             Pattern namePattern = Pattern.compile("name\\s*=\"([^\"]*)\"");
             Pattern valuePattern = Pattern.compile("value\\s*=\"([^\"]*)\"");
             while (tagMatcher.find()) {
@@ -197,50 +213,48 @@ public class LanguageMAIN implements CompilerInterface {
 
 
                 if (name != null && value != null && name.equals("solution") == false) {
-                    values.add(new StringPart(name, value));
+                    builder.addTextBody(name, value);
                 }
             }
-        } catch (HttpException ex) {
+        } catch (Exception ex) {
             logger.error("Exception when getting submit page", ex);
             result.setStatus(ResultsStatusEnum.UNDEF.getCode());
             result.setNotes(ex.getMessage());
-            result.setOutputText("IOException");
-            return result;
-        } catch (IOException ex) {
-            logger.error("Exception when getting submit page", ex);
-            result.setStatus(ResultsStatusEnum.UNDEF.getCode());
-            result.setNotes(ex.getMessage());
-            result.setOutputText("IOException");
+            result.setOutputText(ex.getClass().getName());
             return result;
         }
 
-        values.add(new StringPart("task", task_id.toString()));
+        builder.addTextBody("task", task_id.toString());
 
         String filename = properties.getProperty("CODE_FILENAME");
         filename = filename.replaceAll("\\." + properties.getProperty("CODEFILE_EXTENSION") + "$", "");
         filename = filename + "." + properties.getProperty("CODEFILE_EXTENSION");
-        FilePart filePart = new FilePart("solution", new ByteArrayPartSource(filename, path.getBytes()));
-        values.add(filePart);
+        ByteArrayBody filePart = new ByteArrayBody(path.getBytes(), filename);
+        builder.addPart("solution", filePart);
 
         /* wysyłanie rozwiązania */
         logger.debug("Submiting solution");
         Integer solution_id = null;
-        postMethod = new PostMethod("http://main.edu.pl/user.phtml?op=submit&m=db_insert&c=" + contest_id);
-        postMethod.setRequestEntity(new MultipartRequestEntity(values.toArray(new Part[0]), client.getParams()));
+        postMethod = new HttpPost("http://main.edu.pl/user.phtml?op=submit&m=db_insert&c=" + contest_id);
+        postMethod.setEntity(builder.build());
         try {
             try {
-                client.executeMethod(postMethod);
-                HttpMethod method = postMethod;
+                HttpResponse response = client.execute(postMethod);
 
                 /* check if redirect */
-                Header locationHeader = postMethod.getResponseHeader("location");
+                Header locationHeader = postMethod.getFirstHeader("location");
                 if (locationHeader != null) {
                     String redirectLocation = locationHeader.getValue();
-                    GetMethod getMethod = new GetMethod(new URI(postMethod.getURI(), new URI(redirectLocation, false)).getURI());
-                    client.executeMethod(getMethod);
-                    method = getMethod;
+                    URI redirectURI = URI.create(redirectLocation);
+                    if (!redirectURI.isAbsolute()) {
+                        redirectURI = postMethod.getURI().resolve(redirectLocation);
+                    }
+                    HttpGet getMethod = new HttpGet(redirectURI);
+                    response = client.execute(getMethod);
                 }
-                BufferedReader br = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
+                HttpEntity entity = response.getEntity();
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
                 StringBuilder sb = new StringBuilder();
                 String line;
                 while ((line = br.readLine()) != null) {
@@ -256,21 +270,15 @@ public class LanguageMAIN implements CompilerInterface {
                 if (solution_id == null) {
                     throw new IllegalArgumentException("solution_id == null");
                 }
-            } catch (HttpException e) {
-                new IllegalArgumentException(e);
-            } catch (IOException e) {
-                new IllegalArgumentException(e);
-            } catch (NumberFormatException e) {
-                new IllegalArgumentException(e);
-            } catch (IllegalStateException e) {
-                new IllegalArgumentException(e);
+            } catch (IOException | NumberFormatException | IllegalStateException e) {
+                throw new IllegalArgumentException(e);
             }
 
         } catch (IllegalArgumentException e) {
             logger.error("Exception when submiting solution", e);
             result.setStatus(ResultsStatusEnum.UNDEF.getCode());
             result.setNotes(e.getMessage());
-            result.setOutputText("IllegalArgumentException");
+            result.setOutputText(e.getClass().getName());
             postMethod.releaseConnection();
             return result;
         }
@@ -292,13 +300,15 @@ public class LanguageMAIN implements CompilerInterface {
                 return result;
             }
 
-            GetMethod getMethod = new GetMethod("http://main.edu.pl/user.phtml?op=zgloszenia&c=" + contest_id);
+            HttpGet getMethod = new HttpGet("http://main.edu.pl/user.phtml?op=zgloszenia&c=" + contest_id);
             try {
-                client.executeMethod(getMethod);
-                String response = getMethod.getResponseBodyAsString(1024 * 1024);
+                HttpResponse response = client.execute(getMethod);
+
+                HttpEntity entity = response.getEntity();
+                String responseString = EntityUtils.toString(entity, "UTF-8");
                 getMethod.releaseConnection();
 
-                Matcher matcher = resultRowPattern.matcher(response);
+                Matcher matcher = resultRowPattern.matcher(responseString);
                 // "</td>.*?<td.*?>.*?[NAZWA_ZADANIA]</td>.*?<td.*?>(.*?[STATUS])</td>.*?<td.*?>.*?</td>.*?<td.*?>(.*?[PUNKTY])</td>"
                 while (matcher.find()) {
                     Matcher resultMatcher = resultPattern.matcher(matcher.group());
@@ -329,15 +339,10 @@ public class LanguageMAIN implements CompilerInterface {
                         break result_loop;
                     }
                 }
-            } catch (HttpException ex) {
+            } catch (Exception ex) {
                 result.setStatus(ResultsStatusEnum.UNDEF.getCode());
                 result.setNotes(ex.getMessage());
-                result.setOutputText("HttpException");
-                return result;
-            } catch (IOException ex) {
-                result.setStatus(ResultsStatusEnum.UNDEF.getCode());
-                result.setNotes(ex.getMessage());
-                result.setOutputText("IOException");
+                result.setOutputText(ex.getClass().getName());
                 return result;
             }
         }

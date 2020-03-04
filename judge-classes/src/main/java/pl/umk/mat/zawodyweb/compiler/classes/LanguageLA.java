@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2014, ZawodyWeb Team
+ * Copyright (c) 2009-2020, ZawodyWeb Team
  * All rights reserved.
  *
  * This file is distributable under the Simplified BSD license. See the terms
@@ -7,21 +7,36 @@
  */
 package pl.umk.mat.zawodyweb.compiler.classes;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Random;
 import java.util.concurrent.TimeoutException;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
+import pl.umk.mat.zawodyweb.judge.commons.CompilerInterface;
 import pl.umk.mat.zawodyweb.judge.commons.TestInput;
 import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
-import pl.umk.mat.zawodyweb.judge.commons.CompilerInterface;
-import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
 
 /**
  * Copied from LanguageLA, acmSite = https://icpcarchive.ecs.baylor.edu/
@@ -30,7 +45,7 @@ import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
  */
 public class LanguageLA implements CompilerInterface {
 
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageLA.class);
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(pl.umk.mat.zawodyweb.compiler.classes.LanguageUVA.class);
     private Properties properties;
     private HttpClient client;
     private final String acmSite = "https://icpcarchive.ecs.baylor.edu/";
@@ -61,17 +76,18 @@ public class LanguageLA implements CompilerInterface {
 
     private void logIn(String login, String password) throws HttpException, IOException {
         List<NameValuePair> vectorLoginData;
-        GetMethod get = new GetMethod(acmSite);
+        HttpGet get = new HttpGet(acmSite);
 
         try {
-            client.executeMethod(get);
-            InputStream firstGet = get.getResponseBodyAsStream();
+            HttpResponse response = client.execute(get);
+            HttpEntity entity = response.getEntity();
+            InputStream firstGet = entity.getContent();
             BufferedReader br = new BufferedReader(new InputStreamReader(firstGet, StandardCharsets.UTF_8));
 
             String line, name, value;
             vectorLoginData = new ArrayList<>();
-            vectorLoginData.add(new NameValuePair("username", login));
-            vectorLoginData.add(new NameValuePair("passwd", password));
+            vectorLoginData.add(new BasicNameValuePair("username", login));
+            vectorLoginData.add(new BasicNameValuePair("passwd", password));
 
             line = br.readLine();
             while (line != null && !line.matches(".*class=\"mod_login\".*")) {
@@ -81,29 +97,29 @@ public class LanguageLA implements CompilerInterface {
                 if (line.matches(".*hidden.*name=\".*value=\".*")) {
                     name = line.split("name=\"")[1].split("\"")[0];
                     value = line.split("value=\"")[1].split("\"")[0];
-                    vectorLoginData.add(new NameValuePair(name, value)); // FIXME: check if it's neccesary: URLDecoder.decode(value, "UTF-8"));
+                    vectorLoginData.add(new BasicNameValuePair(name, value)); // FIXME: check if it's neccesary: URLDecoder.decode(value, "UTF-8"));
                 }
                 line = br.readLine();
             }
         } finally {
             get.releaseConnection();
         }
-        vectorLoginData.add(new NameValuePair("remember", "yes"));
-        vectorLoginData.add(new NameValuePair("Submit", "Login"));
+        vectorLoginData.add(new BasicNameValuePair("remember", "yes"));
+        vectorLoginData.add(new BasicNameValuePair("Submit", "Login"));
 
-        PostMethod post = new PostMethod(acmSite + "index.php?option=com_comprofiler&task=login");
-        post.setRequestHeader("Referer", acmSite);
+        HttpPost post = new HttpPost(acmSite + "index.php?option=com_comprofiler&task=login");
+        post.setHeader("Referer", acmSite);
         NameValuePair[] loginData = new NameValuePair[0];
         loginData = vectorLoginData.toArray(loginData);
-        post.setRequestBody(loginData);
+        post.setEntity(new UrlEncodedFormEntity(vectorLoginData));
 
-        client.executeMethod(post);
+        client.execute(post);
 
         post.releaseConnection();
     }
 
     private String sendSolution(String code, TestInput input) throws HttpException, IOException {
-        PostMethod post = new PostMethod(acmSite + "index.php?option=com_onlinejudge&Itemid=25&page=save_submission");
+        HttpPost post = new HttpPost(acmSite + "index.php?option=com_onlinejudge&Itemid=25&page=save_submission");
         try {
 
             String langId = properties.getProperty("uva.languageId");
@@ -137,18 +153,18 @@ public class LanguageLA implements CompilerInterface {
                     langId = "5";
                 }
             }
-            NameValuePair[] dataSendAnswer = {
-                new NameValuePair("problemid", ""),
-                new NameValuePair("category", ""),
-                new NameValuePair("localid", input.getInputText()),
-                new NameValuePair("language", langId),
-                new NameValuePair("code", code),
-                new NameValuePair("submit", "Submit")
-            };
-            post.setRequestBody(dataSendAnswer);
+            List<NameValuePair> dataSendAnswer = Arrays.asList(new NameValuePair[]{
+                    new BasicNameValuePair("problemid", ""),
+                    new BasicNameValuePair("category", ""),
+                    new BasicNameValuePair("localid", input.getInputText()),
+                    new BasicNameValuePair("language", langId),
+                    new BasicNameValuePair("code", code),
+                    new BasicNameValuePair("submit", "Submit")
+            });
+            post.setEntity(new UrlEncodedFormEntity(dataSendAnswer));
 
-            client.executeMethod(post);
-            String location = post.getResponseHeader("Location").getValue();
+            HttpResponse response = client.execute(post);
+            String location = response.getFirstHeader("Location").getValue();
 
             String msg = location.substring(location.lastIndexOf("msg=") + 4);
             if (msg.contains("Submission+received")) {
@@ -162,11 +178,12 @@ public class LanguageLA implements CompilerInterface {
     }
 
     private String getCompilationError(int id) throws HttpException, IOException {
-        GetMethod get = new GetMethod(acmSite + "index.php?option=com_onlinejudge&Itemid=9&page=show_compilationerror&submission=" + id);
+        HttpGet get = new HttpGet(acmSite + "index.php?option=com_onlinejudge&Itemid=9&page=show_compilationerror&submission=" + id);
 
         try {
-            client.executeMethod(get);
-            InputStream firstGet = get.getResponseBodyAsStream();
+            HttpResponse response = client.execute(get);
+            HttpEntity entity = response.getEntity();
+            InputStream firstGet = entity.getContent();
             BufferedReader br = new BufferedReader(new InputStreamReader(firstGet, StandardCharsets.UTF_8));
 
             String line;
@@ -186,7 +203,6 @@ public class LanguageLA implements CompilerInterface {
     }
 
     /**
-     *
      * @param br BufferedReader
      * @return List of Map (id, status, time)
      * @throws IOException
@@ -220,10 +236,11 @@ public class LanguageLA implements CompilerInterface {
 
     private List<Map<String, String>> getResults(int limitOnPage) throws HttpException, IOException {
         BufferedReader br = null;
-        GetMethod get = new GetMethod(acmSite + "index.php?option=com_onlinejudge&Itemid=9&limit=" + limitOnPage + "&limitstart=0");
+        HttpGet get = new HttpGet(acmSite + "index.php?option=com_onlinejudge&Itemid=9&limit=" + limitOnPage + "&limitstart=0");
         try {
-            client.executeMethod(get);
-            InputStream firstGet = get.getResponseBodyAsStream();
+            HttpResponse response = client.execute(get);
+            HttpEntity entity = response.getEntity();
+            InputStream firstGet = entity.getContent();
 
             try {
                 br = new BufferedReader(new InputStreamReader(firstGet, "UTF-8"));
@@ -237,7 +254,7 @@ public class LanguageLA implements CompilerInterface {
     }
 
     private void checkResults(int id, long maxTime, TestInput input, TestOutput result) throws InterruptedException,
-            TimeoutException, HttpException, IOException {
+                                                                                                       TimeoutException, HttpException, IOException {
 
         int limitRise = 50;
         int limitOnPage = 50;
@@ -322,18 +339,18 @@ public class LanguageLA implements CompilerInterface {
     }
 
     private void logOut() throws HttpException, IOException {
-        PostMethod post = new PostMethod(acmSite + "index.php?option=logout");
+        HttpPost post = new HttpPost(acmSite + "index.php?option=logout");
         try {
-            NameValuePair[] logout = {
-                new NameValuePair("op2", "logout"),
-                new NameValuePair("return", acmSite),
-                new NameValuePair("lang", "english"),
-                new NameValuePair("message", "0"),
-                new NameValuePair("Submit", "Logout")
-            };
-            post.setRequestBody(logout);
+            List<NameValuePair> logout = Arrays.asList(new NameValuePair[]{
+                    new BasicNameValuePair("op2", "logout"),
+                    new BasicNameValuePair("return", acmSite),
+                    new BasicNameValuePair("lang", "english"),
+                    new BasicNameValuePair("message", "0"),
+                    new BasicNameValuePair("Submit", "Logout")
+            });
+            post.setEntity(new UrlEncodedFormEntity(logout));
 
-            client.executeMethod(post);
+            client.execute(post);
         } finally {
             post.releaseConnection();
         }
@@ -415,11 +432,15 @@ public class LanguageLA implements CompilerInterface {
     }
 
     private void prepareHttpClient() {
-        client = new HttpClient();
-        HttpClientParams params = client.getParams();
-        params.setParameter(HttpClientParams.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
-        params.setParameter("http.useragent", "Opera/9.80 (X11; Linux x86_64; U) Presto/2.12.388 Version/12.11");
-        client.setParams(params);
+        RequestConfig requestConfig = RequestConfig.custom()
+                                              .setCookieSpec(CookieSpecs.DEFAULT)
+                                              .build();
+
+        client = HttpClients.custom()
+                         .setDefaultRequestConfig(requestConfig)
+                         .setUserAgent("Opera/9.80 (X11; Linux x86_64; U) Presto/2.12.388 Version/12.11")
+                         .build();
+        ;
     }
 
     @Override
