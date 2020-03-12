@@ -34,7 +34,7 @@ public class Wwp3Diff implements CheckerInterface {
             this.value = value;
         }
 
-        public boolean timeIn(int time) {
+        public boolean isTimeIn(int time) {
             return begin <= time && time < end;
         }
 
@@ -75,15 +75,23 @@ public class Wwp3Diff implements CheckerInterface {
             int theirM = theirTuples.size();
             int ourM = ourTuples.size();
             double varM = 1 - Math.abs(ourM - theirM) / (double) ourM;
+            if (varM < 0) varM = 0;
 
             double points = maxPoints * varM * (averageOurV - Math.sqrt(s / N)) / averageOurV;
 
             if (!Double.isFinite(points) || points < 0.0) points = 0.0;
 
-
             codeOutput.setPoints((int) Math.floor(points));
             codeOutput.setStatus(ResultsStatusEnum.ACC.getCode());
-            logger.trace("Processing output: s = " + s);
+            logger.trace("Processed output:" +
+                    " ourM=" + ourM + "," +
+                    " theirM=" + theirM + "," +
+                    " varM=" + varM + "," +
+                    " maxPoints=" + maxPoints + "," +
+                    " averageOurV=" + averageOurV + "," +
+                    " s=" + s + ", " +
+                    " N=" + N + ", " +
+                    " points=" + points);
         } catch (Exception e) {
             codeOutput.setPoints(0);
             codeOutput.setStatus(ResultsStatusEnum.RV.getCode());
@@ -95,7 +103,7 @@ public class Wwp3Diff implements CheckerInterface {
     }
 
     private long getSumV(int time, List<Tuple> tupleList) {
-        return tupleList.stream().filter(tuple -> tuple.timeIn(time)).mapToLong(Tuple::getValue).sum();
+        return tupleList.stream().filter(tuple -> tuple.isTimeIn(time)).mapToLong(Tuple::getValue).sum();
     }
 
     private List<Tuple> readTuples(String output) {
