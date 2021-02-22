@@ -1232,6 +1232,11 @@ tbody {
     width: auto;
 }
 
+table.ranking th {
+    position: sticky;
+    top: 0;
+}
+
 #view_ranking {
     opacity:0.05; /* CSS3 */
     filter:alpha(opacity=5); /* IE */
