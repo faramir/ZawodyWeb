@@ -1232,9 +1232,28 @@ tbody {
     width: auto;
 }
 
-table.ranking th {
+table.ranking thead th {
+    position: -webkit-sticky; /* for Safari */
     position: sticky;
     top: 0;
+}
+table.ranking thead th:first-child, table.ranking thead th:nth-child(2) {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    left: 0;
+    z-index: 2;
+}
+table.ranking tbody td:first-child, table.ranking tbody td:nth-child(2) {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    left: 0;
+    z-index: 1;
+}
+table.ranking tr:nth-child(even) td:nth-child(2){
+     background: #d7fec1!important;
+}
+table.ranking tr:nth-child(odd) td:nth-child(2){
+    background: #e1f6d4!important;
 }
 
 #view_ranking {
