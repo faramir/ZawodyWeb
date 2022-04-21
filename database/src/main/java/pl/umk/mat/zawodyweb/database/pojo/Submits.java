@@ -189,7 +189,7 @@ public class Submits implements Serializable {
     }
 
     /**
-     * @param notes new value for notes
+     * @param clientip
      */
     public void setClientip(String clientip) {
         this.clientip = clientip;
@@ -205,7 +205,7 @@ public class Submits implements Serializable {
     }
 
     /**
-     * @param name new value for name
+     * @param visibleinranking
      */
     public void setVisibleinranking(Boolean visibleinranking) {
         this.visibleinranking = visibleinranking;
