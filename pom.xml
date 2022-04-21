@@ -4,9 +4,13 @@
     <groupId>pl.umk.mat.zawodyweb</groupId>
     <artifactId>zawodyweb</artifactId>
     <name>ZawodyWeb</name>
-    <version>3.4.1-SNAPSHOT</version>
+    <version>${revision}</version>
     <description>System for handling competitions.</description>
     <packaging>pom</packaging>
+    <!-- -->
+    <properties>
+        <revision>3.5.0-SNAPSHOT</revision>
+    </properties>
     <!-- -->
     <developers>
         <developer>
@@ -71,6 +75,7 @@
         <module>judge-manager</module>
         <module>judge</module>
         <module>judge-external-checker</module>
+        <module>UnicoreChecker</module>
         <module>www</module>
     </modules>
     <build>
