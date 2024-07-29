@@ -23,6 +23,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.Logger;
 import pl.umk.mat.zawodyweb.judge.commons.TestInput;
 import pl.umk.mat.zawodyweb.judge.commons.TestOutput;
 import pl.umk.mat.zawodyweb.judge.commons.CompilerInterface;
@@ -35,7 +36,7 @@ import pl.umk.mat.zawodyweb.database.ResultsStatusEnum;
  */
 public class LanguageUVA implements CompilerInterface {
 
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageUVA.class);
+    private static final org.apache.log4j.Logger logger = Logger.getLogger(LanguageUVA.class);
     private Properties properties;
     private HttpClient client;
     private final String acmSite = "https://onlinejudge.org/";
